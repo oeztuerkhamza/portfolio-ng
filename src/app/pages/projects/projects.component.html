@@ -1,0 +1,87 @@
+<section class="projects-page section-padding">
+  <div class="container">
+    <div class="page-header">
+      <p class="section-label">Portfolio</p>
+      <h1 class="section-title">
+        Meine Projekte<span class="accent-dot">.</span>
+      </h1>
+      <p class="section-subtitle">
+        Eine Auswahl meiner besten Arbeiten — von Full-Stack Web-Apps bis hin zu
+        KI-gestützter Automatisierung.
+      </p>
+    </div>
+
+    <div class="projects-grid">
+      @for (project of projects; track project.slug; let i = $index) {
+        <a
+          [routerLink]="['/projects', project.slug]"
+          class="project-card"
+          [class.featured]="i === 0"
+        >
+          <div class="project-image">
+            @if (project.image) {
+              <img [src]="project.image" [alt]="project.title" />
+            } @else {
+              <div
+                class="project-placeholder"
+                style="
+                  background: linear-gradient(
+                    135deg,
+                    #8a2387,
+                    #e94057,
+                    #f27121
+                  );
+                "
+              >
+                <span>{{ project.title[0] }}</span>
+              </div>
+            }
+            <div class="image-overlay">
+              <div class="overlay-content">
+                <span class="overlay-label">Case Study ansehen</span>
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="project-info">
+            <div class="project-tags">
+              @for (tag of project.tags; track tag) {
+                <span class="tag">{{ tag }}</span>
+              }
+            </div>
+            <h2>{{ project.title }}</h2>
+            <p class="project-subtitle">{{ project.subtitle }}</p>
+            <p class="project-desc">{{ project.description }}</p>
+
+            <div class="project-meta">
+              <div class="meta-item">
+                <span class="meta-label">Rolle</span>
+                <span class="meta-value">{{ project.role }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="meta-label">Zeitraum</span>
+                <span class="meta-value">{{ project.duration }}</span>
+              </div>
+            </div>
+
+            <div class="project-tech">
+              @for (tech of project.techStack.slice(0, 5); track tech.name) {
+                <span class="tech-badge">{{ tech.icon }} {{ tech.name }}</span>
+              }
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,147 @@
+@import "../../../styles/variables";
+
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+  padding: 24px 5%;
+  display: flex;
+  justify-content: center;
+  transition: $transition-normal;
+
+  &.scrolled {
+    padding: 14px 5%;
+    background: rgba(5, 5, 5, 0.9);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid $glass-border;
+  }
+}
+
+.nav-content {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+
+  .logo-img {
+    height: 42px;
+    width: 42px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid $glass-border;
+    background: $bg-dark;
+    transition: $transition-normal;
+    filter: brightness(0.9);
+
+    &:hover {
+      transform: scale(1.08);
+      border-color: $accent-primary;
+      filter: brightness(1);
+      box-shadow: 0 0 20px $accent-glow-blue;
+    }
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 36px;
+  list-style: none;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: $text-secondary;
+  font-size: 0.95rem;
+  transition: $transition-fast;
+  position: relative;
+  padding: 4px 0;
+
+  &:hover,
+  &.active-link {
+    color: $text-pure;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: $accent-gradient;
+    transition: $transition-normal;
+    border-radius: 2px;
+  }
+
+  &:hover::after,
+  &.active-link::after {
+    width: 100%;
+  }
+}
+
+.hamburger {
+  display: none;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px;
+
+  .bar {
+    display: block;
+    width: 25px;
+    height: 2px;
+    margin: 5px auto;
+    transition: all 0.3s ease-in-out;
+    background-color: $text-pure;
+  }
+
+  &.active .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+  }
+  &.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  &.active .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .hamburger {
+    display: block;
+  }
+
+  .nav-links {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(5, 5, 5, 0.98);
+    backdrop-filter: blur(20px);
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    opacity: 0;
+    pointer-events: none;
+    transition: $transition-normal;
+    z-index: 99;
+
+    &.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .nav-link {
+      font-size: 1.5rem;
+    }
+  }
+}

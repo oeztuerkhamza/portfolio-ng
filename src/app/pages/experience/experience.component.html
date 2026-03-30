@@ -1,0 +1,120 @@
+<section class="experience-page section-padding">
+  <div class="container">
+    <div class="page-header">
+      <p class="section-label">Werdegang</p>
+      <h1 class="section-title">
+        Meine Reise<span class="accent-dot">.</span>
+      </h1>
+      <p class="section-subtitle">
+        Vom neugierigen Kind zum Full-Stack Developer — eine Geschichte von
+        Disziplin, Leidenschaft und kontinuierlichem Wachstum.
+      </p>
+    </div>
+
+    <div class="timeline">
+      <div class="timeline-line"></div>
+
+      @for (exp of experiences; track exp.id) {
+        <div
+          class="timeline-card"
+          [attr.data-id]="exp.id"
+          [ngClass]="{
+            visible: isVisible(exp.id),
+            left: exp.id % 2 !== 0,
+            right: exp.id % 2 === 0,
+          }"
+        >
+          <div class="timeline-dot">
+            <span class="dot-icon">{{ getTypeIcon(exp.type) }}</span>
+          </div>
+
+          <div class="card-content">
+            <div class="card-header">
+              <span class="card-type" [ngClass]="exp.type">{{
+                getTypeLabel(exp.type)
+              }}</span>
+              <span class="card-date">{{ exp.date }}</span>
+            </div>
+
+            <h3>{{ exp.title }}</h3>
+            <h4>{{ exp.institution }}</h4>
+            @if (exp.location) {
+              <p class="card-location">📍 {{ exp.location }}</p>
+            }
+
+            <p class="card-description">{{ exp.description }}</p>
+
+            @if (exp.highlights) {
+              <div class="card-highlights">
+                @for (highlight of exp.highlights; track highlight) {
+                  <div class="highlight-item">
+                    <span class="highlight-check">✓</span>
+                    {{ highlight }}
+                  </div>
+                }
+              </div>
+            }
+
+            @if (exp.image) {
+              <div class="card-image" (click)="openLightbox(exp.image)">
+                <img [src]="exp.image" [alt]="exp.title" />
+                <div class="image-zoom-icon">
+                  <svg
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="11" cy="11" r="8" />
+                    <path d="M21 21l-4.35-4.35" />
+                    <path d="M11 8v6M8 11h6" />
+                  </svg>
+                </div>
+              </div>
+            }
+
+            @if (exp.documents && exp.documents.length > 0) {
+              <div class="card-documents">
+                <p class="documents-label">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14 2 14 8 20 8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                  </svg>
+                  Dokumente & Zeugnisse
+                </p>
+                @for (doc of exp.documents; track doc.label) {
+                  <a [href]="doc.url" target="_blank" class="document-link">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="7 10 12 15 17 10"/>
+                      <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    {{ doc.label }}
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Lightbox -->
+@if (selectedImage()) {
+  <div class="lightbox" (click)="closeLightbox()">
+    <button
+      class="lightbox-close"
+      (click)="closeLightbox()"
+      aria-label="Schließen"
+    >
+      ✕
+    </button>
+    <img [src]="selectedImage()" alt="Vorschau" />
+  </div>
+}

@@ -1,0 +1,34 @@
+<nav [ngClass]="{ scrolled: scrolled() }">
+  <div class="nav-content">
+    <a routerLink="/" class="logo" (click)="closeMobile()">
+      <img src="assets/images/logo.jpg" alt="Hamza Öztürk Logo" class="logo-img" />
+    </a>
+
+    <ul class="nav-links" [ngClass]="{ active: mobileMenuOpen() }">
+      @for (link of navLinks; track link.path) {
+        <li>
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active-link"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            class="nav-link"
+            (click)="closeMobile()"
+          >
+            {{ link.label }}
+          </a>
+        </li>
+      }
+    </ul>
+
+    <button
+      class="hamburger"
+      [ngClass]="{ active: mobileMenuOpen() }"
+      (click)="toggleMobile()"
+      aria-label="Menü"
+    >
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+  </div>
+</nav>

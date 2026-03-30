@@ -1,0 +1,79 @@
+// ============================================
+// PREMIUM PORTFOLIO — DESIGN SYSTEM
+// ============================================
+
+// --- Color Palette ---
+$bg-dark: #050505;
+$bg-surface: #0a0a0a;
+$bg-elevated: #141414;
+$bg-card: #1a1a1a;
+
+$accent-primary: #3b82f6;
+$accent-secondary: #8b5cf6;
+$accent-gradient: linear-gradient(135deg, $accent-primary, $accent-secondary);
+$accent-glow: rgba(139, 92, 246, 0.4);
+$accent-glow-blue: rgba(59, 130, 246, 0.3);
+
+$text-pure: #ffffff;
+$text-primary: #ededed;
+$text-secondary: #a1a1aa;
+$text-muted: #52525b;
+
+$glass-bg: rgba(255, 255, 255, 0.03);
+$glass-border: rgba(255, 255, 255, 0.08);
+$glass-border-hover: rgba(255, 255, 255, 0.15);
+
+// --- Transitions ---
+$transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+// --- Typography ---
+$font-heading: "Outfit", sans-serif;
+$font-body: "Inter", sans-serif;
+
+// --- Breakpoints ---
+$bp-mobile: 480px;
+$bp-tablet: 768px;
+$bp-desktop: 1024px;
+$bp-wide: 1200px;
+
+// --- Mixins ---
+@mixin glass {
+  background: $glass-bg;
+  border: 1px solid $glass-border;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+@mixin glass-hover {
+  border-color: $glass-border-hover;
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+@mixin glow($color: $accent-glow) {
+  box-shadow:
+    0 0 40px $color,
+    0 0 80px rgba($accent-secondary, 0.15);
+}
+
+@mixin section-padding {
+  padding: 120px 0;
+  @media (max-width: $bp-tablet) {
+    padding: 80px 0;
+  }
+}
+
+@mixin container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 5%;
+}
+
+@mixin gradient-text {
+  background: $accent-gradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

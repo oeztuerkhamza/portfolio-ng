@@ -1,0 +1,361 @@
+@import "../../../styles/variables";
+
+.section-label {
+  @include gradient-text;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  margin-bottom: 12px;
+  display: inline-block;
+}
+
+.page-header {
+  margin-bottom: 80px;
+  padding-top: 80px;
+}
+
+// Timeline
+.timeline {
+  position: relative;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(
+    to bottom,
+    $accent-primary,
+    $accent-secondary,
+    transparent
+  );
+}
+
+.timeline-card {
+  position: relative;
+  width: 48%;
+  margin-bottom: 60px;
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &.left {
+    margin-right: auto;
+    transform: translateX(-40px);
+  }
+
+  &.right {
+    margin-left: auto;
+    transform: translateX(40px);
+  }
+
+  &.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.timeline-dot {
+  position: absolute;
+  top: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: $bg-dark;
+  border: 2px solid $accent-primary;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+
+  .left & {
+    right: -72px;
+  }
+
+  .right & {
+    left: -72px;
+  }
+
+  .dot-icon {
+    font-size: 1.2rem;
+  }
+}
+
+.card-content {
+  @include glass;
+  border-radius: 20px;
+  padding: 32px;
+  transition: $transition-normal;
+
+  &:hover {
+    @include glass-hover;
+    transform: translateY(-4px);
+  }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.card-type {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+
+  &.work {
+    background: rgba($accent-primary, 0.15);
+    color: $accent-primary;
+  }
+
+  &.education {
+    background: rgba($accent-secondary, 0.15);
+    color: $accent-secondary;
+  }
+
+  &.certificate {
+    background: rgba(34, 197, 94, 0.15);
+    color: #22c55e;
+  }
+}
+
+.card-date {
+  font-size: 0.85rem;
+  color: $text-muted;
+  font-weight: 500;
+}
+
+.card-content h3 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.card-content h4 {
+  font-size: 0.95rem;
+  color: $accent-primary;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.card-location {
+  font-size: 0.85rem;
+  color: $text-muted;
+  margin-bottom: 12px;
+}
+
+.card-description {
+  color: $text-secondary;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  margin-bottom: 16px;
+}
+
+// Highlights
+.card-highlights {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.highlight-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: $text-secondary;
+
+  .highlight-check {
+    @include gradient-text;
+    font-weight: 700;
+    font-size: 0.85rem;
+  }
+}
+
+// Image
+.card-image {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  margin-top: 16px;
+
+  img {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: transform 0.4s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+
+  .image-zoom-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  &:hover .image-zoom-icon {
+    opacity: 1;
+  }
+}
+
+// Documents
+.card-documents {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid $glass-border;
+
+  .documents-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: $text-muted;
+    margin-bottom: 12px;
+
+    svg {
+      opacity: 0.6;
+    }
+  }
+}
+
+.document-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  margin: 0 8px 8px 0;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $accent-primary;
+  background: rgba($accent-primary, 0.08);
+  border: 1px solid rgba($accent-primary, 0.15);
+  transition: $transition-fast;
+
+  svg {
+    flex-shrink: 0;
+  }
+
+  &:hover {
+    background: rgba($accent-primary, 0.15);
+    border-color: $accent-primary;
+    color: $text-pure;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px $accent-glow-blue;
+  }
+}
+
+// Lightbox
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  cursor: pointer;
+  animation: fadeInLb 0.3s ease;
+
+  img {
+    max-width: 90%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 12px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .lightbox-close {
+    position: absolute;
+    top: 24px;
+    right: 32px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+@keyframes fadeInLb {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+// Responsive
+@media (max-width: $bp-desktop) {
+  .timeline-line {
+    left: 24px;
+  }
+
+  .timeline-card {
+    width: calc(100% - 70px);
+    margin-left: 70px !important;
+    margin-right: 0 !important;
+
+    &.left,
+    &.right {
+      transform: translateY(30px);
+    }
+
+    &.visible {
+      transform: translateY(0);
+    }
+  }
+
+  .timeline-dot {
+    left: -58px !important;
+    right: auto !important;
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .card-content {
+    padding: 24px;
+  }
+
+  .card-content h3 {
+    font-size: 1.1rem;
+  }
+}

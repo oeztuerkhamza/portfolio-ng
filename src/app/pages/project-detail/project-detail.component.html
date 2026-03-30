@@ -1,0 +1,151 @@
+@if (project(); as p) {
+  <section class="project-detail section-padding">
+    <div class="container">
+      <!-- Back Button -->
+      <button class="back-btn" (click)="goBack()">
+        <svg
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+        Zurück
+      </button>
+
+      <!-- Hero -->
+      <div class="detail-hero">
+        <div class="hero-info">
+          <div class="hero-tags">
+            @for (tag of p.tags; track tag) {
+              <span class="tag">{{ tag }}</span>
+            }
+          </div>
+          <h1>{{ p.title }}</h1>
+          <p class="hero-subtitle">{{ p.subtitle }}</p>
+          <div class="hero-meta">
+            <div class="meta-block">
+              <span class="meta-label">Rolle</span>
+              <span class="meta-value">{{ p.role }}</span>
+            </div>
+            <div class="meta-block">
+              <span class="meta-label">Zeitraum</span>
+              <span class="meta-value">{{ p.duration }}</span>
+            </div>
+          </div>
+          <div class="hero-actions">
+            @if (p.liveUrl) {
+              <a
+                [href]="p.liveUrl"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-primary"
+              >
+                Live ansehen
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                  />
+                  <polyline points="15 3 21 3 21 9" />
+                  <line x1="10" y1="14" x2="21" y2="3" />
+                </svg>
+              </a>
+            }
+            @if (p.githubUrl) {
+              <a
+                [href]="p.githubUrl"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-secondary"
+                >GitHub</a
+              >
+            }
+          </div>
+        </div>
+        <div class="hero-image">
+          @if (p.image) {
+            <img [src]="p.image" [alt]="p.title" />
+          } @else {
+            <div
+              class="hero-placeholder"
+              style="
+                background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
+              "
+            >
+              <span>{{ p.title[0] }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="detail-section">
+        <h2>Über das Projekt</h2>
+        <div class="description-text">
+          @for (paragraph of p.longDescription.split("\n\n"); track paragraph) {
+            <p>{{ paragraph }}</p>
+          }
+        </div>
+      </div>
+
+      <!-- Features -->
+      <div class="detail-section">
+        <h2>Features & Highlights</h2>
+        <div class="features-grid">
+          @for (feature of p.features; track feature; let i = $index) {
+            <div class="feature-item">
+              <div class="feature-number">
+                {{ (i + 1).toString().padStart(2, "0") }}
+              </div>
+              <p>{{ feature }}</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- Tech Stack -->
+      <div class="detail-section">
+        <h2>Technologie-Stack</h2>
+        <div class="tech-grid">
+          @for (tech of p.techStack; track tech.name) {
+            <div class="tech-card">
+              <span class="tech-icon">{{ tech.icon }}</span>
+              <span class="tech-name">{{ tech.name }}</span>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="detail-cta">
+        <h3>Interesse an einer Zusammenarbeit?</h3>
+        <p>Lassen Sie uns gemeinsam Ihr nächstes Projekt zum Erfolg führen.</p>
+        <a routerLink="/contact" class="btn btn-primary btn-large"
+          >Kontakt aufnehmen →</a
+        >
+      </div>
+    </div>
+  </section>
+} @else {
+  <section class="not-found section-padding">
+    <div class="container" style="text-align: center; padding-top: 120px">
+      <h1>Projekt nicht gefunden</h1>
+      <p style="margin: 20px 0; color: #a1a1aa">
+        Das gesuchte Projekt existiert nicht.
+      </p>
+      <a routerLink="/projects" class="btn btn-primary"
+        >Alle Projekte ansehen</a
+      >
+    </div>
+  </section>
+}
