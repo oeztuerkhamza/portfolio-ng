@@ -24,11 +24,6 @@ export class ResumeComponent {
       url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
       category: 'Arbeit',
     },
-    {
-      label: 'IHK Zeugnis — Fachinformatiker',
-      url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_IHK_zeugnis.pdf',
-      category: 'Ausbildung',
-    },
 
   ];
 
