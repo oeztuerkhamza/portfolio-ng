@@ -20,7 +20,7 @@ export const PROJECTS: Project[] = [
     slug: 'bikehaus-freiburg',
     title: 'Bikehaus Freiburg',
     subtitle: 'Digitale Warenwirtschaft für ein Fahrradgeschäft',
-    tags: ['Full-Stack', 'Angular 19', '.NET 10'],
+    tags: ['Full-Stack' ,'Copilot' , 'Angular 19', '.NET 10'],
     image: 'assets/images/bikehaus.png',
     liveUrl: 'https://bikehausfreiburg.com',
     githubUrl: 'https://github.com/oeztuerkhamza',
