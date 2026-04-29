@@ -1,955 +1,1971 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hamza Öztürk — Full-Stack Developer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --red:#e50914;
-  --red2:#b00710;
-  --bg:#141414;
-  --bg2:#1a1a1a;
-  --bg3:#222;
-  --txt:#e5e5e5;
-  --txt2:#999;
-  --txt3:#555;
-  --border:#2a2a2a;
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--txt);font-family:'Inter',sans-serif;overflow-x:hidden;cursor:none}
-::selection{background:var(--red);color:#fff}
-a{text-decoration:none;cursor:none}
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hamza Öztürk — Full-Stack Developer</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      :root {
+        --red: #e50914;
+        --red2: #b00710;
+        --bg: #141414;
+        --bg2: #1a1a1a;
+        --bg3: #222;
+        --txt: #e5e5e5;
+        --txt2: #999;
+        --txt3: #555;
+        --border: #2a2a2a;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        background: var(--bg);
+        color: var(--txt);
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+        cursor: none;
+      }
+      ::selection {
+        background: var(--red);
+        color: #fff;
+      }
+      a {
+        text-decoration: none;
+        cursor: none;
+      }
 
-/* ─── CURSOR ─── */
-#cur-d,#cur-r{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;transform:translate(-50%,-50%)}
-#cur-d{width:5px;height:5px;border-radius:50%;background:var(--red);transition:width .2s,height .2s}
-#cur-r{width:30px;height:30px;border-radius:50%;border:1.5px solid rgba(229,9,20,0.45);transition:width .25s,height .25s,border-color .25s}
-body.hov #cur-d{width:8px;height:8px}
-body.hov #cur-r{width:52px;height:52px;border-color:var(--red)}
+      /* ─── CURSOR ─── */
+      #cur-d,
+      #cur-r {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 9999;
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+      }
+      #cur-d {
+        width: 5px;
+        height: 5px;
+        border-radius: 50%;
+        background: var(--red);
+        transition:
+          width 0.2s,
+          height 0.2s;
+      }
+      #cur-r {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(229, 9, 20, 0.45);
+        transition:
+          width 0.25s,
+          height 0.25s,
+          border-color 0.25s;
+      }
+      body.hov #cur-d {
+        width: 8px;
+        height: 8px;
+      }
+      body.hov #cur-r {
+        width: 52px;
+        height: 52px;
+        border-color: var(--red);
+      }
 
-/* ─── INTRO ─── */
-#intro{
-  position:fixed;inset:0;z-index:8000;
-  background:#000;
-  display:flex;align-items:center;justify-content:center;
-  transition:opacity .9s ease,visibility .9s ease;
-}
-#intro.out{opacity:0;visibility:hidden;pointer-events:none}
-.intro-letter{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(140px,24vw,300px);
-  color:var(--red);line-height:1;
-  animation:hAppear 3.5s cubic-bezier(.16,1,.3,1) forwards;
-  text-shadow:0 0 80px rgba(229,9,20,.8),0 0 160px rgba(229,9,20,.4);
-  position:relative;
-}
-@keyframes hAppear{
-  0%  {opacity:0;transform:scale(1.8);filter:brightness(3) blur(24px)}
-  20% {opacity:1;filter:brightness(2.2) blur(6px)}
-  45% {transform:scale(1);filter:brightness(1.5) blur(0)}
-  65% {filter:brightness(1)}
-  82% {opacity:1}
-  100%{opacity:0;transform:scale(.82);filter:brightness(0)}
-}
-.intro-letter::after{
-  content:'H';position:absolute;inset:0;
-  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.4) 50%,transparent 65%);
-  -webkit-background-clip:text;background-clip:text;color:transparent;
-  animation:beam 1s ease .6s both;background-size:300%;
-}
-@keyframes beam{from{background-position:120%}to{background-position:-120%}}
-
-/* ─── NAV ─── */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  padding:1.2rem 4%;
-  display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent);
-  transition:background .3s;
-}
-nav.scrolled{background:rgba(20,20,20,.96);backdrop-filter:blur(12px)}
-.nav-logo{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:1.9rem;color:var(--red);letter-spacing:.02em;
-}
-.nav-links{display:flex;gap:2rem;list-style:none;align-items:center}
-.nav-links a{font-size:.78rem;color:var(--txt2);letter-spacing:.04em;transition:color .2s}
-.nav-links a:hover{color:var(--txt)}
-.nav-btn{
-  background:var(--red);color:#fff;border:none;
-  font-family:'Inter',sans-serif;font-size:.76rem;font-weight:600;
-  padding:.5rem 1.15rem;cursor:none;letter-spacing:.04em;
-  transition:background .2s;
-}
-.nav-btn:hover{background:var(--red2)}
-
-/* ─── HERO ─── */
-#hero{
-  height:100vh;min-height:620px;
-  position:relative;overflow:hidden;
-  display:flex;align-items:center;
-}
-/* top gradient for nav */
-#hero::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:140px;
-  background:linear-gradient(to bottom,rgba(0,0,0,.85),transparent);
-  z-index:3;pointer-events:none;
-}
-/* bottom gradient */
-#hero::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:180px;
-  background:linear-gradient(to top,var(--bg),transparent);
-  z-index:3;pointer-events:none;
-}
-
-/* Profile photo — right side, full height */
-.hero-photo{
-  position:absolute;right:0;top:0;bottom:0;
-  width:52%;
-  overflow:hidden;
-}
-.hero-photo img{
-  width:100%;height:100%;
-  object-fit:cover;object-position:center top;
-  filter:brightness(.75) saturate(.9) contrast(1.05);
-}
-/* Gradient fade from left so text is readable */
-.hero-photo::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to right,var(--bg) 0%,rgba(20,20,20,.6) 45%,transparent 100%);
-  z-index:1;
-}
-/* Right-side dark edge vignette */
-.hero-photo::after{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(to left,rgba(0,0,0,.5) 0%,transparent 60%);
-  z-index:1;
-}
-
-/* Left content */
-.hero-content{
-  position:relative;z-index:4;
-  padding:0 4%;
-  max-width:min(660px, 58%);
-}
-.hero-meta{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--red);margin-bottom:1.1rem;
-  display:flex;align-items:center;gap:.75rem;
-}
-.hero-meta::before{content:'';width:22px;height:1px;background:var(--red)}
-.hero-name{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(3.2rem,7.5vw,7.5rem);
-  line-height:.9;letter-spacing:.01em;
-  margin-bottom:1rem;
-}
-.hero-name span{color:var(--red)}
-.hero-typed-row{
-  font-size:.95rem;color:var(--txt2);
-  margin-bottom:1.1rem;min-height:1.5em;font-weight:400;
-}
-.typed-cursor{
-  display:inline-block;width:2px;height:.9em;
-  background:var(--red);margin-left:2px;
-  animation:blink .8s ease infinite;vertical-align:text-bottom;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.hero-desc{
-  font-size:.92rem;color:var(--txt2);
-  line-height:1.78;max-width:48ch;margin-bottom:2rem;
-}
-.hero-desc strong{color:var(--txt);font-weight:500}
-.hero-btns{display:flex;gap:.85rem;flex-wrap:wrap}
-.btn-primary{
-  background:var(--txt);color:#000;border:none;
-  font-family:'Inter',sans-serif;font-weight:700;
-  font-size:.8rem;padding:.7rem 1.6rem;
-  display:inline-flex;align-items:center;gap:.45rem;
-  cursor:none;transition:opacity .2s;letter-spacing:.02em;
-}
-.btn-primary:hover{opacity:.85}
-.btn-primary svg{width:13px;height:13px;fill:currentColor;flex-shrink:0}
-.btn-secondary{
-  background:rgba(109,109,110,.65);color:var(--txt);border:none;
-  font-family:'Inter',sans-serif;font-weight:600;
-  font-size:.8rem;padding:.7rem 1.6rem;cursor:none;
-  transition:background .2s;letter-spacing:.02em;
-  display:inline-flex;align-items:center;
-}
-.btn-secondary:hover{background:rgba(109,109,110,.9)}
-.hero-badges{display:flex;align-items:center;gap:.7rem;margin-top:1.4rem;flex-wrap:wrap}
-.badge{
-  border:1px solid var(--txt3);font-size:.64rem;color:var(--txt3);
-  padding:.2rem .6rem;letter-spacing:.05em;font-family:'JetBrains Mono',monospace;
-}
-.badge.green{border-color:#46d369;color:#46d369}
-
-/* Mobile hero */
-@media(max-width:680px){
-  .hero-photo{width:100%;opacity:.35}
-  .hero-content{max-width:100%}
-}
-
-/* ─── SECTION ROW ─── */
-.section-row{padding:2rem 4%}
-.row-title{
-  font-size:1.2rem;font-weight:700;
-  margin-bottom:1rem;letter-spacing:.01em;
-  display:flex;align-items:center;gap:1rem;
-}
-.row-title a{color:var(--txt2);font-size:.78rem;font-weight:500;transition:color .2s}
-.row-title a:hover{color:var(--txt);text-decoration:underline}
-
-/* ─── FEATURED CARD ─── */
-.featured-card{
-  position:relative;overflow:hidden;
-  aspect-ratio:21/9;max-height:400px;border-radius:2px;
-  display:block;
-}
-.featured-card img{
-  width:100%;height:100%;object-fit:cover;
-  filter:brightness(.45) saturate(.75);
-  transition:filter .4s,transform .6s;
-}
-.featured-card:hover img{filter:brightness(.52);transform:scale(1.02)}
-.featured-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to right,rgba(0,0,0,.92) 32%,transparent 72%),
-             linear-gradient(to top,rgba(0,0,0,.65) 0%,transparent 55%);
-  padding:2.5rem 4%;display:flex;flex-direction:column;justify-content:flex-end;
-}
-.feat-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--red);margin-bottom:.5rem;
-}
-.feat-title{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.8rem,4vw,3.5rem);
-  letter-spacing:.02em;margin-bottom:.5rem;
-}
-.feat-desc{font-size:.84rem;color:var(--txt2);max-width:50ch;line-height:1.65;margin-bottom:1rem}
-.feat-tags{display:flex;gap:.45rem;flex-wrap:wrap;margin-bottom:1rem}
-.feat-tag{
-  font-size:.6rem;border:1px solid var(--txt3);color:var(--txt2);
-  padding:.14rem .5rem;letter-spacing:.06em;font-family:'JetBrains Mono',monospace;
-}
-.feat-btns{display:flex;gap:.7rem}
-
-/* ─── CARDS TRACK ─── */
-.cards-track{
-  display:flex;gap:6px;overflow-x:auto;
-  scroll-snap-type:x mandatory;padding-bottom:4px;scrollbar-width:none;
-}
-.cards-track::-webkit-scrollbar{display:none}
-
-.proj-card{
-  flex:0 0 290px;scroll-snap-align:start;
-  background:var(--bg3);position:relative;overflow:hidden;
-  cursor:none;border-radius:2px;
-  transition:transform .3s cubic-bezier(.16,1,.3,1),z-index 0s .3s;
-}
-.proj-card:hover{transform:scale(1.07);z-index:10;transition:transform .3s cubic-bezier(.16,1,.3,1),z-index 0s}
-.proj-thumb{aspect-ratio:16/9;overflow:hidden;position:relative;background:#1a1a1a}
-.proj-thumb img{
-  width:100%;height:100%;object-fit:cover;
-  filter:brightness(.5) saturate(.7);transition:filter .3s;
-}
-.proj-card:hover .proj-thumb img{filter:brightness(.65)}
-.proj-thumb-ph{
-  width:100%;height:100%;
-  background:repeating-linear-gradient(135deg,#1e1e1e,#1e1e1e 10px,#1a1a1a 10px,#1a1a1a 20px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.4rem;
-}
-.proj-thumb-ph .ph-letter{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:3.5rem;color:rgba(229,9,20,.25);line-height:1;
-}
-.proj-thumb-ph span{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.5rem;color:#333;letter-spacing:.1em;text-transform:uppercase;
-}
-.proj-hover{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,.95) 0%,rgba(0,0,0,.45) 55%,transparent 100%);
-  padding:.9rem;display:flex;flex-direction:column;justify-content:flex-end;
-  opacity:0;transition:opacity .3s;
-}
-.proj-card:hover .proj-hover{opacity:1}
-.proj-hover-title{font-family:'Bebas Neue',sans-serif;font-size:1.15rem;letter-spacing:.03em;margin-bottom:.3rem}
-.proj-hover-desc{font-size:.68rem;color:var(--txt2);line-height:1.5;margin-bottom:.65rem}
-.proj-hover-tags{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:.6rem}
-.proj-tag{font-size:.56rem;letter-spacing:.07em;border:1px solid #444;color:var(--txt3);padding:.1rem .42rem}
-.proj-actions{display:flex;gap:.4rem;margin-bottom:.5rem}
-.proj-btn{
-  width:26px;height:26px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  border:1.5px solid var(--txt3);cursor:none;transition:border-color .2s;
-}
-.proj-btn.play{background:var(--txt);border-color:var(--txt)}
-.proj-btn.play svg{fill:#000;width:9px;height:9px}
-.proj-btn:not(.play) svg{stroke:var(--txt2);fill:none;stroke-width:1.5;width:10px;height:10px}
-.proj-btn:not(.play):hover{border-color:var(--txt)}
-.proj-info{padding:.65rem .85rem .75rem}
-.proj-info-top{display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem}
-.match{color:#46d369;font-size:.66rem;font-weight:600}
-.yr{font-size:.6rem;color:var(--txt3);border:1px solid var(--txt3);padding:.03rem .3rem}
-.proj-title-sm{font-size:.82rem;font-weight:600;margin-bottom:.18rem}
-.proj-sub{font-size:.68rem;color:var(--txt2)}
-
-/* ─── ABOUT ─── */
-.about-strip{
-  background:var(--bg2);padding:4.5rem 4%;
-  display:grid;grid-template-columns:1fr 2fr;
-  gap:4rem;align-items:center;
-  border-top:1px solid var(--border);
-}
-@media(max-width:700px){.about-strip{grid-template-columns:1fr;gap:2.5rem}}
-.about-big{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2.8rem,8vw,6.5rem);
-  line-height:.92;letter-spacing:.01em;
-}
-.about-big em{color:var(--red);font-style:normal}
-.about-body{color:var(--txt2);font-size:.92rem;line-height:1.82}
-.about-body p+p{margin-top:.9em}
-.about-body strong{color:var(--txt);font-weight:500}
-.lang-row{display:flex;gap:1.2rem;margin-top:1.4rem;flex-wrap:wrap}
-.lang-pill{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
-  border:1px solid var(--border);color:var(--txt2);padding:.3rem .75rem;
-}
-.lang-pill span{color:var(--red)}
-.about-stats{display:flex;gap:2.5rem;margin-top:2.2rem;flex-wrap:wrap}
-.stat .n{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--red);line-height:1}
-.stat .l{font-size:.66rem;color:var(--txt3);letter-spacing:.07em;text-transform:uppercase;margin-top:.2rem}
-
-/* ─── EXPERIENCE ─── */
-.exp-strip{padding:3.5rem 4%;border-top:1px solid var(--border)}
-.exp-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));
-  gap:2px;margin-top:2rem;
-}
-.exp-card{
-  background:var(--bg2);padding:1.6rem;
-  border:1px solid var(--border);
-  transition:border-color .3s;
-}
-.exp-card:hover{border-color:var(--red)}
-.exp-type{
-  display:inline-block;
-  font-family:'JetBrains Mono',monospace;
-  font-size:.55rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--bg);background:var(--red);
-  padding:.15rem .45rem;margin-bottom:.6rem;
-}
-.exp-type.edu{background:var(--txt3)}
-.exp-type.cert{background:#46d369;color:#000}
-.exp-date{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.58rem;color:var(--txt3);
-  letter-spacing:.1em;margin-bottom:.5rem;
-}
-.exp-title{font-size:.93rem;font-weight:600;margin-bottom:.3rem;line-height:1.35}
-.exp-inst{font-size:.77rem;color:var(--txt2);margin-bottom:.75rem}
-.exp-highlights{list-style:none;display:flex;flex-direction:column;gap:.32rem}
-.exp-highlights li{
-  font-size:.72rem;color:var(--txt3);
-  padding-left:1rem;position:relative;line-height:1.4;
-}
-.exp-highlights li::before{content:'›';position:absolute;left:0;color:var(--red);font-weight:700}
-
-/* ─── SKILLS MARQUEE ─── */
-.skills-strip{padding:2.5rem 0;border-top:1px solid var(--border);overflow:hidden}
-.sk-label{padding:0 4%;font-size:1.1rem;font-weight:700;margin-bottom:1.2rem}
-.skills-marquee-wrap{overflow:hidden}
-.skills-marquee-track{
-  display:flex;white-space:nowrap;
-  animation:ticker 28s linear infinite;
-}
-.skills-marquee-track:hover{animation-play-state:paused}
-@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.sk-item{
-  display:inline-flex;align-items:center;gap:1.4rem;
-  padding:1.1rem 2rem;border-right:1px solid var(--border);
-  font-size:.86rem;font-weight:500;color:var(--txt2);
-  flex-shrink:0;transition:color .2s;
-}
-.sk-item:hover{color:var(--txt)}
-.sk-dot{width:4px;height:4px;border-radius:50%;background:var(--red);flex-shrink:0}
-
-/* ─── SKILLS GRID ─── */
-.skills-grid-wrap{padding:0 4% 3.5rem}
-.skills-grid{
-  display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));
-  gap:2px;margin-top:.5rem;
-}
-.skill-card{background:var(--bg2);padding:1.5rem;border:1px solid var(--border)}
-.skill-card-header{display:flex;align-items:center;gap:.6rem;margin-bottom:1.1rem}
-.skill-card-header h3{font-size:.9rem;font-weight:600}
-.skill-list{display:flex;flex-direction:column;gap:.7rem}
-.skill-info{display:flex;justify-content:space-between;margin-bottom:.3rem}
-.skill-name{font-size:.76rem;color:var(--txt2)}
-.skill-level{font-size:.7rem;color:var(--txt3);font-family:'JetBrains Mono',monospace}
-.skill-bar{height:2px;background:var(--border);border-radius:1px;overflow:hidden}
-.skill-fill{
-  height:100%;background:var(--red);border-radius:1px;
-  transform:scaleX(0);transform-origin:left;
-  transition:transform 1.1s cubic-bezier(.16,1,.3,1);
-}
-.skill-card.vis .skill-fill{transform:scaleX(var(--l,0.8))}
-
-/* ─── CONTACT ─── */
-#contact{padding:5rem 4%;border-top:1px solid var(--border);text-align:center}
-.contact-pre{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
-  color:var(--red);margin-bottom:1.1rem;
-  display:flex;align-items:center;justify-content:center;gap:.7rem;
-}
-.contact-pre::before,.contact-pre::after{content:'';width:30px;height:1px;background:var(--red)}
-.contact-h{
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(2.5rem,7.5vw,7rem);
-  letter-spacing:.02em;margin-bottom:.9rem;
-}
-.contact-sub{font-size:.9rem;color:var(--txt2);max-width:44ch;margin:0 auto 2rem;line-height:1.75}
-.contact-email{
-  display:inline-block;
-  font-family:'Bebas Neue',sans-serif;
-  font-size:clamp(1.2rem,3vw,2.6rem);
-  color:var(--red);letter-spacing:.03em;
-  border-bottom:2px solid transparent;transition:border-color .25s;cursor:none;
-}
-.contact-email:hover{border-color:var(--red)}
-.socials{
-  display:flex;align-items:center;justify-content:center;
-  gap:1.5rem;margin-top:2.5rem;flex-wrap:wrap;
-}
-.soc-link{
-  font-size:.72rem;color:var(--txt3);
-  letter-spacing:.08em;text-transform:uppercase;
-  transition:color .2s;font-family:'JetBrains Mono',monospace;
-}
-.soc-link:hover{color:var(--txt)}
-
-/* ─── FOOTER ─── */
-footer{
-  padding:1.4rem 4%;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;
-}
-.footer-txt{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.6rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3);
-}
-.avail{display:flex;align-items:center;gap:.5rem}
-.avail-dot{width:6px;height:6px;border-radius:50%;background:#46d369;animation:pG 2s ease infinite}
-@keyframes pG{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-
-/* ─── REVEAL ─── */
-.reveal{opacity:0;transform:translateY(22px);transition:opacity .75s ease,transform .75s ease}
-.reveal.vis{opacity:1;transform:translateY(0)}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}.d4{transition-delay:.4s}.d5{transition-delay:.5s}
-
-@media(max-width:640px){.nav-links li:not(:last-child){display:none}}
-</style>
-</head>
-<body>
-
-<div id="cur-d"></div>
-<div id="cur-r"></div>
-
-<!-- INTRO -->
-<div id="intro"><div class="intro-letter">H</div></div>
-
-<!-- NAV -->
-<nav id="nav">
-  <a href="#" class="nav-logo">HAMZA</a>
-  <ul class="nav-links">
-    <li><a href="#work">Projekte</a></li>
-    <li><a href="#experience">Werdegang</a></li>
-    <li><a href="#about-sec">Über mich</a></li>
-    <li><a href="#contact"><button class="nav-btn">Kontakt</button></a></li>
-  </ul>
-</nav>
-
-<!-- HERO — Split Layout -->
-<section id="hero">
-  <!-- Profile photo — right side, clearly visible -->
-  <div class="hero-photo">
-    <img src="src/assets/images/profile.jpg" alt="Hamza Öztürk">
-  </div>
-
-  <div class="hero-content reveal">
-    <div class="hero-meta">Verfügbar · Freiburg im Breisgau, DE</div>
-    <div class="hero-name">HAMZA<br><span>ÖZTÜRK</span></div>
-    <div class="hero-typed-row">
-      <span id="typed-text"></span><span class="typed-cursor"></span>
-    </div>
-    <p class="hero-desc">
-      <strong>Software Engineer</strong> mit Fokus auf <strong>C#/.NET 10</strong> und <strong>Angular 19</strong>.
-      Clean Architecture, KI-gestützte Entwicklung und skalierbare Cloud-Systeme auf Azure.
-    </p>
-    <div class="hero-btns">
-      <button class="btn-primary" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">
-        <svg viewBox="0 0 10 10"><polygon points="1,0 9,5 1,10"/></svg>
-        Projekte ansehen
-      </button>
-      <a href="#contact" class="btn-secondary">Kontakt aufnehmen</a>
-    </div>
-    <div class="hero-badges">
-      <span class="badge green">● Verfügbar 2026</span>
-      <span class="badge">.NET 10</span>
-      <span class="badge">Angular 19</span>
-      <span class="badge">IHK Fachinformatiker</span>
-    </div>
-  </div>
-</section>
-
-<!-- FEATURED PROJECT: BIKEHAUS FREIBURG -->
-<div id="work" class="section-row reveal" style="padding-top:2rem">
-  <div class="row-title">Highlight-Projekt <a href="#all-projects">Alle ansehen</a></div>
-  <div class="featured-card">
-    <img src="src/assets/images/bikehaus.png" alt="Bikehaus Freiburg">
-    <div class="featured-overlay">
-      <div class="feat-label">● Featured · 2026 — Full-Stack</div>
-      <div class="feat-title">Bikehaus Freiburg</div>
-      <p class="feat-desc">Vollständige digitale Warenwirtschaft für ein Fahrradgeschäft — C#/.NET 10 API, Angular 19 Admin-Client, Electron Desktop-App, Chrome Extension MV3 & automatisierter Kleinanzeigen-Scraper.</p>
-      <div class="feat-tags">
-        <span class="feat-tag">Angular 19</span>
-        <span class="feat-tag">.NET 10</span>
-        <span class="feat-tag">PostgreSQL</span>
-        <span class="feat-tag">Azure</span>
-        <span class="feat-tag">Docker</span>
-        <span class="feat-tag">Electron</span>
-        <span class="feat-tag">Playwright</span>
-      </div>
-      <div class="feat-btns">
-        <a href="https://bikehausfreiburg.com" target="_blank" class="btn-primary" style="font-size:.74rem;padding:.58rem 1.2rem">
-          <svg viewBox="0 0 10 10" style="width:11px;height:11px"><polygon points="1,0 9,5 1,10" fill="currentColor"/></svg>
-          Live Demo
-        </a>
-        <a href="https://github.com/oeztuerkhamza" target="_blank" class="btn-secondary" style="font-size:.74rem;padding:.58rem 1.2rem">GitHub</a>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ALL PROJECTS ROW -->
-<div id="all-projects" class="section-row reveal" style="padding-top:0">
-  <div class="row-title">Alle Projekte</div>
-  <div class="cards-track">
-
-    <!-- Bikehaus Freiburg -->
-    <div class="proj-card">
-      <div class="proj-thumb"><img src="src/assets/images/bikehaus.png" alt="Bikehaus Freiburg"></div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://bikehausfreiburg.com" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Bikehaus Freiburg</div>
-        <div class="proj-hover-desc">Digitale Warenwirtschaft: Admin-App, Electron Desktop, Chrome Extension MV3 & Kleinanzeigen-Scraper.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Angular 19</span><span class="proj-tag">.NET 10</span><span class="proj-tag">Electron</span><span class="proj-tag">Azure</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">99% Match</span><span class="yr">2026</span></div>
-        <div class="proj-title-sm">Bikehaus Freiburg</div>
-        <div class="proj-sub">Full-Stack · Warenwirtschaft</div>
-      </div>
-    </div>
-
-    <!-- Benlirad -->
-    <div class="proj-card">
-      <div class="proj-thumb"><img src="src/assets/images/benlirad.png" alt="Benlirad"></div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://benlirad.de" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Benlirad</div>
-        <div class="proj-hover-desc">Fahrrad-Plattform für Verkauf, Verleih & Service. 4-sprachig (DE/EN/FR/TR), SSR-optimiert.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Angular 19</span><span class="proj-tag">.NET 10</span><span class="proj-tag">i18n</span><span class="proj-tag">SSR</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">97% Match</span><span class="yr">2025</span></div>
-        <div class="proj-title-sm">Benlirad</div>
-        <div class="proj-sub">Full-Stack · Mehrsprachig</div>
-      </div>
-    </div>
-
-    <!-- Kulturplattform -->
-    <div class="proj-card">
-      <div class="proj-thumb">
-        <img src="src/assets/images/kulturplattform.png" alt="Kulturplattform" onerror="this.style.display='none';this.parentElement.querySelector('.proj-thumb-ph').style.display='flex'">
-        <div class="proj-thumb-ph" style="display:none"><div class="ph-letter">K</div><span>kulturplattform freiburg</span></div>
-      </div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://kulturplattformfreiburg.org" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Kulturplattform Freiburg</div>
-        <div class="proj-hover-desc">Vereinswebsite mit CMS, Newsletter, Bildverarbeitung & DE/TR-Zweisprachigkeit. DDD Clean Architecture.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">React 19</span><span class="proj-tag">.NET 10</span><span class="proj-tag">DDD</span><span class="proj-tag">Tailwind</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">95% Match</span><span class="yr">2025</span></div>
-        <div class="proj-title-sm">Kulturplattform Freiburg</div>
-        <div class="proj-sub">Web-App · CMS</div>
-      </div>
-    </div>
-
-    <!-- Di-Flux -->
-    <div class="proj-card">
-      <div class="proj-thumb"><img src="src/assets/images/diflux-1.png" alt="Di-Flux"></div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://github.com/oeztuerkhamza/di-flux-web" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza/di-flux-web" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">DI-FLUX</div>
-        <div class="proj-hover-desc">Enterprise Zeiterfassung: ArbZG-Compliance, JWT Auth, Bulk-Ops, Echtzeit-Benachrichtigungen. IHK-Abschlussprojekt.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Angular 19</span><span class="proj-tag">C# .NET</span><span class="proj-tag">xUnit</span><span class="proj-tag">Docker</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">94% Match</span><span class="yr">2025–26</span></div>
-        <div class="proj-title-sm">DI-FLUX Zeiterfassung</div>
-        <div class="proj-sub">Enterprise · IHK-Projekt</div>
-      </div>
-    </div>
-
-    <!-- Bewerbungs-Manager -->
-    <div class="proj-card">
-      <div class="proj-thumb"><img src="src/assets/images/bewerbung.png" alt="Bewerbungs-Manager"></div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://github.com/oeztuerkhamza/bewerbungs-manager" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza/bewerbungs-manager" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Bewerbungs-Manager</div>
-        <div class="proj-hover-desc">KI-gestützte Bewerbungsautomatisierung mit PDF-Generierung, Keyword-Matching & Passgenauigkeits-Score via OpenAI.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Python</span><span class="proj-tag">OpenAI</span><span class="proj-tag">FastAPI</span><span class="proj-tag">React</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">91% Match</span><span class="yr">2025</span></div>
-        <div class="proj-title-sm">Bewerbungs-Manager</div>
-        <div class="proj-sub">KI · Python Automation</div>
-      </div>
-    </div>
-
-    <!-- Beaver Construction -->
-    <div class="proj-card">
-      <div class="proj-thumb">
-        <div class="proj-thumb-ph"><div class="ph-letter">B</div><span>beaver construction co.</span></div>
-      </div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://github.com/oeztuerkhamza/beaver" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza/beaver" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Beaver Construction Co.</div>
-        <div class="proj-hover-desc">Moderne Unternehmenswebsite für einen US-amerikanischen Bauunternehmer in Aurora, CO. Multi-Page-App mit SSR.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Angular 19</span><span class="proj-tag">SSR</span><span class="proj-tag">Netlify</span><span class="proj-tag">TypeScript</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">88% Match</span><span class="yr">2025</span></div>
-        <div class="proj-title-sm">Beaver Construction Co.</div>
-        <div class="proj-sub">Client Website · USA</div>
-      </div>
-    </div>
-
-    <!-- Hochzeitseinladung -->
-    <div class="proj-card">
-      <div class="proj-thumb">
-        <div class="proj-thumb-ph"><div class="ph-letter">♥</div><span>digitale hochzeitseinladung</span></div>
-      </div>
-      <div class="proj-hover">
-        <div class="proj-actions">
-          <a href="https://melike-ve-musa-evleniyor.netlify.app/" target="_blank" class="proj-btn play"><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9"/></svg></a>
-          <a href="https://github.com/oeztuerkhamza/dugun" target="_blank" class="proj-btn"><svg viewBox="0 0 12 12" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><path d="M4 9c0-2 1-3 2-3s2 1 2 3"/></svg></a>
-        </div>
-        <div class="proj-hover-title">Digitale Hochzeitseinladung</div>
-        <div class="proj-hover-desc">Interaktive SPA mit Echtzeit-Countdown, Galerie, Karte, YouTube-Integration & QR-Code-Geschenkebereich.</div>
-        <div class="proj-hover-tags">
-          <span class="proj-tag">Angular 19</span><span class="proj-tag">SSR</span><span class="proj-tag">Netlify</span>
-        </div>
-      </div>
-      <div class="proj-info">
-        <div class="proj-info-top"><span class="match">85% Match</span><span class="yr">2025</span></div>
-        <div class="proj-title-sm">Digitale Hochzeitseinladung</div>
-        <div class="proj-sub">Frontend · Creative</div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- ABOUT -->
-<div id="about-sec" class="about-strip reveal">
-  <div class="about-big">WER<br>BIN<br><em>ICH</em></div>
-  <div>
-    <div class="about-body">
-      <p>Hallo, ich bin <strong>Hamza</strong> — Software Engineer aus <strong>Freiburg im Breisgau</strong>. Ich habe meinen IHK-Abschluss als Fachinformatiker bei Dicom GmbH erworben, wo ich Legacy-Desktop-ERP-Systeme in moderne Web-Lösungen migriert und eine Azure-Cloud-Infrastruktur von Grund auf aufgebaut habe.</p>
-      <p>Mein Fokus liegt auf <strong>Clean Architecture</strong>, skalierbaren <strong>.NET 10 APIs</strong> und modernen Angular/React-Frontends. Ich bringe außerdem Erfahrung in <strong>KI-gestützter Entwicklung</strong> — von Prompt Engineering bis OpenAI Assistants v2 Integration.</p>
-      <p>Mein Hintergrund in <strong>Wirtschaftsingenieurwesen (İTÜ)</strong> und militärischer Führungsausbildung prägt meinen analytischen, disziplinierten Ansatz bei jedem Projekt.</p>
-    </div>
-    <div class="lang-row">
-      <span class="lang-pill">🇹🇷 Türkisch <span>Muttersprache</span></span>
-      <span class="lang-pill">🇩🇪 Deutsch <span>B2→C1</span></span>
-      <span class="lang-pill">🇬🇧 Englisch <span>B2</span></span>
-    </div>
-    <div class="about-stats">
-      <div class="stat"><div class="n">3+</div><div class="l">Jahre Erfahrung</div></div>
-      <div class="stat"><div class="n">8+</div><div class="l">Projekte</div></div>
-      <div class="stat"><div class="n">IHK</div><div class="l">Zertifiziert</div></div>
-    </div>
-    <div style="margin-top:2rem;display:flex;gap:.8rem;flex-wrap:wrap">
-      <a href="mailto:oeztuerk.hamza@web.de" class="btn-primary" style="font-size:.76rem;padding:.6rem 1.3rem">
-        <svg viewBox="0 0 10 10"><polygon points="1,0 9,5 1,10"/></svg>
-        Kontakt aufnehmen
-      </a>
-      <a href="https://github.com/oeztuerkhamza" target="_blank" class="btn-secondary" style="font-size:.76rem;padding:.6rem 1.3rem">GitHub</a>
-    </div>
-  </div>
-</div>
-
-<!-- EXPERIENCE -->
-<div id="experience" class="exp-strip reveal">
-  <div class="row-title">Werdegang</div>
-  <div class="exp-grid">
-    <div class="exp-card reveal d1">
-      <div class="exp-type">Berufserfahrung</div>
-      <div class="exp-date">02/2024 – 02/2026</div>
-      <div class="exp-title">Full-Stack Entwickler & Fachinformatiker (IHK)</div>
-      <div class="exp-inst">Dicom GmbH · Freiburg, Deutschland</div>
-      <ul class="exp-highlights">
-        <li>Legacy-Desktop-ERP zu moderner Web-App migriert</li>
-        <li>Azure Cloud Infrastruktur von Grund auf aufgebaut</li>
-        <li>CI/CD-Pipelines: Deployment-Zeit um 40% verkürzt</li>
-        <li>Enterprise ERP: 40+ API-Controller, OData, Azure AD</li>
-        <li>KI-Chat via OpenAI Assistants v2 integriert</li>
-        <li>IHK Fachinformatiker Prüfung bestanden</li>
-      </ul>
-    </div>
-    <div class="exp-card reveal d2">
-      <div class="exp-type cert">Zertifikat</div>
-      <div class="exp-date">05/2022 – 03/2023</div>
-      <div class="exp-title">Data Analytics Zertifikat</div>
-      <div class="exp-inst">Clarusway IT School · Remote</div>
-      <ul class="exp-highlights">
-        <li>Python & Data Science Fundamentals</li>
-        <li>SQL & Datenbank-Management</li>
-        <li>Machine Learning Grundlagen</li>
-        <li>Cloud Computing mit AWS</li>
-        <li>Tableau & Datenvisualisierung</li>
-      </ul>
-    </div>
-    <div class="exp-card reveal d3">
-      <div class="exp-type edu">Bildung</div>
-      <div class="exp-date">10/2019 – 08/2022</div>
-      <div class="exp-title">Wirtschaftsingenieurwesen (B.Sc.)</div>
-      <div class="exp-inst">Technische Universität Istanbul (İTÜ)</div>
-      <ul class="exp-highlights">
-        <li>Top 3 technische Universität der Türkei</li>
-        <li>Operations Research & Optimierung</li>
-        <li>Produktionsplanung & Systemarchitektur</li>
-        <li>Interdisziplinäres Problemlösen</li>
-      </ul>
-    </div>
-    <div class="exp-card reveal d4">
-      <div class="exp-type edu">Bildung</div>
-      <div class="exp-date">08/2015 – 07/2018</div>
-      <div class="exp-title">Wirtschaftsingenieurwesen & Offiziersausbildung</div>
-      <div class="exp-inst">Türkische Luftwaffenakademie, Istanbul</div>
-      <ul class="exp-highlights">
-        <li>Militärische Führungsausbildung</li>
-        <li>Strategisches Denken & Entscheidungsfindung</li>
-        <li>Teamführung unter hohem Druck</li>
-        <li>Technisches Ingenieurstudium</li>
-      </ul>
-    </div>
-  </div>
-</div>
-
-<!-- SKILLS MARQUEE -->
-<div class="skills-strip reveal">
-  <div class="sk-label">Tech Stack</div>
-  <div class="skills-marquee-wrap">
-    <div class="skills-marquee-track">
-      <div class="sk-item"><span class="sk-dot"></span>C# / .NET 10</div>
-      <div class="sk-item"><span class="sk-dot"></span>Angular 19</div>
-      <div class="sk-item"><span class="sk-dot"></span>TypeScript</div>
-      <div class="sk-item"><span class="sk-dot"></span>React 19</div>
-      <div class="sk-item"><span class="sk-dot"></span>MediatR</div>
-      <div class="sk-item"><span class="sk-dot"></span>NgRx</div>
-      <div class="sk-item"><span class="sk-dot"></span>PostgreSQL</div>
-      <div class="sk-item"><span class="sk-dot"></span>Azure Cloud</div>
-      <div class="sk-item"><span class="sk-dot"></span>Docker</div>
-      <div class="sk-item"><span class="sk-dot"></span>OpenAI API</div>
-      <div class="sk-item"><span class="sk-dot"></span>SonarQube</div>
-      <div class="sk-item"><span class="sk-dot"></span>Playwright</div>
-      <div class="sk-item"><span class="sk-dot"></span>C# / .NET 10</div>
-      <div class="sk-item"><span class="sk-dot"></span>Angular 19</div>
-      <div class="sk-item"><span class="sk-dot"></span>TypeScript</div>
-      <div class="sk-item"><span class="sk-dot"></span>React 19</div>
-      <div class="sk-item"><span class="sk-dot"></span>MediatR</div>
-      <div class="sk-item"><span class="sk-dot"></span>NgRx</div>
-      <div class="sk-item"><span class="sk-dot"></span>PostgreSQL</div>
-      <div class="sk-item"><span class="sk-dot"></span>Azure Cloud</div>
-      <div class="sk-item"><span class="sk-dot"></span>Docker</div>
-      <div class="sk-item"><span class="sk-dot"></span>OpenAI API</div>
-      <div class="sk-item"><span class="sk-dot"></span>SonarQube</div>
-      <div class="sk-item"><span class="sk-dot"></span>Playwright</div>
-    </div>
-  </div>
-</div>
-
-<!-- SKILLS GRID -->
-<div class="skills-grid-wrap reveal">
-  <div class="skills-grid" id="skills-grid">
-    <div class="skill-card" data-skills='[["C# / .NET 10",95],["Clean Architecture",92],["REST API / OData",90],["Entity Framework Core",88],["MediatR / CQRS",85]]'>
-      <div class="skill-card-header"><span>⚙️</span><h3>Backend</h3></div>
-      <div class="skill-list"></div>
-    </div>
-    <div class="skill-card" data-skills='[["Angular 17/19",92],["TypeScript",93],["React 19",80],["NgRx / RxJS",85],["SCSS / Tailwind",88]]'>
-      <div class="skill-card-header"><span>🎨</span><h3>Frontend</h3></div>
-      <div class="skill-list"></div>
-    </div>
-    <div class="skill-card" data-skills='[["Azure Cloud / AD",85],["Docker",82],["CI/CD Pipelines",88],["GitHub Actions",82],["SonarQube",75]]'>
-      <div class="skill-card-header"><span>☁️</span><h3>DevOps & Cloud</h3></div>
-      <div class="skill-list"></div>
-    </div>
-    <div class="skill-card" data-skills='[["SQL Server",95],["PostgreSQL",88],["OpenAI API",80],["Python / FastAPI",75],["Prompt Engineering",78]]'>
-      <div class="skill-card-header"><span>🤖</span><h3>KI & Datenbanken</h3></div>
-      <div class="skill-list"></div>
-    </div>
-  </div>
-</div>
-
-<!-- CONTACT -->
-<section id="contact" class="reveal">
-  <div class="contact-pre">Lass uns zusammenarbeiten</div>
-  <div class="contact-h">GET IN TOUCH</div>
-  <p class="contact-sub">Offen für Freelance-Projekte, Festanstellungen und spannende Kooperationen. Ich freue mich auf deine Nachricht!</p>
-  <a href="mailto:oeztuerk.hamza@web.de" class="contact-email">oeztuerk.hamza@web.de</a>
-  <div class="socials">
-    <a href="https://github.com/oeztuerkhamza" target="_blank" class="soc-link">GitHub</a>
-    <span style="color:var(--border)">·</span>
-    <a href="https://linkedin.com/in/dshamzaozturk" target="_blank" class="soc-link">LinkedIn</a>
-    <span style="color:var(--border)">·</span>
-    <a href="https://bikehausfreiburg.com" target="_blank" class="soc-link">Bikehaus Freiburg</a>
-    <span style="color:var(--border)">·</span>
-    <a href="https://benlirad.de" target="_blank" class="soc-link">Benlirad</a>
-    <span style="color:var(--border)">·</span>
-    <a href="https://kulturplattformfreiburg.org" target="_blank" class="soc-link">Kulturplattform</a>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-txt">© 2026 Hamza Öztürk — hamzaoeztuerk.de</div>
-  <div class="avail footer-txt">
-    <div class="avail-dot"></div>
-    Verfügbar für neue Projekte
-  </div>
-</footer>
-
-<script>
-/* ── INTRO ── */
-setTimeout(() => {
-  document.getElementById('intro').classList.add('out');
-  startReveal();
-}, 3700);
-
-/* ── TYPED TEXT ── */
-const roles = [
-  'Software Engineer',
-  '.NET 10 & Angular 19 Spezialist',
-  'Clean Architecture Enthusiast',
-  'KI-gestützte Entwicklung',
-  'IHK Fachinformatiker'
-];
-let ri=0,ci=0,del=false;
-const el=document.getElementById('typed-text');
-function type(){
-  const w=roles[ri];
-  if(!del){el.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(type,1900);return}}
-  else{el.textContent=w.slice(0,--ci);if(ci===0){del=false;ri=(ri+1)%roles.length}}
-  setTimeout(type,del?42:78);
-}
-setTimeout(type,4100);
-
-/* ── CURSOR ── */
-const cd=document.getElementById('cur-d');
-const cr=document.getElementById('cur-r');
-let mx=0,my=0,rx=0,ry=0;
-window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
-(function raf(){
-  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
-  cd.style.left=mx+'px';cd.style.top=my+'px';
-  cr.style.left=rx+'px';cr.style.top=ry+'px';
-  requestAnimationFrame(raf);
-})();
-document.querySelectorAll('a,button,.proj-card,.featured-card,.exp-card,.skill-card').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
-});
-
-/* ── NAV SCROLL ── */
-window.addEventListener('scroll',()=>{
-  document.getElementById('nav').classList.toggle('scrolled',scrollY>70);
-},{passive:true});
-
-/* ── BUILD SKILL CARDS ── */
-document.querySelectorAll('.skill-card').forEach(card=>{
-  const skills=JSON.parse(card.dataset.skills);
-  const list=card.querySelector('.skill-list');
-  skills.forEach(([name,level])=>{
-    const item=document.createElement('div');
-    item.className='skill-item';
-    item.innerHTML=`<div class="skill-info"><span class="skill-name">${name}</span><span class="skill-level">${level}%</span></div>
-      <div class="skill-bar"><div class="skill-fill" style="--l:${level/100}"></div></div>`;
-    list.appendChild(item);
-  });
-});
-
-/* ── INTERSECTION OBSERVER ── */
-function startReveal(){
-  const obs=new IntersectionObserver(es=>{
-    es.forEach(e=>{
-      if(e.isIntersecting){
-        e.target.classList.add('vis');
-        if(e.target.classList.contains('skill-card')){
-          e.target.querySelectorAll('.skill-fill').forEach(f=>{
-            f.style.transform=`scaleX(${f.style.getPropertyValue('--l')||0.8})`;
-          });
+      /* ─── INTRO ─── */
+      #intro {
+        position: fixed;
+        inset: 0;
+        z-index: 8000;
+        background: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition:
+          opacity 0.9s ease,
+          visibility 0.9s ease;
+      }
+      #intro.out {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      .intro-letter {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(140px, 24vw, 300px);
+        color: var(--red);
+        line-height: 1;
+        animation: hAppear 3.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        text-shadow:
+          0 0 80px rgba(229, 9, 20, 0.8),
+          0 0 160px rgba(229, 9, 20, 0.4);
+        position: relative;
+      }
+      @keyframes hAppear {
+        0% {
+          opacity: 0;
+          transform: scale(1.8);
+          filter: brightness(3) blur(24px);
+        }
+        20% {
+          opacity: 1;
+          filter: brightness(2.2) blur(6px);
+        }
+        45% {
+          transform: scale(1);
+          filter: brightness(1.5) blur(0);
+        }
+        65% {
+          filter: brightness(1);
+        }
+        82% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: scale(0.82);
+          filter: brightness(0);
         }
       }
-    });
-  },{threshold:0.12,rootMargin:'0px 0px -30px 0px'});
-  document.querySelectorAll('.reveal,.skill-card').forEach(el=>obs.observe(el));
-}
-</script>
-</body>
+      .intro-letter::after {
+        content: "H";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          105deg,
+          transparent 35%,
+          rgba(255, 255, 255, 0.4) 50%,
+          transparent 65%
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: beam 1s ease 0.6s both;
+        background-size: 300%;
+      }
+      @keyframes beam {
+        from {
+          background-position: 120%;
+        }
+        to {
+          background-position: -120%;
+        }
+      }
+
+      /* ─── NAV ─── */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        padding: 1.2rem 4%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.85),
+          transparent
+        );
+        transition: background 0.3s;
+      }
+      nav.scrolled {
+        background: rgba(20, 20, 20, 0.96);
+        backdrop-filter: blur(12px);
+      }
+      .nav-logo {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.9rem;
+        color: var(--red);
+        letter-spacing: 0.02em;
+      }
+      .nav-links {
+        display: flex;
+        gap: 2rem;
+        list-style: none;
+        align-items: center;
+      }
+      .nav-links a {
+        font-size: 0.78rem;
+        color: var(--txt2);
+        letter-spacing: 0.04em;
+        transition: color 0.2s;
+      }
+      .nav-links a:hover {
+        color: var(--txt);
+      }
+      .nav-btn {
+        background: var(--red);
+        color: #fff;
+        border: none;
+        font-family: "Inter", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 600;
+        padding: 0.5rem 1.15rem;
+        cursor: none;
+        letter-spacing: 0.04em;
+        transition: background 0.2s;
+      }
+      .nav-btn:hover {
+        background: var(--red2);
+      }
+
+      /* ─── HERO ─── */
+      #hero {
+        height: 100vh;
+        min-height: 620px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+      }
+      /* top gradient for nav */
+      #hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 140px;
+        background: linear-gradient(
+          to bottom,
+          rgba(0, 0, 0, 0.85),
+          transparent
+        );
+        z-index: 3;
+        pointer-events: none;
+      }
+      /* bottom gradient */
+      #hero::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 180px;
+        background: linear-gradient(to top, var(--bg), transparent);
+        z-index: 3;
+        pointer-events: none;
+      }
+
+      /* Profile photo — right side, full height */
+      .hero-photo {
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 52%;
+        overflow: hidden;
+      }
+      .hero-photo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        filter: brightness(0.75) saturate(0.9) contrast(1.05);
+      }
+      /* Gradient fade from left so text is readable */
+      .hero-photo::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to right,
+          var(--bg) 0%,
+          rgba(20, 20, 20, 0.6) 45%,
+          transparent 100%
+        );
+        z-index: 1;
+      }
+      /* Right-side dark edge vignette */
+      .hero-photo::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to left,
+          rgba(0, 0, 0, 0.5) 0%,
+          transparent 60%
+        );
+        z-index: 1;
+      }
+
+      /* Left content */
+      .hero-content {
+        position: relative;
+        z-index: 4;
+        padding: 0 4%;
+        max-width: min(660px, 58%);
+      }
+      .hero-meta {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.66rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 1.1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      .hero-meta::before {
+        content: "";
+        width: 22px;
+        height: 1px;
+        background: var(--red);
+      }
+      .hero-name {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(3.2rem, 7.5vw, 7.5rem);
+        line-height: 0.9;
+        letter-spacing: 0.01em;
+        margin-bottom: 1rem;
+      }
+      .hero-name span {
+        color: var(--red);
+      }
+      .hero-typed-row {
+        font-size: 0.95rem;
+        color: var(--txt2);
+        margin-bottom: 1.1rem;
+        min-height: 1.5em;
+        font-weight: 400;
+      }
+      .typed-cursor {
+        display: inline-block;
+        width: 2px;
+        height: 0.9em;
+        background: var(--red);
+        margin-left: 2px;
+        animation: blink 0.8s ease infinite;
+        vertical-align: text-bottom;
+      }
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .hero-desc {
+        font-size: 0.92rem;
+        color: var(--txt2);
+        line-height: 1.78;
+        max-width: 48ch;
+        margin-bottom: 2rem;
+      }
+      .hero-desc strong {
+        color: var(--txt);
+        font-weight: 500;
+      }
+      .hero-btns {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+      }
+      .btn-primary {
+        background: var(--txt);
+        color: #000;
+        border: none;
+        font-family: "Inter", sans-serif;
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 0.7rem 1.6rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        cursor: none;
+        transition: opacity 0.2s;
+        letter-spacing: 0.02em;
+      }
+      .btn-primary:hover {
+        opacity: 0.85;
+      }
+      .btn-primary svg {
+        width: 13px;
+        height: 13px;
+        fill: currentColor;
+        flex-shrink: 0;
+      }
+      .btn-secondary {
+        background: rgba(109, 109, 110, 0.65);
+        color: var(--txt);
+        border: none;
+        font-family: "Inter", sans-serif;
+        font-weight: 600;
+        font-size: 0.8rem;
+        padding: 0.7rem 1.6rem;
+        cursor: none;
+        transition: background 0.2s;
+        letter-spacing: 0.02em;
+        display: inline-flex;
+        align-items: center;
+      }
+      .btn-secondary:hover {
+        background: rgba(109, 109, 110, 0.9);
+      }
+      .hero-badges {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        margin-top: 1.4rem;
+        flex-wrap: wrap;
+      }
+      .badge {
+        border: 1px solid var(--txt3);
+        font-size: 0.64rem;
+        color: var(--txt3);
+        padding: 0.2rem 0.6rem;
+        letter-spacing: 0.05em;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .badge.green {
+        border-color: #46d369;
+        color: #46d369;
+      }
+
+      /* Mobile hero */
+      @media (max-width: 680px) {
+        .hero-photo {
+          width: 100%;
+          opacity: 0.35;
+        }
+        .hero-content {
+          max-width: 100%;
+        }
+      }
+
+      /* ─── SECTION ROW ─── */
+      .section-row {
+        padding: 2rem 4%;
+      }
+      .row-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        letter-spacing: 0.01em;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+      .row-title a {
+        color: var(--txt2);
+        font-size: 0.78rem;
+        font-weight: 500;
+        transition: color 0.2s;
+      }
+      .row-title a:hover {
+        color: var(--txt);
+        text-decoration: underline;
+      }
+
+      /* ─── FEATURED CARD ─── */
+      .featured-card {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 21/9;
+        max-height: 400px;
+        border-radius: 2px;
+        display: block;
+      }
+      .featured-card img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.45) saturate(0.75);
+        transition:
+          filter 0.4s,
+          transform 0.6s;
+      }
+      .featured-card:hover img {
+        filter: brightness(0.52);
+        transform: scale(1.02);
+      }
+      .featured-overlay {
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(to right, rgba(0, 0, 0, 0.92) 32%, transparent 72%),
+          linear-gradient(to top, rgba(0, 0, 0, 0.65) 0%, transparent 55%);
+        padding: 2.5rem 4%;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+      }
+      .feat-label {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 0.5rem;
+      }
+      .feat-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(1.8rem, 4vw, 3.5rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 0.5rem;
+      }
+      .feat-desc {
+        font-size: 0.84rem;
+        color: var(--txt2);
+        max-width: 50ch;
+        line-height: 1.65;
+        margin-bottom: 1rem;
+      }
+      .feat-tags {
+        display: flex;
+        gap: 0.45rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+      }
+      .feat-tag {
+        font-size: 0.6rem;
+        border: 1px solid var(--txt3);
+        color: var(--txt2);
+        padding: 0.14rem 0.5rem;
+        letter-spacing: 0.06em;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .feat-btns {
+        display: flex;
+        gap: 0.7rem;
+      }
+
+      /* ─── CARDS TRACK ─── */
+      .cards-track {
+        display: flex;
+        gap: 6px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+      }
+      .cards-track::-webkit-scrollbar {
+        display: none;
+      }
+
+      .proj-card {
+        flex: 0 0 290px;
+        scroll-snap-align: start;
+        background: var(--bg3);
+        position: relative;
+        overflow: hidden;
+        cursor: none;
+        border-radius: 2px;
+        transition:
+          transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          z-index 0s 0.3s;
+      }
+      .proj-card:hover {
+        transform: scale(1.07);
+        z-index: 10;
+        transition:
+          transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+          z-index 0s;
+      }
+      .proj-thumb {
+        aspect-ratio: 16/9;
+        overflow: hidden;
+        position: relative;
+        background: #1a1a1a;
+      }
+      .proj-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.5) saturate(0.7);
+        transition: filter 0.3s;
+      }
+      .proj-card:hover .proj-thumb img {
+        filter: brightness(0.65);
+      }
+      .proj-thumb-ph {
+        width: 100%;
+        height: 100%;
+        background: repeating-linear-gradient(
+          135deg,
+          #1e1e1e,
+          #1e1e1e 10px,
+          #1a1a1a 10px,
+          #1a1a1a 20px
+        );
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+      }
+      .proj-thumb-ph .ph-letter {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 3.5rem;
+        color: rgba(229, 9, 20, 0.25);
+        line-height: 1;
+      }
+      .proj-thumb-ph span {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.5rem;
+        color: #333;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+      .proj-hover {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.95) 0%,
+          rgba(0, 0, 0, 0.45) 55%,
+          transparent 100%
+        );
+        padding: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .proj-card:hover .proj-hover {
+        opacity: 1;
+      }
+      .proj-hover-title {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.15rem;
+        letter-spacing: 0.03em;
+        margin-bottom: 0.3rem;
+      }
+      .proj-hover-desc {
+        font-size: 0.68rem;
+        color: var(--txt2);
+        line-height: 1.5;
+        margin-bottom: 0.65rem;
+      }
+      .proj-hover-tags {
+        display: flex;
+        gap: 0.3rem;
+        flex-wrap: wrap;
+        margin-bottom: 0.6rem;
+      }
+      .proj-tag {
+        font-size: 0.56rem;
+        letter-spacing: 0.07em;
+        border: 1px solid #444;
+        color: var(--txt3);
+        padding: 0.1rem 0.42rem;
+      }
+      .proj-actions {
+        display: flex;
+        gap: 0.4rem;
+        margin-bottom: 0.5rem;
+      }
+      .proj-btn {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid var(--txt3);
+        cursor: none;
+        transition: border-color 0.2s;
+      }
+      .proj-btn.play {
+        background: var(--txt);
+        border-color: var(--txt);
+      }
+      .proj-btn.play svg {
+        fill: #000;
+        width: 9px;
+        height: 9px;
+      }
+      .proj-btn:not(.play) svg {
+        stroke: var(--txt2);
+        fill: none;
+        stroke-width: 1.5;
+        width: 10px;
+        height: 10px;
+      }
+      .proj-btn:not(.play):hover {
+        border-color: var(--txt);
+      }
+      .proj-info {
+        padding: 0.65rem 0.85rem 0.75rem;
+      }
+      .proj-info-top {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.25rem;
+      }
+      .match {
+        color: #46d369;
+        font-size: 0.66rem;
+        font-weight: 600;
+      }
+      .yr {
+        font-size: 0.6rem;
+        color: var(--txt3);
+        border: 1px solid var(--txt3);
+        padding: 0.03rem 0.3rem;
+      }
+      .proj-title-sm {
+        font-size: 0.82rem;
+        font-weight: 600;
+        margin-bottom: 0.18rem;
+      }
+      .proj-sub {
+        font-size: 0.68rem;
+        color: var(--txt2);
+      }
+
+      /* ─── ABOUT ─── */
+      .about-strip {
+        background: var(--bg2);
+        padding: 4.5rem 4%;
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 4rem;
+        align-items: center;
+        border-top: 1px solid var(--border);
+      }
+      @media (max-width: 700px) {
+        .about-strip {
+          grid-template-columns: 1fr;
+          gap: 2.5rem;
+        }
+      }
+      .about-big {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2.8rem, 8vw, 6.5rem);
+        line-height: 0.92;
+        letter-spacing: 0.01em;
+      }
+      .about-big em {
+        color: var(--red);
+        font-style: normal;
+      }
+      .about-body {
+        color: var(--txt2);
+        font-size: 0.92rem;
+        line-height: 1.82;
+      }
+      .about-body p + p {
+        margin-top: 0.9em;
+      }
+      .about-body strong {
+        color: var(--txt);
+        font-weight: 500;
+      }
+      .lang-row {
+        display: flex;
+        gap: 1.2rem;
+        margin-top: 1.4rem;
+        flex-wrap: wrap;
+      }
+      .lang-pill {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border: 1px solid var(--border);
+        color: var(--txt2);
+        padding: 0.3rem 0.75rem;
+      }
+      .lang-pill span {
+        color: var(--red);
+      }
+      .about-stats {
+        display: flex;
+        gap: 2.5rem;
+        margin-top: 2.2rem;
+        flex-wrap: wrap;
+      }
+      .stat .n {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 2.6rem;
+        color: var(--red);
+        line-height: 1;
+      }
+      .stat .l {
+        font-size: 0.66rem;
+        color: var(--txt3);
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        margin-top: 0.2rem;
+      }
+
+      /* ─── EXPERIENCE ─── */
+      .exp-strip {
+        padding: 3.5rem 4%;
+        border-top: 1px solid var(--border);
+      }
+      .exp-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2px;
+        margin-top: 2rem;
+      }
+      .exp-card {
+        background: var(--bg2);
+        padding: 1.6rem;
+        border: 1px solid var(--border);
+        transition: border-color 0.3s;
+      }
+      .exp-card:hover {
+        border-color: var(--red);
+      }
+      .exp-type {
+        display: inline-block;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.55rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--bg);
+        background: var(--red);
+        padding: 0.15rem 0.45rem;
+        margin-bottom: 0.6rem;
+      }
+      .exp-type.edu {
+        background: var(--txt3);
+      }
+      .exp-type.cert {
+        background: #46d369;
+        color: #000;
+      }
+      .exp-date {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.58rem;
+        color: var(--txt3);
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+      }
+      .exp-title {
+        font-size: 0.93rem;
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+        line-height: 1.35;
+      }
+      .exp-inst {
+        font-size: 0.77rem;
+        color: var(--txt2);
+        margin-bottom: 0.75rem;
+      }
+      .exp-highlights {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 0.32rem;
+      }
+      .exp-highlights li {
+        font-size: 0.72rem;
+        color: var(--txt3);
+        padding-left: 1rem;
+        position: relative;
+        line-height: 1.4;
+      }
+      .exp-highlights li::before {
+        content: "›";
+        position: absolute;
+        left: 0;
+        color: var(--red);
+        font-weight: 700;
+      }
+
+      /* ─── SKILLS MARQUEE ─── */
+      .skills-strip {
+        padding: 2.5rem 0;
+        border-top: 1px solid var(--border);
+        overflow: hidden;
+      }
+      .sk-label {
+        padding: 0 4%;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+      .skills-marquee-wrap {
+        overflow: hidden;
+      }
+      .skills-marquee-track {
+        display: flex;
+        white-space: nowrap;
+        animation: ticker 28s linear infinite;
+      }
+      .skills-marquee-track:hover {
+        animation-play-state: paused;
+      }
+      @keyframes ticker {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      .sk-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 1.4rem;
+        padding: 1.1rem 2rem;
+        border-right: 1px solid var(--border);
+        font-size: 0.86rem;
+        font-weight: 500;
+        color: var(--txt2);
+        flex-shrink: 0;
+        transition: color 0.2s;
+      }
+      .sk-item:hover {
+        color: var(--txt);
+      }
+      .sk-dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: var(--red);
+        flex-shrink: 0;
+      }
+
+      /* ─── SKILLS GRID ─── */
+      .skills-grid-wrap {
+        padding: 0 4% 3.5rem;
+      }
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 2px;
+        margin-top: 0.5rem;
+      }
+      .skill-card {
+        background: var(--bg2);
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+      }
+      .skill-card-header {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        margin-bottom: 1.1rem;
+      }
+      .skill-card-header h3 {
+        font-size: 0.9rem;
+        font-weight: 600;
+      }
+      .skill-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .skill-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.3rem;
+      }
+      .skill-name {
+        font-size: 0.76rem;
+        color: var(--txt2);
+      }
+      .skill-level {
+        font-size: 0.7rem;
+        color: var(--txt3);
+        font-family: "JetBrains Mono", monospace;
+      }
+      .skill-bar {
+        height: 2px;
+        background: var(--border);
+        border-radius: 1px;
+        overflow: hidden;
+      }
+      .skill-fill {
+        height: 100%;
+        background: var(--red);
+        border-radius: 1px;
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      .skill-card.vis .skill-fill {
+        transform: scaleX(var(--l, 0.8));
+      }
+
+      /* ─── CONTACT ─── */
+      #contact {
+        padding: 5rem 4%;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
+      .contact-pre {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--red);
+        margin-bottom: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.7rem;
+      }
+      .contact-pre::before,
+      .contact-pre::after {
+        content: "";
+        width: 30px;
+        height: 1px;
+        background: var(--red);
+      }
+      .contact-h {
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(2.5rem, 7.5vw, 7rem);
+        letter-spacing: 0.02em;
+        margin-bottom: 0.9rem;
+      }
+      .contact-sub {
+        font-size: 0.9rem;
+        color: var(--txt2);
+        max-width: 44ch;
+        margin: 0 auto 2rem;
+        line-height: 1.75;
+      }
+      .contact-email {
+        display: inline-block;
+        font-family: "Bebas Neue", sans-serif;
+        font-size: clamp(1.2rem, 3vw, 2.6rem);
+        color: var(--red);
+        letter-spacing: 0.03em;
+        border-bottom: 2px solid transparent;
+        transition: border-color 0.25s;
+        cursor: none;
+      }
+      .contact-email:hover {
+        border-color: var(--red);
+      }
+      .socials {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1.5rem;
+        margin-top: 2.5rem;
+        flex-wrap: wrap;
+      }
+      .soc-link {
+        font-size: 0.72rem;
+        color: var(--txt3);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        transition: color 0.2s;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .soc-link:hover {
+        color: var(--txt);
+      }
+
+      /* ─── FOOTER ─── */
+      footer {
+        padding: 1.4rem 4%;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+      .footer-txt {
+        font-family: "JetBrains Mono", monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--txt3);
+      }
+      .avail {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .avail-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #46d369;
+        animation: pG 2s ease infinite;
+      }
+      @keyframes pG {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
+        }
+        50% {
+          opacity: 0.4;
+          transform: scale(0.8);
+        }
+      }
+
+      /* ─── REVEAL ─── */
+      .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition:
+          opacity 0.75s ease,
+          transform 0.75s ease;
+      }
+      .reveal.vis {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .d1 {
+        transition-delay: 0.1s;
+      }
+      .d2 {
+        transition-delay: 0.2s;
+      }
+      .d3 {
+        transition-delay: 0.3s;
+      }
+      .d4 {
+        transition-delay: 0.4s;
+      }
+      .d5 {
+        transition-delay: 0.5s;
+      }
+
+      @media (max-width: 640px) {
+        .nav-links li:not(:last-child) {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="cur-d"></div>
+    <div id="cur-r"></div>
+
+    <!-- INTRO -->
+    <div id="intro"><div class="intro-letter">H</div></div>
+
+    <!-- NAV -->
+    <nav id="nav">
+      <a href="#" class="nav-logo">HAMZA</a>
+      <ul class="nav-links">
+        <li><a href="#work">Projekte</a></li>
+        <li><a href="#experience">Werdegang</a></li>
+        <li><a href="#about-sec">Über mich</a></li>
+        <li>
+          <a href="#contact"><button class="nav-btn">Kontakt</button></a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- HERO — Split Layout -->
+    <section id="hero">
+      <!-- Profile photo — right side, clearly visible -->
+      <div class="hero-photo">
+        <img src="assets/images/profile.jpg" alt="Hamza Öztürk" />
+      </div>
+
+      <div class="hero-content reveal">
+        <div class="hero-meta">Verfügbar · Freiburg im Breisgau, DE</div>
+        <div class="hero-name">HAMZA<br /><span>ÖZTÜRK</span></div>
+        <div class="hero-typed-row">
+          <span id="typed-text"></span><span class="typed-cursor"></span>
+        </div>
+        <p class="hero-desc">
+          <strong>Software Engineer</strong> mit Fokus auf
+          <strong>C#/.NET 10</strong> und <strong>Angular 19</strong>. Clean
+          Architecture, KI-gestützte Entwicklung und skalierbare Cloud-Systeme
+          auf Azure.
+        </p>
+        <div class="hero-btns">
+          <button
+            class="btn-primary"
+            onclick="
+              document
+                .getElementById('work')
+                .scrollIntoView({ behavior: 'smooth' })
+            "
+          >
+            <svg viewBox="0 0 10 10"><polygon points="1,0 9,5 1,10" /></svg>
+            Projekte ansehen
+          </button>
+          <a href="#contact" class="btn-secondary">Kontakt aufnehmen</a>
+        </div>
+        <div class="hero-badges">
+          <span class="badge green">● Verfügbar 2026</span>
+          <span class="badge">.NET 10</span>
+          <span class="badge">Angular 19</span>
+          <span class="badge">IHK Fachinformatiker</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURED PROJECT: BIKEHAUS FREIBURG -->
+    <div id="work" class="section-row reveal" style="padding-top: 2rem">
+      <div class="row-title">
+        Highlight-Projekt <a href="#all-projects">Alle ansehen</a>
+      </div>
+      <div class="featured-card">
+        <img src="assets/images/bikehaus.png" alt="Bikehaus Freiburg" />
+        <div class="featured-overlay">
+          <div class="feat-label">● Featured · 2026 — Full-Stack</div>
+          <div class="feat-title">Bikehaus Freiburg</div>
+          <p class="feat-desc">
+            Vollständige digitale Warenwirtschaft für ein Fahrradgeschäft —
+            C#/.NET 10 API, Angular 19 Admin-Client, Electron Desktop-App,
+            Chrome Extension MV3 & automatisierter Kleinanzeigen-Scraper.
+          </p>
+          <div class="feat-tags">
+            <span class="feat-tag">Angular 19</span>
+            <span class="feat-tag">.NET 10</span>
+            <span class="feat-tag">PostgreSQL</span>
+            <span class="feat-tag">Azure</span>
+            <span class="feat-tag">Docker</span>
+            <span class="feat-tag">Electron</span>
+            <span class="feat-tag">Playwright</span>
+          </div>
+          <div class="feat-btns">
+            <a
+              href="https://bikehausfreiburg.com"
+              target="_blank"
+              class="btn-primary"
+              style="font-size: 0.74rem; padding: 0.58rem 1.2rem"
+            >
+              <svg viewBox="0 0 10 10" style="width: 11px; height: 11px">
+                <polygon points="1,0 9,5 1,10" fill="currentColor" />
+              </svg>
+              Live Demo
+            </a>
+            <a
+              href="https://github.com/oeztuerkhamza"
+              target="_blank"
+              class="btn-secondary"
+              style="font-size: 0.74rem; padding: 0.58rem 1.2rem"
+              >GitHub</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ALL PROJECTS ROW -->
+    <div id="all-projects" class="section-row reveal" style="padding-top: 0">
+      <div class="row-title">Alle Projekte</div>
+      <div class="cards-track">
+        <!-- Bikehaus Freiburg -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <img src="assets/images/bikehaus.png" alt="Bikehaus Freiburg" />
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://bikehausfreiburg.com"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Bikehaus Freiburg</div>
+            <div class="proj-hover-desc">
+              Digitale Warenwirtschaft: Admin-App, Electron Desktop, Chrome
+              Extension MV3 & Kleinanzeigen-Scraper.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Angular 19</span
+              ><span class="proj-tag">.NET 10</span
+              ><span class="proj-tag">Electron</span
+              ><span class="proj-tag">Azure</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">99% Match</span><span class="yr">2026</span>
+            </div>
+            <div class="proj-title-sm">Bikehaus Freiburg</div>
+            <div class="proj-sub">Full-Stack · Warenwirtschaft</div>
+          </div>
+        </div>
+
+        <!-- Benlirad -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <img src="assets/images/benlirad.png" alt="Benlirad" />
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://benlirad.de"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Benlirad</div>
+            <div class="proj-hover-desc">
+              Fahrrad-Plattform für Verkauf, Verleih & Service. 4-sprachig
+              (DE/EN/FR/TR), SSR-optimiert.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Angular 19</span
+              ><span class="proj-tag">.NET 10</span
+              ><span class="proj-tag">i18n</span
+              ><span class="proj-tag">SSR</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">97% Match</span><span class="yr">2025</span>
+            </div>
+            <div class="proj-title-sm">Benlirad</div>
+            <div class="proj-sub">Full-Stack · Mehrsprachig</div>
+          </div>
+        </div>
+
+        <!-- Kulturplattform -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <img
+              src="assets/images/kulturplattform.png"
+              alt="Kulturplattform"
+              onerror="
+                this.style.display = 'none';
+                this.parentElement.querySelector(
+                  '.proj-thumb-ph',
+                ).style.display = 'flex';
+              "
+            />
+            <div class="proj-thumb-ph" style="display: none">
+              <div class="ph-letter">K</div>
+              <span>kulturplattform freiburg</span>
+            </div>
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://kulturplattformfreiburg.org"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Kulturplattform Freiburg</div>
+            <div class="proj-hover-desc">
+              Vereinswebsite mit CMS, Newsletter, Bildverarbeitung &
+              DE/TR-Zweisprachigkeit. DDD Clean Architecture.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">React 19</span
+              ><span class="proj-tag">.NET 10</span
+              ><span class="proj-tag">DDD</span
+              ><span class="proj-tag">Tailwind</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">95% Match</span><span class="yr">2025</span>
+            </div>
+            <div class="proj-title-sm">Kulturplattform Freiburg</div>
+            <div class="proj-sub">Web-App · CMS</div>
+          </div>
+        </div>
+
+        <!-- Di-Flux -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <img src="assets/images/diflux-1.png" alt="Di-Flux" />
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://github.com/oeztuerkhamza/di-flux-web"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza/di-flux-web"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">DI-FLUX</div>
+            <div class="proj-hover-desc">
+              Enterprise Zeiterfassung: ArbZG-Compliance, JWT Auth, Bulk-Ops,
+              Echtzeit-Benachrichtigungen. IHK-Abschlussprojekt.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Angular 19</span
+              ><span class="proj-tag">C# .NET</span
+              ><span class="proj-tag">xUnit</span
+              ><span class="proj-tag">Docker</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">94% Match</span
+              ><span class="yr">2025–26</span>
+            </div>
+            <div class="proj-title-sm">DI-FLUX Zeiterfassung</div>
+            <div class="proj-sub">Enterprise · IHK-Projekt</div>
+          </div>
+        </div>
+
+        <!-- Bewerbungs-Manager -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <img src="assets/images/bewerbung.png" alt="Bewerbungs-Manager" />
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://github.com/oeztuerkhamza/bewerbungs-manager"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza/bewerbungs-manager"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Bewerbungs-Manager</div>
+            <div class="proj-hover-desc">
+              KI-gestützte Bewerbungsautomatisierung mit PDF-Generierung,
+              Keyword-Matching & Passgenauigkeits-Score via OpenAI.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Python</span
+              ><span class="proj-tag">OpenAI</span
+              ><span class="proj-tag">FastAPI</span
+              ><span class="proj-tag">React</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">91% Match</span><span class="yr">2025</span>
+            </div>
+            <div class="proj-title-sm">Bewerbungs-Manager</div>
+            <div class="proj-sub">KI · Python Automation</div>
+          </div>
+        </div>
+
+        <!-- Beaver Construction -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <div class="proj-thumb-ph">
+              <div class="ph-letter">B</div>
+              <span>beaver construction co.</span>
+            </div>
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://github.com/oeztuerkhamza/beaver"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza/beaver"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Beaver Construction Co.</div>
+            <div class="proj-hover-desc">
+              Moderne Unternehmenswebsite für einen US-amerikanischen
+              Bauunternehmer in Aurora, CO. Multi-Page-App mit SSR.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Angular 19</span
+              ><span class="proj-tag">SSR</span
+              ><span class="proj-tag">Netlify</span
+              ><span class="proj-tag">TypeScript</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">88% Match</span><span class="yr">2025</span>
+            </div>
+            <div class="proj-title-sm">Beaver Construction Co.</div>
+            <div class="proj-sub">Client Website · USA</div>
+          </div>
+        </div>
+
+        <!-- Hochzeitseinladung -->
+        <div class="proj-card">
+          <div class="proj-thumb">
+            <div class="proj-thumb-ph">
+              <div class="ph-letter">♥</div>
+              <span>digitale hochzeitseinladung</span>
+            </div>
+          </div>
+          <div class="proj-hover">
+            <div class="proj-actions">
+              <a
+                href="https://melike-ve-musa-evleniyor.netlify.app/"
+                target="_blank"
+                class="proj-btn play"
+                ><svg viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" /></svg
+              ></a>
+              <a
+                href="https://github.com/oeztuerkhamza/dugun"
+                target="_blank"
+                class="proj-btn"
+                ><svg viewBox="0 0 12 12" stroke-linecap="round">
+                  <circle cx="6" cy="6" r="4.5" />
+                  <path d="M4 9c0-2 1-3 2-3s2 1 2 3" /></svg
+              ></a>
+            </div>
+            <div class="proj-hover-title">Digitale Hochzeitseinladung</div>
+            <div class="proj-hover-desc">
+              Interaktive SPA mit Echtzeit-Countdown, Galerie, Karte,
+              YouTube-Integration & QR-Code-Geschenkebereich.
+            </div>
+            <div class="proj-hover-tags">
+              <span class="proj-tag">Angular 19</span
+              ><span class="proj-tag">SSR</span
+              ><span class="proj-tag">Netlify</span>
+            </div>
+          </div>
+          <div class="proj-info">
+            <div class="proj-info-top">
+              <span class="match">85% Match</span><span class="yr">2025</span>
+            </div>
+            <div class="proj-title-sm">Digitale Hochzeitseinladung</div>
+            <div class="proj-sub">Frontend · Creative</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div id="about-sec" class="about-strip reveal">
+      <div class="about-big">WER<br />BIN<br /><em>ICH</em></div>
+      <div>
+        <div class="about-body">
+          <p>
+            Hallo, ich bin <strong>Hamza</strong> — Software Engineer aus
+            <strong>Freiburg im Breisgau</strong>. Ich habe meinen IHK-Abschluss
+            als Fachinformatiker bei Dicom GmbH erworben, wo ich
+            Legacy-Desktop-ERP-Systeme in moderne Web-Lösungen migriert und eine
+            Azure-Cloud-Infrastruktur von Grund auf aufgebaut habe.
+          </p>
+          <p>
+            Mein Fokus liegt auf <strong>Clean Architecture</strong>,
+            skalierbaren <strong>.NET 10 APIs</strong> und modernen
+            Angular/React-Frontends. Ich bringe außerdem Erfahrung in
+            <strong>KI-gestützter Entwicklung</strong> — von Prompt Engineering
+            bis OpenAI Assistants v2 Integration.
+          </p>
+          <p>
+            Mein Hintergrund in
+            <strong>Wirtschaftsingenieurwesen (İTÜ)</strong> und militärischer
+            Führungsausbildung prägt meinen analytischen, disziplinierten Ansatz
+            bei jedem Projekt.
+          </p>
+        </div>
+        <div class="lang-row">
+          <span class="lang-pill">🇹🇷 Türkisch <span>Muttersprache</span></span>
+          <span class="lang-pill">🇩🇪 Deutsch <span>B2→C1</span></span>
+          <span class="lang-pill">🇬🇧 Englisch <span>B2</span></span>
+        </div>
+        <div class="about-stats">
+          <div class="stat">
+            <div class="n">3+</div>
+            <div class="l">Jahre Erfahrung</div>
+          </div>
+          <div class="stat">
+            <div class="n">8+</div>
+            <div class="l">Projekte</div>
+          </div>
+          <div class="stat">
+            <div class="n">IHK</div>
+            <div class="l">Zertifiziert</div>
+          </div>
+        </div>
+        <div
+          style="margin-top: 2rem; display: flex; gap: 0.8rem; flex-wrap: wrap"
+        >
+          <a
+            href="mailto:oeztuerk.hamza@web.de"
+            class="btn-primary"
+            style="font-size: 0.76rem; padding: 0.6rem 1.3rem"
+          >
+            <svg viewBox="0 0 10 10"><polygon points="1,0 9,5 1,10" /></svg>
+            Kontakt aufnehmen
+          </a>
+          <a
+            href="https://github.com/oeztuerkhamza"
+            target="_blank"
+            class="btn-secondary"
+            style="font-size: 0.76rem; padding: 0.6rem 1.3rem"
+            >GitHub</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- EXPERIENCE -->
+    <div id="experience" class="exp-strip reveal">
+      <div class="row-title">Werdegang</div>
+      <div class="exp-grid">
+        <div class="exp-card reveal d1">
+          <div class="exp-type">Berufserfahrung</div>
+          <div class="exp-date">02/2024 – 02/2026</div>
+          <div class="exp-title">
+            Full-Stack Entwickler & Fachinformatiker (IHK)
+          </div>
+          <div class="exp-inst">Dicom GmbH · Freiburg, Deutschland</div>
+          <ul class="exp-highlights">
+            <li>Legacy-Desktop-ERP zu moderner Web-App migriert</li>
+            <li>Azure Cloud Infrastruktur von Grund auf aufgebaut</li>
+            <li>CI/CD-Pipelines: Deployment-Zeit um 40% verkürzt</li>
+            <li>Enterprise ERP: 40+ API-Controller, OData, Azure AD</li>
+            <li>KI-Chat via OpenAI Assistants v2 integriert</li>
+            <li>IHK Fachinformatiker Prüfung bestanden</li>
+          </ul>
+        </div>
+        <div class="exp-card reveal d2">
+          <div class="exp-type cert">Zertifikat</div>
+          <div class="exp-date">05/2022 – 03/2023</div>
+          <div class="exp-title">Data Analytics Zertifikat</div>
+          <div class="exp-inst">Clarusway IT School · Remote</div>
+          <ul class="exp-highlights">
+            <li>Python & Data Science Fundamentals</li>
+            <li>SQL & Datenbank-Management</li>
+            <li>Machine Learning Grundlagen</li>
+            <li>Cloud Computing mit AWS</li>
+            <li>Tableau & Datenvisualisierung</li>
+          </ul>
+        </div>
+        <div class="exp-card reveal d3">
+          <div class="exp-type edu">Bildung</div>
+          <div class="exp-date">10/2019 – 08/2022</div>
+          <div class="exp-title">Wirtschaftsingenieurwesen (B.Sc.)</div>
+          <div class="exp-inst">Technische Universität Istanbul (İTÜ)</div>
+          <ul class="exp-highlights">
+            <li>Top 3 technische Universität der Türkei</li>
+            <li>Operations Research & Optimierung</li>
+            <li>Produktionsplanung & Systemarchitektur</li>
+            <li>Interdisziplinäres Problemlösen</li>
+          </ul>
+        </div>
+        <div class="exp-card reveal d4">
+          <div class="exp-type edu">Bildung</div>
+          <div class="exp-date">08/2015 – 07/2018</div>
+          <div class="exp-title">
+            Wirtschaftsingenieurwesen & Offiziersausbildung
+          </div>
+          <div class="exp-inst">Türkische Luftwaffenakademie, Istanbul</div>
+          <ul class="exp-highlights">
+            <li>Militärische Führungsausbildung</li>
+            <li>Strategisches Denken & Entscheidungsfindung</li>
+            <li>Teamführung unter hohem Druck</li>
+            <li>Technisches Ingenieurstudium</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS MARQUEE -->
+    <div class="skills-strip reveal">
+      <div class="sk-label">Tech Stack</div>
+      <div class="skills-marquee-wrap">
+        <div class="skills-marquee-track">
+          <div class="sk-item"><span class="sk-dot"></span>C# / .NET 10</div>
+          <div class="sk-item"><span class="sk-dot"></span>Angular 19</div>
+          <div class="sk-item"><span class="sk-dot"></span>TypeScript</div>
+          <div class="sk-item"><span class="sk-dot"></span>React 19</div>
+          <div class="sk-item"><span class="sk-dot"></span>MediatR</div>
+          <div class="sk-item"><span class="sk-dot"></span>NgRx</div>
+          <div class="sk-item"><span class="sk-dot"></span>PostgreSQL</div>
+          <div class="sk-item"><span class="sk-dot"></span>Azure Cloud</div>
+          <div class="sk-item"><span class="sk-dot"></span>Docker</div>
+          <div class="sk-item"><span class="sk-dot"></span>OpenAI API</div>
+          <div class="sk-item"><span class="sk-dot"></span>SonarQube</div>
+          <div class="sk-item"><span class="sk-dot"></span>Playwright</div>
+          <div class="sk-item"><span class="sk-dot"></span>C# / .NET 10</div>
+          <div class="sk-item"><span class="sk-dot"></span>Angular 19</div>
+          <div class="sk-item"><span class="sk-dot"></span>TypeScript</div>
+          <div class="sk-item"><span class="sk-dot"></span>React 19</div>
+          <div class="sk-item"><span class="sk-dot"></span>MediatR</div>
+          <div class="sk-item"><span class="sk-dot"></span>NgRx</div>
+          <div class="sk-item"><span class="sk-dot"></span>PostgreSQL</div>
+          <div class="sk-item"><span class="sk-dot"></span>Azure Cloud</div>
+          <div class="sk-item"><span class="sk-dot"></span>Docker</div>
+          <div class="sk-item"><span class="sk-dot"></span>OpenAI API</div>
+          <div class="sk-item"><span class="sk-dot"></span>SonarQube</div>
+          <div class="sk-item"><span class="sk-dot"></span>Playwright</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SKILLS GRID -->
+    <div class="skills-grid-wrap reveal">
+      <div class="skills-grid" id="skills-grid">
+        <div
+          class="skill-card"
+          data-skills='[["C# / .NET 10",95],["Clean Architecture",92],["REST API / OData",90],["Entity Framework Core",88],["MediatR / CQRS",85]]'
+        >
+          <div class="skill-card-header">
+            <span>⚙️</span>
+            <h3>Backend</h3>
+          </div>
+          <div class="skill-list"></div>
+        </div>
+        <div
+          class="skill-card"
+          data-skills='[["Angular 17/19",92],["TypeScript",93],["React 19",80],["NgRx / RxJS",85],["SCSS / Tailwind",88]]'
+        >
+          <div class="skill-card-header">
+            <span>🎨</span>
+            <h3>Frontend</h3>
+          </div>
+          <div class="skill-list"></div>
+        </div>
+        <div
+          class="skill-card"
+          data-skills='[["Azure Cloud / AD",85],["Docker",82],["CI/CD Pipelines",88],["GitHub Actions",82],["SonarQube",75]]'
+        >
+          <div class="skill-card-header">
+            <span>☁️</span>
+            <h3>DevOps & Cloud</h3>
+          </div>
+          <div class="skill-list"></div>
+        </div>
+        <div
+          class="skill-card"
+          data-skills='[["SQL Server",95],["PostgreSQL",88],["OpenAI API",80],["Python / FastAPI",75],["Prompt Engineering",78]]'
+        >
+          <div class="skill-card-header">
+            <span>🤖</span>
+            <h3>KI & Datenbanken</h3>
+          </div>
+          <div class="skill-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <section id="contact" class="reveal">
+      <div class="contact-pre">Lass uns zusammenarbeiten</div>
+      <div class="contact-h">GET IN TOUCH</div>
+      <p class="contact-sub">
+        Offen für Freelance-Projekte, Festanstellungen und spannende
+        Kooperationen. Ich freue mich auf deine Nachricht!
+      </p>
+      <a href="mailto:oeztuerk.hamza@web.de" class="contact-email"
+        >oeztuerk.hamza@web.de</a
+      >
+      <div class="socials">
+        <a
+          href="https://github.com/oeztuerkhamza"
+          target="_blank"
+          class="soc-link"
+          >GitHub</a
+        >
+        <span style="color: var(--border)">·</span>
+        <a
+          href="https://linkedin.com/in/dshamzaozturk"
+          target="_blank"
+          class="soc-link"
+          >LinkedIn</a
+        >
+        <span style="color: var(--border)">·</span>
+        <a href="https://bikehausfreiburg.com" target="_blank" class="soc-link"
+          >Bikehaus Freiburg</a
+        >
+        <span style="color: var(--border)">·</span>
+        <a href="https://benlirad.de" target="_blank" class="soc-link"
+          >Benlirad</a
+        >
+        <span style="color: var(--border)">·</span>
+        <a
+          href="https://kulturplattformfreiburg.org"
+          target="_blank"
+          class="soc-link"
+          >Kulturplattform</a
+        >
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-txt">© 2026 Hamza Öztürk — hamzaoeztuerk.de</div>
+      <div class="avail footer-txt">
+        <div class="avail-dot"></div>
+        Verfügbar für neue Projekte
+      </div>
+    </footer>
+
+    <script>
+      /* ── INTRO ── */
+      setTimeout(() => {
+        document.getElementById("intro").classList.add("out");
+        startReveal();
+      }, 3700);
+
+      /* ── TYPED TEXT ── */
+      const roles = [
+        "Software Engineer",
+        ".NET 10 & Angular 19 Spezialist",
+        "Clean Architecture Enthusiast",
+        "KI-gestützte Entwicklung",
+        "IHK Fachinformatiker",
+      ];
+      let ri = 0,
+        ci = 0,
+        del = false;
+      const el = document.getElementById("typed-text");
+      function type() {
+        const w = roles[ri];
+        if (!del) {
+          el.textContent = w.slice(0, ++ci);
+          if (ci === w.length) {
+            del = true;
+            setTimeout(type, 1900);
+            return;
+          }
+        } else {
+          el.textContent = w.slice(0, --ci);
+          if (ci === 0) {
+            del = false;
+            ri = (ri + 1) % roles.length;
+          }
+        }
+        setTimeout(type, del ? 42 : 78);
+      }
+      setTimeout(type, 4100);
+
+      /* ── CURSOR ── */
+      const cd = document.getElementById("cur-d");
+      const cr = document.getElementById("cur-r");
+      let mx = 0,
+        my = 0,
+        rx = 0,
+        ry = 0;
+      window.addEventListener("mousemove", (e) => {
+        mx = e.clientX;
+        my = e.clientY;
+      });
+      (function raf() {
+        rx += (mx - rx) * 0.12;
+        ry += (my - ry) * 0.12;
+        cd.style.left = mx + "px";
+        cd.style.top = my + "px";
+        cr.style.left = rx + "px";
+        cr.style.top = ry + "px";
+        requestAnimationFrame(raf);
+      })();
+      document
+        .querySelectorAll(
+          "a,button,.proj-card,.featured-card,.exp-card,.skill-card",
+        )
+        .forEach((el) => {
+          el.addEventListener("mouseenter", () =>
+            document.body.classList.add("hov"),
+          );
+          el.addEventListener("mouseleave", () =>
+            document.body.classList.remove("hov"),
+          );
+        });
+
+      /* ── NAV SCROLL ── */
+      window.addEventListener(
+        "scroll",
+        () => {
+          document
+            .getElementById("nav")
+            .classList.toggle("scrolled", scrollY > 70);
+        },
+        { passive: true },
+      );
+
+      /* ── BUILD SKILL CARDS ── */
+      document.querySelectorAll(".skill-card").forEach((card) => {
+        const skills = JSON.parse(card.dataset.skills);
+        const list = card.querySelector(".skill-list");
+        skills.forEach(([name, level]) => {
+          const item = document.createElement("div");
+          item.className = "skill-item";
+          item.innerHTML = `<div class="skill-info"><span class="skill-name">${name}</span><span class="skill-level">${level}%</span></div>
+      <div class="skill-bar"><div class="skill-fill" style="--l:${level / 100}"></div></div>`;
+          list.appendChild(item);
+        });
+      });
+
+      /* ── INTERSECTION OBSERVER ── */
+      function startReveal() {
+        const obs = new IntersectionObserver(
+          (es) => {
+            es.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("vis");
+                if (e.target.classList.contains("skill-card")) {
+                  e.target.querySelectorAll(".skill-fill").forEach((f) => {
+                    f.style.transform = `scaleX(${f.style.getPropertyValue("--l") || 0.8})`;
+                  });
+                }
+              }
+            });
+          },
+          { threshold: 0.12, rootMargin: "0px 0px -30px 0px" },
+        );
+        document
+          .querySelectorAll(".reveal,.skill-card")
+          .forEach((el) => obs.observe(el));
+      }
+    </script>
+  </body>
 </html>
