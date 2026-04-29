@@ -39,14 +39,7 @@ export const EXPERIENCES: ExperienceItem[] = [
         label: 'Arbeitszeugnis',
         url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
       },
-      {
-        label: 'IHK Zeugnis',
-        url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_IHK_zeugnis.pdf',
-      },
-      {
-        label: 'Berufschule Zeugnis',
-        url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_berufschule_zeugnis.pdf',
-      },
+
     ],
   },
   {

@@ -24,21 +24,7 @@ export class ResumeComponent {
       url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
       category: 'Arbeit',
     },
-    {
-      label: 'IHK Zeugnis — Fachinformatiker',
-      url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_IHK_zeugnis.pdf',
-      category: 'Ausbildung',
-    },
-    {
-      label: 'Berufschule Zeugnis',
-      url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_berufschule_zeugnis.pdf',
-      category: 'Ausbildung',
-    },
-    {
-      label: 'Data Analyst Zertifikate — Clarusway',
-      url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_data_analyst _zertifikate.pdf',
-      category: 'Zertifikate',
-    },
+
   ];
 
   constructor(private sanitizer: DomSanitizer) {

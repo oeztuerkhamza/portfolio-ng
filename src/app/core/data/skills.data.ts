@@ -42,9 +42,9 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
     title: 'Datenbanken & Tools',
     icon: '🗄️',
     skills: [
+      { name: 'SQL Server', level: 95 },
       { name: 'PostgreSQL', level: 88 },
-      { name: 'SQL Server', level: 85 },
-      { name: 'SQLite', level: 75 },
+      { name: 'SQLite', level: 80 },
       { name: 'Git / GitHub', level: 92 },
       { name: 'Jira / Agile', level: 85 },
     ],
