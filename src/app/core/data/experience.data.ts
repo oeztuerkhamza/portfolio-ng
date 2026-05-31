@@ -83,23 +83,6 @@ export const EXPERIENCES: ExperienceItem[] = [
     ],
   },
   {
-    id: 4,
-    date: '08/2015 – 07/2018',
-    title: 'Wirtschaftsingenieurwesen & Offizierausbildung',
-    institution: 'Türkische Luftwaffenakademie, Istanbul',
-    description:
-      'Rigorose technische und auf Führung ausgerichtete Ausbildung, bei der eiserne Disziplin, schnelle Auffassungsgabe und strategisches Denken gefordert waren.',
-    image: 'assets/images/military shule.jpg',
-    type: 'education',
-    location: 'Istanbul, Türkei',
-    highlights: [
-      'Militärische Führungsausbildung',
-      'Technisches Ingenieurstudium',
-      'Strategisches Denken & Disziplin',
-      'Teamführung unter Druck',
-    ],
-  },
-  {
     id: 5,
     date: '1996 – ...',
     title: 'Der Anfang meiner Reise',

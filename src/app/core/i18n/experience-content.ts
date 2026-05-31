@@ -111,32 +111,6 @@ export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceT
       highlights: ['Di nav 3 zanîngehên teknîkî yên herî baş ên Tirkiyê de', 'Çareserkirina pirsgirêkan a navdîsîplînî', 'Lêkolîna operasyonan & xweşkirin', 'Plansaziya hilberînê & mîmariya pergalê'],
     },
   },
-  4: {
-    fr: {
-      title: 'Génie industriel & formation d’officier',
-      description:
-        'Formation technique et axée sur le leadership, rigoureuse, exigeant une discipline de fer, une compréhension rapide et une pensée stratégique.',
-      highlights: ['Formation militaire au leadership', 'Études techniques d’ingénierie', 'Pensée stratégique & discipline', 'Direction d’équipe sous pression'],
-    },
-    en: {
-      title: 'Industrial Engineering & Officer Training',
-      description:
-        'Rigorous technical and leadership-oriented training that demanded iron discipline, quick comprehension and strategic thinking.',
-      highlights: ['Military leadership training', 'Technical engineering studies', 'Strategic thinking & discipline', 'Team leadership under pressure'],
-    },
-    tr: {
-      title: 'Endüstri Mühendisliği & Subay Eğitimi',
-      description:
-        'Demir disiplin, hızlı kavrama ve stratejik düşünme gerektiren, teknik ve liderlik odaklı zorlu bir eğitim.',
-      highlights: ['Askerî liderlik eğitimi', 'Teknik mühendislik eğitimi', 'Stratejik düşünme & disiplin', 'Baskı altında takım liderliği'],
-    },
-    ku: {
-      title: 'Endezyariya Pîşesaziyê & Perwerdehiya Efser',
-      description:
-        'Perwerdehiyek hişk a teknîkî û serokatî-navendî ku dîsîplînek hesinî, têgihiştina bilez û ramana stratejîk dixwest.',
-      highlights: ['Perwerdehiya serokatiya leşkerî', 'Xwendina endezyariya teknîkî', 'Ramana stratejîk & dîsîplîn', 'Serokatiya tîmê di bin zextê de'],
-    },
-  },
   5: {
     fr: {
       title: 'Le début de mon parcours',
