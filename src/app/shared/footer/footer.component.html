@@ -1,63 +1,95 @@
 <footer>
-  <div class="footer-content">
-    <div class="footer-top">
-      <a routerLink="/" class="footer-logo">
-        <img src="assets/images/logo.jpg" alt="Hamza Öztürk Logo" class="footer-logo-img" />
+  <div class="footer-inner">
+
+    <!-- Editorial sign-off -->
+    <div class="signoff">
+      <p class="eyebrow">{{ i18n.t('footer.eyebrow') }}</p>
+      <h2 class="signoff-title" [innerHTML]="i18n.t('footer.signoff')"></h2>
+      <a [routerLink]="'/contact' | localize" class="btn btn-secondary">
+        {{ i18n.t('cta.contact') }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
       </a>
-      <p class="footer-tagline">
-        Full-Stack Developer — .NET · Angular · Cloud
+    </div>
+
+    <hr class="rule" />
+
+    <!-- Footer columns -->
+    <div class="footer-grid">
+      <div class="col col-brand">
+        <a [routerLink]="'/' | localize" class="footer-mark">
+          <span class="mark-num">H&#8202;Ö</span>
+          <span class="mark-name">Hamza Öztürk</span>
+        </a>
+        <p class="brand-tagline" [innerHTML]="i18n.t('footer.tagline')"></p>
+      </div>
+
+      <div class="col">
+        <p class="col-label"><span class="num">01</span> {{ i18n.t('footer.col.content') }}</p>
+        <ul>
+          <li><a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a></li>
+          <li><a [routerLink]="'/leistungen' | localize">{{ i18n.t('nav.leistungen') }}</a></li>
+          <li><a [routerLink]="'/projects' | localize">{{ i18n.t('nav.projects') }}</a></li>
+          <li><a [routerLink]="'/experience' | localize">{{ i18n.t('nav.experience') }}</a></li>
+          <li><a [routerLink]="'/lebenslauf' | localize">{{ i18n.t('nav.resume') }}</a></li>
+          <li><a [routerLink]="'/contact' | localize">{{ i18n.t('nav.contact') }}</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <p class="col-label"><span class="num">02</span> {{ i18n.t('footer.col.elsewhere') }}</p>
+        <ul>
+          <li>
+            <a href="https://github.com/oeztuerkhamza" target="_blank" rel="noopener">
+              GitHub <span class="ext">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.linkedin.com/in/hamzaoeztuerk/" target="_blank" rel="noopener">
+              LinkedIn <span class="ext">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://wa.me/4915566859378" target="_blank" rel="noopener">
+              WhatsApp <span class="ext">↗</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.instagram.com/hamza_oeztuerk" target="_blank" rel="noopener">
+              Instagram <span class="ext">↗</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <p class="col-label"><span class="num">03</span> {{ i18n.t('footer.col.direct') }}</p>
+        <ul>
+          <li>
+            <a href="mailto:hamza.oeztuerk@web.de">hamza.oeztuerk&#64;web.de</a>
+          </li>
+          <li>
+            <a href="tel:+4915566859378">+49 155 66859378</a>
+          </li>
+          <li class="addr">Bissierstr. 16<br />79114 Freiburg, DE</li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="rule" />
+
+    <!-- Imprint line -->
+    <div class="imprint">
+      <p class="imprint-left">
+        <span class="numeral">{{ currentYear }}</span>
+        &nbsp;·&nbsp; Hamza Öztürk &nbsp;·&nbsp; {{ i18n.t('footer.rights') }}
+      </p>
+      <p class="imprint-right">
+        Gesetzt in <em>Fraunces</em> &amp; <em>Inter</em>.
+        Gebaut mit Angular 19.
       </p>
     </div>
 
-    <div class="footer-links">
-      <div class="link-group">
-        <h4>Navigation</h4>
-        <a routerLink="/">Home</a>
-        <a routerLink="/projects">Projekte</a>
-        <a routerLink="/experience">Werdegang</a>
-        <a routerLink="/contact">Kontakt</a>
-      </div>
-      <div class="link-group">
-        <h4>Social</h4>
-        <a
-          href="https://github.com/oeztuerkhamza"
-          target="_blank"
-          rel="noopener"
-          >GitHub</a
-        >
-        <a
-          href="https://www.linkedin.com/in/hamzaoeztuerk/"
-          target="_blank"
-          rel="noopener"
-          >LinkedIn</a
-        >
-        <a
-          href="https://wa.me/4915566859378"
-          target="_blank"
-          rel="noopener"
-          >WhatsApp</a
-        >
-        <a
-          href="https://www.instagram.com/hamza_oeztuerk"
-          target="_blank"
-          rel="noopener"
-          >Instagram</a
-        >
-      </div>
-      <div class="link-group">
-        <h4>Lebenslauf</h4>
-        <a routerLink="/lebenslauf">Online ansehen</a>
-        <a
-          href="assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf"
-          target="_blank"
-          >PDF Download</a
-        >
-      </div>
-    </div>
-
-    <div class="footer-bottom">
-      <p>&copy; {{ currentYear }} Hamza Öztürk. Alle Rechte vorbehalten.</p>
-      <p class="built-with">Gebaut mit Angular 19 & ❤️</p>
-    </div>
   </div>
 </footer>

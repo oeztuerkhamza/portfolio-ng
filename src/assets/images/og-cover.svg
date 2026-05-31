@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Hamza Öztürk — Webentwickler Freiburg">
+  <defs>
+    <linearGradient id="og-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0908"/>
+      <stop offset="0.6" stop-color="#12100d"/>
+      <stop offset="1" stop-color="#1a1510"/>
+    </linearGradient>
+    <linearGradient id="og-gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a8884a"/>
+      <stop offset="0.5" stop-color="#e0c277"/>
+      <stop offset="1" stop-color="#c9a961"/>
+    </linearGradient>
+    <radialGradient id="og-glow" cx="0.72" cy="0.3" r="0.6">
+      <stop offset="0" stop-color="#c9a961" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#c9a961" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#og-bg)"/>
+  <rect width="1200" height="630" fill="url(#og-glow)"/>
+
+  <!-- frame -->
+  <rect x="48" y="48" width="1104" height="534" fill="none" stroke="#c9a961" stroke-opacity="0.25" stroke-width="1"/>
+
+  <!-- folio line -->
+  <text x="80" y="118" font-family="'JetBrains Mono', monospace" font-size="20" letter-spacing="3" fill="#c9a961">FOLIO № 01 — FREIBURG IM BREISGAU, DE</text>
+
+  <!-- name -->
+  <text x="76" y="290" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="116" fill="#f5f1e8">Hamza Öztürk</text>
+
+  <!-- role -->
+  <text x="80" y="365" font-family="Inter, Arial, sans-serif" font-weight="600" font-size="40" fill="url(#og-gold)">Webentwickler · Freiburg</text>
+
+  <!-- lede -->
+  <text x="80" y="430" font-family="Inter, Arial, sans-serif" font-size="27" fill="#f5f1e8" fill-opacity="0.66">Moderne Websites · Web-Apps · Online-Shops</text>
+  <text x="80" y="468" font-family="Inter, Arial, sans-serif" font-size="27" fill="#f5f1e8" fill-opacity="0.66">Schnell, SEO-optimiert &amp; individuell gebaut.</text>
+
+  <!-- url chip -->
+  <rect x="80" y="520" width="300" height="46" rx="23" fill="none" stroke="#c9a961" stroke-opacity="0.5"/>
+  <text x="106" y="550" font-family="'JetBrains Mono', monospace" font-size="22" fill="#e0c277">hamzaoeztuerk.de</text>
+
+  <!-- monogram -->
+  <text x="1090" y="150" text-anchor="middle" font-family="Georgia, serif" font-weight="700" font-size="84" fill="url(#og-gold)">HÖ</text>
+</svg>

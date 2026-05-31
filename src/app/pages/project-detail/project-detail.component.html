@@ -1,151 +1,180 @@
 @if (project(); as p) {
-  <section class="project-detail section-padding">
+  <article class="project-detail">
     <div class="container">
-      <!-- Back Button -->
+
+      <!-- Back navigation -->
       <button class="back-btn" (click)="goBack()">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M19 12H5M12 19l-7-7 7-7" />
         </svg>
-        Zurück
+        <span>{{ i18n.t('pd.back') }}</span>
       </button>
 
-      <!-- Hero -->
-      <div class="detail-hero">
-        <div class="hero-info">
-          <div class="hero-tags">
-            @for (tag of p.tags; track tag) {
-              <span class="tag">{{ tag }}</span>
-            }
-          </div>
-          <h1>{{ p.title }}</h1>
-          <p class="hero-subtitle">{{ p.subtitle }}</p>
-          <div class="hero-meta">
-            <div class="meta-block">
-              <span class="meta-label">Rolle</span>
-              <span class="meta-value">{{ p.role }}</span>
-            </div>
-            <div class="meta-block">
-              <span class="meta-label">Zeitraum</span>
-              <span class="meta-value">{{ p.duration }}</span>
-            </div>
-          </div>
-          <div class="hero-actions">
-            @if (p.liveUrl) {
-              <a
-                [href]="p.liveUrl"
-                target="_blank"
-                rel="noopener"
-                class="btn btn-primary"
-              >
-                Live ansehen
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                >
-                  <path
-                    d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                  />
-                  <polyline points="15 3 21 3 21 9" />
-                  <line x1="10" y1="14" x2="21" y2="3" />
-                </svg>
-              </a>
-            }
-            @if (p.githubUrl) {
-              <a
-                [href]="p.githubUrl"
-                target="_blank"
-                rel="noopener"
-                class="btn btn-secondary"
-                >GitHub</a
-              >
-            }
-          </div>
+      <!-- Article header -->
+      <header class="article-header">
+        <div class="folio-line">
+          <span class="folio-num">{{ i18n.t('pd.case') }}</span>
+          <span class="folio-sep">—</span>
+          <span>{{ p.duration }}</span>
+          <span class="folio-sep">—</span>
+          <span>{{ p.role }}</span>
         </div>
-        <div class="hero-image">
+
+        <hr class="rule" />
+
+        <h1 class="article-title">{{ p.title }}</h1>
+        <p class="article-deck">{{ i18n.ptx(p.slug, 'subtitle', p.subtitle) }}</p>
+
+        <ul class="article-tags">
+          @for (tag of p.tags; track tag) {
+            <li>{{ tag }}</li>
+          }
+        </ul>
+
+        <div class="article-actions">
+          @if (p.liveUrl) {
+            <a [href]="p.liveUrl" target="_blank" rel="noopener" class="btn btn-primary">
+              {{ i18n.t('common.live') }}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          }
+          @if (p.githubUrl) {
+            <a [href]="p.githubUrl" target="_blank" rel="noopener" class="btn btn-secondary">
+              GitHub
+            </a>
+          }
+        </div>
+      </header>
+
+      <!-- Live demo (interactive) or lead image -->
+      @if (p.demo) {
+        <figure class="lead-demo">
+          <app-live-demo [demo]="p.demo" [title]="p.title" />
+          <figcaption>
+            <span class="cap-num">{{ i18n.t('pd.case') }}</span>
+            <span class="cap-text">{{ p.title }} — {{ i18n.ptx(p.slug, 'subtitle', p.subtitle) }}</span>
+          </figcaption>
+        </figure>
+      } @else {
+        <figure class="lead-image">
           @if (p.image) {
             <img [src]="p.image" [alt]="p.title" />
           } @else {
-            <div
-              class="hero-placeholder"
-              style="
-                background: linear-gradient(135deg, #8a2387, #e94057, #f27121);
-              "
-            >
-              <span>{{ p.title[0] }}</span>
+            <div class="image-fallback">{{ p.title[0] }}</div>
+          }
+          <figcaption>
+            <span class="cap-num">Fig. 01</span>
+            <span class="cap-text">{{ p.title }} — {{ i18n.ptx(p.slug, 'subtitle', p.subtitle) }}</span>
+          </figcaption>
+        </figure>
+      }
+
+      <!-- Article body -->
+      <div class="article-grid">
+        <aside class="article-sidebar">
+          <div class="meta-block">
+            <p class="meta-label">{{ i18n.t('common.role') }}</p>
+            <p class="meta-value">{{ i18n.ptx(p.slug, 'role', p.role) }}</p>
+          </div>
+          <div class="meta-block">
+            <p class="meta-label">{{ i18n.t('common.period') }}</p>
+            <p class="meta-value">{{ p.duration }}</p>
+          </div>
+          <div class="meta-block">
+            <p class="meta-label">{{ i18n.t('common.stack') }}</p>
+            <ul class="meta-stack">
+              @for (tech of p.techStack; track tech.name) {
+                <li>{{ tech.name }}</li>
+              }
+            </ul>
+          </div>
+        </aside>
+
+        <div class="article-body">
+          <!-- Description -->
+          <section class="prose-section">
+            <h2 class="prose-title">
+              <span class="prose-num">01</span>
+              {{ i18n.t('pd.about') }}
+            </h2>
+            <div class="prose">
+              @for (paragraph of i18n.ptx(p.slug, 'long', p.longDescription).split("\n\n"); track paragraph; let i = $index) {
+                @if (i === 0) {
+                  <p class="lead-p"><span class="dropcap">{{ paragraph[0] }}</span>{{ paragraph.substring(1) }}</p>
+                } @else {
+                  <p>{{ paragraph }}</p>
+                }
+              }
             </div>
-          }
-        </div>
-      </div>
+          </section>
 
-      <!-- Description -->
-      <div class="detail-section">
-        <h2>Über das Projekt</h2>
-        <div class="description-text">
-          @for (paragraph of p.longDescription.split("\n\n"); track paragraph) {
-            <p>{{ paragraph }}</p>
-          }
-        </div>
-      </div>
+          <!-- Features -->
+          <section class="prose-section">
+            <h2 class="prose-title">
+              <span class="prose-num">02</span>
+              {{ i18n.t('pd.highlights') }}
+            </h2>
+            <ul class="features-list">
+              @for (feature of i18n.ptx(p.slug, 'features', p.features); track feature; let i = $index) {
+                <li class="feature-item">
+                  <span class="feature-num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+                  <p>{{ feature }}</p>
+                </li>
+              }
+            </ul>
+          </section>
 
-      <!-- Features -->
-      <div class="detail-section">
-        <h2>Features & Highlights</h2>
-        <div class="features-grid">
-          @for (feature of p.features; track feature; let i = $index) {
-            <div class="feature-item">
-              <div class="feature-number">
-                {{ (i + 1).toString().padStart(2, "0") }}
-              </div>
-              <p>{{ feature }}</p>
+          <!-- Tech stack -->
+          <section class="prose-section">
+            <h2 class="prose-title">
+              <span class="prose-num">03</span>
+              {{ i18n.t('pd.tech') }}
+            </h2>
+            <ul class="tech-list">
+              @for (tech of p.techStack; track tech.name) {
+                <li class="tech-row">
+                  <span class="tech-icon">{{ tech.icon }}</span>
+                  <span class="tech-name">{{ tech.name }}</span>
+                  <span class="tech-rule"></span>
+                </li>
+              }
+            </ul>
+          </section>
+
+          <!-- CTA -->
+          <section class="article-cta">
+            <hr class="rule" />
+            <div class="cta-content">
+              <h3 [innerHTML]="i18n.t('pd.cta.title')"></h3>
+              <p>{{ i18n.t('pd.cta.text') }}</p>
+              <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+                {{ i18n.t('cta.contact') }}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </a>
             </div>
-          }
+          </section>
         </div>
-      </div>
-
-      <!-- Tech Stack -->
-      <div class="detail-section">
-        <h2>Technologie-Stack</h2>
-        <div class="tech-grid">
-          @for (tech of p.techStack; track tech.name) {
-            <div class="tech-card">
-              <span class="tech-icon">{{ tech.icon }}</span>
-              <span class="tech-name">{{ tech.name }}</span>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <div class="detail-cta">
-        <h3>Interesse an einer Zusammenarbeit?</h3>
-        <p>Lassen Sie uns gemeinsam Ihr nächstes Projekt zum Erfolg führen.</p>
-        <a routerLink="/contact" class="btn btn-primary btn-large"
-          >Kontakt aufnehmen →</a
-        >
       </div>
     </div>
-  </section>
+  </article>
 } @else {
-  <section class="not-found section-padding">
-    <div class="container" style="text-align: center; padding-top: 120px">
-      <h1>Projekt nicht gefunden</h1>
-      <p style="margin: 20px 0; color: #a1a1aa">
-        Das gesuchte Projekt existiert nicht.
-      </p>
-      <a routerLink="/projects" class="btn btn-primary"
-        >Alle Projekte ansehen</a
-      >
+  <section class="not-found">
+    <div class="container">
+      <p class="folio-line"><span>Folio &numero;404</span></p>
+      <h1 class="not-found-title" [innerHTML]="i18n.t('pd.nf.title')"></h1>
+      <p class="not-found-text">{{ i18n.t('pd.nf.text') }}</p>
+      <a [routerLink]="'/projects' | localize" class="btn btn-primary">
+        {{ i18n.t('pd.nf.cta') }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
     </div>
   </section>
 }

@@ -1,192 +1,299 @@
 @import "../../../styles/variables";
 
-.section-label {
-  @include gradient-text;
-  font-weight: 600;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 3px;
-  margin-bottom: 12px;
-  display: inline-block;
+:host { display: block; }
+
+.contact-page {
+  padding-top: 140px;
+  padding-bottom: clamp(80px, 14vh, 160px);
 }
 
-.contact-layout {
+// --- Header ---
+.page-header { margin-bottom: 60px; }
+
+.folio-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $paper-mute;
+  padding-bottom: 12px;
+
+  .folio-num { color: $gold; }
+  .folio-sep { opacity: 0.5; }
+}
+
+.rule {
+  height: 1px;
+  background: $rule;
+  border: 0;
+  margin: 0;
+}
+
+.header-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
-  gap: 80px;
-  align-items: flex-start;
-  padding-top: 80px;
+  gap: clamp(2rem, 6vw, 6rem);
+  padding: 60px 0;
+  align-items: end;
+
+  .section-label {
+    @include small-caps;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 1.5rem;
+    .num { font-family: $font-mono; color: $gold; }
+    &::before { content: ""; width: 32px; height: 1px; background: $gold; }
+  }
+
+  .section-title {
+    font-family: $font-display;
+    font-size: clamp(3rem, 8vw, 6.5rem);
+    font-weight: 300;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: $paper;
+
+    em { font-style: italic; color: $gold; font-weight: 300; }
+  }
+
+  .section-subtitle {
+    font-family: $font-body;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: $paper-dim;
+    max-width: 50ch;
+    margin: 0;
+  }
+
+  @media (max-width: $bp-desktop) {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 40px 0;
+  }
 }
 
-.contact-description {
-  color: $text-secondary;
-  font-size: 1.05rem;
-  line-height: 1.8;
-  margin-bottom: 40px;
-  max-width: 500px;
+// --- Contact grid ---
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: clamp(2rem, 6vw, 6rem);
+  margin-top: 2rem;
+
+  @media (max-width: $bp-desktop) {
+    grid-template-columns: 1fr;
+  }
 }
 
-// Contact Cards
-.contact-methods {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.contact-card {
+// --- Channels ---
+.channels-label {
+  @include mono-label;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
-  gap: 16px;
-  @include glass;
-  border-radius: 16px;
-  padding: 20px 24px;
-  transition: $transition-normal;
-  cursor: pointer;
+  gap: 12px;
 
-  &:hover {
-    @include glass-hover;
-    transform: translateX(8px);
+  .num { color: $gold; }
+}
 
-    .card-arrow {
-      opacity: 1;
-      transform: translateX(0);
+.channel-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid $rule-strong;
+}
+
+.channel-row {
+  border-bottom: 1px solid $rule;
+
+  .channel-link {
+    display: grid;
+    grid-template-columns: 56px 1fr 32px;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 22px 0;
+    color: $paper;
+
+    &:hover {
+      .ch-meta .ch-value { color: $gold; }
+      .ch-num { color: $gold; }
+      .ch-arrow { transform: translate(4px, -4px); color: $gold; }
     }
   }
 
-  .card-icon {
-    font-size: 1.5rem;
-    width: 48px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: $bg-elevated;
-    border-radius: 12px;
-    border: 1px solid $glass-border;
-    flex-shrink: 0;
+  .ch-num {
+    font-family: $font-mono;
+    font-size: 0.78rem;
+    color: $paper-mute;
+    letter-spacing: 0.05em;
+    transition: color $transition-fast;
   }
 
-  .card-details {
-    flex: 1;
+  .ch-meta {
     display: flex;
     flex-direction: column;
+    gap: 4px;
 
-    .card-label {
-      font-size: 0.75rem;
+    .ch-type {
+      @include mono-label;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      color: $text-muted;
+      color: $paper-mute;
     }
 
-    .card-value {
-      font-size: 0.95rem;
-      color: $text-primary;
-      font-weight: 500;
+    .ch-value {
+      font-family: $font-display;
+      font-style: italic;
+      font-weight: 300;
+      font-size: clamp(1.2rem, 2vw, 1.6rem);
+      color: $paper;
+      letter-spacing: -0.01em;
+      transition: color $transition-fast;
     }
   }
 
-  .card-arrow {
-    color: $text-muted;
-    opacity: 0;
-    transform: translateX(-8px);
+  .ch-arrow {
+    width: 18px;
+    height: 18px;
+    color: $paper-dim;
     transition: $transition-normal;
   }
 }
 
-// CTA Box
-.cta-card {
-  @include glass;
-  border-radius: 24px;
-  padding: 48px;
-  position: relative;
-  overflow: hidden;
-
-  .cta-gradient {
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(
-      circle at center,
-      rgba($accent-primary, 0.08),
-      transparent 50%
-    );
-    pointer-events: none;
-  }
-
-  h3 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 16px;
-    position: relative;
-  }
-
-  p {
-    color: $text-secondary;
-    line-height: 1.7;
-    margin-bottom: 32px;
-    position: relative;
-  }
-}
-
-.cta-actions {
+// --- Address card ---
+.contact-aside {
   display: flex;
-  gap: 12px;
-  margin-bottom: 40px;
+  flex-direction: column;
+  gap: 2rem;
+
+  @media (min-width: $bp-desktop) {
+    position: sticky;
+    top: 120px;
+    align-self: start;
+  }
+}
+
+.address-card {
+  border: 1px solid $rule-strong;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  background: $ink-soft;
   position: relative;
-}
 
-.cta-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  padding-top: 32px;
-  border-top: 1px solid $glass-border;
-  position: relative;
-}
+  // Editorial corner ornaments
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 1px solid $gold;
+  }
+  &::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
+  &::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
 
-.cta-stat {
-  text-align: center;
-
-  strong {
-    display: block;
-    font-family: $font-heading;
-    font-size: 1.5rem;
-    @include gradient-text;
-    margin-bottom: 4px;
+  .card-label {
+    @include mono-label;
+    text-transform: uppercase;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    .num { color: $gold; }
   }
 
-  span {
-    font-size: 0.8rem;
-    color: $text-muted;
-  }
-}
-
-// Responsive
-@media (max-width: $bp-desktop) {
-  .contact-layout {
-    grid-template-columns: 1fr;
-    gap: 60px;
-  }
-}
-
-@media (max-width: $bp-tablet) {
-  .cta-card {
-    padding: 32px;
+  .address-name {
+    font-family: $font-display;
+    font-weight: 400;
+    font-size: 1.6rem;
+    color: $paper;
+    margin-bottom: 1rem;
+    letter-spacing: -0.015em;
   }
 
-  .cta-actions {
+  .address-lines {
+    font-family: $font-body;
+    font-style: normal;
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: $paper-soft;
+    margin-bottom: 1.5rem;
+  }
+
+  .rule { margin: 1rem 0; }
+
+  .address-meta {
+    display: flex;
     flex-direction: column;
+    gap: 14px;
+    margin-top: 1rem;
 
-    .btn {
-      width: 100%;
-      justify-content: center;
+    > div {
+      display: grid;
+      grid-template-columns: 100px 1fr;
+      gap: 1rem;
+    }
+
+    dt {
+      @include mono-label;
+      text-transform: uppercase;
+      color: $paper-mute;
+      padding-top: 2px;
+    }
+
+    dd {
+      font-family: $font-body;
+      font-size: 0.92rem;
+      color: $paper-soft;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .status-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: $gold;
+        box-shadow: 0 0 8px $gold-glow;
+        animation: pulse 2s ease-in-out infinite;
+        display: inline-block;
+      }
     }
   }
+}
 
-  .cta-stats {
-    grid-template-columns: 1fr;
-    gap: 16px;
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+// --- Closing card ---
+.closing-card {
+  padding: 1.5rem 0;
+
+  .closing-label {
+    font-family: $font-display;
+    font-style: italic;
+    font-weight: 300;
+    font-size: 1.2rem;
+    color: $paper-soft;
+    margin-bottom: 0.5rem;
+  }
+
+  .signature {
+    font-family: $font-display;
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: $gold;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .closing-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 }

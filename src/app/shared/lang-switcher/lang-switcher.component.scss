@@ -1,0 +1,70 @@
+@import "../../../styles/variables";
+
+.lang {
+  position: relative;
+}
+
+.lang-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  background: transparent;
+  border: 1px solid $rule;
+  border-radius: 8px;
+  color: $paper-dim;
+  cursor: pointer;
+  font-family: $font-mono;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  transition: $transition-fast;
+
+  svg { width: 15px; height: 15px; opacity: 0.7; }
+  .lang-current { font-weight: 500; color: $paper-soft; }
+  .lang-caret { font-size: 0.7rem; transition: transform $transition-fast; }
+  .lang-caret.up { transform: rotate(180deg); }
+
+  &:hover { border-color: $rule-gold; color: $paper; svg { opacity: 1; } }
+  @include focus-ring;
+}
+
+.lang-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 60;
+  min-width: 168px;
+  padding: 0.4rem;
+  background: $ink-soft;
+  border: 1px solid $rule-strong;
+  border-radius: 10px;
+  box-shadow: 0 24px 48px -18px rgba(0, 0, 0, 0.7);
+
+  li { list-style: none; }
+
+  button {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.55rem 0.7rem;
+    background: transparent;
+    border: 0;
+    border-radius: 6px;
+    color: $paper-dim;
+    cursor: pointer;
+    transition: $transition-fast;
+
+    .opt-code {
+      font-family: $font-mono;
+      font-size: 0.72rem;
+      color: $gold;
+      min-width: 24px;
+    }
+    .opt-native { font-family: $font-body; font-size: 0.92rem; }
+
+    &:hover { background: rgba(245, 241, 232, 0.04); color: $paper; }
+    &.active { background: $gold-soft; .opt-native { color: $paper; } }
+  }
+}

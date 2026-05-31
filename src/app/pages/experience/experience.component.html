@@ -1,119 +1,113 @@
-<section class="experience-page section-padding">
+<section class="experience-page">
   <div class="container">
-    <div class="page-header">
-      <p class="section-label">Werdegang</p>
-      <h1 class="section-title">
-        Meine Reise<span class="accent-dot">.</span>
-      </h1>
-      <p class="section-subtitle">
-        Vom neugierigen Kind zum Full-Stack Developer — eine Geschichte von
-        Disziplin, Leidenschaft und kontinuierlichem Wachstum.
-      </p>
-    </div>
+    <!-- Page header -->
+    <header class="page-header">
+      <div class="folio-line">
+        <span class="folio-num">Folio &numero;03</span>
+        <span class="folio-sep">—</span>
+        <span class="folio-place">{{ i18n.t('exp.folio') }}</span>
+      </div>
+      <hr class="rule" />
 
-    <div class="timeline">
-      <div class="timeline-line"></div>
+      <div class="header-grid">
+        <div>
+          <p class="section-label">
+            <span class="num">03</span> {{ i18n.t('exp.label') }}
+          </p>
+          <h1 class="section-title" [innerHTML]="i18n.t('exp.title')"></h1>
+        </div>
+        <p class="section-subtitle">{{ i18n.t('exp.subtitle') }}</p>
+      </div>
+      <hr class="rule" />
+    </header>
 
-      @for (exp of experiences; track exp.id) {
-        <div
+    <!-- Timeline -->
+    <ol class="timeline">
+      @for (exp of experiences; track exp.id; let i = $index) {
+        <li
           class="timeline-card"
           [attr.data-id]="exp.id"
-          [ngClass]="{
-            visible: isVisible(exp.id),
-            left: exp.id % 2 !== 0,
-            right: exp.id % 2 === 0,
-          }"
+          [ngClass]="{ visible: isVisible(exp.id) }"
         >
-          <div class="timeline-dot">
-            <span class="dot-icon">{{ getTypeIcon(exp.type) }}</span>
-          </div>
-
-          <div class="card-content">
-            <div class="card-header">
-              <span class="card-type" [ngClass]="exp.type">{{
-                getTypeLabel(exp.type)
-              }}</span>
-              <span class="card-date">{{ exp.date }}</span>
-            </div>
-
-            <h3>{{ exp.title }}</h3>
-            <h4>{{ exp.institution }}</h4>
+          <aside class="card-meta">
+            <span class="card-num">{{ (i + 1).toString().padStart(2, '0') }}</span>
+            <span class="card-type" [ngClass]="exp.type">{{ getTypeLabel(exp.type) }}</span>
+            <span class="card-date">{{ exp.date }}</span>
             @if (exp.location) {
-              <p class="card-location">📍 {{ exp.location }}</p>
+              <span class="card-location">{{ exp.location }}</span>
             }
+          </aside>
 
-            <p class="card-description">{{ exp.description }}</p>
+          <div class="card-body">
+            <h2 class="card-title">{{ i18n.etx(exp.id, 'title', exp.title) }}</h2>
+            <p class="card-institution">{{ exp.institution }}</p>
 
-            @if (exp.highlights) {
-              <div class="card-highlights">
-                @for (highlight of exp.highlights; track highlight) {
-                  <div class="highlight-item">
-                    <span class="highlight-check">✓</span>
+            <p class="card-description">{{ i18n.etx(exp.id, 'description', exp.description) }}</p>
+
+            @if (exp.highlights && exp.highlights.length) {
+              <ul class="card-highlights">
+                @for (highlight of i18n.etx(exp.id, 'highlights', exp.highlights); track highlight) {
+                  <li>
+                    <span class="hl-bullet">—</span>
                     {{ highlight }}
-                  </div>
+                  </li>
                 }
-              </div>
-            }
-
-            @if (exp.image) {
-              <div class="card-image" (click)="openLightbox(exp.image)">
-                <img [src]="exp.image" [alt]="exp.title" />
-                <div class="image-zoom-icon">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="M21 21l-4.35-4.35" />
-                    <path d="M11 8v6M8 11h6" />
-                  </svg>
-                </div>
-              </div>
+              </ul>
             }
 
             @if (exp.documents && exp.documents.length > 0) {
               <div class="card-documents">
-                <p class="documents-label">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                    <polyline points="14 2 14 8 20 8"/>
-                    <line x1="16" y1="13" x2="8" y2="13"/>
-                    <line x1="16" y1="17" x2="8" y2="17"/>
-                  </svg>
-                  Dokumente & Zeugnisse
-                </p>
-                @for (doc of exp.documents; track doc.label) {
-                  <a [href]="doc.url" target="_blank" class="document-link">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                      <polyline points="7 10 12 15 17 10"/>
-                      <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    {{ doc.label }}
-                  </a>
-                }
+                <p class="docs-label">{{ i18n.t('exp.docs') }}</p>
+                <ul>
+                  @for (doc of exp.documents; track doc.label) {
+                    <li>
+                      <a [href]="doc.url" target="_blank" class="doc-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                          <polyline points="14 2 14 8 20 8" />
+                        </svg>
+                        <span>{{ doc.label }}</span>
+                        <span class="ext">↗</span>
+                      </a>
+                    </li>
+                  }
+                </ul>
               </div>
             }
+
+            @if (exp.image) {
+              <figure class="card-figure" (click)="openLightbox(exp.image)">
+                <img [src]="exp.image" [alt]="exp.title" loading="lazy" />
+                <figcaption>
+                  <span class="cap-num">Fig. {{ (i + 1).toString().padStart(2, '0') }}</span>
+                  <span class="cap-text">{{ exp.institution }}</span>
+                  <span class="cap-zoom">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                      <circle cx="11" cy="11" r="8" />
+                      <path d="M21 21l-4.35-4.35M11 8v6M8 11h6" />
+                    </svg>
+                  </span>
+                </figcaption>
+              </figure>
+            }
           </div>
-        </div>
+        </li>
       }
-    </div>
+    </ol>
   </div>
 </section>
 
 <!-- Lightbox -->
 @if (selectedImage()) {
-  <div class="lightbox" (click)="closeLightbox()">
+  <div class="lightbox" (click)="closeLightbox()" role="dialog" aria-label="Bildvorschau">
     <button
       class="lightbox-close"
       (click)="closeLightbox()"
       aria-label="Schließen"
     >
-      ✕
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M18 6L6 18M6 6l12 12" />
+      </svg>
     </button>
     <img [src]="selectedImage()" alt="Vorschau" />
   </div>

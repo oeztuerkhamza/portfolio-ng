@@ -1,9 +1,10 @@
 // ============================================
-// GLOBAL STYLES — PREMIUM PORTFOLIO
+// GLOBAL STYLES — EDITORIAL BLACK & GOLD
 // ============================================
 @import "styles/variables";
 
-@import url("https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap");
+// --- Fonts ---
+@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,300;1,9..144,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
 // --- Reset & Base ---
 *,
@@ -17,33 +18,78 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   font-family: $font-body;
-  background-color: $bg-dark;
-  color: $text-primary;
+  background-color: $ink;
+  color: $paper-soft;
+  font-size: 1rem;
   line-height: 1.7;
+  font-weight: 400;
+  font-feature-settings: "ss01", "cv11";
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: $font-heading;
-  color: $text-pure;
-  line-height: 1.2;
+// --- Headings — Fraunces Editorial ---
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-display;
+  color: $paper;
+  line-height: 1.05;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  font-feature-settings: "ss01", "lnum";
+}
+
+h1 {
+  font-size: clamp(2.75rem, 7vw, 6rem);
+  font-weight: 300;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: -0.025em;
+  line-height: 1;
+}
+
+h3 {
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400;
+  letter-spacing: -0.015em;
+}
+
+h4 {
+  font-size: 1.15rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+p {
+  color: $paper-soft;
+  font-weight: 400;
+}
+
+em, .italic {
+  font-style: italic;
+  color: $paper;
 }
 
 a {
   text-decoration: none;
   color: inherit;
   transition: $transition-fast;
+
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 }
 
 img {
@@ -52,140 +98,260 @@ img {
   display: block;
 }
 
-ul,
-ol {
+ul, ol {
   list-style: none;
 }
 
-// --- Noise Overlay ---
-.noise-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 1000;
-  opacity: 0.025;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 3px;
+  }
 }
 
-// --- Utility Classes ---
+// --- Paper / Grain Overlay (replaces noise) ---
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+// --- Layout Utilities ---
 .container {
   @include container;
+}
+
+.container-narrow {
+  @include container-narrow;
 }
 
 .section-padding {
   @include section-padding;
 }
 
+// --- Editorial Typography Utilities ---
+.eyebrow,
+.section-label {
+  @include small-caps;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+
+  &::before {
+    content: "";
+    width: 24px;
+    height: 1px;
+    background: $gold;
+  }
+}
+
+.mono {
+  font-family: $font-mono;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  color: $paper-mute;
+}
+
+.numeral {
+  @include numeral;
+}
+
 .section-title {
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  font-weight: 800;
-  margin-bottom: 1rem;
-  letter-spacing: -1px;
+  font-family: $font-display;
+  font-size: clamp(2.5rem, 6vw, 5rem);
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  line-height: 0.98;
+  color: $paper;
+  margin-bottom: 1.5rem;
+
+  em {
+    font-style: italic;
+    color: $gold;
+    font-weight: 300;
+  }
 }
 
 .section-subtitle {
-  font-size: 1.1rem;
-  color: $text-secondary;
-  max-width: 600px;
+  font-family: $font-body;
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: $paper-dim;
+  max-width: 56ch;
   margin-bottom: 4rem;
 }
 
 .accent-dot {
-  @include gradient-text;
+  color: $gold;
+  font-style: italic;
+  font-family: $font-display;
 }
 
-// --- Buttons ---
+// --- Hairline Rules ---
+.rule {
+  height: 1px;
+  background: $rule;
+  border: 0;
+  margin: 0;
+}
+
+.rule-gold {
+  height: 1px;
+  width: 48px;
+  background: $gold;
+  border: 0;
+  display: block;
+  margin: 1.5rem 0;
+}
+
+// --- Buttons — Editorial ---
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 32px;
-  font-weight: 600;
-  font-size: 0.95rem;
+  gap: 12px;
+  padding: 16px 32px;
   font-family: $font-body;
-  border: none;
-  border-radius: 50px;
+  font-weight: 500;
+  font-size: 0.86rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+  border-radius: 0;
   cursor: pointer;
   transition: $transition-normal;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  min-height: 48px;
+
+  svg {
+    transition: transform $transition-normal;
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover svg {
+    transform: translateX(4px);
+  }
 
   &-primary {
-    background: $accent-gradient;
-    color: $text-pure;
-    box-shadow: 0 4px 20px $accent-glow-blue;
+    background: $paper;
+    color: $ink;
+    border-color: $paper;
 
     &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px $accent-glow;
+      background: $gold;
+      border-color: $gold;
+      color: $ink;
     }
   }
 
   &-secondary {
     background: transparent;
-    color: $text-pure;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: $paper;
+    border: 1px solid $rule-strong;
 
     &:hover {
-      border-color: $text-pure;
-      background: $glass-bg;
-      transform: translateY(-2px);
+      border-color: $gold;
+      color: $gold;
+    }
+  }
+
+  &-gold {
+    background: transparent;
+    color: $gold;
+    border: 1px solid $gold;
+
+    &:hover {
+      background: $gold;
+      color: $ink;
     }
   }
 
   &-ghost {
     background: transparent;
-    color: $accent-primary;
-    padding: 10px 0;
+    color: $paper-dim;
+    padding: 12px 0;
+    border: none;
+    border-bottom: 1px solid $rule-strong;
+    border-radius: 0;
+    min-height: auto;
 
     &:hover {
-      color: $text-pure;
+      color: $gold;
+      border-color: $gold;
     }
   }
 
   &-large {
-    padding: 18px 40px;
-    font-size: 1.05rem;
+    padding: 20px 40px;
+    font-size: 0.9rem;
   }
 }
 
-// --- Tags ---
+// --- Tags / Chips — Editorial ---
 .tag {
   display: inline-block;
   padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  @include glass;
-  color: $accent-primary;
+  border: 1px solid $rule-strong;
+  border-radius: 0;
+  font-family: $font-mono;
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  color: $paper-dim;
+  text-transform: uppercase;
+  background: transparent;
+  transition: $transition-fast;
+
+  &:hover {
+    border-color: $gold;
+    color: $gold;
+  }
 }
 
 // --- Scrollbar ---
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: $bg-dark;
+  background: $ink;
 }
 ::-webkit-scrollbar-thumb {
-  background: $bg-elevated;
-  border-radius: 3px;
-
+  background: $ink-card;
   &:hover {
-    background: $text-muted;
+    background: $gold-deep;
   }
 }
 
 // --- Selection ---
 ::selection {
-  background: rgba($accent-primary, 0.3);
-  color: $text-pure;
+  background: $gold;
+  color: $ink;
 }
 
-// --- Route transition wrapper ---
+// --- Page wrapper / route transition ---
 .page-wrapper {
   min-height: 100vh;
+}
+
+// --- Reduced motion ---
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

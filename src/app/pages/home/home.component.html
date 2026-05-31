@@ -1,234 +1,361 @@
-<!-- HERO SECTION -->
+<!-- ────────────────────────────────────────────── -->
+<!-- HERO — Magazine cover                          -->
+<!-- ────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-bg">
-    <div class="gradient-orb orb-1"></div>
-    <div class="gradient-orb orb-2"></div>
-    <div class="grid-overlay"></div>
-  </div>
+  <div class="hero-grid">
 
-  <div class="hero-content" @fadeIn>
-    <div class="hero-badge">
-      <span class="badge-dot"></span>
-      Verfügbar für neue Projekte
-    </div>
-    <p class="greeting">Hallo, ich bin</p>
-    <h1 class="name">Hamza<br />Öztürk</h1>
-    <h2 class="typed-title">
-      <span class="typed">{{ typedText() }}</span>
-      <span class="cursor"></span>
-    </h2>
-    <p class="hero-description">
-      Leidenschaftlicher Entwickler mit Fokus auf ästhetische, funktionale und
-      skalierbare Software. Ich verbinde moderne Webtechnologien mit Clean
-      Architecture, um erstklassige Lösungen zu schaffen.
-    </p>
-    <div class="hero-buttons">
-      <a routerLink="/projects" class="btn btn-primary btn-large">
-        Projekte ansehen
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
+    <header class="folio-line">
+      <span class="folio-num">Folio &numero;01</span>
+      <span class="folio-sep" aria-hidden="true">—</span>
+      <span class="folio-place">Freiburg im Breisgau, DE</span>
+      <span class="folio-sep" aria-hidden="true">—</span>
+      <span class="folio-status">
+        <span class="status-dot" aria-hidden="true"></span>
+        {{ i18n.t('home.hero.available') }}
+      </span>
+    </header>
+
+    <hr class="rule rule-top" />
+
+    <div class="hero-body" @fadeIn>
+      <p class="hero-eyebrow">{{ i18n.t('home.hero.eyebrow') }}</p>
+      <h1 class="hero-name">
+        Hamza<br />
+        <em>Öztürk</em>
+      </h1>
+
+      <div class="hero-role">
+        <span class="role-mono">{{ '/* role */' }}</span>
+        <span class="role-text">{{ typedText() }}</span>
+      </div>
+
+      <div class="hero-lede">
+        <p class="lede-num"><span class="numeral">i</span></p>
+        <p class="lede-text">{{ i18n.t('home.hero.lede') }}</p>
+      </div>
+
+      <div class="hero-actions">
+        <a [routerLink]="'/projects' | localize" class="btn btn-primary btn-large">
+          {{ i18n.t('cta.view_work') }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
+        </a>
+        <a
+          href="assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf"
+          target="_blank"
+          rel="noopener"
+          class="btn btn-secondary btn-large"
         >
+          {{ i18n.t('cta.cv_pdf') }}
+        </a>
+      </div>
+    </div>
+
+    <hr class="rule rule-bottom" />
+
+    <!-- Cover index -->
+    <div class="cover-index">
+      <div class="idx-col">
+        <span class="idx-num">01</span>
+        <span class="idx-label">{{ i18n.t('home.idx.about') }}</span>
+      </div>
+      <div class="idx-col">
+        <span class="idx-num">02</span>
+        <span class="idx-label">{{ i18n.t('home.idx.stats') }}</span>
+      </div>
+      <div class="idx-col">
+        <span class="idx-num">03</span>
+        <span class="idx-label">{{ i18n.t('home.idx.stack') }}</span>
+      </div>
+      <div class="idx-col">
+        <span class="idx-num">04</span>
+        <span class="idx-label">{{ i18n.t('home.idx.work') }}</span>
+      </div>
+      <div class="idx-scroll">
+        <span class="scroll-text">{{ i18n.t('home.idx.scroll') }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <path d="M12 5v14M5 12l7 7 7-7" />
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 01 · ABOUT — Drop cap article                  -->
+<!-- ────────────────────────────────────────────── -->
+<section class="about" id="about-section" data-animate>
+  <div class="container">
+    <div class="section-head" [ngClass]="{ visible: isVisible('about-section') }">
+      <p class="section-label">
+        <span class="num">01</span> {{ i18n.t('home.about.label') }}
+      </p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.about.title')"></h2>
+    </div>
+
+    <div class="about-grid" [ngClass]="{ visible: isVisible('about-section') }">
+      <article class="about-prose">
+        <p class="lead" [innerHTML]="i18n.t('home.about.lead')"></p>
+        <p [innerHTML]="i18n.t('home.about.p2')"></p>
+        <p [innerHTML]="i18n.t('home.about.p3')"></p>
+        <div class="about-actions">
+          <a [routerLink]="'/experience' | localize" class="btn btn-ghost">{{ i18n.t('nav.experience') }} →</a>
+          <a [routerLink]="'/contact' | localize" class="btn btn-ghost">{{ i18n.t('cta.contact') }} →</a>
+        </div>
+      </article>
+
+      <aside class="about-portrait">
+        <figure>
+          <div class="portrait-frame">
+            <img src="assets/images/profile.jpg" alt="Porträt Hamza Öztürk" />
+          </div>
+          <figcaption>
+            <span class="cap-num">Fig. 01</span>
+            <span class="cap-text">{{ i18n.t('home.about.caption') }}</span>
+          </figcaption>
+        </figure>
+      </aside>
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 02 · STATS — Editorial numerals                -->
+<!-- ────────────────────────────────────────────── -->
+<section class="stats" id="stats-section" data-animate>
+  <div class="container">
+    <hr class="rule" />
+    <div class="stats-grid" [ngClass]="{ visible: isVisible('stats-section') }">
+      @for (stat of stats; track stat.label; let i = $index) {
+        <div class="stat-cell">
+          <span class="stat-num">{{ counterValues()[i] }}<em>{{ stat.suffix }}</em></span>
+          <span class="stat-label">{{ i18n.t(stat.key) }}</span>
+        </div>
+      }
+    </div>
+    <hr class="rule" />
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 03 · STACK — Editorial skill list              -->
+<!-- ────────────────────────────────────────────── -->
+<section class="stack" id="skills-section" data-animate>
+  <div class="container">
+    <div class="section-head">
+      <p class="section-label">
+        <span class="num">03</span> {{ i18n.t('home.stack.label') }}
+      </p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.stack.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('home.stack.subtitle') }}</p>
+    </div>
+
+    <div class="stack-grid" [ngClass]="{ visible: isVisible('skills-section') }">
+      @for (category of skills; track category.title; let ci = $index) {
+        <div class="stack-col">
+          <header class="stack-col-head">
+            <span class="col-num">0{{ ci + 1 }}</span>
+            <h3 class="col-title">{{ i18n.t(category.key) }}</h3>
+          </header>
+          <ul class="stack-list">
+            @for (skill of category.skills; track skill.name) {
+              <li class="stack-row">
+                <span class="row-name">{{ skill.name }}</span>
+                <span class="row-bar">
+                  <span
+                    class="row-fill"
+                    [style.width.%]="isVisible('skills-section') ? skill.level : 0"
+                  ></span>
+                </span>
+                <span class="row-pct">{{ skill.level }}<em>%</em></span>
+              </li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 04 · WORK — Featured case studies              -->
+<!-- ────────────────────────────────────────────── -->
+<section class="work" id="featured-section" data-animate>
+  <div class="container">
+    <div class="work-head">
+      <div>
+        <p class="section-label">
+          <span class="num">04</span> {{ i18n.t('home.work.label') }}
+        </p>
+        <h2 class="section-title" [innerHTML]="i18n.t('home.work.title')"></h2>
+      </div>
+      <a [routerLink]="'/projects' | localize" class="btn btn-secondary">
+        {{ i18n.t('cta.all_projects') }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M5 12h14M12 5l7 7-7 7" />
         </svg>
       </a>
-      <a
-        href="assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf"
-        target="_blank"
-        class="btn btn-secondary btn-large"
-      >
-        Lebenslauf (PDF)
+    </div>
+
+    <ul class="work-list" [ngClass]="{ visible: isVisible('featured-section') }">
+      @for (project of featuredProjects; track project.slug; let i = $index) {
+        <li class="work-row">
+          <a [routerLink]="['/projects', project.slug] | localize" class="work-link">
+            <span class="work-num">0{{ i + 1 }}</span>
+
+            <div class="work-meta">
+              <h3 class="work-title">{{ project.title }}</h3>
+              <p class="work-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
+              <ul class="work-tags">
+                @for (tag of project.tags.slice(0, 3); track tag) {
+                  <li>{{ tag }}</li>
+                }
+              </ul>
+            </div>
+
+            <div class="work-thumb">
+              @if (project.image) {
+                <img [src]="project.image" [alt]="project.title" loading="lazy" />
+              } @else {
+                <div class="thumb-fallback">{{ project.title[0] }}</div>
+              }
+            </div>
+
+            <span class="work-arrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </span>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 05 · LIVE-DEMOS — Interactive browser preview   -->
+<!-- ────────────────────────────────────────────── -->
+<section class="demos" id="demos-section" data-animate>
+  <div class="container">
+    <div class="section-head">
+      <p class="section-label"><span class="num">05</span> {{ i18n.t('home.demos.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.demos.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('home.demos.subtitle') }}</p>
+    </div>
+
+    <div class="demo-shell" [ngClass]="{ visible: isVisible('demos-section') }">
+      <aside class="demo-tabs" role="tablist" aria-label="Projekt-Demos">
+        @for (project of demoProjects; track project.slug; let i = $index) {
+          <button
+            type="button"
+            class="demo-tab"
+            role="tab"
+            [class.active]="i === activeDemo()"
+            [attr.aria-selected]="i === activeDemo()"
+            (click)="selectDemo(i)"
+          >
+            <span class="tab-index">0{{ i + 1 }}</span>
+            <span class="tab-meta">
+              <span class="tab-title">{{ project.title }}</span>
+              <span class="tab-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</span>
+            </span>
+            <span class="tab-arrow" aria-hidden="true">→</span>
+          </button>
+        }
+      </aside>
+
+      <div class="demo-stage">
+        @for (project of demoProjects; track project.slug; let i = $index) {
+          @if (i === activeDemo() && project.demo) {
+            <div class="demo-active">
+              <app-live-demo [demo]="project.demo" [title]="project.title" />
+              <div class="demo-foot">
+                <p>{{ i18n.ptx(project.slug, 'description', project.description) }}</p>
+                <a [routerLink]="['/projects', project.slug] | localize" class="btn btn-ghost">
+                  {{ i18n.t('cta.read_case') }}
+                </a>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- 06 · LEISTUNGEN — Freelance services (Freiburg)  -->
+<!-- ────────────────────────────────────────────── -->
+<section class="services" id="services-section" data-animate>
+  <div class="container">
+    <div class="section-head">
+      <p class="section-label"><span class="num">06</span> {{ i18n.t('home.services.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.services.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('home.services.subtitle') }}</p>
+    </div>
+
+    <div class="service-grid" [ngClass]="{ visible: isVisible('services-section') }">
+      <article class="service-card">
+        <span class="svc-num">01</span>
+        <h3>{{ i18n.t('svc.new.title') }}</h3>
+        <p>{{ i18n.t('svc.new.text') }}</p>
+      </article>
+      <article class="service-card">
+        <span class="svc-num">02</span>
+        <h3>{{ i18n.t('svc.relaunch.title') }}</h3>
+        <p>{{ i18n.t('svc.relaunch.text') }}</p>
+      </article>
+      <article class="service-card">
+        <span class="svc-num">03</span>
+        <h3>{{ i18n.t('svc.app.title') }}</h3>
+        <p>{{ i18n.t('svc.app.text') }}</p>
+      </article>
+      <article class="service-card">
+        <span class="svc-num">04</span>
+        <h3>{{ i18n.t('svc.shop.title') }}</h3>
+        <p>{{ i18n.t('svc.shop.text') }}</p>
+      </article>
+    </div>
+
+    <div class="services-cta">
+      <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary">
+        {{ i18n.t('home.services.more') }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
       </a>
     </div>
   </div>
-
-  <div class="hero-visual">
-    <div class="glass-card floating">
-      <div class="card-icon">💻</div>
-      <div class="card-text">
-        <strong>Clean Architecture</strong>
-        <span>Skalierbare Systeme</span>
-      </div>
-    </div>
-    <div class="glass-card floating delay-1">
-      <div class="card-icon">☁️</div>
-      <div class="card-text">
-        <strong>Azure Cloud</strong>
-        <span>CI/CD & Automatisierung</span>
-      </div>
-    </div>
-    <div class="glass-card floating delay-2">
-      <div class="card-icon">🅰️</div>
-      <div class="card-text">
-        <strong>Angular 19</strong>
-        <span>Standalone & SSR</span>
-      </div>
-    </div>
-    <div class="glass-card floating delay-3">
-      <div class="card-icon">🔷</div>
-      <div class="card-text">
-        <strong>.NET 10</strong>
-        <span>REST APIs & Microservices</span>
-      </div>
-    </div>
-    <div class="profile-frame">
-      <img
-        src="assets/images/profile.jpg"
-        alt="Hamza Öztürk"
-        class="profile-img"
-      />
-      <div class="frame-glow"></div>
-    </div>
-  </div>
 </section>
 
-<!-- STATS SECTION -->
-<section class="stats-section" id="stats-section" data-animate>
+
+<!-- ────────────────────────────────────────────── -->
+<!-- CTA — Auftrag                                    -->
+<!-- ────────────────────────────────────────────── -->
+<section class="home-cta">
   <div class="container">
-    <div class="stats-grid" [ngClass]="{ visible: isVisible('stats-section') }">
-      @for (stat of stats; track stat.label; let i = $index) {
-        <div class="stat-item">
-          <span class="stat-value">{{ counterValues()[i] }}{{ stat.suffix }}</span>
-          <span class="stat-label">{{ stat.label }}</span>
-        </div>
-      }
-    </div>
-  </div>
-</section>
-
-<!-- ABOUT SECTION -->
-<section class="about section-padding" id="about-section" data-animate>
-  <div class="container">
-    <div class="about-grid" [ngClass]="{ visible: isVisible('about-section') }">
-      <div class="about-text">
-        <p class="section-label">Über mich</p>
-        <h2 class="section-title">
-          Entwickler mit Leidenschaft<br />für exzellenten Code<span
-            class="accent-dot"
-            >.</span
-          >
-        </h2>
-        <p class="about-description">
-          Ich bin Hamza — ein Full-Stack-Entwickler mit Erfahrung in der
-          Modernisierung komplexer Systeme. Mein Schwerpunkt liegt auf
-          <strong>C#/.NET</strong> und modernen Frontends wie
-          <strong>Angular</strong> und <strong>React</strong>.
-        </p>
-        <p class="about-description">
-          In meiner bisherigen Laufbahn habe ich unter anderem
-          Legacy-Desktop-Anwendungen erfolgreich in moderne Web-Lösungen
-          überführt, Cloud-Infrastrukturen auf Azure aufgebaut und
-          CI/CD-Pipelines etabliert.
-        </p>
-        <div class="about-actions">
-          <a routerLink="/experience" class="btn btn-primary"
-            >Werdegang ansehen</a
-          >
-          <a routerLink="/contact" class="btn btn-secondary">Kontakt</a>
-        </div>
-      </div>
-      <div class="about-image">
-        <div class="image-wrapper">
-          <img src="assets/images/profile.jpg" alt="Hamza Öztürk" />
-          <div class="image-border"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SKILLS SECTION -->
-<section class="skills section-padding" id="skills-section" data-animate>
-  <div class="container">
-    <p class="section-label">Fähigkeiten</p>
-    <h2 class="section-title">
-      Mein Tech Stack<span class="accent-dot">.</span>
-    </h2>
-    <p class="section-subtitle">
-      Technologien, die ich täglich einsetze, um hochwertige Lösungen zu
-      entwickeln.
-    </p>
-
-    <div
-      class="skills-grid"
-      [ngClass]="{ visible: isVisible('skills-section') }"
-    >
-      @for (category of skills; track category.title) {
-        <div class="skill-card">
-          <div class="skill-card-header">
-            <span class="skill-icon">{{ category.icon }}</span>
-            <h3>{{ category.title }}</h3>
-          </div>
-          <div class="skill-list">
-            @for (skill of category.skills; track skill.name) {
-              <div class="skill-item">
-                <div class="skill-info">
-                  <span class="skill-name">{{ skill.name }}</span>
-                  <span class="skill-level">{{ skill.level }}%</span>
-                </div>
-                <div class="skill-bar">
-                  <div
-                    class="skill-fill"
-                    [style.width.%]="
-                      isVisible('skills-section') ? skill.level : 0
-                    "
-                  ></div>
-                </div>
-              </div>
-            }
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-</section>
-
-<!-- FEATURED PROJECTS -->
-<section class="featured section-padding" id="featured-section" data-animate>
-  <div class="container">
-    <div class="featured-header">
-      <div>
-        <p class="section-label">Projekte</p>
-        <h2 class="section-title">
-          Ausgewählte Arbeiten<span class="accent-dot">.</span>
-        </h2>
-      </div>
-      <a routerLink="/projects" class="btn btn-secondary">Alle Projekte →</a>
-    </div>
-
-    <div
-      class="featured-grid"
-      [ngClass]="{ visible: isVisible('featured-section') }"
-    >
-      @for (project of featuredProjects; track project.slug) {
-        <a [routerLink]="['/projects', project.slug]" class="featured-card">
-          <div class="card-image">
-            @if (project.image) {
-              <img [src]="project.image" [alt]="project.title" />
-            } @else {
-              <div class="card-placeholder">
-                <span>{{ project.title[0] }}</span>
-              </div>
-            }
-            <div class="card-overlay">
-              <span class="view-label">Details ansehen →</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="card-tags">
-              @for (tag of project.tags; track tag) {
-                <span class="tag">{{ tag }}</span>
-              }
-            </div>
-            <h3>{{ project.title }}</h3>
-            <p>{{ project.description }}</p>
-          </div>
+    <hr class="rule" />
+    <div class="cta-inner">
+      <p class="section-label"><span class="num">07</span> {{ i18n.t('home.cta.label') }}</p>
+      <h2 class="cta-title" [innerHTML]="i18n.t('home.cta.title')"></h2>
+      <p class="cta-text">{{ i18n.t('home.cta.text') }}</p>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+          {{ i18n.t('cta.request') }}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M5 12h14M12 5l7 7-7 7" />
+          </svg>
         </a>
-      }
+        <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary btn-large">{{ i18n.t('cta.services') }}</a>
+      </div>
     </div>
   </div>
 </section>

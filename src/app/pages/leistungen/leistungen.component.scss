@@ -1,0 +1,172 @@
+@import "../../../styles/variables";
+
+.leistungen { padding: clamp(110px, 16vh, 180px) 0 clamp(60px, 10vh, 120px); }
+
+.rule { border: 0; border-top: 1px solid $rule; margin: 1.6rem 0; }
+
+.folio-line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  @include mono-label;
+  .folio-sep { color: $paper-faint; }
+}
+
+.section-label {
+  @include small-caps;
+  margin-bottom: 1rem;
+  .num { color: $gold; font-family: $font-mono; margin-right: 0.5rem; }
+}
+
+.section-title {
+  font-family: $font-display;
+  font-weight: 300;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: $paper;
+  em { font-style: italic; color: $gold; }
+}
+
+.section-subtitle {
+  color: $paper-dim;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  max-width: 56ch;
+  strong { color: $paper-soft; font-weight: 600; }
+}
+
+.header-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: clamp(1.5rem, 5vw, 4rem);
+  align-items: end;
+  @media (max-width: $bp-tablet) { grid-template-columns: 1fr; }
+}
+
+/* Services */
+.svc-list {
+  margin: clamp(3rem, 7vw, 5rem) 0;
+  display: flex;
+  flex-direction: column;
+}
+.svc-item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: clamp(1rem, 4vw, 3rem);
+  padding: clamp(2rem, 4vw, 3rem) 0;
+  @include hairline-top;
+
+  .svc-num {
+    @include numeral;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+  }
+  h2 {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    color: $paper;
+    margin-bottom: 0.8rem;
+  }
+  .svc-text { color: $paper-dim; font-size: 1.05rem; line-height: 1.7; max-width: 60ch; margin-bottom: 1.4rem; }
+  .svc-points {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem 1.5rem;
+    @media (max-width: $bp-tablet) { grid-template-columns: 1fr; }
+    li {
+      position: relative;
+      padding-left: 1.4rem;
+      color: $paper-soft;
+      font-size: 0.95rem;
+      &::before { content: "→"; position: absolute; left: 0; color: $gold; }
+    }
+  }
+}
+
+/* Why */
+.why { @include section-padding; }
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1px;
+  margin-top: 2.5rem;
+  background: $rule;
+  border: 1px solid $rule;
+}
+.why-card {
+  padding: 1.8rem;
+  background: $ink;
+  transition: background $transition-normal;
+  h3 { font-family: $font-body; font-weight: 600; font-size: 1.05rem; color: $paper; margin-bottom: 0.6rem; }
+  p { color: $paper-dim; font-size: 0.95rem; line-height: 1.6; }
+  &:hover { background: $ink-soft; }
+}
+
+/* Process */
+.process { @include section-padding; @include hairline-top; }
+.process-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+  list-style: none;
+  counter-reset: none;
+  @media (max-width: $bp-desktop) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: $bp-mobile) { grid-template-columns: 1fr; }
+}
+.process-step {
+  padding-top: 1.2rem;
+  border-top: 2px solid $rule-gold;
+  .step-num { @include numeral; font-size: 1.6rem; display: block; margin-bottom: 0.8rem; }
+  h3 { font-family: $font-body; font-weight: 600; font-size: 1.1rem; color: $paper; margin-bottom: 0.5rem; }
+  p { color: $paper-dim; font-size: 0.92rem; line-height: 1.6; }
+}
+
+/* FAQ */
+.faq { @include section-padding; @include hairline-top; }
+.faq-list { margin-top: 2.5rem; border-top: 1px solid $rule; }
+.faq-item {
+  border-bottom: 1px solid $rule;
+  summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 1.3rem 2.5rem 1.3rem 0;
+    position: relative;
+    font-family: $font-body;
+    font-weight: 500;
+    font-size: 1.1rem;
+    color: $paper-soft;
+    transition: color $transition-fast;
+    &::-webkit-details-marker { display: none; }
+    &::after {
+      content: "+";
+      position: absolute;
+      right: 0; top: 50%;
+      transform: translateY(-50%);
+      font-size: 1.6rem;
+      color: $gold;
+      transition: transform $transition-fast;
+    }
+    &:hover { color: $paper; }
+  }
+  &[open] summary::after { transform: translateY(-50%) rotate(45deg); }
+  p { padding: 0 0 1.4rem; color: $paper-dim; line-height: 1.7; max-width: 70ch; }
+}
+
+/* CTA */
+.svc-cta {
+  @include section-padding;
+  text-align: center;
+  h2 {
+    font-family: $font-display;
+    font-weight: 300;
+    font-size: clamp(2rem, 5vw, 3.8rem);
+    line-height: 1.05;
+    color: $paper;
+    margin: 1.5rem 0 1rem;
+    em { font-style: italic; color: $gold; }
+  }
+  p { color: $paper-dim; font-size: 1.1rem; margin-bottom: 2rem; }
+  .rule { max-width: 64px; margin: 0 auto; border-top-color: $gold; }
+}

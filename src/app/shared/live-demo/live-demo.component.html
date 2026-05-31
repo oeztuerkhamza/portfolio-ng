@@ -1,0 +1,113 @@
+@let isMobile = demo.type === 'mobile';
+
+<div class="live-demo" [ngClass]="isMobile ? 'is-phone' : 'is-browser'">
+
+  <!-- ===== Browser frame (iframe / image / video) ===== -->
+  @if (!isMobile) {
+    <div class="chrome">
+      <span class="dot red"></span>
+      <span class="dot amber"></span>
+      <span class="dot green"></span>
+      <div class="omnibox">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+          <rect x="5" y="11" width="14" height="9" rx="2" />
+          <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+        </svg>
+        <span class="url">{{ displayUrl }}</span>
+      </div>
+      @if (demo.url) {
+        <a class="open-tab" [href]="demo.url" target="_blank" rel="noopener" [attr.aria-label]="'Live öffnen: ' + title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+            <polyline points="15 3 21 3 21 9" /><line x1="10" y1="14" x2="21" y2="3" />
+          </svg>
+        </a>
+      }
+    </div>
+
+    <div class="viewport">
+      <!-- iframe demo -->
+      @if (demo.type === 'iframe') {
+        @if (safeUrl(); as src) {
+          @if (!frameLoaded()) {
+            <div class="frame-loading"><span class="spinner"></span>{{ i18n.t('demo.loading') }}</div>
+          }
+          <iframe
+            [src]="src"
+            [title]="title + ' — Live-Demo'"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            (load)="onFrameLoad()"
+            sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>
+        } @else {
+          <button type="button" class="poster" (click)="startDemo()"
+                  [style.backgroundImage]="demo.poster ? 'url(' + demo.poster + ')' : null">
+            <span class="play">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </span>
+            <span class="poster-label">Demo starten</span>
+            @if (demo.note) { <span class="poster-note">{{ demo.note }}</span> }
+          </button>
+        }
+      }
+
+      <!-- video demo -->
+      @else if (demo.type === 'video' && demo.videoUrl) {
+        <video [poster]="demo.poster || null" autoplay muted loop playsinline preload="none">
+          <source [src]="demo.videoUrl" />
+        </video>
+      }
+
+      <!-- image gallery demo -->
+      @else if (screens().length) {
+        <div class="gallery">
+          @for (s of screens(); track s; let i = $index) {
+            <img [src]="s" [alt]="title + ' Screenshot ' + (i + 1)"
+                 [class.active]="i === activeScreen()" loading="lazy" />
+          }
+          @if (screens().length > 1) {
+            <button type="button" class="nav prev" (click)="prev()" aria-label="Vorheriges Bild">‹</button>
+            <button type="button" class="nav next" (click)="next()" aria-label="Nächstes Bild">›</button>
+            <div class="dots">
+              @for (s of screens(); track s; let i = $index) {
+                <button type="button" [class.on]="i === activeScreen()" (click)="go(i)"
+                        [attr.aria-label]="'Bild ' + (i + 1)"></button>
+              }
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    @if (demo.type === 'iframe' && loaded() && demo.url) {
+      <p class="frame-note">
+        {{ i18n.t('demo.blocked') }}
+        <a [href]="demo.url" target="_blank" rel="noopener">{{ i18n.t('demo.open_tab') }}</a>
+      </p>
+    } @else if (demo.note && demo.type !== 'iframe') {
+      <p class="frame-note">{{ demo.note }}</p>
+    }
+  }
+
+  <!-- ===== Phone frame (mobile) ===== -->
+  @else {
+    <div class="phone">
+      <span class="notch"></span>
+      <div class="phone-screen">
+        @for (s of screens(); track s; let i = $index) {
+          <img [src]="s" [alt]="title + ' Screen ' + (i + 1)"
+               [class.active]="i === activeScreen()" loading="lazy" />
+        }
+      </div>
+    </div>
+    @if (screens().length > 1) {
+      <div class="dots dark">
+        @for (s of screens(); track s; let i = $index) {
+          <button type="button" [class.on]="i === activeScreen()" (click)="go(i)"
+                  [attr.aria-label]="'Screen ' + (i + 1)"></button>
+        }
+      </div>
+    }
+    @if (demo.note) { <p class="frame-note">{{ demo.note }}</p> }
+  }
+</div>

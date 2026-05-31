@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 800" role="img" aria-label="Hotel Bergfrieden Löffingen">
+  <defs>
+    <linearGradient id="hbf-bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#16271a"/>
+      <stop offset="0.6" stop-color="#1f3322"/>
+      <stop offset="1" stop-color="#0f1d13"/>
+    </linearGradient>
+    <linearGradient id="hbf-bronze" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#bc8945"/>
+      <stop offset="1" stop-color="#e0b878"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="800" fill="url(#hbf-bg)"/>
+  <!-- mountains -->
+  <path d="M0 560 L240 360 L420 520 L640 300 L860 520 L1040 380 L1280 560 L1280 800 L0 800 Z" fill="#0c1810" fill-opacity="0.7"/>
+  <path d="M0 620 L300 460 L520 600 L760 440 L1010 600 L1280 470 L1280 800 L0 800 Z" fill="#091309" fill-opacity="0.8"/>
+  <text x="640" y="300" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-size="38" letter-spacing="12" fill="#e0b878" fill-opacity="0.8">SCHWARZWALD · LÖFFINGEN</text>
+  <text x="640" y="410" text-anchor="middle" font-family="'Cormorant Garamond', Georgia, serif" font-style="italic" font-weight="600" font-size="104" fill="#fdfbf6">Hotel Bergfrieden</text>
+  <line x1="540" y1="450" x2="740" y2="450" stroke="url(#hbf-bronze)" stroke-width="2"/>
+  <text x="640" y="500" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="24" letter-spacing="3" fill="#fdfbf6" fill-opacity="0.62">Angular 21 · SSG · SEO-optimiert</text>
+</svg>

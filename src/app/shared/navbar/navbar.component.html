@@ -1,34 +1,48 @@
 <nav [ngClass]="{ scrolled: scrolled() }">
-  <div class="nav-content">
-    <a routerLink="/" class="logo" (click)="closeMobile()">
-      <img src="assets/images/logo.jpg" alt="Hamza Öztürk Logo" class="logo-img" />
+  <div class="nav-inner">
+    <a [routerLink]="'/' | localize" class="wordmark" (click)="closeMobile()" aria-label="Hamza Öztürk — Startseite">
+      <span class="mark-num">H&#8202;Ö</span>
+      <span class="mark-name">Hamza Öztürk</span>
     </a>
 
-    <ul class="nav-links" [ngClass]="{ active: mobileMenuOpen() }">
+    <div class="nav-meta">
+      <span class="meta-dot" aria-hidden="true"></span>
+      <span class="meta-text">{{ i18n.t('nav.available') }}</span>
+    </div>
+
+    <ul class="nav-links" [ngClass]="{ open: mobileMenuOpen() }">
       @for (link of navLinks; track link.path) {
         <li>
           <a
-            [routerLink]="link.path"
-            routerLinkActive="active-link"
+            [routerLink]="link.path | localize"
+            routerLinkActive="active"
             [routerLinkActiveOptions]="{ exact: link.exact }"
-            class="nav-link"
             (click)="closeMobile()"
           >
-            {{ link.label }}
+            <span class="link-num">{{ link.num }}</span>
+            <span class="link-label">{{ i18n.t(link.key) }}</span>
           </a>
         </li>
       }
+      <li class="lang-li"><app-lang-switcher /></li>
+      <li class="mobile-only">
+        <a href="mailto:hamza.oeztuerk@web.de" (click)="closeMobile()">
+          <span class="link-num">&rarr;</span>
+          <span class="link-label">hamza.oeztuerk&#64;web.de</span>
+        </a>
+      </li>
     </ul>
 
     <button
       class="hamburger"
-      [ngClass]="{ active: mobileMenuOpen() }"
+      [ngClass]="{ open: mobileMenuOpen() }"
       (click)="toggleMobile()"
-      aria-label="Menü"
+      [attr.aria-label]="mobileMenuOpen() ? 'Menü schließen' : 'Menü öffnen'"
+      [attr.aria-expanded]="mobileMenuOpen()"
     >
-      <span class="bar"></span>
       <span class="bar"></span>
       <span class="bar"></span>
     </button>
   </div>
+  <div class="nav-rule" aria-hidden="true"></div>
 </nav>

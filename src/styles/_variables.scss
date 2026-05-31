@@ -1,79 +1,151 @@
 // ============================================
-// PREMIUM PORTFOLIO — DESIGN SYSTEM
+// EDITORIAL BLACK & GOLD — DESIGN TOKENS
+// Premium German engineering · Pentagram-meets-Porsche
 // ============================================
 
-// --- Color Palette ---
-$bg-dark: #050505;
-$bg-surface: #0a0a0a;
-$bg-elevated: #141414;
-$bg-card: #1a1a1a;
+// --- Surface ---
+$ink:            #0a0908;        // primary background — warm black, newsprint feel
+$ink-soft:       #14110f;        // elevated surface
+$ink-card:       #1a1714;        // card surface
+$ink-overlay:    rgba(10, 9, 8, 0.85);
 
-$accent-primary: #3b82f6;
-$accent-secondary: #8b5cf6;
-$accent-gradient: linear-gradient(135deg, $accent-primary, $accent-secondary);
-$accent-glow: rgba(139, 92, 246, 0.4);
-$accent-glow-blue: rgba(59, 130, 246, 0.3);
+// --- Paper / Text ---
+$paper:          #f5f1e8;        // primary cream paper text
+$paper-soft:     #ebe6d9;        // body text on dark
+$paper-dim:      rgba(245, 241, 232, 0.62);
+$paper-mute:     rgba(245, 241, 232, 0.42);
+$paper-faint:    rgba(245, 241, 232, 0.16);
 
-$text-pure: #ffffff;
-$text-primary: #ededed;
-$text-secondary: #a1a1aa;
-$text-muted: #52525b;
+// --- Gold (used sparingly, accent only) ---
+$gold:           #c9a961;        // brushed gold — Hermès, not Vegas
+$gold-deep:      #a8884a;
+$gold-bright:    #e0c277;
+$gold-glow:      rgba(201, 169, 97, 0.18);
+$gold-soft:      rgba(201, 169, 97, 0.10);
 
-$glass-bg: rgba(255, 255, 255, 0.03);
-$glass-border: rgba(255, 255, 255, 0.08);
-$glass-border-hover: rgba(255, 255, 255, 0.15);
+// --- Hairlines & Rules ---
+$rule:           rgba(245, 241, 232, 0.10);
+$rule-strong:    rgba(245, 241, 232, 0.22);
+$rule-gold:      rgba(201, 169, 97, 0.40);
+
+// --- Semantic aliases (back-compat with old names) ---
+$bg-dark:           $ink;
+$bg-surface:        $ink-soft;
+$bg-elevated:       $ink-card;
+$bg-card:           $ink-card;
+$accent-primary:    $gold;
+$accent-secondary:  $gold-bright;
+$accent-gradient:   linear-gradient(135deg, $gold-deep, $gold, $gold-bright);
+$accent-glow:       $gold-glow;
+$accent-glow-blue:  $gold-soft;
+$text-pure:         $paper;
+$text-primary:      $paper-soft;
+$text-secondary:    $paper-dim;
+$text-muted:        $paper-mute;
+$glass-bg:          rgba(245, 241, 232, 0.025);
+$glass-border:      $rule;
+$glass-border-hover: $rule-strong;
 
 // --- Transitions ---
-$transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-fast:   0.2s cubic-bezier(0.4, 0, 0.2, 1);
 $transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-$transition-slow: 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+$transition-slow:   0.8s cubic-bezier(0.16, 1, 0.3, 1);
+$ease-editorial:    cubic-bezier(0.16, 1, 0.3, 1);
 
 // --- Typography ---
-$font-heading: "Outfit", sans-serif;
-$font-body: "Inter", sans-serif;
+$font-display:  "Fraunces", "Playfair Display", Georgia, serif;
+$font-heading:  "Fraunces", "Playfair Display", Georgia, serif;
+$font-body:     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-mono:     "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 
 // --- Breakpoints ---
-$bp-mobile: 480px;
-$bp-tablet: 768px;
-$bp-desktop: 1024px;
-$bp-wide: 1200px;
+$bp-mobile:   480px;
+$bp-tablet:   768px;
+$bp-desktop:  1024px;
+$bp-wide:     1280px;
+$bp-mega:     1440px;
 
 // --- Mixins ---
-@mixin glass {
-  background: $glass-bg;
-  border: 1px solid $glass-border;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+@mixin container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 5vw, 4rem);
 }
 
-@mixin glass-hover {
-  border-color: $glass-border-hover;
-  background: rgba(255, 255, 255, 0.06);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-}
-
-@mixin glow($color: $accent-glow) {
-  box-shadow:
-    0 0 40px $color,
-    0 0 80px rgba($accent-secondary, 0.15);
+@mixin container-narrow {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 clamp(1.25rem, 5vw, 2rem);
 }
 
 @mixin section-padding {
-  padding: 120px 0;
-  @media (max-width: $bp-tablet) {
-    padding: 80px 0;
-  }
+  padding: clamp(80px, 14vh, 160px) 0;
 }
 
-@mixin container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 5%;
+@mixin hairline-top {
+  border-top: 1px solid $rule;
+}
+
+@mixin hairline-bottom {
+  border-bottom: 1px solid $rule;
+}
+
+@mixin gold-rule {
+  height: 1px;
+  background: $gold;
+  width: 64px;
+  display: block;
+}
+
+@mixin small-caps {
+  font-family: $font-body;
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: $paper-dim;
+}
+
+@mixin mono-label {
+  font-family: $font-mono;
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: $paper-mute;
+}
+
+@mixin numeral {
+  font-family: $font-display;
+  font-feature-settings: "lnum", "tnum";
+  font-weight: 300;
+  font-style: italic;
+  color: $gold;
 }
 
 @mixin gradient-text {
-  background: $accent-gradient;
+  background: linear-gradient(135deg, $gold-deep, $gold-bright);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+@mixin glass {
+  background: rgba(245, 241, 232, 0.025);
+  border: 1px solid $rule;
+}
+
+@mixin glass-hover {
+  background: rgba(245, 241, 232, 0.045);
+  border-color: $rule-strong;
+}
+
+@mixin glow($color: $gold-glow) {
+  box-shadow: 0 0 32px $color;
+}
+
+@mixin focus-ring {
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 3px;
+  }
 }

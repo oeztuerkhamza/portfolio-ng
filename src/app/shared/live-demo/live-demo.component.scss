@@ -1,0 +1,310 @@
+@import "../../../styles/variables";
+
+.live-demo {
+  width: 100%;
+}
+
+/* ============ Browser frame ============ */
+.is-browser {
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0e0c0a;
+  border: 1px solid $rule-strong;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 40px 80px -30px rgba(0, 0, 0, 0.8);
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  background: linear-gradient(180deg, #1c1916, #141210);
+  border-bottom: 1px solid $rule;
+
+  .dot {
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    flex: none;
+    &.red { background: #ff5f57; }
+    &.amber { background: #febc2e; }
+    &.green { background: #28c840; }
+  }
+
+  .omnibox {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-left: 0.4rem;
+    padding: 0.34rem 0.8rem;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid $rule;
+    border-radius: 8px;
+    min-width: 0;
+
+    svg { width: 13px; height: 13px; color: $gold; flex: none; opacity: 0.8; }
+    .url {
+      font-family: $font-mono;
+      font-size: 0.78rem;
+      color: $paper-dim;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .open-tab {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    color: $paper-dim;
+    transition: $transition-fast;
+    svg { width: 16px; height: 16px; }
+    &:hover { color: $gold; background: $gold-soft; }
+  }
+}
+
+.viewport {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  background: #0a0908;
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+    background: #fff;
+  }
+}
+
+.poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  cursor: pointer;
+  border: 0;
+  background-color: $ink-soft;
+  background-size: cover;
+  background-position: top center;
+  color: $paper;
+  transition: $transition-normal;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(10, 9, 8, 0.92), rgba(10, 9, 8, 0.55));
+    transition: $transition-normal;
+  }
+  &:hover::before { background: linear-gradient(0deg, rgba(10, 9, 8, 0.88), rgba(10, 9, 8, 0.4)); }
+
+  .play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 76px;
+    height: 76px;
+    border-radius: 50%;
+    background: $gold;
+    color: $ink;
+    box-shadow: 0 0 0 0 $gold-glow;
+    transition: $transition-normal;
+    svg { width: 30px; height: 30px; margin-left: 4px; }
+  }
+  &:hover .play { transform: scale(1.08); box-shadow: 0 0 0 14px $gold-soft; }
+
+  .poster-label {
+    position: relative;
+    font-family: $font-body;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    font-size: 1.05rem;
+  }
+  .poster-note {
+    position: relative;
+    @include mono-label;
+    color: $paper-dim;
+    max-width: 80%;
+    text-align: center;
+  }
+  @include focus-ring;
+}
+
+/* image gallery */
+.gallery {
+  position: absolute;
+  inset: 0;
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0;
+    transition: opacity 0.5s $ease-editorial;
+    &.active { opacity: 1; }
+  }
+
+  .nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(10, 9, 8, 0.6);
+    border: 1px solid $rule-strong;
+    color: $paper;
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: $transition-fast;
+    &:hover { background: $gold; color: $ink; border-color: $gold; }
+    &.prev { left: 0.8rem; }
+    &.next { right: 0.8rem; }
+  }
+}
+
+.dots {
+  position: absolute;
+  bottom: 0.9rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.4rem;
+  z-index: 2;
+  button {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(245, 241, 232, 0.35);
+    cursor: pointer;
+    transition: $transition-fast;
+    &.on { background: $gold; width: 22px; border-radius: 4px; }
+  }
+  &.dark { position: static; transform: none; justify-content: center; margin-top: 1.1rem; }
+}
+
+video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.frame-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
+  background: $ink-soft;
+  @include mono-label;
+  color: $paper-dim;
+
+  .spinner {
+    width: 30px;
+    height: 30px;
+    border: 2px solid $rule-strong;
+    border-top-color: $gold;
+    border-radius: 50%;
+    animation: ld-spin 0.8s linear infinite;
+  }
+}
+@keyframes ld-spin {
+  to { transform: rotate(360deg); }
+}
+
+.frame-note {
+  @include mono-label;
+  text-align: center;
+  margin-top: 0.9rem;
+  color: $paper-mute;
+
+  a {
+    color: $gold;
+    text-decoration: none;
+    border-bottom: 1px solid $rule-gold;
+    transition: $transition-fast;
+    &:hover { color: $gold-bright; }
+  }
+}
+.is-browser .frame-note {
+  margin: 0;
+  padding: 0.6rem 1rem;
+  background: #141210;
+  border-top: 1px solid $rule;
+}
+
+/* ============ Phone frame ============ */
+.is-phone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.phone {
+  position: relative;
+  width: 280px;
+  max-width: 70vw;
+  aspect-ratio: 9 / 19.5;
+  border-radius: 38px;
+  padding: 12px;
+  background: linear-gradient(160deg, #2a2622, #0e0c0a);
+  border: 1px solid $rule-strong;
+  box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.85);
+
+  .notch {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 96px;
+    height: 22px;
+    border-radius: 12px;
+    background: #050403;
+    z-index: 3;
+  }
+  .phone-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    background: #0a0908;
+    img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 0.5s $ease-editorial;
+      &.active { opacity: 1; }
+    }
+  }
+}
+
+@media (max-width: $bp-tablet) {
+  .viewport { aspect-ratio: 4 / 3; }
+}

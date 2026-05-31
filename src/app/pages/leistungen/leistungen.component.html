@@ -1,0 +1,115 @@
+<section class="leistungen">
+  <div class="container">
+
+    <!-- Header -->
+    <header class="page-header">
+      <div class="folio-line">
+        <span class="folio-num">Folio &numero;03</span>
+        <span class="folio-sep">—</span>
+        <span class="folio-place">{{ i18n.t('leist.folio') }}</span>
+      </div>
+      <hr class="rule" />
+      <div class="header-grid">
+        <div>
+          <p class="section-label"><span class="num">01</span> {{ i18n.t('leist.label') }}</p>
+          <h1 class="section-title" [innerHTML]="i18n.t('leist.title')"></h1>
+        </div>
+        <p class="section-subtitle" [innerHTML]="i18n.t('leist.intro')"></p>
+      </div>
+      <hr class="rule" />
+    </header>
+
+    <!-- Services -->
+    <div class="svc-list">
+      @for (s of services; track s.titleKey) {
+        <article class="svc-item">
+          <span class="svc-num">{{ s.num }}</span>
+          <div class="svc-body">
+            <h2>{{ i18n.t(s.titleKey) }}</h2>
+            <p class="svc-text">{{ i18n.t(s.textKey) }}</p>
+            <ul class="svc-points">
+              @for (p of s.pointKeys; track p) {
+                <li>{{ i18n.t(p) }}</li>
+              }
+            </ul>
+          </div>
+        </article>
+      }
+    </div>
+
+    <!-- Why me -->
+    <section class="why">
+      <p class="section-label"><span class="num">02</span> {{ i18n.t('leist.why.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('leist.why.title')"></h2>
+      <div class="why-grid">
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why1.t') }}</h3>
+          <p>{{ i18n.t('leist.why1.d') }}</p>
+        </div>
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why2.t') }}</h3>
+          <p>{{ i18n.t('leist.why2.d') }}</p>
+        </div>
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why3.t') }}</h3>
+          <p>{{ i18n.t('leist.why3.d') }}</p>
+        </div>
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why4.t') }}</h3>
+          <p>{{ i18n.t('leist.why4.d') }}</p>
+        </div>
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why5.t') }}</h3>
+          <p>{{ i18n.t('leist.why5.d') }}</p>
+        </div>
+        <div class="why-card">
+          <h3>{{ i18n.t('leist.why6.t') }}</h3>
+          <p>{{ i18n.t('leist.why6.d') }}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Process -->
+    <section class="process">
+      <p class="section-label"><span class="num">03</span> {{ i18n.t('leist.proc.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('leist.proc.title')"></h2>
+      <ol class="process-list">
+        @for (step of process; track step.titleKey) {
+          <li class="process-step">
+            <span class="step-num">{{ step.num }}</span>
+            <h3>{{ i18n.t(step.titleKey) }}</h3>
+            <p>{{ i18n.t(step.textKey) }}</p>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <!-- FAQ -->
+    <section class="faq">
+      <p class="section-label"><span class="num">04</span> {{ i18n.t('leist.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('leist.faq.title')"></h2>
+      <div class="faq-list">
+        @for (f of faqs; track f.qKey) {
+          <details class="faq-item">
+            <summary>{{ i18n.t(f.qKey) }}</summary>
+            <p>{{ i18n.t(f.aKey) }}</p>
+          </details>
+        }
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="svc-cta">
+      <hr class="rule" />
+      <h2 [innerHTML]="i18n.t('leist.cta.title')"></h2>
+      <p>{{ i18n.t('leist.cta.text') }}</p>
+      <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+        {{ i18n.t('leist.cta.btn') }}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M5 12h14M12 5l7 7-7 7" />
+        </svg>
+      </a>
+    </section>
+
+  </div>
+</section>
