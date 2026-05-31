@@ -63,6 +63,22 @@ const localeChildren: Routes = [
       import('./pages/resume/resume.component').then((m) => m.ResumeComponent),
     data: { animation: 'Resume' },
   },
+  {
+    path: 'impressum',
+    loadComponent: () =>
+      import('./pages/impressum/impressum.component').then(
+        (m) => m.ImpressumComponent,
+      ),
+    data: { animation: 'Impressum' },
+  },
+  {
+    path: 'datenschutz',
+    loadComponent: () =>
+      import('./pages/datenschutz/datenschutz.component').then(
+        (m) => m.DatenschutzComponent,
+      ),
+    data: { animation: 'Datenschutz' },
+  },
 ];
 
 export const routes: Routes = [

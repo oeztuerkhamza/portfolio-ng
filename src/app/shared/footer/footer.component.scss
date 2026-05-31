@@ -170,6 +170,13 @@ footer {
     font-size: 0.9rem;
   }
 
+  a {
+    color: $paper-dim;
+    text-decoration: none;
+    transition: color $transition-fast;
+    &:hover { color: $gold; }
+  }
+
   em {
     font-style: italic;
     color: $paper-dim;

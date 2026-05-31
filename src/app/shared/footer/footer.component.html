@@ -84,6 +84,10 @@
       <p class="imprint-left">
         <span class="numeral">{{ currentYear }}</span>
         &nbsp;·&nbsp; Hamza Öztürk &nbsp;·&nbsp; {{ i18n.t('footer.rights') }}
+        &nbsp;·&nbsp;
+        <a [routerLink]="'/impressum' | localize">{{ i18n.t('nav.impressum') }}</a>
+        &nbsp;·&nbsp;
+        <a [routerLink]="'/datenschutz' | localize">{{ i18n.t('nav.datenschutz') }}</a>
       </p>
       <p class="imprint-right">
         Gesetzt in <em>Fraunces</em> &amp; <em>Inter</em>.

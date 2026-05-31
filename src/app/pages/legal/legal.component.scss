@@ -1,0 +1,93 @@
+@import "../../../styles/variables";
+
+.legal {
+  padding: clamp(110px, 16vh, 180px) 0 clamp(60px, 10vh, 120px);
+}
+
+.rule { border: 0; border-top: 1px solid $rule; margin: 1.6rem 0; }
+
+.folio-line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  @include mono-label;
+  margin-bottom: 1.2rem;
+  .folio-sep { color: $paper-faint; }
+}
+
+.legal-title {
+  font-family: $font-display;
+  font-weight: 300;
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: $paper;
+  margin-bottom: 0.5rem;
+  em { font-style: italic; color: $gold; }
+}
+
+.legal-meta {
+  @include mono-label;
+  color: $paper-mute;
+  margin-bottom: 2.5rem;
+}
+
+.legal-body {
+  max-width: 760px;
+
+  h2 {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: $paper;
+    margin: 2.4rem 0 0.8rem;
+    padding-top: 1.4rem;
+    @include hairline-top;
+  }
+  h2:first-of-type { border-top: 0; padding-top: 0; }
+
+  h3 {
+    font-family: $font-body;
+    font-weight: 600;
+    font-size: 1rem;
+    color: $paper-soft;
+    margin: 1.4rem 0 0.4rem;
+  }
+
+  p, li {
+    color: $paper-dim;
+    line-height: 1.75;
+    font-size: 0.98rem;
+  }
+  p { margin-bottom: 0.9rem; }
+
+  address {
+    font-style: normal;
+    color: $paper-soft;
+    line-height: 1.7;
+    margin-bottom: 0.9rem;
+  }
+
+  ul { margin: 0 0 1rem; padding-left: 1.3rem; }
+  li { margin-bottom: 0.4rem; }
+
+  strong { color: $paper-soft; font-weight: 600; }
+
+  a {
+    color: $gold;
+    text-decoration: none;
+    border-bottom: 1px solid $rule-gold;
+    word-break: break-word;
+    transition: color $transition-fast;
+    &:hover { color: $gold-bright; }
+  }
+
+  .note {
+    margin-top: 2.5rem;
+    padding: 1rem 1.2rem;
+    background: $gold-soft;
+    border-left: 2px solid $gold;
+    font-size: 0.88rem;
+    color: $paper-dim;
+  }
+}

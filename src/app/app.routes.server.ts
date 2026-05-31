@@ -22,5 +22,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: ':locale/experience', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/contact', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/lebenslauf', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/datenschutz', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: '**', renderMode: RenderMode.Server },
 ];

@@ -21,6 +21,8 @@ export const TRANSLATIONS: Record<string, Entry> = {
   'nav.experience': { de: 'Werdegang', fr: 'Parcours', en: 'Experience', tr: 'Deneyim', ku: 'Tecrûbe' },
   'nav.resume': { de: 'Lebenslauf', fr: 'CV', en: 'Résumé', tr: 'Özgeçmiş', ku: 'Jînenîgarî' },
   'nav.contact': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },
+  'nav.impressum': { de: 'Impressum', fr: 'Mentions légales', en: 'Imprint', tr: 'Künye', ku: 'Impressum' },
+  'nav.datenschutz': { de: 'Datenschutz', fr: 'Confidentialité', en: 'Privacy', tr: 'Gizlilik', ku: 'Nepenî' },
 
   // ---- Common actions ------------------------------------------------------
   'cta.contact': {
