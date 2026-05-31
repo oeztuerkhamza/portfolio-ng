@@ -24,7 +24,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     institution: 'Dicom GmbH | Walther-Rathenau-Gewerbeschule, Freiburg',
     description:
       'End-to-End-Verantwortung für C#/.NET 10-APIs und Angular-Frontends. Migration von Legacy-Desktop-ERP zu webbasierter Lösung mittels Clean Architecture. Aufbau der Azure Cloud Infrastruktur und CI/CD-Pipelines.',
-    image: 'assets/images/dicom.png',
+    image: '/assets/images/dicom.png',
     type: 'work',
     location: 'Freiburg, Deutschland',
     highlights: [
@@ -37,7 +37,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     documents: [
       {
         label: 'Arbeitszeugnis',
-        url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
+        url: '/assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
       },
 
     ],
@@ -49,7 +49,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     institution: 'Clarusway IT School',
     description:
       'Umfassende Weiterbildung im Bereich Datenanalyse, Python und Cloud-Technologien zur Vorbereitung auf moderne Datenverarbeitung und Softwareentwicklung.',
-    image: 'assets/images/clarusway.png',
+    image: '/assets/images/clarusway.png',
     type: 'certificate',
     location: 'Remote',
     highlights: [
@@ -61,7 +61,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     documents: [
       {
         label: 'Data Analyst Zertifikate',
-        url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_data_analyst _zertifikate.pdf',
+        url: '/assets/pdf/bewerbung_software_entwickler_herr_öztürk_data_analyst _zertifikate.pdf',
       },
     ],
   },
@@ -72,7 +72,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     institution: 'Technische Universität Istanbul (İTÜ)',
     description:
       'Studium an einer der renommiertesten technischen Universitäten mit Fokus auf interdisziplinäre Problemlösung, Prozesseffizienz und Systemarchitektur.',
-    image: 'assets/images/itu.jpeg',
+    image: '/assets/images/itu.jpeg',
     type: 'education',
     location: 'Istanbul, Türkei',
     highlights: [
@@ -89,7 +89,7 @@ export const EXPERIENCES: ExperienceItem[] = [
     institution: 'Kindheit & Grundschule',
     description:
       'Hier begann alles. Meine ständige Neugier und der Drang, zu verstehen, wie Dinge funktionieren, haben schon früh den Grundstein für meinen analytischen Denkansatz gelegt.',
-    image: 'assets/images/ilk okul.jpg',
+    image: '/assets/images/ilk okul.jpg',
     type: 'education',
     location: 'Türkei',
     highlights: [

@@ -22,7 +22,7 @@ export class ResumeComponent implements OnInit {
   private readonly seo = inject(SeoService);
   readonly i18n = inject(I18nService);
 
-  pdfUrl = 'assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf';
+  pdfUrl = '/assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf';
   safePdfUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl(
     this.pdfUrl,
   );
@@ -30,7 +30,7 @@ export class ResumeComponent implements OnInit {
   documents: DocumentItem[] = [
     {
       label: 'Arbeitszeugnis — Dicom GmbH',
-      url: 'assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
+      url: '/assets/pdf/bewerbung_software_entwickler_herr_öztürk_arbeitszeugnis.pdf',
       category: 'Arbeit',
     },
   ];
