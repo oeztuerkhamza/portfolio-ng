@@ -159,22 +159,14 @@ Das System erkennt automatisch gesetzlich vorgeschriebene Pausen, validiert maxi
       { name: 'xUnit', icon: '🧪' },
       { name: 'Docker', icon: '🐳' },
     ],
-    screenshots: [
-      '/assets/images/diflux-1.png',
-      '/assets/images/diflux-2.png',
-      '/assets/images/diflux-3.png',
-    ],
+    screenshots: ['/assets/images/diflux-1.png'],
     role: 'Full-Stack Developer',
     duration: '2025 – 2026',
     featured: true,
     demo: {
       type: 'image',
-      screens: [
-        '/assets/images/diflux-1.png',
-        '/assets/images/diflux-2.png',
-        '/assets/images/diflux-3.png',
-      ],
-      note: 'Internes Enterprise-System — Screenshots der Live-Anwendung',
+      screens: ['/assets/images/diflux-1.png'],
+      note: 'Internes Enterprise-System — Screenshot der Live-Anwendung',
     },
   },
   {
