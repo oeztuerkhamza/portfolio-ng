@@ -18,153 +18,181 @@ export interface ProjectTx {
 export const PROJECT_CONTENT: Record<string, Partial<Record<Lang, ProjectTx>>> = {
   'bikehaus-freiburg': {
     fr: {
-      subtitle: 'Gestion commerciale numérique pour un magasin de vélos',
-      category: 'Application web full-stack',
-      description: 'Gestion des stocks numérique pour un magasin de vélos. API C#/.NET, client admin Angular 19 et extension Chrome.',
+      subtitle: 'Gestion commerciale, site web et location en ligne pour un magasin de vélos',
+      category: 'Plateforme full-stack',
+      description:
+        'Gestion commerciale, site public et location en ligne pour un magasin de vélos à Fribourg. API .NET, deux front-ends Angular, extension Chrome et application Windows — auto-hébergé.',
       role: 'Développeur full-stack & architecte',
-      long: `Bikehaus Freiburg est un système complet de gestion commerciale conçu pour un magasin de vélos local. Il réunit une interface web moderne, une application de bureau et une extension Chrome afin de numériser tout le processus — de la gestion des stocks à la vente jusqu’à la communication client.
+      long: `Bikehaus Freiburg n’est pas un modèle de boutique, c’est l’atelier lui-même : un vélo est racheté, entre en stock, puis est vendu, loué ou repris — et chacune de ces étapes a son numéro de pièce, sa signature et, au bout, un PDF. L’interface d’administration couvre cela en près de 28 modules, des clients et factures aux dépenses et coûts de remise en état, jusqu’aux statistiques, exports et sauvegardes.
 
-Le back-end repose sur .NET 10 avec une Clean Architecture et propose des API REST sécurisées par JWT. Le front-end utilise Angular 19 avec rendu côté serveur pour des performances et un SEO optimaux.`,
+Côté public : Angular 17 avec rendu serveur, douze langues aux URL dédiées et une centaine de routes pré-rendues au build — showroom, vélos électriques, vélos neufs, accessoires, service, guides et pages locales pour les communes alentour. La location se fait entièrement en ligne : vérifier la disponibilité, choisir les accessoires, payer via Mollie. La réservation arrive dans l’administration pour validation et devient un contrat de location.
+
+S’y ajoute tout ce qu’un magasin ferait autrement à la main : un service de fond synchronise les annonces Kleinanzeigen toutes les quatre heures, une extension Chrome les modifie en masse, les demandes clients arrivent sous forme de conversation depuis une boîte mail connectée. Le tout tourne sur un serveur dédié : Docker Compose avec cinq services, nginx devant, certificats renouvelés automatiquement et surveillés chaque jour par GitHub Actions. Pour le comptoir, il existe en plus une version Windows qui embarque l’API.`,
       features: [
-        'Gestion complète des stocks en temps réel',
-        'Tableau de bord admin Angular 19 responsive',
-        'Extension Chrome pour comparer les prix rapidement',
-        'Authentification & autorisation par JWT',
-        'Multilingue (DE, EN, FR, TR)',
-        'Pipeline CI/CD automatisé via Azure DevOps',
-        'Génération de PDF pour factures et devis',
+        'Flux complet : rachat → stock → vente → reprise, avec numéros de pièce et signature',
+        'Location en ligne avec vérification de disponibilité et paiement (Mollie)',
+        '12 langues aux URL dédiées, environ 100 routes pré-rendues (Angular SSR)',
+        'Synchronisation Kleinanzeigen toutes les 4 h et extension Chrome pour l’édition en masse',
+        'Administration en ~28 modules : clients, factures, dépenses, statistiques, export, sauvegarde',
+        'Génération de PDF pour contrats de location, factures et justificatifs',
+        'Version Windows (Electron) avec API embarquée pour le magasin',
+        'Auto-hébergement : Docker Compose à cinq services, nginx, TLS automatique, serveur mail propre',
       ],
     },
     en: {
-      subtitle: 'Digital inventory management for a bicycle shop',
-      category: 'Full-stack web app',
-      description: 'Digital inventory management for a bicycle shop. C#/.NET API, Angular 19 admin client and a Chrome extension.',
+      subtitle: 'Inventory management, website and online rental for a bicycle shop',
+      category: 'Full-stack platform',
+      description:
+        'Inventory management, public website and online rental for a bicycle shop in Freiburg. .NET API, two Angular front-ends, a Chrome extension and a Windows app — self-hosted.',
       role: 'Full-stack developer & architect',
-      long: `Bikehaus Freiburg is a comprehensive inventory-management system built for a local bicycle shop. It combines a modern web interface, a desktop app and a Chrome extension to digitise the entire business process — from stock management through sales to customer communication.
+      long: `Bikehaus Freiburg isn’t a shop template, it’s the business itself: a bike is bought in, enters stock, then gets sold, rented out or returned — and every one of those steps carries its own document number, a signature and a PDF at the end. The admin interface covers that across roughly 28 modules, from customers and invoices through expenses and refurbishment costs to statistics, exports and backups.
 
-The backend is built on .NET 10 with Clean Architecture and exposes JWT-secured REST APIs. The frontend uses Angular 19 with server-side rendering for optimal performance and SEO.`,
+Facing outward is the public site: Angular 17 with server-side rendering, twelve languages on their own URLs and around 100 routes pre-rendered at build time — showroom, e-bikes, new bikes, accessories, service, guides and local landing pages for the surrounding towns. Rentals run entirely online: check availability, pick accessories, pay via Mollie. The booking lands in the admin area for approval and turns into a rental contract there.
+
+On top of that sits everything a single shop would otherwise do by hand: a background service syncs the Kleinanzeigen listings every four hours, a Chrome extension edits them in bulk, and customer enquiries arrive as a chat from a connected mailbox. It all runs on a dedicated server: Docker Compose with five services, nginx in front, certificates renewed automatically and monitored daily by GitHub Actions. For the counter there is also a Windows build that bundles the API.`,
       features: [
-        'Full inventory management with real-time tracking',
-        'Responsive Angular 19 admin dashboard',
-        'Chrome extension for quick price comparisons',
-        'JWT-based authentication & authorisation',
-        'Multilingual (DE, EN, FR, TR)',
-        'Automated CI/CD pipeline via Azure DevOps',
-        'PDF generation for invoices and quotes',
+        'Full goods flow: purchase → stock → sale → return, with document numbers and signature',
+        'Public rental booking with availability check and online payment (Mollie)',
+        '12 languages on their own URLs, around 100 pre-rendered routes (Angular SSR)',
+        'Kleinanzeigen sync every four hours plus a Chrome extension for bulk editing',
+        'Admin area with ~28 modules: customers, invoices, expenses, statistics, export, backup',
+        'PDF generation for rental contracts, invoices and receipts',
+        'Windows desktop build (Electron) with a bundled API for in-store use',
+        'Self-hosted: five-service Docker Compose, nginx, automatic TLS, own mail server',
       ],
     },
     tr: {
-      subtitle: 'Bir bisiklet mağazası için dijital stok yönetimi',
-      category: 'Full-stack web uygulaması',
-      description: 'Bir bisiklet mağazası için dijital stok yönetimi. C#/.NET API, Angular 19 yönetim paneli ve Chrome eklentisi.',
+      subtitle: 'Bir bisiklet mağazası için stok yönetimi, web sitesi ve online kiralama',
+      category: 'Full-stack platform',
+      description:
+        'Freiburg’daki bir bisiklet mağazası için stok yönetimi, halka açık web sitesi ve online kiralama. .NET API, iki Angular arayüzü, Chrome eklentisi ve Windows uygulaması — kendi sunucusunda.',
       role: 'Full-stack geliştirici & mimar',
-      long: `Bikehaus Freiburg, yerel bir bisiklet mağazası için geliştirilmiş kapsamlı bir stok yönetim sistemidir. Modern bir web arayüzü, masaüstü uygulaması ve Chrome eklentisini bir araya getirerek tüm iş sürecini — stok yönetiminden satışa ve müşteri iletişimine kadar — dijitalleştirir.
+      long: `Bikehaus Freiburg hazır bir mağaza şablonu değil, işin kendisi: Bisiklet satın alınır, stoğa girer, satılır, kiralanır ya da iade alınır — ve bu adımların her birinin kendi belge numarası, imzası ve sonunda bir PDF’i vardır. Yönetim arayüzü bunu yaklaşık 28 modülde kapsıyor: müşteriler ve faturalardan giderlere ve yenileme maliyetlerine, oradan istatistik, dışa aktarma ve yedeklemeye kadar.
 
-Arka uç, Clean Architecture ile .NET 10 üzerine kuruludur ve JWT korumalı REST API’leri sunar. Ön uç, en iyi performans ve SEO için sunucu taraflı render’lı Angular 19 kullanır.`,
+Dışarıya bakan yüz ise halka açık site: sunucu taraflı render’lı Angular 17, kendi URL’leriyle on iki dil ve derleme sırasında önceden üretilmiş yaklaşık 100 sayfa — showroom, e-bike, yeni bisikletler, aksesuar, servis, rehber ve çevredeki şehirler için yerel sayfalar. Kiralama tamamen online: müsaitliği kontrol et, aksesuarı seç, Mollie ile öde. Rezervasyon onay için yönetim paneline düşer ve orada kira sözleşmesine dönüşür.
+
+Üstüne, tek bir mağazanın normalde elle yaptığı her şey geliyor: Bir arka plan servisi Kleinanzeigen ilanlarını dört saatte bir eşitliyor, bir Chrome eklentisi ilanları toplu düzenliyor, müşteri mesajları bağlı bir posta kutusundan sohbet olarak geliyor. Tamamı kendi sunucusunda çalışıyor: beş servisli Docker Compose, önünde nginx, otomatik yenilenen sertifikalar ve GitHub Actions ile her gün yapılan kontrol. Tezgâh için ayrıca API’yi de içinde taşıyan bir Windows sürümü var.`,
       features: [
-        'Gerçek zamanlı takiple tam stok yönetimi',
-        'Responsive Angular 19 yönetim paneli',
-        'Hızlı fiyat karşılaştırması için Chrome eklentisi',
-        'JWT tabanlı kimlik doğrulama & yetkilendirme',
-        'Çok dilli (DE, EN, FR, TR)',
-        'Azure DevOps ile otomatik CI/CD hattı',
-        'Fatura ve teklifler için PDF üretimi',
+        'Eksiksiz mal akışı: alım → stok → satış → iade, belge numaraları ve imzayla',
+        'Müsaitlik kontrolü ve online ödemeli (Mollie) halka açık kiralama',
+        'Kendi URL’leriyle 12 dil, yaklaşık 100 önceden üretilmiş sayfa (Angular SSR)',
+        'Dört saatte bir Kleinanzeigen eşitlemesi ve toplu düzenleme için Chrome eklentisi',
+        '~28 modüllü yönetim paneli: müşteri, fatura, gider, istatistik, dışa aktarma, yedek',
+        'Kira sözleşmesi, fatura ve belgeler için PDF üretimi',
+        'Mağazada kullanım için API’yi içeren Windows sürümü (Electron)',
+        'Kendi sunucusu: beş servisli Docker Compose, nginx, otomatik TLS, kendi mail sunucusu',
       ],
     },
     ku: {
-      subtitle: 'Rêveberiya stoka dîjîtal ji bo firotgehek bisîkletan',
-      category: 'Sepana webê ya full-stack',
-      description: 'Rêveberiya stoka dîjîtal ji bo firotgehek bisîkletan. API ya C#/.NET, klienta admin a Angular 19 û dirêjkirina Chrome.',
+      subtitle: 'Rêveberiya stokê, malper û kirêkirina online ji bo firotgehek bisîkletan',
+      category: 'Platforma full-stack',
+      description:
+        'Rêveberiya stokê, malpera giştî û kirêkirina online ji bo firotgehek bisîkletan li Freiburgê. API ya .NET, du navrûyên Angular, dirêjkirina Chrome û sepanek Windows — li ser servera xwe.',
       role: 'Pêşvebirê full-stack & mîmar',
-      long: `Bikehaus Freiburg pergalek berfireh a rêveberiya stokê ye ku ji bo firotgehek bisîkletan a herêmî hatiye çêkirin. Ew navrûyek webê ya nûjen, sepanek sermasîyê û dirêjkirinek Chrome dicivîne da ku tevahiya pêvajoya kar — ji rêveberiya stokê heta firotin û têkiliya xerîdaran — dîjîtal bike.
+      long: `Bikehaus Freiburg ne şablonek firotgehê ye, kar bi xwe ye: Bisîklet tê kirîn, dikeve stokê, tê firotin, kirê kirin an vegerandin — û her gaveke wan hejmara xwe ya belgeyê, îmzeya xwe û di dawiyê de PDFek xwe heye. Navrûya rêveberiyê vê yekê di nêzîkî 28 beşan de dide: ji xerîdar û fatûreyan heta lêçûn û mesrefên nûkirinê, û heta amar, derxistin û paşekêş.
 
-Backend li ser .NET 10 bi Clean Architecture hatiye avakirin û API yên REST ên bi JWT parastî pêşkêş dike. Frontend Angular 19 bi renderkirina aliyê serverê ji bo performans û SEO ya herî baş bi kar tîne.`,
+Berbi derve rûpela giştî ye: Angular 17 bi renderkirina aliyê serverê, donzdeh ziman bi URLên xwe û nêzîkî 100 rêyên ku di dema avakirinê de hatine amadekirin — showroom, e-bike, bisîkletên nû, alav, servis, rêbername û rûpelên herêmî ji bo bajarên dorûberê. Kirêkirin bi tevahî online e: vebûnê kontrol bike, alavan hilbijêre, bi Mollie bide. Rezervasyon ji bo pejirandinê dikeve beşa rêveberiyê û li wir dibe peymana kirêyê.
+
+Li ser vê yekê tiştê ku firotgehek bi destan dikira tê: Karûbarek paşperdeyê her çar saetan îlanên Kleinanzeigen hevaheng dike, dirêjkirineke Chrome wan bi komî diguherîne, daxwazên xerîdaran ji qutîkeke e-nameyê ya girêdayî wek sohbet tên. Her tişt li ser servereke xwe dixebite: Docker Compose bi pênc karûbaran, nginx li pêş, sertîfîkayên ku bixweber nû dibin û bi GitHub Actions rojane têne şopandin. Ji bo ser masê guhertoyeke Windows jî heye ku API bi xwe re tîne.`,
       features: [
-        'Rêveberiya stokê ya tam bi şopandina demreal',
-        'Daşboarda admin a Angular 19 ya responsive',
-        'Dirêjkirina Chrome ji bo berhevdana bilez a bihayan',
-        'Erêkirin & destûrdayîn a li ser JWT',
-        'Pirzimanî (DE, EN, FR, TR)',
-        'Xeta CI/CD ya otomatîk bi Azure DevOps',
-        'Çêkirina PDF ji bo fatûre û pêşniyaran',
+        'Herikîna tevahî: kirîn → stok → firotin → vegerandin, bi hejmarên belgeyê û îmze',
+        'Kirêkirina giştî bi kontrola vebûnê û dayîna online (Mollie)',
+        '12 ziman bi URLên xwe, nêzîkî 100 rêyên pêş-amadekirî (Angular SSR)',
+        'Hevahengiya Kleinanzeigen her çar saetan û dirêjkirina Chrome ji bo guhertina komî',
+        'Beşa rêveberiyê bi ~28 modulan: xerîdar, fatûre, lêçûn, amar, derxistin, paşekêş',
+        'Çêkirina PDF ji bo peymanên kirêyê, fatûre û belgeyan',
+        'Guhertoya Windows (Electron) bi API ya tê de ji bo firotgehê',
+        'Hilanîna xwe: Docker Compose bi pênc karûbaran, nginx, TLS ya otomatîk, servera e-nameyê ya xwe',
       ],
     },
   },
   'benlirad': {
     fr: {
-      subtitle: 'Plateforme vélo : showroom, location & service',
+      subtitle: 'Gestion commerciale et site web pour un magasin de vélos à Lahr',
       category: 'Application web full-stack',
-      description: 'Plateforme vélo moderne pour la vente, la location et la réparation à Lahr/Forêt-Noire. Multilingue, avec showroom et avis clients.',
+      description:
+        'Deuxième magasin, même plateforme : API .NET 9, administration Angular et site public en SSR avec showroom, accessoires et service réparation — en quatre langues, sur serveur dédié.',
       role: 'Développeur full-stack & architecte',
-      long: `Benlirad est une plateforme web complète pour un magasin de vélos à Lahr/Forêt-Noire. Elle réunit un showroom de vélos neufs et d’occasion, un système de location, un service de réparation et un CMS complet — le tout dans une interface moderne et responsive.
+      long: `Benlirad est un magasin de vélos à Lahr, en Forêt-Noire. La plateforme née pour Bikehaus Freiburg tourne ici dans sa propre déclinaison : même noyau — rachat, stock, vente, reprise, clients, factures, dépenses et statistiques — mais taillé pour un magasin qui vend et répare plutôt qu’il ne loue. C’est précisément là qu’était le travail : qu’est-ce qui appartient vraiment au noyau, et qu’est-ce qui n’existait que pour le premier client ?
 
-La plateforme prend en charge quatre langues (allemand, anglais, français, turc) et s’intègre à des API externes pour des listings automatisés. Le back-end est en .NET 10 (Clean Architecture), le front-end en Angular 19 avec SSR.`,
+Le site public tourne sous Angular 17 avec rendu serveur, en quatre langues (DE, EN, FR, TR). Il tire son contenu directement de la gestion commerciale : le showroom affiche le stock réel avec le compteur de vélos disponibles, à quoi s’ajoutent les vélos neufs, les accessoires, le service réparation, les guides, la FAQ, la garantie et des pages locales pour la région. Ce qui est saisi en magasin est en ligne sans étape intermédiaire.
+
+L’ensemble tourne sur un serveur dédié avec Docker et nginx : API, interface d’administration et front SSR comme services séparés, SQLite comme base, JWT pour la connexion. S’y ajoutent les mêmes outils que dans le projet frère — synchronisation Kleinanzeigen, extension Chrome et une version Windows pour le poste du magasin.`,
       features: [
-        'Showroom avec catalogue et filtres',
-        'Quadrilingue : allemand, anglais, français, turc',
-        'Système de location avec réservation en ligne',
-        'Prise de rendez-vous réparation & service',
-        'Intégration de l’API Kleinanzeigen pour les listings',
-        'Avis clients et témoignages',
-        'Galerie avec photos du magasin',
-        'Optimisé SEO avec rendu côté serveur',
+        'Gestion commerciale : rachat, stock, vente, reprise, clients, factures, dépenses',
+        'Site public alimenté en direct par la même base de données',
+        'Quatre langues (DE, EN, FR, TR) aux URL dédiées, avec SSR',
+        'Showroom, vélos neufs, accessoires, service réparation, guides et FAQ',
+        'Pages locales pour la recherche autour de Lahr',
+        'Synchronisation Kleinanzeigen et extension Chrome pour les annonces',
+        'Version Windows avec API embarquée',
+        'Auto-hébergement : Docker, nginx, TLS automatique',
       ],
     },
     en: {
-      subtitle: 'Bicycle platform with showroom, rental & service',
+      subtitle: 'Inventory management and website for a bicycle shop in Lahr',
       category: 'Full-stack web app',
-      description: 'Modern bicycle platform for sales, rental and repair service in Lahr/Black Forest. Multilingual, with showroom and customer reviews.',
+      description:
+        'Second shop, same platform: .NET 9 API, Angular admin and a public SSR website with showroom, accessories and repair service — four languages, on a dedicated server.',
       role: 'Full-stack developer & architect',
-      long: `Benlirad is a comprehensive web platform for a bicycle shop in Lahr/Black Forest. It combines a showroom for new and used bikes, a rental system, a repair service and a full CMS — all in a modern, responsive interface.
+      long: `Benlirad is a bicycle shop in Lahr in the Black Forest. The platform originally built for Bikehaus Freiburg runs here in its own cut: the same core — purchasing, stock, sales, returns, customers, invoices, expenses and statistics — but shaped for a shop that sells and repairs rather than rents. That was exactly the work: what actually belongs to the core, and what only existed for the first client?
 
-The platform supports four languages (German, English, French, Turkish) and integrates external APIs for automated listings. The backend runs on .NET 10 (Clean Architecture), the frontend on Angular 19 with SSR.`,
+The public site runs on Angular 17 with server-side rendering in four languages (DE, EN, FR, TR). It pulls its content straight from the inventory system: the showroom shows real stock including a counter of available bikes, alongside new bikes, accessories, repair service, guides, FAQ, warranty and local landing pages for the region. What gets booked in at the shop is online without an intermediate step.
+
+It all runs on a dedicated server with Docker and nginx: API, admin interface and SSR front-end as separate services, SQLite as the database, JWT for sign-in. On top come the same tools as in the sibling project — Kleinanzeigen sync, Chrome extension and a Windows build for the machine at the shop.`,
       features: [
-        'Showroom with product catalogue and filters',
-        'Four languages: German, English, French, Turkish',
-        'Rental system with online booking',
-        'Repair & service appointment booking',
-        'Kleinanzeigen API integration for listings',
-        'Customer reviews and testimonials',
-        'Gallery with shop impressions',
-        'SEO-optimised with server-side rendering',
+        'Inventory management: purchasing, stock, sales, returns, customers, invoices, expenses',
+        'Public website with live stock from the same database',
+        'Four languages (DE, EN, FR, TR) on their own URLs, with SSR',
+        'Showroom, new bikes, accessories, repair service, guides and FAQ',
+        'Local landing pages for search around Lahr',
+        'Kleinanzeigen sync plus Chrome extension for the listings',
+        'Windows desktop build with a bundled API',
+        'Self-hosted: Docker, nginx, automatic TLS',
       ],
     },
     tr: {
-      subtitle: 'Showroom, kiralama & servisli bisiklet platformu',
+      subtitle: 'Lahr’daki bir bisiklet mağazası için stok yönetimi ve web sitesi',
       category: 'Full-stack web uygulaması',
-      description: 'Lahr/Kara Orman’da satış, kiralama ve onarım için modern bisiklet platformu. Çok dilli, showroom ve müşteri yorumlarıyla.',
+      description:
+        'İkinci mağaza, aynı platform: .NET 9 API, Angular yönetim paneli ve showroom, aksesuar ve tamir servisiyle SSR’li halka açık site — dört dil, kendi sunucusunda.',
       role: 'Full-stack geliştirici & mimar',
-      long: `Benlirad, Lahr/Kara Orman’daki bir bisiklet mağazası için kapsamlı bir web platformudur. Yeni ve ikinci el bisikletler için bir showroom, kiralama sistemi, onarım servisi ve eksiksiz bir CMS’i modern, responsive bir arayüzde birleştirir.
+      long: `Benlirad, Kara Orman’daki Lahr’da bir bisiklet mağazası. Bikehaus Freiburg için doğan platform burada kendi kesimiyle çalışıyor: aynı çekirdek — alım, stok, satış, iade, müşteriler, faturalar, giderler ve istatistik — ama kiralayan değil, satan ve tamir eden bir mağazaya göre biçilmiş. İşin özü de tam buradaydı: Gerçekten çekirdeğe ait olan ne, sadece ilk müşteri için var olan ne?
 
-Platform dört dili (Almanca, İngilizce, Fransızca, Türkçe) destekler ve otomatik ilanlar için dış API’lerle entegre olur. Arka uç .NET 10 (Clean Architecture), ön uç SSR’li Angular 19’dur.`,
+Halka açık site, sunucu taraflı render’lı Angular 17 ile dört dilde çalışıyor (DE, EN, FR, TR). İçeriğini doğrudan stok sisteminden alıyor: Showroom gerçek stoğu, müsait bisiklet sayacıyla birlikte gösteriyor; yanında yeni bisikletler, aksesuar, tamir servisi, rehber, SSS, garanti ve bölge için yerel sayfalar. Mağazada kaydedilen, aradan bir adım geçmeden internette.
+
+Tamamı kendi sunucusunda, Docker ve nginx ile çalışıyor: API, yönetim arayüzü ve SSR ön yüzü ayrı servisler, veritabanı SQLite, giriş için JWT. Üstüne kardeş projedeki araçların aynısı geliyor — Kleinanzeigen eşitlemesi, Chrome eklentisi ve mağazadaki bilgisayar için Windows sürümü.`,
       features: [
-        'Ürün kataloğu ve filtreli showroom',
-        'Dört dil: Almanca, İngilizce, Fransızca, Türkçe',
-        'Online rezervasyonlu kiralama sistemi',
-        'Onarım & servis randevu sistemi',
-        'İlanlar için Kleinanzeigen API entegrasyonu',
-        'Müşteri yorumları ve referanslar',
-        'Mağaza fotoğraflarıyla galeri',
-        'SSR ile SEO uyumlu',
+        'Stok yönetimi: alım, stok, satış, iade, müşteriler, faturalar, giderler',
+        'Aynı veritabanından canlı stokla beslenen halka açık site',
+        'Kendi URL’leriyle dört dil (DE, EN, FR, TR) ve SSR',
+        'Showroom, yeni bisikletler, aksesuar, tamir servisi, rehber ve SSS',
+        'Lahr çevresindeki arama için yerel sayfalar',
+        'İlanlar için Kleinanzeigen eşitlemesi ve Chrome eklentisi',
+        'API’yi içeren Windows masaüstü sürümü',
+        'Kendi sunucusu: Docker, nginx, otomatik TLS',
       ],
     },
     ku: {
-      subtitle: 'Platforma bisîkletan: showroom, kirê & servîs',
+      subtitle: 'Rêveberiya stokê û malper ji bo firotgehek bisîkletan li Lahrê',
       category: 'Sepana webê ya full-stack',
-      description: 'Platforma bisîkletan a nûjen ji bo firotin, kirê û tamîr li Lahr/Daristana Reş. Pirzimanî, bi showroom û nirxandinên xerîdaran.',
+      description:
+        'Firotgeha duyem, heman platform: API ya .NET 9, panela rêveberiyê ya Angular û malpera giştî ya bi SSR bi showroom, alav û servisa tamîrê — çar ziman, li ser servera xwe.',
       role: 'Pêşvebirê full-stack & mîmar',
-      long: `Benlirad platformek webê ya berfireh e ji bo firotgehek bisîkletan li Lahr/Daristana Reş. Ew showroomek ji bo bisîkletên nû û kevn, pergalek kirê, servîsek tamîrê û CMSek temam dicivîne — hemû di navrûyek nûjen û responsive de.
+      long: `Benlirad firotgehek bisîkletan e li Lahra Daristana Reş. Platforma ku ji bo Bikehaus Freiburg hatibû afirandin li vir bi birrîna xwe dixebite: heman navend — kirîn, stok, firotin, vegerandin, xerîdar, fatûre, lêçûn û amar — lê li gorî firotgehek ku difiroşe û tamîr dike, ne ku kirê dide. Kar jî tam li vir bû: Bi rastî çi ya navendê ye û çi tenê ji bo xerîdarê yekem hebû?
 
-Platform çar zimanan (Almanî, Îngilîzî, Fransî, Tirkî) piştgirî dike û bi API yên derveyî re ji bo lîsteyên otomatîk entegre dibe. Backend bi .NET 10 (Clean Architecture), frontend bi Angular 19 û SSR e.`,
+Rûpela giştî bi Angular 17 û renderkirina aliyê serverê di çar zimanan de dixebite (DE, EN, FR, TR). Naveroka xwe rasterast ji pergala stokê digire: Showroom stoka rastîn bi jimarvana bisîkletên berdest nîşan dide, li kêleka wê bisîkletên nû, alav, servisa tamîrê, rêbername, FAQ, garantî û rûpelên herêmî yên herêmê. Tiştê ku li firotgehê tê tomarkirin, bê gavek navber li ser înternetê ye.
+
+Her tişt li ser servereke xwe bi Docker û nginx dixebite: API, navrûya rêveberiyê û frontenda SSR wek karûbarên cuda, SQLite wek danegeh, JWT ji bo têketinê. Li ser wan heman amûrên projeya xwişkê tên — hevahengiya Kleinanzeigen, dirêjkirina Chrome û guhertoyeke Windows ji bo komputera firotgehê.`,
       features: [
-        'Showroom bi katalog û fîlteran',
-        'Çar ziman: Almanî, Îngilîzî, Fransî, Tirkî',
-        'Pergala kirê bi rezervasyona serhêl',
-        'Randevûya tamîr & servîsê',
-        'Entegrasyona API ya Kleinanzeigen ji bo lîsteyan',
-        'Nirxandin û şahidiyên xerîdaran',
-        'Galerî bi wêneyên firotgehê',
-        'Bi SSR ji bo SEO xweşkirî',
+        'Rêveberiya stokê: kirîn, stok, firotin, vegerandin, xerîdar, fatûre, lêçûn',
+        'Malpera giştî bi stoka zindî ji heman danegehê',
+        'Çar ziman (DE, EN, FR, TR) bi URLên xwe û SSR',
+        'Showroom, bisîkletên nû, alav, servisa tamîrê, rêbername û FAQ',
+        'Rûpelên herêmî ji bo lêgerîna li dora Lahrê',
+        'Hevahengiya Kleinanzeigen û dirêjkirina Chrome ji bo îlanan',
+        'Guhertoya Windows bi API ya tê de',
+        'Hilanîna xwe: Docker, nginx, TLS ya otomatîk',
       ],
     },
   },
@@ -428,227 +456,271 @@ Her tişt li ser servereke xwe dixebite: Docker Compose bi nginx û sertîfîkay
   },
   'zerin-gold': {
     fr: {
-      subtitle: 'Site premium pour bijoutier & négociant en or à Fribourg',
+      subtitle: 'Site premium avec cours des métaux en direct pour un bijoutier',
       category: 'Site premium',
-      description: 'Site premium « award-grade » pour un négociant en or à Fribourg. Next.js 16, multilingue (7 langues dont l’arabe RTL), en white-label.',
+      description:
+        'Site pour un négociant en or, bijoutier et atelier à Fribourg : cours des métaux en direct, calculateurs et catalogue. Next.js 16, sept langues dont l’arabe en RTL.',
       role: 'Développeur & designer (solo)',
-      long: `Zerin Gold est un site premium pour un négociant en or, bijoutier et atelier de joaillerie à Fribourg-en-Brisgau. Le projet mise sur un design « award-grade » avec une typographie soignée, des animations au défilement et une esthétique noir-or qui transmet la confiance et la valeur de la marque.
+      long: `Zerin Gold est négociant en or, bijoutier et atelier de joaillerie à Fribourg-en-Brisgau. Le site adopte une esthétique noir et or posée, avec une typographie à empattements fine et des animations de défilement discrètes — pour l’or, ce n’est pas le volume sonore qui vend, mais l’impression de solidité. Sept langues couvrent la clientèle, l’arabe avec une mise en page de droite à gauche.
 
-Techniquement, le site repose sur Next.js 16 avec React 19 et Tailwind 4. Il est entièrement multilingue (7 langues, dont l’arabe en RTL) et conçu en white-label comme modèle réutilisable. Authentification NextAuth, données via Prisma/PostgreSQL et e-mails transactionnels via Resend complètent le système.`,
+La partie techniquement intéressante, c’est le prix. Un provider maison lit les cotations des métaux chez Kitco, convertit le bid/ask à l’once troy via le taux de change BCE en centimes par gramme de métal fin, et met le résultat en cache deux minutes — le site affiche donc des chiffres fiables sans solliciter la source à chaque visite. Là-dessus reposent un moteur de marges que le commerçant pilote depuis l’administration et quatre calculateurs : valeur de l’or usagé, convertisseur de carats, Krugerrand et plan d’épargne. Le bandeau en haut de page vient de la même source.
+
+En dessous : Next.js 16 avec React Server Components et Server Actions, Prisma 7 sur PostgreSQL, Redis en cache, Auth.js v5 avec Argon2 et second facteur TOTP pour l’administration, Resend pour les e-mails et Cloudflare Turnstile contre le spam. Environ 290 URL avec des pages dédiées aux requêtes réellement recherchées — de « gram altın » aux alliances — plus des tests Vitest et Playwright, hébergé en Allemagne derrière Cloudflare.`,
       features: [
-        'Design premium « award-grade » (esthétique noir-or)',
-        '7 langues, dont l’arabe en RTL',
-        'Architecture white-label réutilisable',
-        'Next.js 16 avec React Server Components',
-        'Authentification NextAuth & Prisma/PostgreSQL',
-        'Animations au défilement (Framer Motion & Lenis)',
-        'Formulaires avec anti-spam (hCaptcha)',
-        'Entièrement optimisé SEO & ultra-rapide',
+        'Cours en direct : cotations Kitco + taux BCE → centimes par gramme fin, cache de 2 minutes',
+        'Quatre calculateurs : or usagé, convertisseur de carats, Krugerrand, plan d’épargne',
+        'Moteur de marges — le commerçant règle lui-même ses marges dans l’administration',
+        '7 langues dont l’arabe en RTL, architecture white-label',
+        'Next.js 16 avec Server Components, Prisma 7/PostgreSQL et Redis',
+        'Connexion admin avec Argon2 et second facteur TOTP (Auth.js v5)',
+        'Formulaires protégés par Cloudflare Turnstile, sans énigmes de captcha',
+        'Environ 290 URL avec pages de destination ciblées, tests Vitest et Playwright',
       ],
     },
     en: {
-      subtitle: 'Premium website for a gold dealer & jeweller in Freiburg',
+      subtitle: 'Premium website with live metal prices for a jeweller',
       category: 'Premium website',
-      description: 'Award-grade premium website for a gold dealer in Freiburg. Next.js 16, multilingual (7 languages incl. RTL Arabic), built white-label.',
+      description:
+        'Website for a gold dealer, jeweller and atelier in Freiburg: live precious-metal prices, calculators and a product catalogue. Next.js 16, seven languages including RTL Arabic.',
       role: 'Solo developer & designer',
-      long: `Zerin Gold is a premium website for a gold dealer, jeweller and jewellery atelier in Freiburg. The project relies on award-grade design with refined typography, smooth scroll animations and an elegant black-and-gold aesthetic that conveys the brand’s trust and value.
+      long: `Zerin Gold is a gold dealer, jeweller and jewellery atelier in Freiburg im Breisgau. The site runs on a calm black-and-gold aesthetic with fine serif typography and restrained scroll animations — with gold, it isn’t volume that sells but the impression of solidity. Seven languages cover the customer base, Arabic including a right-to-left layout.
 
-Technically, it’s built on Next.js 16 with React 19 and Tailwind 4. It’s fully multilingual (7 languages, including right-to-left Arabic) and white-label, serving as a reusable template. NextAuth authentication, Prisma/PostgreSQL data and transactional email via Resend round out the system.`,
+The technically interesting part is the price. A custom provider reads precious-metal quotes from Kitco, converts bid/ask per troy ounce into cents per gram of fine metal using the ECB exchange rate, and caches the result for two minutes — so the site shows dependable numbers without hitting the source on every visit. On top of that sit a margin engine the dealer controls from the admin area and four calculators: scrap-gold value, karat converter, Krugerrand and savings plan. The ticker in the header comes from the same source.
+
+Underneath: Next.js 16 with React Server Components and Server Actions, Prisma 7 on PostgreSQL, Redis for caching, Auth.js v5 with Argon2 and a TOTP second factor for the admin area, Resend for email and Cloudflare Turnstile against form spam. Around 290 URLs with landing pages for the terms people actually search — from “gram altın” to wedding rings — plus Vitest and Playwright tests, hosted in Germany behind Cloudflare.`,
       features: [
-        'Award-grade premium design (black-and-gold aesthetic)',
-        '7 languages incl. right-to-left Arabic',
-        'Reusable white-label architecture',
-        'Next.js 16 with React Server Components',
-        'NextAuth authentication & Prisma/PostgreSQL',
-        'Smooth scroll animations (Framer Motion & Lenis)',
-        'Contact forms with spam protection (hCaptcha)',
-        'Fully SEO-optimised & lightning fast',
+        'Live metal prices: Kitco quotes + ECB rate → cents per gram fine, two-minute cache',
+        'Four calculators: scrap-gold value, karat converter, Krugerrand, savings plan',
+        'Margin engine — the dealer sets his own margins in the admin area',
+        '7 languages including RTL Arabic, built white-label',
+        'Next.js 16 with Server Components, Prisma 7/PostgreSQL and Redis',
+        'Admin login with Argon2 and a TOTP second factor (Auth.js v5)',
+        'Forms protected by Cloudflare Turnstile instead of captcha puzzles',
+        'Around 290 URLs with keyword landing pages, tested with Vitest and Playwright',
       ],
     },
     tr: {
-      subtitle: 'Freiburg’da altın tüccarı & kuyumcu için premium site',
+      subtitle: 'Bir kuyumcu için canlı maden fiyatlı premium web sitesi',
       category: 'Premium web sitesi',
-      description: 'Freiburg’daki bir altın tüccarı için ödül seviyesinde premium site. Next.js 16, çok dilli (RTL Arapça dahil 7 dil), white-label.',
+      description:
+        'Freiburg’daki altın alım-satımcısı, kuyumcu ve atölye için web sitesi: canlı değerli maden fiyatları, hesaplayıcılar ve ürün kataloğu. Next.js 16, RTL Arapça dahil yedi dil.',
       role: 'Solo geliştirici & tasarımcı',
-      long: `Zerin Gold, Freiburg’da bir altın tüccarı, kuyumcu ve mücevher atölyesi için premium bir web sitesidir. Proje; özenli tipografi, akıcı kaydırma animasyonları ve markanın güvenini ve değerini yansıtan zarif bir siyah-altın estetikle ödül seviyesinde bir tasarıma dayanır.
+      long: `Zerin Gold, Freiburg im Breisgau’da altın alım-satımcısı, kuyumcu ve mücevher atölyesi. Site sakin bir siyah-altın estetiğine, ince serif tipografiye ve ölçülü kaydırma animasyonlarına dayanıyor — altında satan şey ses yüksekliği değil, sağlamlık izlenimi. Yedi dil müşteri kitlesini kapsıyor; Arapça sağdan sola yerleşimiyle birlikte.
 
-Teknik olarak Next.js 16, React 19 ve Tailwind 4 üzerine kuruludur. Tamamen çok dillidir (RTL Arapça dahil 7 dil) ve yeniden kullanılabilir bir şablon olarak white-label tasarlanmıştır. NextAuth kimlik doğrulama, Prisma/PostgreSQL veri ve Resend ile işlemsel e-postalar sistemi tamamlar.`,
+Teknik olarak asıl ilginç kısım fiyat. Kendi yazdığım bir sağlayıcı, değerli maden kotasyonlarını Kitco’dan okuyor, ons başına alış/satışı AMB kuruyla gram saf maden başına kuruşa çeviriyor ve sonucu iki dakika önbellekte tutuyor — yani site her ziyarette kaynağa yüklenmeden güvenilir rakam gösteriyor. Bunun üzerine, satıcının yönetim panelinden kontrol ettiği bir marj motoru ve dört hesaplayıcı geliyor: hurda altın değeri, karat çevirici, Krugerrand ve birikim planı. Başlıktaki şerit de aynı kaynaktan besleniyor.
+
+Altında ise: React Server Components ve Server Actions ile Next.js 16, PostgreSQL üzerinde Prisma 7, önbellek için Redis, yönetim paneli için Argon2 ve TOTP ikinci faktörlü Auth.js v5, e-posta için Resend ve form spam’ine karşı Cloudflare Turnstile. Gerçekten aranan terimler için açılış sayfalarıyla yaklaşık 290 URL — „gram altın"dan alyanslara — ayrıca Vitest ve Playwright testleri; Almanya’da, Cloudflare arkasında barındırılıyor.`,
       features: [
-        'Ödül seviyesinde premium tasarım (siyah-altın estetik)',
-        'RTL Arapça dahil 7 dil',
-        'Yeniden kullanılabilir white-label mimari',
-        'React Server Components ile Next.js 16',
-        'NextAuth kimlik doğrulama & Prisma/PostgreSQL',
-        'Akıcı kaydırma animasyonları (Framer Motion & Lenis)',
-        'Spam korumalı iletişim formları (hCaptcha)',
-        'Tamamen SEO uyumlu & çok hızlı',
+        'Canlı maden fiyatı: Kitco kotasyonu + AMB kuru → gram saf başına kuruş, 2 dakika önbellek',
+        'Dört hesaplayıcı: hurda altın değeri, karat çevirici, Krugerrand, birikim planı',
+        'Marj motoru — satıcı kendi kâr marjını yönetim panelinden belirliyor',
+        'RTL Arapça dahil 7 dil, white-label mimari',
+        'Server Components ile Next.js 16, Prisma 7/PostgreSQL ve Redis',
+        'Argon2 ve TOTP ikinci faktörlü yönetici girişi (Auth.js v5)',
+        'Captcha bulmacası yerine Cloudflare Turnstile korumalı formlar',
+        'Anahtar kelime açılış sayfalarıyla ~290 URL, Vitest ve Playwright testleri',
       ],
     },
     ku: {
-      subtitle: 'Malpera premium ji bo bazirganê zêr & zêrînger li Freiburgê',
+      subtitle: 'Malpera premium bi bihayên madenan ên zindî ji bo zêrkerekî',
       category: 'Malpera premium',
-      description: 'Malpera premium a asta-xelatê ji bo bazirganek zêr li Freiburgê. Next.js 16, pirzimanî (7 ziman bi erebî ya RTL re), white-label.',
-      role: 'Pêşvebir & dîzayner (solo)',
-      long: `Zerin Gold malperek premium e ji bo bazirganek zêr, zêrînger û atolyeya zêran li Freiburgê. Proje li ser dîzaynek asta-xelatê bi tîpografiyek hûrgilî, anîmasyonên şemitandinê yên nerm û estetîkek reş-zêrîn a şik ku baweriya û nirxa markayê radigihîne, dilsoz e.
+      description:
+        'Malper ji bo bazirganê zêr, zêrker û atolyeyê li Freiburgê: bihayên madenên hêja yên zindî, hesabker û katalog. Next.js 16, heft ziman bi erebiya RTL.',
+      role: 'Pêşvebir & sêwirkar (solo)',
+      long: `Zerin Gold li Freiburg im Breisgau bazirganê zêr, zêrker û atolyeya xemlan e. Malper li ser estetîkeke aram a reş-zêrîn, tîpografiyeke serif a nazik û anîmasyonên hûrgilî yên scrollê ava ye — li cem zêr ne dengbilindî difiroşe, lê bandora saxlemiyê. Heft ziman xerîdaran digire nav xwe, erebî bi rêzkirina ji rastê ber bi çepê.
 
-Bi teknîkî, ew li ser Next.js 16 bi React 19 û Tailwind 4 hatiye avakirin. Ew bi tevahî pirzimanî ye (7 ziman, bi erebî ya rast-bi-çep re) û white-label, wek şablonek ji nû ve bikaranînê. Erêkirina NextAuth, daneyên Prisma/PostgreSQL û e-nameyên transaksiyonel bi Resend pergalê temam dikin.`,
+Beşa ku ji aliyê teknîkî ve balkêş e biha ye. Pêşkêşkerekî taybet bihayên madenên hêja ji Kitco dixwîne, bid/ask ya her onsê bi kursa Banka Navendî ya Ewropî dizivirîne sent li ser her gramê madenê safî, û encamê du deqîqeyan di cacheyê de digire — malper bêyî ku her carê serî li çavkaniyê bide jimareyên pêbawer nîşan dide. Li ser vê yekê motorek marjê heye ku bazirgan bi xwe ji beşa rêveberiyê birêve dibe, û çar hesabker: nirxa zêrê kevn, veguhêzerê karatê, Krugerrand û plana teserûfê. Rêzika li serê rûpelê jî ji heman çavkaniyê tê.
+
+Di bin de: Next.js 16 bi React Server Components û Server Actions, Prisma 7 li ser PostgreSQL, Redis wek cache, Auth.js v5 bi Argon2 û faktora duyem a TOTP ji bo rêveberiyê, Resend ji bo e-nameyan û Cloudflare Turnstile li dijî spama formê. Nêzîkî 290 URL bi rûpelên taybet ji bo peyvên ku bi rastî têne lêgerîn — ji „gram altın" heta gustîlkên zewacê — û testên Vitest û Playwright, li Almanyayê li pişt Cloudflare.`,
       features: [
-        'Dîzayna premium a asta-xelatê (estetîka reş-zêrîn)',
-        '7 ziman bi erebî ya rast-bi-çep re',
-        'Mîmariya white-label a ji nû ve bikaranînê',
-        'Next.js 16 bi React Server Components',
-        'Erêkirina NextAuth & Prisma/PostgreSQL',
-        'Anîmasyonên şemitandinê yên nerm (Framer Motion & Lenis)',
-        'Formên têkiliyê bi parastina spam (hCaptcha)',
-        'Bi tevahî ji bo SEO xweşkirî & pir bilez',
+        'Bihayên zindî: quoteên Kitco + kursa BNE → sent li ser gramê safî, cache ya 2 deqîqeyan',
+        'Çar hesabker: nirxa zêrê kevn, veguhêzerê karatê, Krugerrand, plana teserûfê',
+        'Motora marjê — bazirgan marjên xwe bi xwe di beşa rêveberiyê de diyar dike',
+        '7 ziman bi erebiya RTL, avahiyeke white-label',
+        'Next.js 16 bi Server Components, Prisma 7/PostgreSQL û Redis',
+        'Têketina rêveber bi Argon2 û faktora duyem a TOTP (Auth.js v5)',
+        'Form bi Cloudflare Turnstile têne parastin, ne bi mamikên captcha',
+        'Nêzîkî 290 URL bi rûpelên peyvên mifteyî, test bi Vitest û Playwright',
       ],
     },
   },
   'hotel-bergfrieden': {
     fr: {
-      subtitle: 'Site pour un hôtel en Forêt-Noire (Löffingen)',
+      subtitle: 'Site d’hôtel entièrement pré-rendu en Haute-Forêt-Noire',
       category: 'Site web',
-      description: 'Site moderne, rendu statiquement, pour l’hôtel Bergfrieden à Löffingen. Angular 21 avec prerendering, entièrement optimisé SEO.',
+      description:
+        'Site pour un hôtel familial à Löffingen. Angular 21, chaque route pré-rendue en HTML, quatre langues — sans runtime serveur.',
       role: 'Développeur full-stack & designer',
-      long: `Un site web moderne et chaleureusement luxueux pour l’hôtel Bergfrieden en Forêt-Noire (Löffingen). Le design s’inspire d’une esthétique « luxueuse mais chaleureuse », avec une palette Forêt-Noire (vert forêt, crème, bronze) et une typographie classique Cormorant Garamond.
+      long: `L’Hôtel Bergfrieden est une maison familiale à Löffingen, en Haute-Forêt-Noire. Le projet suit une consigne plus facile à énoncer qu’à construire : luxueux, mais chaleureux. Cela repose sur une palette Forêt-Noire — vert forêt, crème et bronze —, Cormorant Garamond pour les titres et Inter pour le texte courant : de grandes images, beaucoup de blanc, aucun effet superflu.
 
-Techniquement, le site est réalisé en Angular 21 (composants standalone & signals) et entièrement rendu en statique (SSG) — toutes les routes sont pré-générées en HTML et hébergées sans runtime serveur. Des métadonnées par route, du JSON-LD Hotel Schema.org, un sitemap.xml et des cartes OG/Twitter assurent une visibilité maximale.`,
+Côté contenu, le site couvre ce dont une maison de cette taille a réellement besoin : cinq types de chambres avec bouton de demande, le petit-déjeuner bio et régional avec ses producteurs, une page région avec la Hochschwarzwald Card, une galerie avec lightbox, un blog, un contact avec demande et WhatsApp — en quatre langues. Pour un hôtel qui reçoit ses réservations via les portails et les demandes directes, c’est le bon format : pas de moteur de réservation à entretenir, mais un site qui convainc et déclenche la demande.
+
+Techniquement, c’est volontairement la solution la plus simple qui tienne. Angular 21 avec composants standalone et signals ; au build, toutes les routes sont pré-rendues en HTML et déposées sur GitHub Pages — pas de serveur, pas de coût d’exécution, rien qui puisse tomber la nuit. Balises méta par route, JSON-LD Hotel Schema.org, sitemap.xml, robots.txt et manifeste PWA sont intégrés, le déploiement part automatiquement à chaque push.`,
       features: [
-        'Design chaleureux et luxueux (palette Forêt-Noire)',
-        'Génération statique — ultra-rapide, sans serveur',
-        'SEO par route avec JSON-LD Hotel Schema.org',
-        'sitemap.xml, robots.txt, cartes OG/Twitter',
-        'Pages chambres, offres et galerie',
-        'Déploiement automatique via GitHub Actions',
-        'Design responsive pour tous les appareils',
+        'Design chaleureux et luxueux : palette Forêt-Noire, Cormorant Garamond + Inter',
+        'Génération statique — chaque route en HTML fini, aucun serveur nécessaire',
+        'Quatre langues (DE, EN, FR, TR) aux URL dédiées',
+        'Chambres, petit-déjeuner bio régional, région avec Hochschwarzwald Card, galerie, blog',
+        'Parcours de demande avec raccourci WhatsApp plutôt qu’un moteur de réservation',
+        'SEO par route : JSON-LD Hotel Schema.org, sitemap.xml, cartes OG/Twitter',
+        'Manifeste PWA et llms.txt',
+        'Déploiement automatique via GitHub Actions sur GitHub Pages',
       ],
     },
     en: {
-      subtitle: 'Website for a hotel in the Black Forest (Löffingen)',
+      subtitle: 'Statically rendered hotel website in the High Black Forest',
       category: 'Website',
-      description: 'Modern, statically rendered website for Hotel Bergfrieden in Löffingen. Angular 21 with prerendering, fully SEO-optimised.',
+      description:
+        'Website for a family-run hotel in Löffingen. Angular 21, every route pre-rendered to HTML, four languages — with no server runtime.',
       role: 'Full-stack developer & designer',
-      long: `A modern, warmly luxurious website for Hotel Bergfrieden in the Black Forest (Löffingen). The design is inspired by a “luxurious yet warm” aesthetic with a Black-Forest palette of forest green, cream and bronze, and classic Cormorant Garamond typography.
+      long: `Hotel Bergfrieden is a family-run house in Löffingen in the High Black Forest. The design follows a brief that is easier said than built: luxurious, but warm. That is carried by a Black Forest palette of forest green, cream and bronze, with Cormorant Garamond for headlines and Inter for body text — generous images, plenty of white space, no effects for their own sake.
 
-Technically, the site is built with Angular 21 (standalone components & signals) and fully statically rendered (SSG) — all routes are prerendered to HTML and hosted without a server runtime. Per-route meta tags, Hotel Schema.org JSON-LD, a sitemap.xml and OG/Twitter cards ensure maximum visibility.`,
+In terms of content the site covers what a house this size actually needs: five room types with an enquiry button, the organic regional breakfast including its suppliers, a region page with the Hochschwarzwald Card, a gallery with lightbox, a blog, and contact with an enquiry form and WhatsApp — in four languages. For a hotel that gets its bookings through portals and direct enquiries, that is the right cut: no booking engine to maintain, but a site that convinces and triggers the enquiry.
+
+Technically it is deliberately the simplest thing that works. Angular 21 with standalone components and signals; at build time every route is pre-rendered to finished HTML and served from GitHub Pages — no server, no runtime cost, nothing that can fall over at night. Per-route meta tags, Hotel Schema.org JSON-LD, sitemap.xml, robots.txt and a PWA manifest are built in, and deployment runs automatically on every push.`,
       features: [
-        'Warmly luxurious design (Black-Forest palette)',
-        'Static site generation — fast, no server needed',
-        'Per-route SEO with Hotel Schema.org JSON-LD',
-        'sitemap.xml, robots.txt, OG/Twitter cards',
-        'Room, offer and gallery pages',
-        'Automatic deployment via GitHub Actions',
-        'Responsive design for all devices',
+        'Warm, luxurious design: Black Forest palette, Cormorant Garamond + Inter',
+        'Static site generation — every route as finished HTML, no server needed',
+        'Four languages (DE, EN, FR, TR) on their own URLs',
+        'Rooms, organic regional breakfast, region page with Hochschwarzwald Card, gallery, blog',
+        'Enquiry flow with a WhatsApp shortcut instead of a booking engine',
+        'Per-route SEO with Hotel Schema.org JSON-LD, sitemap.xml, OG/Twitter cards',
+        'PWA manifest and llms.txt',
+        'Automatic deployment via GitHub Actions to GitHub Pages',
       ],
     },
     tr: {
-      subtitle: 'Kara Orman’da bir otel için web sitesi (Löffingen)',
+      subtitle: 'Yüksek Kara Orman’da statik üretilmiş otel sitesi',
       category: 'Web sitesi',
-      description: 'Löffingen’deki Hotel Bergfrieden için modern, statik render edilen web sitesi. Prerendering’li Angular 21, tamamen SEO uyumlu.',
+      description:
+        'Löffingen’deki aile işletmesi bir otel için web sitesi. Angular 21, her sayfa önceden HTML olarak üretiliyor, dört dil — sunucu çalışma zamanı olmadan.',
       role: 'Full-stack geliştirici & tasarımcı',
-      long: `Kara Orman’daki (Löffingen) Hotel Bergfrieden için modern, sıcak-lüks bir web sitesi. Tasarım; orman yeşili, krem ve bronzdan oluşan Kara Orman paleti ve klasik Cormorant Garamond tipografisiyle “lüks ama sıcak” bir estetikten ilham alır.
+      long: `Hotel Bergfrieden, Yüksek Kara Orman’daki Löffingen’de aile işletmesi bir otel. Tasarım, söylemesi yapmasından kolay bir briefi izliyor: lüks ama sıcak. Bunu orman yeşili, krem ve bronzdan oluşan bir Kara Orman paleti taşıyor; başlıklarda Cormorant Garamond, metinde Inter — geniş görseller, bol beyaz alan, gösteri olsun diye efekt yok.
 
-Teknik olarak site Angular 21 (standalone bileşenler & signals) ile yapılmış ve tamamen statik render edilmiştir (SSG) — tüm rotalar HTML’e önceden render edilir ve sunucu çalışma zamanı olmadan barındırılır. Rota bazlı meta etiketleri, Hotel Schema.org JSON-LD, sitemap.xml ve OG/Twitter kartları maksimum görünürlük sağlar.`,
+İçerik olarak site, bu büyüklükte bir işletmenin gerçekten ihtiyaç duyduğu şeyi kapsıyor: talep butonuyla beş oda tipi, tedarikçileriyle birlikte organik bölgesel kahvaltı, Hochschwarzwald Card’lı bölge sayfası, lightbox’lı galeri, blog ve WhatsApp’lı iletişim — dört dilde. Rezervasyonlarını portallardan ve doğrudan taleplerden alan bir otel için doğru kesim bu: bakımı gereken bir rezervasyon motoru değil, ikna eden ve talebi başlatan bir site.
+
+Teknik olarak bilinçli biçimde işe yarayan en basit çözüm. Standalone bileşenler ve signals ile Angular 21; derleme sırasında tüm sayfalar hazır HTML’e dönüşüyor ve GitHub Pages üzerinde duruyor — sunucu yok, çalışma maliyeti yok, gece çökebilecek bir şey yok. Sayfa başına meta etiketler, Hotel Schema.org JSON-LD, sitemap.xml, robots.txt ve PWA manifesti yerleşik; dağıtım her push’ta otomatik çalışıyor.`,
       features: [
-        'Sıcak-lüks tasarım (Kara Orman paleti)',
-        'Statik site üretimi — hızlı, sunucu gerekmez',
-        'Hotel Schema.org JSON-LD ile rota bazlı SEO',
-        'sitemap.xml, robots.txt, OG/Twitter kartları',
-        'Oda, teklif ve galeri sayfaları',
-        'GitHub Actions ile otomatik dağıtım',
-        'Tüm cihazlar için responsive tasarım',
+        'Sıcak-lüks tasarım: Kara Orman paleti, Cormorant Garamond + Inter',
+        'Statik üretim — her sayfa hazır HTML, sunucuya gerek yok',
+        'Kendi URL’leriyle dört dil (DE, EN, FR, TR)',
+        'Odalar, organik bölgesel kahvaltı, Hochschwarzwald Card’lı bölge sayfası, galeri, blog',
+        'Rezervasyon motoru yerine WhatsApp kısayollu talep akışı',
+        'Sayfa bazlı SEO: Hotel Schema.org JSON-LD, sitemap.xml, OG/Twitter kartları',
+        'PWA manifesti ve llms.txt',
+        'GitHub Actions ile GitHub Pages’e otomatik dağıtım',
       ],
     },
     ku: {
-      subtitle: 'Malper ji bo otêlek li Daristana Reş (Löffingen)',
+      subtitle: 'Malpera otêlê ya statîk a li Daristana Reş a Bilind',
       category: 'Malper',
-      description: 'Malpera nûjen a statîk-render ji bo Hotel Bergfrieden li Löffingen. Angular 21 bi prerendering, bi tevahî ji bo SEO xweşkirî.',
-      role: 'Pêşvebirê full-stack & dîzayner',
-      long: `Malperek nûjen û germ-luks ji bo Hotel Bergfrieden li Daristana Reş (Löffingen). Dîzayn ji estetîkek "luks lê germ" îlham digire, bi paleta Daristana Reş a kesk, krem û bronz û tîpografiya klasîk a Cormorant Garamond.
+      description:
+        'Malper ji bo otêleke malbatî li Löffingenê. Angular 21, her rê wek HTML pêş-amadekirî, çar ziman — bê runtimeya serverê.',
+      role: 'Pêşvebirê full-stack & sêwirkar',
+      long: `Hotel Bergfrieden otêleke malbatî ye li Löffingena Daristana Reş a Bilind. Sêwirandin li gorî daxwazek e ku gotina wê ji çêkirina wê hêsantir e: bi şkoh, lê germ. Vê yekê paletek Daristana Reş hildigire — kesk, krem û bronz —, Cormorant Garamond ji bo sernavan û Inter ji bo nivîsê: wêneyên fireh, cihê spî yê dewlemend, bê bandorên zêde.
 
-Bi teknîkî, malper bi Angular 21 (komponentên standalone & signals) hatiye çêkirin û bi tevahî statîk hatiye render kirin (SSG) — hemû rê berê li HTML têne render kirin û bê runtime ya serverê têne mêvandar kirin. Meta-yên ji bo her rê, JSON-LD ya Hotel Schema.org, sitemap.xml û kartên OG/Twitter xuyangek herî zêde misoger dikin.`,
+Ji hêla naverokê ve malper tiştê ku xaniyekî vî qasî bi rastî hewce dike digire nav xwe: pênc cureyên odeyan bi bişkoka daxwazê, taştêya organîk a herêmî bi çavkaniyên wê, rûpela herêmê bi Hochschwarzwald Card, galerî bi lightbox, blog û têkilî bi daxwaz û WhatsApp — di çar zimanan de. Ji bo otêlek ku rezervasyonên xwe ji portalan û daxwazên rasterast digire, ev birrîna rast e: ne motorek rezervasyonê ku divê were parastin, lê malperek ku qanî dike û daxwazê dide destpêkirin.
+
+Ji aliyê teknîkî ve bi zanetî sadetirîn çareseriya ku dixebite ye. Angular 21 bi standalone components û signals; di dema avakirinê de hemû rê dibin HTMLya amade û li ser GitHub Pages radiwestin — ne server, ne lêçûna xebitandinê, ne tiştek ku bi şev bikeve. Meta-etîket ji bo her rêyê, JSON-LD ya Hotel Schema.org, sitemap.xml, robots.txt û manifesta PWA hatine danîn, belavkirin bi her push otomatîk dixebite.`,
       features: [
-        'Dîzayna germ-luks (paleta Daristana Reş)',
-        'Çêkirina malpera statîk — bilez, bê server',
-        'SEO ji bo her rê bi JSON-LD ya Hotel Schema.org',
-        'sitemap.xml, robots.txt, kartên OG/Twitter',
-        'Rûpelên ode, pêşniyar û galeriyê',
-        'Deploya otomatîk bi GitHub Actions',
-        'Dîzayna responsive ji bo hemû amûran',
+        'Sêwirana germ-şkodar: paleta Daristana Reş, Cormorant Garamond + Inter',
+        'Çêkirina statîk — her rê wek HTMLya amade, server ne hewce ye',
+        'Çar ziman (DE, EN, FR, TR) bi URLên xwe',
+        'Ode, taştêya organîk a herêmî, rûpela herêmê bi Hochschwarzwald Card, galerî, blog',
+        'Rêça daxwazê bi kurteriya WhatsAppê, ne motorek rezervasyonê',
+        'SEO ji bo her rêyê: JSON-LD ya Hotel Schema.org, sitemap.xml, kartên OG/Twitter',
+        'Manifesta PWA û llms.txt',
+        'Belavkirina otomatîk bi GitHub Actions li ser GitHub Pages',
       ],
     },
   },
   'kulturplattform-freiburg': {
     fr: {
-      subtitle: 'Site d’association avec CMS et newsletter',
+      subtitle: 'Plateforme associative avec CMS, cours et newsletter',
       category: 'Application web / CMS',
-      description: 'Site d’association avec panneau d’admin, newsletter et bilinguisme. Développé avec .NET 10 (Clean Architecture) et React 19.',
+      description:
+        'Plateforme pour une association culturelle à Fribourg : événements, cours, bénévolat et newsletter en double opt-in. Back-end .NET 10 en CQRS, front React, bilingue.',
       role: 'Développeur full-stack',
-      long: `La Kulturplattform Freiburg est un site d’association moderne qui promeut les événements et initiatives culturels à Fribourg. Le projet comprend un système de gestion de contenu complet, la gestion de newsletters et un support multilingue.
+      long: `La Kulturplattform Freiburg e. V. organise des événements, des cours et des formats de rencontre à Fribourg. La plateforme reflète ce que l’association fait réellement : des activités avec catégories, recherche et pages de détail, des cours, des partenaires, les statuts, les dons et un formulaire pour les bénévoles. Tout est maintenu par le bureau lui-même — y compris les traductions, stockées comme ressources en base et modifiables depuis l’administration. Un nouveau texte en allemand et en turc ne demande donc aucun déploiement.
 
-L’architecture suit les principes de la Clean Architecture, avec un back-end .NET 10 et un front-end React 19. Le CMS permet à l’association de gérer ses contenus, créer des événements et envoyer des newsletters de façon autonome.`,
+Le back-end est un service .NET 10 en Clean Architecture avec CQRS via MediatR, FluentValidation pour les entrées, JWT et BCrypt pour la connexion et Entity Framework Core sur SQL Server — environ 22 contrôleurs, avec des tests aux niveaux domaine, application et intégration. La newsletter n’est pas un lien mailto mais un vrai parcours : double opt-in avec lien de confirmation, jeton de désinscription dans chaque message, campagnes par langue et envoi par lots, via Azure Communication Services avec SMTP en repli.
+
+Le tout tourne sur un serveur dédié : Docker Compose avec SQL Server, l’API et nginx, des boîtes mail propres pour l’envoi et, à côté, des scripts de sauvegarde et de restauration. Le front est une application React monopage qui attaque la même API.`,
       features: [
-        'Système de gestion de contenu (CMS)',
-        'Newsletter avec envoi automatisé',
-        'Bilingue : allemand & turc',
-        'Calendrier d’événements avec inscription',
-        'Panneau d’admin pour le comité',
-        'Optimisé SEO avec SSR',
-        'Intégration de services e-mail',
+        'Activités avec filtre par catégorie, recherche et pages de détail',
+        'Cours, partenaires, statuts, dons et formulaire de bénévolat',
+        'Bilingue (DE/TR) — les traductions sont en base, pas dans le code',
+        'Newsletter en double opt-in, jeton de désinscription et campagnes par langue',
+        'Envoi via Azure Communication Services avec SMTP en repli',
+        'Clean Architecture avec CQRS (MediatR) et FluentValidation',
+        'Tests aux niveaux domaine, application et intégration',
+        'Auto-hébergement : Docker Compose avec SQL Server, API et nginx, boîtes mail propres',
       ],
     },
     en: {
-      subtitle: 'Association website with CMS and newsletter',
+      subtitle: 'Association platform with CMS, courses and newsletter',
       category: 'Web app / CMS',
-      description: 'Association website with admin panel, newsletter and bilingual support. Built with .NET 10 Clean Architecture and React 19.',
+      description:
+        'Platform for a cultural association in Freiburg: events, courses, volunteering and a double-opt-in newsletter. .NET 10 backend with CQRS, React front-end, bilingual.',
       role: 'Full-stack developer',
-      long: `Kulturplattform Freiburg is a modern association website that promotes cultural events and initiatives in Freiburg. The project includes a full content-management system, newsletter management and multilingual support.
+      long: `Kulturplattform Freiburg e. V. runs events, courses and community formats in Freiburg. The platform maps what the association actually does: activities with categories, search and detail pages, course offerings, partners, the statutes, donations and a form for volunteers. The board maintains all of it themselves — including the translations, which live as resources in the database and are edited in the admin area. A new text in German and Turkish therefore needs no deployment.
 
-The architecture follows Clean Architecture principles with a .NET 10 backend and a React 19 frontend. The CMS lets the association maintain content, create events and send newsletters on its own.`,
+The backend is a .NET 10 service in Clean Architecture with CQRS via MediatR, FluentValidation for input, JWT and BCrypt for sign-in, and Entity Framework Core on SQL Server — around 22 controllers, plus tests at domain, application and integration level. The newsletter isn’t a mailto link but a proper flow: double opt-in with a confirmation link, an unsubscribe token in every message, campaigns per language and batched sending, through Azure Communication Services with SMTP as a fallback.
+
+It all runs on a dedicated server: Docker Compose with SQL Server, the API and nginx, dedicated mailboxes for sending, and backup and restore scripts alongside. The front-end is a React single-page app talking to the same API.`,
       features: [
-        'Content management system (CMS)',
-        'Newsletter system with automated sending',
-        'Bilingual: German & Turkish',
-        'Event calendar with registration',
-        'Admin panel for board members',
-        'SEO-optimised with SSR',
-        'Integration with email services',
+        'Activities with category filter, search and detail pages',
+        'Course offerings, partners, statutes, donations and a volunteer form',
+        'Bilingual (DE/TR) — translations live in the database, not in the code',
+        'Newsletter with double opt-in, unsubscribe token and per-language campaigns',
+        'Delivery via Azure Communication Services with SMTP fallback',
+        'Clean Architecture with CQRS (MediatR) and FluentValidation',
+        'Tests at domain, application and integration level',
+        'Self-hosted: Docker Compose with SQL Server, API and nginx, dedicated mailboxes',
       ],
     },
     tr: {
-      subtitle: 'CMS ve bültenli dernek web sitesi',
+      subtitle: 'CMS, kurslar ve bülten içeren dernek platformu',
       category: 'Web uygulaması / CMS',
-      description: 'Yönetim paneli, bülten ve iki dil desteğiyle dernek web sitesi. .NET 10 Clean Architecture ve React 19 ile geliştirildi.',
+      description:
+        'Freiburg’daki bir kültür derneği için platform: etkinlikler, kurslar, gönüllülük ve çift onaylı bülten. CQRS’li .NET 10 arka uç, React ön yüz, iki dilli.',
       role: 'Full-stack geliştirici',
-      long: `Kulturplattform Freiburg, Freiburg’daki kültürel etkinlikleri ve girişimleri destekleyen modern bir dernek web sitesidir. Proje; eksiksiz bir içerik yönetim sistemi, bülten yönetimi ve çok dilli destek içerir.
+      long: `Kulturplattform Freiburg e. V., Freiburg’da etkinlikler, kurslar ve buluşma programları düzenliyor. Platform derneğin gerçekten yaptığı işi yansıtıyor: kategorili, aramalı ve detay sayfalı etkinlikler, kurs programları, partnerler, tüzük, bağış ve gönüllüler için bir form. Hepsini yönetim kurulu kendisi güncelliyor — çeviriler dahil; çeviriler veritabanında kaynak olarak duruyor ve yönetim panelinden düzenleniyor. Almanca ve Türkçe yeni bir metin için dağıtım gerekmiyor.
 
-Mimari, .NET 10 arka uç ve React 19 ön uçla Clean Architecture ilkelerini izler. CMS, derneğin içerikleri kendi başına yönetmesine, etkinlik oluşturmasına ve bülten göndermesine olanak tanır.`,
+Arka uç, MediatR üzerinden CQRS kullanan Clean Architecture mimarisinde bir .NET 10 servisi: girdiler için FluentValidation, giriş için JWT ve BCrypt, SQL Server üzerinde Entity Framework Core — yaklaşık 22 controller ve alan, uygulama ve entegrasyon düzeyinde testler. Bülten bir mailto bağlantısı değil, gerçek bir akış: onay bağlantılı çift opt-in, her mesajda abonelikten çıkma token’ı, dile göre kampanyalar ve gruplar hâlinde gönderim; Azure Communication Services ile, yedek olarak SMTP.
+
+Tamamı kendi sunucusunda çalışıyor: SQL Server, API ve nginx içeren Docker Compose, gönderim için kendi posta kutuları, yanında yedekleme ve geri yükleme betikleri. Ön yüz, aynı API ile konuşan bir React tek sayfa uygulaması.`,
       features: [
-        'İçerik yönetim sistemi (CMS)',
-        'Otomatik gönderimli bülten sistemi',
-        'İki dilli: Almanca & Türkçe',
-        'Kayıtlı etkinlik takvimi',
-        'Yönetim kurulu için admin paneli',
-        'SSR ile SEO uyumlu',
-        'E-posta servisleriyle entegrasyon',
+        'Kategori filtresi, arama ve detay sayfalarıyla etkinlikler',
+        'Kurs programları, partnerler, tüzük, bağış ve gönüllü formu',
+        'İki dilli (DE/TR) — çeviriler kodda değil, veritabanında',
+        'Çift onaylı bülten, abonelikten çıkma token’ı ve dile göre kampanyalar',
+        'Azure Communication Services ile gönderim, SMTP yedeğiyle',
+        'CQRS (MediatR) ve FluentValidation ile Clean Architecture',
+        'Alan, uygulama ve entegrasyon düzeyinde testler',
+        'Kendi sunucusu: SQL Server, API ve nginx’li Docker Compose, kendi posta kutuları',
       ],
     },
     ku: {
-      subtitle: 'Malpera komeleyê bi CMS û nûçename',
+      subtitle: 'Platforma komeleyê bi CMS, kurs û nûçenameyê',
       category: 'Sepana webê / CMS',
-      description: 'Malpera komeleyê bi panela admin, nûçename û piştgiriya duzimanî. Bi .NET 10 Clean Architecture û React 19 hatiye çêkirin.',
+      description:
+        'Platform ji bo komeleyeke çandî li Freiburgê: çalakî, kurs, dilxwazî û nûçenameya bi opt-ina ducar. Backenda .NET 10 bi CQRS, frontenda React, du zimanî.',
       role: 'Pêşvebirê full-stack',
-      long: `Kulturplattform Freiburg malperek komeleyê ya nûjen e ku çalakî û destpêkên çandî li Freiburgê pêş dixe. Proje pergalek temam a rêveberiya naverokê, rêveberiya nûçenameyê û piştgiriya pirzimanî dihewîne.
+      long: `Kulturplattform Freiburg e. V. li Freiburgê çalakî, kurs û bernameyên hevdîtinê organîze dike. Platform tiştê ku komele bi rastî dike nîşan dide: çalakî bi kategorî, lêgerîn û rûpelên hûrgilî, bernameyên kursan, hevkar, rêzikname, bexşîn û formek ji bo dilxwazan. Her tiştî desteya rêveber bi xwe diparêze — wergerî jî tê de; werger wek çavkanî di danegehê de ne û di beşa rêveberiyê de têne guhertin. Nivîseke nû bi almanî û tirkî loma ti belavkirinê naxwaze.
 
-Mîmarî prensîbên Clean Architecture bi backenda .NET 10 û frontenda React 19 dişopîne. CMS dihêle ku komele bi serê xwe naverokê biparêze, çalakiyan biafirîne û nûçenameyan bişîne.`,
+Backend karûbarekî .NET 10 e bi Clean Architecture û CQRS bi MediatR: FluentValidation ji bo têketinan, JWT û BCrypt ji bo têketinê, Entity Framework Core li ser SQL Server — nêzîkî 22 controller, û test li asta domain, sepanê û entegrasyonê. Nûçename ne girêdanek mailto ye, lê rêçeke rastîn e: opt-ina ducar bi girêdana erêkirinê, tokena derketinê di her peyamê de, kampanya li gorî zimanan û şandin bi koman, bi Azure Communication Services û SMTP wek paşxan.
+
+Her tişt li ser servereke xwe dixebite: Docker Compose bi SQL Server, API û nginx, qutîkên e-nameyê yên xwe ji bo şandinê, û li kêleka wan skrîptên paşekêş û vegerandinê. Frontend sepanek React a yek-rûpelî ye ku bi heman API re dipeyive.`,
       features: [
-        'Pergala rêveberiya naverokê (CMS)',
-        'Pergala nûçenameyê bi şandina otomatîk',
-        'Duzimanî: Almanî & Tirkî',
-        'Salnameya çalakiyan bi tomarkirin',
-        'Panela admin ji bo endamên desteyê',
-        'Bi SSR ji bo SEO xweşkirî',
-        'Entegrasyon bi servîsên e-nameyê',
+        'Çalakî bi parzûna kategoriyê, lêgerîn û rûpelên hûrgilî',
+        'Bernameyên kursan, hevkar, rêzikname, bexşîn û forma dilxwaziyê',
+        'Du zimanî (DE/TR) — werger di danegehê de ne, ne di kodê de',
+        'Nûçename bi opt-ina ducar, tokena derketinê û kampanya li gorî zimanan',
+        'Şandin bi Azure Communication Services, bi SMTP wek paşxan',
+        'Clean Architecture bi CQRS (MediatR) û FluentValidation',
+        'Test li asta domain, sepanê û entegrasyonê',
+        'Hilanîna xwe: Docker Compose bi SQL Server, API û nginx, qutîkên e-nameyê yên xwe',
       ],
     },
   },
