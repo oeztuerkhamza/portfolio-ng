@@ -170,6 +170,111 @@ Das System erkennt automatisch gesetzlich vorgeschriebene Pausen, validiert maxi
     },
   },
   {
+    slug: 'gkn-portraits',
+    title: 'GKN Portraits',
+    subtitle: 'Bewerbungsfoto-Studio in Freiburg mit Online-Terminbuchung',
+    category: 'Website & Buchungssystem',
+    tags: ['Next.js 16', 'React 19', 'Buchungssystem', '15 Sprachen', 'Local SEO'],
+    image: '/assets/images/gkn-portraits.png',
+    liveUrl: 'https://gknportraits.de',
+    githubUrl: 'https://github.com/oeztuerkhamza',
+    description:
+      'Website und Terminbuchung für ein Bewerbungsfoto-Studio in Freiburg. Next.js 16, 15 Sprachen, Buchung in drei Schritten — mit einem Studiokalender, den sich zwei Marken teilen.',
+    longDescription: `GKN Portraits ist die Website eines Fotostudios in Freiburg, das auf Bewerbungs- und Businessporträts spezialisiert ist. Der Kern ist keine Imageseite, sondern eine Buchung: Paket wählen, freien Termin im Kalender anklicken, Kontaktdaten eintragen — drei Schritte, Bestätigung per E-Mail, Stornolink inklusive. Damit fällt das Telefonieren über freie Termine weg, das bei kurzen Shootings den größten Teil des Aufwands ausmacht.
+
+Technisch läuft die Seite auf Next.js 16 mit React 19 und Tailwind 4. Fünfzehn Sprachen mit übersetzten URLs decken ab, wer in Freiburg ein Bewerbungsfoto braucht — inklusive Rechts-nach-Links-Layout für Arabisch. Preise gibt es in zwei Listen (privat und geschäftlich), weil sich nicht der Aufwand unterscheidet, sondern die Nutzung des Bildes.
+
+Die Besonderheit liegt hinter den Kulissen: Das Studio betreibt zwei Marken — Porträt und Hochzeit — aber es gibt nur einen Raum und einen Terminplan. Beide Websites buchen deshalb in denselben Kalender, und jede Buchung merkt sich, über welche Marke sie hereinkam. Ein Datenbank-Index stellt sicher, dass derselbe Slot nie zweimal bestätigt wird. Verwaltet wird alles über einen gemeinsamen Bereich mit passwortlosem Login per Einmal-Link.`,
+    features: [
+      'Online-Terminbuchung in drei Schritten mit Bestätigungsmail und Stornolink',
+      'Ein gemeinsamer Studiokalender für zwei Marken — doppelte Buchung technisch ausgeschlossen',
+      '15 Sprachen mit übersetzten URLs, inkl. RTL-Layout für Arabisch',
+      'Zwei Preislisten (privat / geschäftlich) mit drei Paketen',
+      'Lokale Landingpages für die Städte rund um Freiburg',
+      'Ratgeber-Bereich zu Kleidung, Ablauf und Bildauswahl',
+      'Passwortloses Login für den Verwaltungsbereich (Einmal-Link, JWT-Cookie)',
+      'Rund 285 indexierbare URLs mit hreflang, JSON-LD und eigener Sitemap',
+    ],
+    techStack: [
+      { name: 'Next.js 16', icon: '▲' },
+      { name: 'React 19', icon: '⚛️' },
+      { name: 'Tailwind 4', icon: '💨' },
+      { name: 'next-intl', icon: '🌍' },
+      { name: 'PostgreSQL', icon: '🐘' },
+      { name: 'Drizzle ORM', icon: '🌧️' },
+      { name: 'TypeScript', icon: '📘' },
+      { name: 'Docker', icon: '🐳' },
+    ],
+    screenshots: [
+      '/assets/images/gkn-portraits.png',
+      '/assets/images/gkn-portraits-2.png',
+      '/assets/images/gkn-portraits-3.png',
+    ],
+    role: 'Full-Stack Developer & Designer',
+    duration: '2026 – Heute',
+    featured: true,
+    demo: {
+      type: 'iframe',
+      url: 'https://gknportraits.de',
+      poster: '/assets/images/gkn-portraits.png',
+      note: 'Live-System — geöffnet im eingebetteten Browser',
+    },
+  },
+  {
+    slug: 'dj-veys',
+    title: 'DJ Veys',
+    subtitle: 'Website und Anfragesystem für einen Hochzeits-DJ',
+    category: 'Website & CMS',
+    tags: ['Next.js 16', 'Payload CMS', '8 Sprachen', 'SEO', 'Self-Hosting'],
+    image: '/assets/images/dj-veys.png',
+    liveUrl: 'https://dj-veys.de',
+    githubUrl: 'https://github.com/oeztuerkhamza/veysl-music',
+    description:
+      'Website für einen Hochzeits-DJ aus Stuttgart: Next.js 16 mit Payload CMS, acht Sprachen, rund 270 Seiten für die lokale Suche — selbst gehostet auf einem eigenen Server.',
+    longDescription: `DJ Veys ist ein Hochzeits-DJ aus Stuttgart, der auf Deutsch, Türkisch und Englisch durch den Abend führt und live an Saz und Gitarre spielt. Die Website löst die alte Domain ab und ist darauf gebaut, in einem Markt gefunden zu werden, in dem die Konkurrenz seit Jahren Anzeigen schaltet: rund 270 Seiten, acht Sprachen mit übersetzten URLs, eigene Seiten für die Städte in Baden-Württemberg sowie für türkische und islamische Hochzeiten.
+
+Inhaltlich pflegt der Kunde alles selbst. Payload CMS läuft im selben Next.js-Prozess unter /admin und verwaltet Galerie, echte Hochzeiten, Bewertungen, Ratgeber-Artikel und die Bildplätze der Website. Anfragen, WhatsApp-Kontakte und Terminwünsche laufen in dieselbe Oberfläche, sodass keine Anfrage in einem Postfach verloren geht. Ein Waveform-Player macht Mixe direkt auf der Seite hörbar.
+
+Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit nginx und automatisch erneuertem Zertifikat, SQLite auf einem persistenten Volume, Deployment über GitHub Actions — dazu eine strenge Content-Security-Policy und ein eigener Mailversand. Preise stehen bewusst auf Anfrage, und Bewertungszahlen werden erst ausgespielt, wenn sie belegt sind.`,
+    features: [
+      'Acht Sprachen (DE, TR, KU, AR, EN, NL, FR, ES) mit pro Sprache übersetzten URLs',
+      'Rund 270 Seiten: Städte in Baden-Württemberg, Europa-Seiten, Themenseiten',
+      'Payload CMS unter /admin — Galerie, Referenzen, Bewertungen und Blog selbst pflegbar',
+      'Anfrage- und Verfügbarkeitsstrecke mit Kalender und WhatsApp-Abkürzung',
+      'Waveform-Player für Mixe (wavesurfer.js)',
+      'EPK-Seite für Presse und Veranstalter, private Foto-Übergabe per Link',
+      'Self-Hosting: Docker Compose, nginx, automatische TLS-Erneuerung, Deploy per GitHub Actions',
+      'Strikte Content-Security-Policy und eigener Mailversand',
+    ],
+    techStack: [
+      { name: 'Next.js 16', icon: '▲' },
+      { name: 'React 19', icon: '⚛️' },
+      { name: 'Payload CMS', icon: '📦' },
+      { name: 'Tailwind 4', icon: '💨' },
+      { name: 'SQLite', icon: '🗃️' },
+      { name: 'next-intl', icon: '🌍' },
+      { name: 'Docker', icon: '🐳' },
+      { name: 'nginx', icon: '🔀' },
+    ],
+    screenshots: [
+      '/assets/images/dj-veys.png',
+      '/assets/images/dj-veys-2.png',
+      '/assets/images/dj-veys-3.png',
+    ],
+    role: 'Full-Stack Developer & Designer',
+    duration: '2026',
+    featured: true,
+    demo: {
+      type: 'image',
+      screens: [
+        '/assets/images/dj-veys.png',
+        '/assets/images/dj-veys-2.png',
+        '/assets/images/dj-veys-3.png',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
+    },
+  },
+  {
     slug: 'zerin-gold',
     title: 'Zerin Gold',
     subtitle: 'Premium-Website für Goldhändler & Juwelier in Freiburg',
