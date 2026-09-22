@@ -19,8 +19,8 @@
     <div class="footer-grid">
       <div class="col col-brand">
         <a [routerLink]="'/' | localize" class="footer-mark">
-          <span class="mark-num">H&#8202;Ö</span>
-          <span class="mark-name">Hamza Öztürk</span>
+          <span class="mark-num">B&#8202;D</span>
+          <span class="mark-name">Breisgau Digital</span>
         </a>
         <p class="brand-tagline" [innerHTML]="i18n.t('footer.tagline')"></p>
       </div>
@@ -30,9 +30,9 @@
         <ul>
           <li><a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a></li>
           <li><a [routerLink]="'/leistungen' | localize">{{ i18n.t('nav.leistungen') }}</a></li>
+          <li><a [routerLink]="'/bewertungskarten' | localize">{{ i18n.t('nav.cards') }}</a></li>
           <li><a [routerLink]="'/projects' | localize">{{ i18n.t('nav.projects') }}</a></li>
-          <li><a [routerLink]="'/experience' | localize">{{ i18n.t('nav.experience') }}</a></li>
-          <li><a [routerLink]="'/lebenslauf' | localize">{{ i18n.t('nav.resume') }}</a></li>
+          <li><a [routerLink]="'/ueber-uns' | localize">{{ i18n.t('nav.about') }}</a></li>
           <li><a [routerLink]="'/contact' | localize">{{ i18n.t('nav.contact') }}</a></li>
         </ul>
       </div>
@@ -83,7 +83,7 @@
     <div class="imprint">
       <p class="imprint-left">
         <span class="numeral">{{ currentYear }}</span>
-        &nbsp;·&nbsp; Hamza Öztürk &nbsp;·&nbsp; {{ i18n.t('footer.rights') }}
+        &nbsp;·&nbsp; Breisgau Digital &nbsp;·&nbsp; Hamza Öztürk &nbsp;·&nbsp; {{ i18n.t('footer.rights') }}
         &nbsp;·&nbsp;
         <a [routerLink]="'/impressum' | localize">{{ i18n.t('nav.impressum') }}</a>
         &nbsp;·&nbsp;

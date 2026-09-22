@@ -1,0 +1,144 @@
+<section class="rc">
+  <div class="container">
+
+    <!-- Header -->
+    <header class="page-header">
+      <div class="folio-line">
+        <span class="folio-num">Folio &numero;03</span>
+        <span class="folio-sep">—</span>
+        <span class="folio-place">{{ i18n.t('rc.folio') }}</span>
+      </div>
+      <hr class="rule" />
+      <div class="header-grid">
+        <div>
+          <p class="section-label"><span class="num">01</span> {{ i18n.t('rc.label') }}</p>
+          <h1 class="section-title" [innerHTML]="i18n.t('rc.title')"></h1>
+        </div>
+        <div>
+          <p class="section-subtitle" [innerHTML]="i18n.t('rc.intro')"></p>
+          <div class="header-actions">
+            <a [href]="mailto()" class="btn btn-primary">{{ i18n.t('rc.cta.order') }}</a>
+            <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary">
+              {{ i18n.t('rc.cta.whatsapp') }}
+            </a>
+          </div>
+        </div>
+      </div>
+      <hr class="rule" />
+    </header>
+
+    <!-- 02 · So funktioniert's -->
+    <section class="steps">
+      <p class="section-label"><span class="num">02</span> {{ i18n.t('rc.steps.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.steps.title')"></h2>
+      <ol class="step-grid">
+        @for (n of steps; track n) {
+          <li class="step-card">
+            <span class="step-num">0{{ n }}</span>
+            <h3>{{ i18n.t('rc.step' + n + '.t') }}</h3>
+            <p>{{ i18n.t('rc.step' + n + '.d') }}</p>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- 03 · Pakete -->
+    <section class="packages" id="pakete">
+      <p class="section-label"><span class="num">03</span> {{ i18n.t('rc.pkg.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.pkg.title')"></h2>
+
+      <div class="pkg-grid">
+        @for (p of packages; track p.id) {
+          <article class="pkg-card" [class.featured]="p.featured">
+            @if (p.featured) {
+              <span class="pkg-badge">{{ i18n.t('rc.pkg.badge') }}</span>
+            }
+            <h3 class="pkg-name">{{ i18n.t('rc.pkg.' + p.id + '.name') }}</h3>
+            <p class="pkg-for">{{ i18n.t('rc.pkg.' + p.id + '.for') }}</p>
+
+            <p class="pkg-price">
+              <span class="amount">{{ p.price }}</span>
+              <span class="currency">&euro;</span>
+            </p>
+
+            <ul class="pkg-points">
+              <li>
+                {{ p.cards }}&times; {{ i18n.t(p.cards === 1 ? 'rc.unit.card' : 'rc.unit.cards') }}
+              </li>
+              @if (p.stand) {
+                <li>{{ i18n.t('rc.unit.stand') }}</li>
+              }
+              @for (i of [1, 2, 3, 4].slice(0, p.points); track i) {
+                <li>{{ i18n.t('rc.pkg.' + p.id + '.p' + i) }}</li>
+              }
+            </ul>
+
+            <div class="pkg-actions">
+              <a [href]="mailto(p.id)" class="btn btn-primary btn-block">{{ i18n.t('rc.cta.order') }}</a>
+              <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
+                {{ i18n.t('rc.cta.whatsapp') }}
+              </a>
+            </div>
+          </article>
+        }
+      </div>
+
+      <p class="price-note">{{ i18n.t('rc.price.note') }}</p>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- 04 · Warum Bewertungen -->
+    <section class="why">
+      <p class="section-label"><span class="num">04</span> {{ i18n.t('rc.why.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.why.title')"></h2>
+      <div class="why-grid">
+        @for (n of reasons; track n) {
+          <div class="why-card">
+            <h3>{{ i18n.t('rc.why' + n + '.t') }}</h3>
+            <p>{{ i18n.t('rc.why' + n + '.d') }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <!-- Fairness / Google-Richtlinien -->
+    <aside class="fairplay">
+      <p class="fp-label">{{ i18n.t('rc.fair.label') }}</p>
+      <h3 class="fp-title">{{ i18n.t('rc.fair.title') }}</h3>
+      <p class="fp-text">{{ i18n.t('rc.fair.text') }}</p>
+    </aside>
+
+    <hr class="rule" />
+
+    <!-- 05 · FAQ -->
+    <section class="faq">
+      <p class="section-label"><span class="num">05</span> {{ i18n.t('rc.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.faq.title')"></h2>
+      <div class="faq-list">
+        @for (n of faqs; track n) {
+          <details class="faq-item">
+            <summary>{{ i18n.t('rc.faq' + n + '.q') }}</summary>
+            <p>{{ i18n.t('rc.faq' + n + '.a') }}</p>
+          </details>
+        }
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="rc-cta">
+      <hr class="rule" />
+      <h2 class="cta-title" [innerHTML]="i18n.t('rc.cta.title')"></h2>
+      <p class="cta-text">{{ i18n.t('rc.cta.text') }}</p>
+      <div class="cta-actions">
+        <a [href]="mailto()" class="btn btn-primary btn-large">{{ i18n.t('rc.cta.order') }}</a>
+        <a [routerLink]="'/contact' | localize" class="btn btn-secondary btn-large">
+          {{ i18n.t('cta.contact') }}
+        </a>
+      </div>
+    </section>
+
+  </div>
+</section>

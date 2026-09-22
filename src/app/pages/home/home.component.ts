@@ -39,11 +39,12 @@ export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
   counterValues = signal<number[]>(STATS.map(() => 0));
   private countersStarted = false;
 
+  // Was der Betrieb bekommt, nicht welche Technik dahintersteckt.
   private textArray = [
-    'Full-Stack Developer',
-    'Software Engineer',
-    '.NET & Angular Experte',
-    'Cloud Architekt',
+    'Websites & Online-Shops',
+    'Digitale Abläufe',
+    'Sichtbar bei Google',
+    'Bewertungskarten',
   ];
   // Render the first phrase server-side so there is meaningful, crawlable text
   // and no layout shift before hydration.

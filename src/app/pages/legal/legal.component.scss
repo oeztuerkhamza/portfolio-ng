@@ -91,3 +91,11 @@
     color: $paper-dim;
   }
 }
+
+// Kurzer Hinweis unter einer Adresse — kleiner als Fließtext, aber lesbar.
+.legal-hint {
+  color: $paper-mute;
+  font-size: 0.88rem;
+  line-height: 1.7;
+  margin-top: 0.6rem;
+}

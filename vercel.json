@@ -1,4 +1,16 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run build",
+  "redirects": [
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/experience",
+      "destination": "/:locale/ueber-uns",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/lebenslauf",
+      "destination": "/:locale/ueber-uns",
+      "permanent": true
+    }
+  ]
 }

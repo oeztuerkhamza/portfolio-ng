@@ -20,9 +20,9 @@ export class NavbarComponent {
   navLinks = [
     { num: '01', path: '/', key: 'nav.home', exact: true },
     { num: '02', path: '/leistungen', key: 'nav.leistungen', exact: false },
-    { num: '03', path: '/projects', key: 'nav.projects', exact: false },
-    { num: '04', path: '/experience', key: 'nav.experience', exact: false },
-    { num: '05', path: '/lebenslauf', key: 'nav.resume', exact: false },
+    { num: '03', path: '/bewertungskarten', key: 'nav.cards', exact: false },
+    { num: '04', path: '/projects', key: 'nav.projects', exact: false },
+    { num: '05', path: '/ueber-uns', key: 'nav.about', exact: false },
     { num: '06', path: '/contact', key: 'nav.contact', exact: false },
   ];
 

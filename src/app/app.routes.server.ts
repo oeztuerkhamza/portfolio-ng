@@ -10,6 +10,8 @@ export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Server },
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/projects', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   {
     path: ':locale/projects/:slug',
@@ -19,9 +21,7 @@ export const serverRoutes: ServerRoute[] = [
         PROJECTS.map((p) => ({ locale, slug: p.slug })),
       ),
   },
-  { path: ':locale/experience', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/contact', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
-  { path: ':locale/lebenslauf', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/datenschutz', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: '**', renderMode: RenderMode.Server },

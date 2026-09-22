@@ -31,7 +31,7 @@ export class SeoService {
 
   static readonly ORIGIN = 'https://hamzaoeztuerk.de';
   static readonly DEFAULT_IMAGE = `${SeoService.ORIGIN}/assets/images/og-cover.png`;
-  static readonly SITE_NAME = 'Hamza Öztürk — Webentwickler Freiburg';
+  static readonly SITE_NAME = 'Breisgau Digital — Digitalisierung für den Mittelstand';
 
   update(config: SeoConfig): void {
     const {

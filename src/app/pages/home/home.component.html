@@ -20,8 +20,8 @@
     <div class="hero-body" @fadeIn>
       <p class="hero-eyebrow">{{ i18n.t('home.hero.eyebrow') }}</p>
       <h1 class="hero-name">
-        Hamza<br />
-        <em>Öztürk</em>
+        Breisgau<br />
+        <em>Digital</em>
       </h1>
 
       <div class="hero-role">
@@ -41,13 +41,8 @@
             <path d="M5 12h14M12 5l7 7-7 7" />
           </svg>
         </a>
-        <a
-          href="/assets/pdf/Hamza_Oeztuerk_Lebenslauf_Fullstack_Entwickler.pdf"
-          target="_blank"
-          rel="noopener"
-          class="btn btn-secondary btn-large"
-        >
-          {{ i18n.t('cta.cv_pdf') }}
+        <a [routerLink]="'/bewertungskarten' | localize" class="btn btn-secondary btn-large">
+          {{ i18n.t('nav.cards') }}
         </a>
       </div>
     </div>
@@ -101,7 +96,7 @@
         <p [innerHTML]="i18n.t('home.about.p2')"></p>
         <p [innerHTML]="i18n.t('home.about.p3')"></p>
         <div class="about-actions">
-          <a [routerLink]="'/experience' | localize" class="btn btn-ghost">{{ i18n.t('nav.experience') }} →</a>
+          <a [routerLink]="'/ueber-uns' | localize" class="btn btn-ghost">{{ i18n.t('nav.about') }} →</a>
           <a [routerLink]="'/contact' | localize" class="btn btn-ghost">{{ i18n.t('cta.contact') }} →</a>
         </div>
       </article>
@@ -323,6 +318,12 @@
         <h3>{{ i18n.t('svc.shop.title') }}</h3>
         <p>{{ i18n.t('svc.shop.text') }}</p>
       </article>
+      <a [routerLink]="'/bewertungskarten' | localize" class="service-card service-card-product">
+        <span class="svc-num">05</span>
+        <h3>{{ i18n.t('svc.cards.title') }}</h3>
+        <p>{{ i18n.t('svc.cards.text') }}</p>
+        <span class="svc-more">{{ i18n.t('rc.cta.order') }} &rarr;</span>
+      </a>
     </div>
 
     <div class="services-cta">

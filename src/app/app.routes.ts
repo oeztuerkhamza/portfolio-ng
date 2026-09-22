@@ -26,6 +26,22 @@ const localeChildren: Routes = [
     data: { animation: 'Leistungen' },
   },
   {
+    path: 'bewertungskarten',
+    loadComponent: () =>
+      import('./pages/bewertungskarten/bewertungskarten.component').then(
+        (m) => m.BewertungskartenComponent,
+      ),
+    data: { animation: 'ReviewCards' },
+  },
+  {
+    path: 'ueber-uns',
+    loadComponent: () =>
+      import('./pages/ueber-uns/ueber-uns.component').then(
+        (m) => m.UeberUnsComponent,
+      ),
+    data: { animation: 'About' },
+  },
+  {
     path: 'projects',
     loadComponent: () =>
       import('./pages/projects/projects.component').then(
@@ -42,14 +58,6 @@ const localeChildren: Routes = [
     data: { animation: 'ProjectDetail' },
   },
   {
-    path: 'experience',
-    loadComponent: () =>
-      import('./pages/experience/experience.component').then(
-        (m) => m.ExperienceComponent,
-      ),
-    data: { animation: 'Experience' },
-  },
-  {
     path: 'contact',
     loadComponent: () =>
       import('./pages/contact/contact.component').then(
@@ -57,12 +65,11 @@ const localeChildren: Routes = [
       ),
     data: { animation: 'Contact' },
   },
-  {
-    path: 'lebenslauf',
-    loadComponent: () =>
-      import('./pages/resume/resume.component').then((m) => m.ResumeComponent),
-    data: { animation: 'Resume' },
-  },
+  // Die persoenlichen Seiten sind in /ueber-uns aufgegangen. Die alten Pfade
+  // bleiben als Weiterleitung bestehen, damit verlinkte URLs nicht ins Leere
+  // laufen; den echten 301 setzt vercel.json davor.
+  { path: 'experience', redirectTo: 'ueber-uns', pathMatch: 'full' },
+  { path: 'lebenslauf', redirectTo: 'ueber-uns', pathMatch: 'full' },
   {
     path: 'impressum',
     loadComponent: () =>

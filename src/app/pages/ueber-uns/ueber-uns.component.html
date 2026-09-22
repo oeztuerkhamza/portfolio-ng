@@ -1,0 +1,128 @@
+<section class="about">
+  <div class="container">
+
+    <!-- Header -->
+    <header class="page-header">
+      <div class="folio-line">
+        <span class="folio-num">Folio &numero;05</span>
+        <span class="folio-sep">—</span>
+        <span class="folio-place">{{ i18n.t('about.folio') }}</span>
+      </div>
+      <hr class="rule" />
+      <div class="header-grid">
+        <div>
+          <p class="section-label"><span class="num">01</span> {{ i18n.t('about.label') }}</p>
+          <h1 class="section-title" [innerHTML]="i18n.t('about.title')"></h1>
+        </div>
+        <p class="section-subtitle" [innerHTML]="i18n.t('about.intro')"></p>
+      </div>
+      <hr class="rule" />
+    </header>
+
+    <!-- 02 · Story -->
+    <section class="story">
+      <div class="story-grid">
+        <div class="story-text">
+          <p class="lead" [innerHTML]="i18n.t('about.story.p1')"></p>
+          <p [innerHTML]="i18n.t('about.story.p2')"></p>
+          <p [innerHTML]="i18n.t('about.story.p3')"></p>
+        </div>
+        <aside class="story-figures">
+          <div class="fig">
+            <span class="fig-num">{{ projectCount }}</span>
+            <span class="fig-label">{{ i18n.t('about.fig.projects') }}</span>
+          </div>
+          <div class="fig">
+            <span class="fig-num">{{ liveCount }}</span>
+            <span class="fig-label">{{ i18n.t('about.fig.live') }}</span>
+          </div>
+          <div class="fig">
+            <span class="fig-num">15</span>
+            <span class="fig-label">{{ i18n.t('about.fig.langs') }}</span>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- 03 · Grundsätze -->
+    <section class="principles">
+      <p class="section-label"><span class="num">02</span> {{ i18n.t('about.principles.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('about.principles.title')"></h2>
+      <div class="principle-grid">
+        @for (n of principles; track n) {
+          <div class="principle-card">
+            <span class="p-num">0{{ n }}</span>
+            <h3>{{ i18n.t('about.pr' + n + '.t') }}</h3>
+            <p>{{ i18n.t('about.pr' + n + '.d') }}</p>
+          </div>
+        }
+      </div>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- 04 · Ablauf -->
+    <section class="process">
+      <p class="section-label"><span class="num">03</span> {{ i18n.t('about.process.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('about.process.title')"></h2>
+      <ol class="process-list">
+        @for (n of process; track n) {
+          <li class="process-item">
+            <span class="proc-num">0{{ n }}</span>
+            <div>
+              <h3>{{ i18n.t('about.proc' + n + '.t') }}</h3>
+              <p>{{ i18n.t('about.proc' + n + '.d') }}</p>
+            </div>
+          </li>
+        }
+      </ol>
+    </section>
+
+    <hr class="rule" />
+
+    <!-- 05 · Wer dahinter steht -->
+    <section class="people">
+      <p class="section-label"><span class="num">04</span> {{ i18n.t('about.who.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('about.who.title')"></h2>
+
+      <div class="who-grid">
+        <figure class="who-photo">
+          <img src="/assets/images/profile.jpg" alt="Hamza Öztürk" width="420" height="420" loading="lazy" />
+        </figure>
+        <div class="who-text">
+          <h3 class="who-name">Hamza Öztürk</h3>
+          <p class="who-role">{{ i18n.t('about.who.role') }}</p>
+          <p [innerHTML]="i18n.t('about.who.text')"></p>
+
+          <ul class="milestones">
+            @for (m of milestones; track m.id) {
+              <li>
+                <span class="ms-date">{{ m.date }}</span>
+                <span class="ms-title">{{ i18n.etx(m.id, 'title', m.title) }}</span>
+                <span class="ms-inst">{{ m.institution }}</span>
+              </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="about-cta">
+      <hr class="rule" />
+      <h2 class="cta-title" [innerHTML]="i18n.t('about.cta.title')"></h2>
+      <p class="cta-text">{{ i18n.t('about.cta.text') }}</p>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+          {{ i18n.t('cta.contact') }}
+        </a>
+        <a [routerLink]="'/projects' | localize" class="btn btn-secondary btn-large">
+          {{ i18n.t('cta.view_work') }}
+        </a>
+      </div>
+    </section>
+
+  </div>
+</section>

@@ -857,7 +857,7 @@
     opacity: 0;
     transform: translateY(20px);
     transition: opacity $transition-slow, transform $transition-slow, background $transition-normal;
-    @for $i from 1 through 4 {
+    @for $i from 1 through 5 {
       &:nth-child(#{$i}) { transition-delay: #{$i * 0.08}s; }
     }
 
@@ -886,6 +886,39 @@
       transition: height $transition-normal;
     }
     &:hover::after { height: 100%; }
+  }
+
+  /* Die fuenfte Kachel ist ein Produkt, kein Leistungsbereich: sie ist ein
+     Link, traegt Goldton und Pfeil — und laeuft als Banner ueber die ganze
+     Breite, sonst steht sie allein in einer halbleeren zweiten Zeile. */
+  .service-card-product {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 2.5rem);
+    text-decoration: none;
+    background: $gold-soft;
+
+    &:hover { background: rgba(201, 169, 97, 0.16); }
+
+    .svc-num { margin-bottom: 0; }
+    h3 { margin-bottom: 0; white-space: nowrap; }
+    p { max-width: 62ch; }
+
+    .svc-more {
+      @include mono-label;
+      color: $gold;
+      white-space: nowrap;
+    }
+
+    @media (max-width: $bp-desktop) {
+      grid-template-columns: 1fr;
+      gap: 0.6rem;
+
+      h3 { white-space: normal; }
+      .svc-more { margin-top: 0.6rem; }
+    }
   }
 
   .services-cta { margin-top: 2.5rem; }
