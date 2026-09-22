@@ -11,13 +11,13 @@
   align-items: center;
   gap: 0.8rem;
   @include mono-label;
-  .folio-sep { color: $paper-faint; }
+  .folio-sep { color: $text-faint; }
 }
 
 .section-label {
   @include small-caps;
   margin-bottom: 1rem;
-  .num { color: $gold; font-family: $font-mono; margin-right: 0.5rem; }
+  .num { color: $brand; font-family: $font-mono; margin-right: 0.5rem; }
 }
 
 .section-title {
@@ -26,16 +26,16 @@
   font-size: clamp(2rem, 5vw, 3.6rem);
   line-height: 1.04;
   letter-spacing: -0.02em;
-  color: $paper;
-  em { font-style: italic; color: $gold; }
+  color: $text;
+  em { font-style: italic; color: $brand; }
 }
 
 .section-subtitle {
-  color: $paper-dim;
+  color: $text-dim;
   font-size: 1.08rem;
   line-height: 1.7;
   max-width: 56ch;
-  strong { color: $paper-soft; font-weight: 600; }
+  strong { color: $text-soft; font-weight: 600; }
 }
 
 .header-grid {
@@ -73,13 +73,13 @@
 }
 
 .step-card {
-  background: $ink;
+  background: $surface;
   padding: clamp(1.4rem, 3vw, 2rem);
 
   .step-num {
     font-family: $font-mono;
     font-size: 0.78rem;
-    color: $gold;
+    color: $brand;
     letter-spacing: 0.1em;
   }
 
@@ -87,11 +87,11 @@
     font-family: $font-display;
     font-weight: 400;
     font-size: 1.22rem;
-    color: $paper;
+    color: $text;
     margin: 0.7rem 0 0.5rem;
   }
 
-  p { color: $paper-dim; font-size: 0.95rem; line-height: 1.65; margin: 0; }
+  p { color: $text-dim; font-size: 0.95rem; line-height: 1.65; margin: 0; }
 }
 
 // ── Pakete ──────────────────────────────────────
@@ -118,8 +118,8 @@
   &:hover { border-color: $rule-strong; transform: translateY(-2px); }
 
   &.featured {
-    border-color: $rule-gold;
-    background: $gold-soft;
+    border-color: $rule-brand;
+    background: $brand-tint;
   }
 }
 
@@ -129,8 +129,8 @@
   right: -1px;
   @include mono-label;
   font-size: 0.66rem;
-  color: $ink;
-  background: $gold;
+  color: $surface;
+  background: $brand;
   padding: 0.3rem 0.7rem;
 }
 
@@ -138,12 +138,12 @@
   font-family: $font-display;
   font-weight: 400;
   font-size: 1.5rem;
-  color: $paper;
+  color: $text;
   margin: 0;
 }
 
 .pkg-for {
-  color: $paper-mute;
+  color: $text-mute;
   font-size: 0.9rem;
   margin: 0.35rem 0 1.4rem;
 }
@@ -158,10 +158,10 @@
     font-family: $font-display;
     font-size: clamp(2.4rem, 5vw, 3rem);
     font-weight: 300;
-    color: $gold;
+    color: $brand;
     line-height: 1;
   }
-  .currency { font-family: $font-display; font-size: 1.4rem; color: $gold-deep; }
+  .currency { font-family: $font-display; font-size: 1.4rem; color: $brand-deep; }
 }
 
 .pkg-points {
@@ -173,7 +173,7 @@
   li {
     position: relative;
     padding-left: 1.4rem;
-    color: $paper-soft;
+    color: $text-soft;
     font-size: 0.95rem;
     line-height: 1.6;
     margin-bottom: 0.6rem;
@@ -182,7 +182,7 @@
       content: "—";
       position: absolute;
       left: 0;
-      color: $gold;
+      color: $brand;
     }
   }
 }
@@ -195,16 +195,16 @@
   @include mono-label;
   font-size: 0.72rem;
   text-align: center;
-  color: $paper-dim;
+  color: $text-dim;
   text-decoration: none;
   transition: color $transition-fast;
-  &:hover { color: $gold; }
+  &:hover { color: $brand; }
 }
 
 .price-note {
   @include mono-label;
   font-size: 0.72rem;
-  color: $paper-mute;
+  color: $text-mute;
   margin-top: 1.6rem;
   line-height: 1.7;
   text-transform: none;
@@ -226,35 +226,35 @@
 }
 
 .why-card {
-  background: $ink;
+  background: $surface;
   padding: clamp(1.4rem, 3vw, 2rem);
 
   h3 {
     font-family: $font-display;
     font-weight: 400;
     font-size: 1.22rem;
-    color: $paper;
+    color: $text;
     margin: 0 0 0.6rem;
   }
-  p { color: $paper-dim; font-size: 0.95rem; line-height: 1.7; margin: 0; }
+  p { color: $text-dim; font-size: 0.95rem; line-height: 1.7; margin: 0; }
 }
 
 // ── Fairplay ────────────────────────────────────
 .fairplay {
-  border-left: 2px solid $gold;
+  border-left: 2px solid $brand;
   padding: 1.4rem 0 1.4rem 1.6rem;
   margin: clamp(2rem, 5vh, 3.5rem) 0;
   max-width: 68ch;
 
-  .fp-label { @include mono-label; color: $gold; margin: 0 0 0.6rem; }
+  .fp-label { @include mono-label; color: $brand; margin: 0 0 0.6rem; }
   .fp-title {
     font-family: $font-display;
     font-weight: 400;
     font-size: 1.3rem;
-    color: $paper;
+    color: $text;
     margin: 0 0 0.6rem;
   }
-  .fp-text { color: $paper-dim; font-size: 0.98rem; line-height: 1.75; margin: 0; }
+  .fp-text { color: $text-dim; font-size: 0.98rem; line-height: 1.75; margin: 0; }
 }
 
 // ── FAQ ─────────────────────────────────────────
@@ -271,7 +271,7 @@
     padding: 1.2rem 2rem 1.2rem 0;
     font-family: $font-display;
     font-size: 1.12rem;
-    color: $paper;
+    color: $text;
     position: relative;
     transition: color $transition-fast;
 
@@ -283,18 +283,18 @@
       right: 0;
       top: 50%;
       transform: translateY(-50%);
-      color: $gold;
+      color: $brand;
       font-family: $font-mono;
       font-size: 1.1rem;
     }
 
-    &:hover { color: $gold; }
+    &:hover { color: $brand; }
   }
 
   &[open] summary::after { content: "–"; }
 
   p {
-    color: $paper-dim;
+    color: $text-dim;
     font-size: 0.98rem;
     line-height: 1.8;
     margin: 0 0 1.4rem;
@@ -311,13 +311,13 @@
     font-family: $font-display;
     font-weight: 300;
     font-size: clamp(1.8rem, 4.5vw, 3rem);
-    color: $paper;
+    color: $text;
     margin: 2rem 0 1rem;
-    em { font-style: italic; color: $gold; }
+    em { font-style: italic; color: $brand; }
   }
 
   .cta-text {
-    color: $paper-dim;
+    color: $text-dim;
     font-size: 1.05rem;
     line-height: 1.7;
     max-width: 52ch;

@@ -20,10 +20,10 @@
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: $paper-mute;
+  color: $text-mute;
   padding-bottom: 12px;
 
-  .folio-num { color: $gold; }
+  .folio-num { color: $brand; }
   .folio-sep { opacity: 0.5; }
 }
 
@@ -54,8 +54,8 @@
     align-items: center;
     gap: 14px;
     margin-bottom: 1.5rem;
-    .num { font-family: $font-mono; color: $gold; }
-    &::before { content: ""; width: 32px; height: 1px; background: $gold; }
+    .num { font-family: $font-mono; color: $brand; }
+    &::before { content: ""; width: 32px; height: 1px; background: $brand; }
   }
 
   .section-title {
@@ -64,11 +64,11 @@
     font-weight: 300;
     line-height: 0.92;
     letter-spacing: -0.04em;
-    color: $paper;
+    color: $text;
 
     em {
       font-style: italic;
-      color: $gold;
+      color: $brand;
       font-weight: 300;
     }
   }
@@ -84,12 +84,12 @@
     font-family: $font-body;
     font-size: 1.05rem;
     line-height: 1.7;
-    color: $paper-dim;
+    color: $text-dim;
     max-width: 52ch;
 
     em {
       font-style: italic;
-      color: $paper;
+      color: $text;
       font-weight: 500;
     }
   }
@@ -132,12 +132,12 @@
     gap: clamp(1.5rem, 3vw, 3rem);
     padding: clamp(2rem, 4vw, 3rem) 0;
     align-items: start;
-    color: $paper;
+    color: $text;
 
     &:hover {
-      .project-title { color: $gold; }
-      .project-num { color: $gold; }
-      .project-thumb img { filter: grayscale(0) sepia(0); transform: scale(1.04); }
+      .project-title { color: $brand; }
+      .project-num { color: $brand; }
+      .project-thumb img { filter: grayscale(0); transform: scale(1.04); }
       .thumb-overlay { opacity: 1; }
     }
   }
@@ -145,7 +145,7 @@
   .project-num {
     font-family: $font-mono;
     font-size: 0.85rem;
-    color: $paper-mute;
+    color: $text-mute;
     letter-spacing: 0.05em;
     transition: color $transition-fast;
     padding-top: 12px;
@@ -163,7 +163,7 @@
     font-size: clamp(2rem, 4vw, 3.4rem);
     line-height: 1;
     letter-spacing: -0.025em;
-    color: $paper;
+    color: $text;
     transition: color $transition-fast;
   }
 
@@ -171,7 +171,7 @@
     font-family: $font-body;
     font-size: 1.02rem;
     line-height: 1.6;
-    color: $paper-dim;
+    color: $text-dim;
     max-width: 56ch;
   }
 
@@ -188,13 +188,13 @@
       .info-label {
         @include mono-label;
         text-transform: uppercase;
-        color: $paper-mute;
+        color: $text-mute;
       }
 
       .info-value {
         font-family: $font-body;
         font-size: 0.9rem;
-        color: $paper-soft;
+        color: $text-soft;
       }
     }
   }
@@ -212,7 +212,7 @@
       font-size: 0.66rem;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: $paper-mute;
+      color: $text-mute;
       padding: 5px 10px;
       border: 1px solid $rule;
     }
@@ -223,13 +223,13 @@
     overflow: hidden;
     position: relative;
     border: 1px solid $rule;
-    background: $ink-soft;
+    background: $surface-2;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      filter: grayscale(0.5) sepia(0.18);
+      filter: grayscale(0.4) contrast(1.03);
       transition: filter $transition-slow, transform $transition-slow;
     }
 
@@ -242,7 +242,7 @@
       font-family: $font-display;
       font-style: italic;
       font-size: 4rem;
-      color: $gold;
+      color: $brand;
     }
 
     .thumb-overlay {
@@ -261,13 +261,13 @@
         font-size: 0.7rem;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: $paper;
+        color: $text;
       }
 
       svg {
         width: 18px;
         height: 18px;
-        color: $gold;
+        color: $brand;
       }
     }
   }

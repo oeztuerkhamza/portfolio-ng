@@ -10,13 +10,15 @@ nav {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(10, 9, 8, 0.6);
+  background: rgba(246, 248, 251, 0.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: background $transition-normal;
 
   &.scrolled {
-    background: rgba(10, 9, 8, 0.92);
+    background: rgba(246, 248, 251, 0.94);
+    border-bottom: 1px solid $rule;
+    box-shadow: $shadow-sm;
   }
 }
 
@@ -35,14 +37,14 @@ nav {
   display: flex;
   align-items: baseline;
   gap: 14px;
-  color: $paper;
+  color: $text;
 
   .mark-num {
     font-family: $font-display;
     font-style: italic;
     font-weight: 300;
     font-size: 1.5rem;
-    color: $gold;
+    color: $brand;
     letter-spacing: -0.02em;
   }
 
@@ -51,7 +53,7 @@ nav {
     font-weight: 400;
     font-size: 1.05rem;
     letter-spacing: -0.005em;
-    color: $paper;
+    color: $text;
   }
 
   @media (max-width: $bp-tablet) {
@@ -70,7 +72,7 @@ nav {
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: $paper-mute;
+  color: $text-mute;
   padding-left: 1.5rem;
   border-left: 1px solid $rule;
 
@@ -78,8 +80,8 @@ nav {
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: $gold;
-    box-shadow: 0 0 8px $gold-glow;
+    background: $brand;
+    box-shadow: 0 0 8px $brand-glow;
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -110,14 +112,14 @@ nav {
       font-size: 0.82rem;
       font-weight: 500;
       letter-spacing: 0.02em;
-      color: $paper-dim;
+      color: $text-dim;
       transition: color $transition-fast;
       position: relative;
 
       .link-num {
         font-family: $font-mono;
         font-size: 0.62rem;
-        color: $paper-mute;
+        color: $text-mute;
         letter-spacing: 0.05em;
         font-weight: 400;
       }
@@ -127,13 +129,13 @@ nav {
       }
 
       &:hover {
-        color: $paper;
-        .link-num { color: $gold; }
+        color: $text;
+        .link-num { color: $brand; }
       }
 
       &.active {
-        color: $paper;
-        .link-num { color: $gold; }
+        color: $text;
+        .link-num { color: $brand; }
         .link-label::after {
           content: "";
           position: absolute;
@@ -141,7 +143,7 @@ nav {
           right: 0;
           bottom: -6px;
           height: 1px;
-          background: $gold;
+          background: $brand;
         }
       }
     }
@@ -151,13 +153,19 @@ nav {
 
   @media (max-width: $bp-tablet) {
     position: fixed;
-    inset: 0;
+    // `inset: 0` reicht hier nicht: das <nav> hat backdrop-filter und ist
+    // damit der Bezugsrahmen fuer position:fixed — die Schublade war genau
+    // so hoch wie die Navileiste, der Rest der Seite blieb sichtbar.
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     gap: 1.5rem;
     padding: 6rem 2rem 2rem;
-    background: $ink;
+    background: $surface;
     transform: translateX(100%);
     transition: transform $transition-slow;
     z-index: 99;
@@ -174,11 +182,11 @@ nav {
         font-weight: 300;
         padding: 12px 0;
         gap: 16px;
-        color: $paper;
+        color: $text;
 
         .link-num {
           font-size: 0.85rem;
-          color: $gold;
+          color: $brand;
         }
       }
     }
@@ -193,7 +201,7 @@ nav {
       a {
         font-size: 1rem;
         font-family: $font-mono;
-        color: $paper-dim;
+        color: $text-dim;
         font-style: normal;
       }
     }
@@ -217,7 +225,7 @@ nav {
     left: 12px;
     right: 12px;
     height: 1px;
-    background: $paper;
+    background: $text;
     transition: $transition-normal;
 
     &:nth-child(1) { top: 16px; }
@@ -225,16 +233,16 @@ nav {
   }
 
   &.open {
-    border-color: $gold;
+    border-color: $brand;
     .bar:nth-child(1) {
       top: 21px;
       transform: rotate(45deg);
-      background: $gold;
+      background: $brand;
     }
     .bar:nth-child(2) {
       top: 21px;
       transform: rotate(-45deg);
-      background: $gold;
+      background: $brand;
     }
   }
 

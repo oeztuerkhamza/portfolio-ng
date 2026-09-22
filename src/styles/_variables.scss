@@ -1,48 +1,51 @@
 // ============================================
-// EDITORIAL BLACK & GOLD — DESIGN TOKENS
-// Premium German engineering · Pentagram-meets-Porsche
+// BREISGAU DIGITAL — DESIGN TOKENS
+// Helles Papier, tiefes Marineblau. Editorial, nicht Start-up-bunt.
 // ============================================
+//
+// Die Namen sagen die Rolle, nicht die Farbe: $surface ist der Grund,
+// $text die Schrift darauf, $brand der einzige Akzent. Wer die Palette
+// tauscht, ändert nur diese Datei — in den Komponenten steht kein Hexwert.
+//
+// Kontrastwerte sind gegen $surface (#f6f8fb) gemessen und im Kommentar
+// vermerkt. Alles, was Fließtext trägt, liegt über 4,5:1 (WCAG AA).
 
-// --- Surface ---
-$ink:            #0a0908;        // primary background — warm black, newsprint feel
-$ink-soft:       #14110f;        // elevated surface
-$ink-card:       #1a1714;        // card surface
-$ink-overlay:    rgba(10, 9, 8, 0.85);
+// --- Flächen ---
+$surface:         #f6f8fb;        // Seitengrund — kühles Papier
+$surface-2:       #ffffff;        // erhobene Fläche, Karten
+$surface-3:       #eaeff6;        // ruhige Zone, Tabellenkopf, Code
+$surface-ink:     #0e1a2b;        // dunkle Sektion (Footer, Demo-Rahmen)
+$surface-overlay: rgba(14, 26, 43, 0.55);
 
-// --- Paper / Text ---
-$paper:          #f5f1e8;        // primary cream paper text
-$paper-soft:     #ebe6d9;        // body text on dark
-$paper-dim:      rgba(245, 241, 232, 0.62);
-$paper-mute:     rgba(245, 241, 232, 0.42);
-$paper-faint:    rgba(245, 241, 232, 0.16);
+// --- Schrift ---
+$text:            #0e1a2b;        // 16,43:1
+$text-soft:       #1f3349;        // 12,12:1
+$text-dim:        #48586e;        // 6,81:1
+$text-mute:       #5d6d85;        // 4,95:1 — kleinste Größe für Fließtext
+$text-faint:      #93a1b3;        // 2,47:1 — NUR Dekor (Trennzeichen, Linien)
+$text-on-ink:     #f2f5f9;        // Schrift auf $surface-ink — 15,1:1
 
-// --- Gold (used sparingly, accent only) ---
-$gold:           #c9a961;        // brushed gold — Hermès, not Vegas
-$gold-deep:      #a8884a;
-$gold-bright:    #e0c277;
-$gold-glow:      rgba(201, 169, 97, 0.18);
-$gold-soft:      rgba(201, 169, 97, 0.10);
+// --- Marke (sparsam, nur Akzent) ---
+$brand:           #1a4b8c;        // 8,13:1 — Links, Zahlen, Akzentflächen
+$brand-deep:      #12376a;        // 11,09:1 — Hover, gedrückt
+$brand-light:     #2f6fc4;        // 4,71:1 — auf dunklem Grund, Hervorhebung
+$brand-pale:      #5b93d6;        // Dekor auf Dunkel, nie für Text auf Hell
+$brand-glow:      rgba(26, 75, 140, 0.16);
+$brand-tint:      rgba(26, 75, 140, 0.07);
 
-// --- Hairlines & Rules ---
-$rule:           rgba(245, 241, 232, 0.10);
-$rule-strong:    rgba(245, 241, 232, 0.22);
-$rule-gold:      rgba(201, 169, 97, 0.40);
+// --- Haarlinien ---
+$rule:            rgba(14, 26, 43, 0.12);
+$rule-strong:     rgba(14, 26, 43, 0.24);
+$rule-brand:      rgba(26, 75, 140, 0.38);
 
-// --- Semantic aliases (back-compat with old names) ---
-$bg-dark:           $ink;
-$bg-surface:        $ink-soft;
-$bg-elevated:       $ink-card;
-$bg-card:           $ink-card;
-$accent-primary:    $gold;
-$accent-secondary:  $gold-bright;
-$accent-gradient:   linear-gradient(135deg, $gold-deep, $gold, $gold-bright);
-$accent-glow:       $gold-glow;
-$accent-glow-blue:  $gold-soft;
-$text-pure:         $paper;
-$text-primary:      $paper-soft;
-$text-secondary:    $paper-dim;
-$text-muted:        $paper-mute;
-$glass-bg:          rgba(245, 241, 232, 0.025);
+// --- Erhebung ---
+// Auf hellem Grund trägt nicht die Linie allein, sondern ein sehr flacher
+// Schatten. Mehr als diese zwei Stufen braucht die Seite nicht.
+$shadow-sm:       0 1px 2px rgba(14, 26, 43, 0.05), 0 2px 8px rgba(14, 26, 43, 0.04);
+$shadow-md:       0 2px 4px rgba(14, 26, 43, 0.06), 0 12px 32px rgba(14, 26, 43, 0.08);
+
+// --- Semantische Aliase (Altbestand, wird nicht erweitert) ---
+$glass-bg:          $surface-2;
 $glass-border:      $rule;
 $glass-border-hover: $rule-strong;
 
@@ -52,7 +55,7 @@ $transition-normal: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 $transition-slow:   0.8s cubic-bezier(0.16, 1, 0.3, 1);
 $ease-editorial:    cubic-bezier(0.16, 1, 0.3, 1);
 
-// --- Typography ---
+// --- Typografie ---
 $font-display:  "Fraunces", "Playfair Display", Georgia, serif;
 $font-heading:  "Fraunces", "Playfair Display", Georgia, serif;
 $font-body:     "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -90,9 +93,9 @@ $bp-mega:     1440px;
   border-bottom: 1px solid $rule;
 }
 
-@mixin gold-rule {
+@mixin brand-rule {
   height: 1px;
-  background: $gold;
+  background: $brand;
   width: 64px;
   display: block;
 }
@@ -103,7 +106,7 @@ $bp-mega:     1440px;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.18em;
-  color: $paper-dim;
+  color: $text-dim;
 }
 
 @mixin mono-label {
@@ -111,7 +114,7 @@ $bp-mega:     1440px;
   font-size: 0.72rem;
   font-weight: 400;
   letter-spacing: 0.04em;
-  color: $paper-mute;
+  color: $text-mute;
 }
 
 @mixin numeral {
@@ -119,33 +122,34 @@ $bp-mega:     1440px;
   font-feature-settings: "lnum", "tnum";
   font-weight: 300;
   font-style: italic;
-  color: $gold;
+  color: $brand;
 }
 
 @mixin gradient-text {
-  background: linear-gradient(135deg, $gold-deep, $gold-bright);
+  background: linear-gradient(135deg, $brand-deep, $brand-light);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 @mixin glass {
-  background: rgba(245, 241, 232, 0.025);
+  background: $surface-2;
   border: 1px solid $rule;
 }
 
 @mixin glass-hover {
-  background: rgba(245, 241, 232, 0.045);
+  background: $surface-2;
   border-color: $rule-strong;
+  box-shadow: $shadow-sm;
 }
 
-@mixin glow($color: $gold-glow) {
+@mixin glow($color: $brand-glow) {
   box-shadow: 0 0 32px $color;
 }
 
 @mixin focus-ring {
   &:focus-visible {
-    outline: 2px solid $gold;
+    outline: 2px solid $brand;
     outline-offset: 3px;
   }
 }

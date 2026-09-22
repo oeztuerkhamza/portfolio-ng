@@ -16,7 +16,7 @@
   font-size: 0.75rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: $paper-dim;
+  color: $text-dim;
   background: transparent;
   border: none;
   padding: 8px 0;
@@ -31,7 +31,7 @@
   }
 
   &:hover {
-    color: $gold;
+    color: $brand;
     svg { transform: translateX(-4px); }
   }
 }
@@ -49,10 +49,10 @@
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: $paper-mute;
+  color: $text-mute;
   padding-bottom: 12px;
 
-  .folio-num { color: $gold; }
+  .folio-num { color: $brand; }
   .folio-sep { opacity: 0.5; }
 }
 
@@ -69,7 +69,7 @@
   font-weight: 300;
   line-height: 0.92;
   letter-spacing: -0.04em;
-  color: $paper;
+  color: $text;
   margin: 2rem 0 1.5rem;
   max-width: 14ch;
 }
@@ -80,7 +80,7 @@
   font-weight: 300;
   font-size: clamp(1.25rem, 2.2vw, 1.7rem);
   line-height: 1.4;
-  color: $paper-soft;
+  color: $text-soft;
   max-width: 50ch;
   margin-bottom: 2rem;
 }
@@ -98,7 +98,7 @@
     font-size: 0.68rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: $paper-mute;
+    color: $text-mute;
     padding: 6px 12px;
     border: 1px solid $rule;
   }
@@ -119,7 +119,7 @@
     aspect-ratio: 16 / 9;
     object-fit: cover;
     border: 1px solid $rule;
-    background: $ink-soft;
+    background: $surface-2;
   }
 
   .image-fallback {
@@ -131,8 +131,8 @@
     font-family: $font-display;
     font-style: italic;
     font-size: 6rem;
-    color: $gold;
-    background: $ink-soft;
+    color: $brand;
+    background: $surface-2;
   }
 
   figcaption {
@@ -141,12 +141,12 @@
     margin-top: 12px;
     font-family: $font-mono;
     font-size: 0.7rem;
-    color: $paper-mute;
+    color: $text-mute;
     letter-spacing: 0.04em;
     border-top: 1px solid $rule;
     padding-top: 10px;
 
-    .cap-num { color: $gold; }
+    .cap-num { color: $brand; }
   }
 }
 
@@ -159,12 +159,12 @@
     margin-top: 14px;
     font-family: $font-mono;
     font-size: 0.7rem;
-    color: $paper-mute;
+    color: $text-mute;
     letter-spacing: 0.04em;
     border-top: 1px solid $rule;
     padding-top: 10px;
 
-    .cap-num { color: $gold; }
+    .cap-num { color: $brand; }
   }
 }
 
@@ -205,7 +205,7 @@
     @include mono-label;
     text-transform: uppercase;
     margin-bottom: 8px;
-    color: $paper-mute;
+    color: $text-mute;
   }
 
   .meta-value {
@@ -213,7 +213,7 @@
     font-style: italic;
     font-weight: 300;
     font-size: 1.05rem;
-    color: $paper;
+    color: $text;
   }
 
   .meta-stack {
@@ -226,7 +226,7 @@
     li {
       font-family: $font-body;
       font-size: 0.88rem;
-      color: $paper-soft;
+      color: $text-soft;
       padding: 3px 0;
       border-bottom: 1px solid $rule;
 
@@ -254,13 +254,13 @@
   font-weight: 400;
   font-size: clamp(1.6rem, 3vw, 2.2rem);
   letter-spacing: -0.015em;
-  color: $paper;
+  color: $text;
   margin-bottom: 2rem;
 
   .prose-num {
     font-family: $font-mono;
     font-size: 0.78rem;
-    color: $gold;
+    color: $brand;
     font-weight: 400;
     letter-spacing: 0.05em;
   }
@@ -273,13 +273,13 @@
     font-family: $font-body;
     font-size: 1.05rem;
     line-height: 1.8;
-    color: $paper-soft;
+    color: $text-soft;
     margin-bottom: 1.5rem;
   }
 
   .lead-p {
     font-size: 1.15rem;
-    color: $paper;
+    color: $text;
   }
 
   .dropcap {
@@ -290,7 +290,7 @@
     line-height: 0.85;
     float: left;
     margin: 4px 14px 0 0;
-    color: $gold;
+    color: $brand;
   }
 }
 
@@ -314,7 +314,7 @@
   .feature-num {
     font-family: $font-mono;
     font-size: 0.78rem;
-    color: $gold;
+    color: $brand;
     letter-spacing: 0.05em;
     padding-top: 4px;
   }
@@ -323,7 +323,7 @@
     font-family: $font-body;
     font-size: 1rem;
     line-height: 1.6;
-    color: $paper-soft;
+    color: $text-soft;
   }
 }
 
@@ -356,7 +356,7 @@
   .tech-name {
     font-family: $font-body;
     font-size: 0.95rem;
-    color: $paper-soft;
+    color: $text-soft;
   }
 }
 
@@ -373,12 +373,12 @@
       font-size: clamp(2rem, 4vw, 3rem);
       line-height: 1.05;
       letter-spacing: -0.025em;
-      color: $paper;
+      color: $text;
       margin-bottom: 1.25rem;
 
       em {
         font-style: italic;
-        color: $gold;
+        color: $brand;
       }
     }
 
@@ -386,7 +386,7 @@
       font-family: $font-body;
       font-size: 1.05rem;
       line-height: 1.7;
-      color: $paper-dim;
+      color: $text-dim;
       max-width: 50ch;
       margin-bottom: 2rem;
     }
@@ -406,12 +406,12 @@
     font-size: clamp(3rem, 7vw, 6rem);
     line-height: 0.95;
     letter-spacing: -0.035em;
-    color: $paper;
+    color: $text;
     margin: 1.5rem 0 1.5rem;
 
     em {
       font-style: italic;
-      color: $gold;
+      color: $brand;
     }
   }
 
@@ -419,7 +419,7 @@
     font-family: $font-body;
     font-size: 1.05rem;
     line-height: 1.7;
-    color: $paper-dim;
+    color: $text-dim;
     max-width: 50ch;
     margin-bottom: 2.5rem;
   }

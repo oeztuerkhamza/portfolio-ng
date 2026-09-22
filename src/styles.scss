@@ -23,8 +23,8 @@ html {
 
 body {
   font-family: $font-body;
-  background-color: $ink;
-  color: $paper-soft;
+  background-color: $surface;
+  color: $text-soft;
   font-size: 1rem;
   line-height: 1.7;
   font-weight: 400;
@@ -37,7 +37,7 @@ body {
 // --- Headings — Fraunces Editorial ---
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-display;
-  color: $paper;
+  color: $text;
   line-height: 1.05;
   font-weight: 400;
   letter-spacing: -0.02em;
@@ -71,13 +71,13 @@ h4 {
 }
 
 p {
-  color: $paper-soft;
+  color: $text-soft;
   font-weight: 400;
 }
 
 em, .italic {
   font-style: italic;
-  color: $paper;
+  color: $text;
 }
 
 a {
@@ -86,7 +86,7 @@ a {
   transition: $transition-fast;
 
   &:focus-visible {
-    outline: 2px solid $gold;
+    outline: 2px solid $brand;
     outline-offset: 3px;
     border-radius: 2px;
   }
@@ -109,7 +109,7 @@ button {
   color: inherit;
   cursor: pointer;
   &:focus-visible {
-    outline: 2px solid $gold;
+    outline: 2px solid $brand;
     outline-offset: 3px;
   }
 }
@@ -120,8 +120,8 @@ button {
   inset: 0;
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.04;
-  mix-blend-mode: overlay;
+  opacity: 0.022;
+  mix-blend-mode: multiply;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -151,7 +151,7 @@ button {
     content: "";
     width: 24px;
     height: 1px;
-    background: $gold;
+    background: $brand;
   }
 }
 
@@ -159,7 +159,7 @@ button {
   font-family: $font-mono;
   font-size: 0.78rem;
   letter-spacing: 0.03em;
-  color: $paper-mute;
+  color: $text-mute;
 }
 
 .numeral {
@@ -172,12 +172,12 @@ button {
   font-weight: 300;
   letter-spacing: -0.03em;
   line-height: 0.98;
-  color: $paper;
+  color: $text;
   margin-bottom: 1.5rem;
 
   em {
     font-style: italic;
-    color: $gold;
+    color: $brand;
     font-weight: 300;
   }
 }
@@ -186,13 +186,13 @@ button {
   font-family: $font-body;
   font-size: 1.05rem;
   line-height: 1.7;
-  color: $paper-dim;
+  color: $text-dim;
   max-width: 56ch;
   margin-bottom: 4rem;
 }
 
 .accent-dot {
-  color: $gold;
+  color: $brand;
   font-style: italic;
   font-family: $font-display;
 }
@@ -208,7 +208,7 @@ button {
 .rule-gold {
   height: 1px;
   width: 48px;
-  background: $gold;
+  background: $brand;
   border: 0;
   display: block;
   margin: 1.5rem 0;
@@ -246,42 +246,42 @@ button {
   }
 
   &-primary {
-    background: $paper;
-    color: $ink;
-    border-color: $paper;
+    background: $text;
+    color: $surface;
+    border-color: $text;
 
     &:hover {
-      background: $gold;
-      border-color: $gold;
-      color: $ink;
+      background: $brand;
+      border-color: $brand;
+      color: $surface;
     }
   }
 
   &-secondary {
     background: transparent;
-    color: $paper;
+    color: $text;
     border: 1px solid $rule-strong;
 
     &:hover {
-      border-color: $gold;
-      color: $gold;
+      border-color: $brand;
+      color: $brand;
     }
   }
 
   &-gold {
     background: transparent;
-    color: $gold;
-    border: 1px solid $gold;
+    color: $brand;
+    border: 1px solid $brand;
 
     &:hover {
-      background: $gold;
-      color: $ink;
+      background: $brand;
+      color: $surface;
     }
   }
 
   &-ghost {
     background: transparent;
-    color: $paper-dim;
+    color: $text-dim;
     padding: 12px 0;
     border: none;
     border-bottom: 1px solid $rule-strong;
@@ -289,8 +289,8 @@ button {
     min-height: auto;
 
     &:hover {
-      color: $gold;
-      border-color: $gold;
+      color: $brand;
+      border-color: $brand;
     }
   }
 
@@ -310,14 +310,14 @@ button {
   font-size: 0.7rem;
   font-weight: 400;
   letter-spacing: 0.05em;
-  color: $paper-dim;
+  color: $text-dim;
   text-transform: uppercase;
   background: transparent;
   transition: $transition-fast;
 
   &:hover {
-    border-color: $gold;
-    color: $gold;
+    border-color: $brand;
+    color: $brand;
   }
 }
 
@@ -326,19 +326,19 @@ button {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: $ink;
+  background: $surface;
 }
 ::-webkit-scrollbar-thumb {
-  background: $ink-card;
+  background: $surface-3;
   &:hover {
-    background: $gold-deep;
+    background: $brand-deep;
   }
 }
 
 // --- Selection ---
 ::selection {
-  background: $gold;
-  color: $ink;
+  background: $brand;
+  color: $surface;
 }
 
 // --- Page wrapper / route transition ---

@@ -45,8 +45,13 @@ export class LiveDemoComponent {
     this.frameLoaded.set(true);
   }
 
+  /**
+   * Domain fuer die Adresszeile des Rahmens. Ohne URL bleibt sie leer —
+   * vorher stand dort „localhost:4200", was auf einer Kundenseite wie ein
+   * vergessener Platzhalter aussieht.
+   */
   get displayUrl(): string {
-    if (!this.demo.url) return 'localhost:4200';
+    if (!this.demo.url) return '';
     return this.demo.url.replace(/^https?:\/\//, '').replace(/\/$/, '');
   }
 

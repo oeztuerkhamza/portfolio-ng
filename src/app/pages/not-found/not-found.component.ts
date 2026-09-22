@@ -35,7 +35,7 @@ import { LocalizePipe } from '../../core/i18n/localize.pipe';
       }
       .folio-line {
         @include mono-label;
-        color: $gold;
+        color: $brand;
         margin-bottom: 1.5rem;
       }
       .nf-title {
@@ -43,11 +43,11 @@ import { LocalizePipe } from '../../core/i18n/localize.pipe';
         font-weight: 300;
         font-size: clamp(2.8rem, 9vw, 6rem);
         line-height: 1;
-        color: $paper;
+        color: $text;
         margin-bottom: 1.5rem;
-        em { font-style: italic; color: $gold; }
+        em { font-style: italic; color: $brand; }
       }
-      .nf-text { color: $paper-dim; font-size: 1.1rem; max-width: 48ch; margin-bottom: 2rem; }
+      .nf-text { color: $text-dim; font-size: 1.1rem; max-width: 48ch; margin-bottom: 2rem; }
       .nf-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
     `,
   ],

@@ -280,6 +280,7 @@ Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit nginx und 
     featured: true,
     demo: {
       type: 'image',
+      url: 'https://dj-veys.de',
       screens: [
         '/assets/images/dj-veys.webp',
         '/assets/images/dj-veys-2.webp',
