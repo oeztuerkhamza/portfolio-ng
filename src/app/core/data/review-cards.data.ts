@@ -4,10 +4,9 @@
  * Preise stehen bewusst nur hier, nicht in den Übersetzungen: eine
  * Preisänderung ist damit eine Zeile und kein Suchlauf durch fünf Sprachen.
  *
- * TODO(hamza): Preise vor dem Livegang bestätigen. Die Werte unten sind ein
- * Vorschlag am Marktniveau (Einzelkarte 25–45 €, Sets 90–160 €) und keine
- * abgestimmte Kalkulation. Einkauf NFC-Rohlinge + Druck + Einrichtungszeit
- * gegenrechnen, bevor die Seite öffentlich wird.
+ * Preislogik: gleicher Chip → gleiche Größenordnung. Karte 39 €, Anhänger
+ * 29 €, Aufkleber im Zweierpack 39 €, Aufsteller 69 €. Pakete sind günstiger
+ * als die Summe der Einzelteile (Team 33 € je Karte, Tresen spart 19 €).
  *
  * Kleinunternehmer nach § 19 UStG: Preise sind Endpreise ohne ausgewiesene
  * Umsatzsteuer. Der Hinweis dazu steht als `rc.price.note` in den
@@ -46,8 +45,6 @@ export const REVIEW_CARD_FAQS = [1, 2, 3, 4, 5] as const;
 /**
  * Produktformen — jede mit NFC-Chip und QR-Code, einzeln bestellbar.
  * Texte aus `rc.form.<id>.name` / `.text`.
- *
- * TODO(hamza): Einzelpreise bestätigen (Vorschlag am Marktniveau).
  */
 export interface ReviewCardForm {
   id: 'karte' | 'aufsteller' | 'aufkleber' | 'anhaenger';
@@ -59,9 +56,9 @@ export interface ReviewCardForm {
 
 export const REVIEW_CARD_FORMS: ReviewCardForm[] = [
   { id: 'karte', price: 39, image: '/assets/images/products/review-card.webp', imageSmall: '/assets/images/products/review-card-800.webp' },
-  { id: 'aufsteller', price: 59, image: '/assets/images/products/stand.webp', imageSmall: '/assets/images/products/stand-800.webp' },
-  { id: 'aufkleber', price: 29, image: '/assets/images/products/sticker.webp', imageSmall: '/assets/images/products/sticker-800.webp' },
-  { id: 'anhaenger', price: 25, image: '/assets/images/products/keychain.webp', imageSmall: '/assets/images/products/keychain-800.webp' },
+  { id: 'aufsteller', price: 69, image: '/assets/images/products/stand.webp', imageSmall: '/assets/images/products/stand-800.webp' },
+  { id: 'aufkleber', price: 39, image: '/assets/images/products/sticker.webp', imageSmall: '/assets/images/products/sticker-800.webp' },
+  { id: 'anhaenger', price: 29, image: '/assets/images/products/keychain.webp', imageSmall: '/assets/images/products/keychain-800.webp' },
 ];
 
 /**

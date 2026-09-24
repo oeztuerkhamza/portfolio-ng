@@ -1,8 +1,9 @@
 /**
  * Digital-Abo — drei Pakete zum Monatspreis.
  *
- * TODO(hamza): Preise, Einrichtungsgebühr und Mindestlaufzeit bestätigen.
- * Die Werte sind ein Vorschlag, keine Kalkulation.
+ * Preislogik: Business über 24 Monate (≈ 2.050 €) entspricht etwa Website
+ * (ab 1.290 €) plus Hosting und laufender Pflege; Premium enthält zusätzlich
+ * Beiträge, Antwortentwürfe und einen Vor-Ort-Termin pro Quartal.
  *
  * Online-Abschluss: Sobald es für ein Paket einen Zahlungslink gibt (z. B.
  * Stripe Payment Link für ein Abo), hier unter `checkoutUrl` eintragen — der
@@ -30,9 +31,9 @@ export interface SubscriptionPlan {
 export const YEARLY_MONTHS_CHARGED = 10;
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  { id: 'basis', monthly: 19, setupFee: 0, minTermMonths: 12, points: 5 },
-  { id: 'business', monthly: 49, setupFee: 290, minTermMonths: 24, points: 6, featured: true },
-  { id: 'premium', monthly: 99, setupFee: 290, minTermMonths: 24, points: 6 },
+  { id: 'basis', monthly: 29, setupFee: 0, minTermMonths: 12, points: 5 },
+  { id: 'business', monthly: 69, setupFee: 390, minTermMonths: 24, points: 6, featured: true },
+  { id: 'premium', monthly: 129, setupFee: 390, minTermMonths: 24, points: 6 },
 ];
 
 export const SUBSCRIPTION_PRICE_FROM = Math.min(...SUBSCRIPTION_PLANS.map((p) => p.monthly));
