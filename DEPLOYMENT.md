@@ -3,7 +3,7 @@
 Diese App nutzt jetzt **Angular SSR** (`outputMode: server`). Der Build erzeugt:
 
 ```
-dist/portfolio-ng/
+dist/breisgau-digital/
   browser/   → statische, vorgerenderte HTML-Seiten + Assets (sitemap.xml, robots.txt)
   server/    → server.mjs (Node-SSR-Server für Live-Rendering)
 ```
@@ -20,7 +20,7 @@ Vercel erkennt Angular-SSR automatisch.
 
 ```bash
 npm i -g vercel
-cd portfolio-ng
+cd breisgau-digital
 vercel            # einmalig einrichten
 vercel --prod     # produktiv deployen
 ```
@@ -34,7 +34,7 @@ Danach in Vercel → Project → **Settings → Domains** die Domain
 ```bash
 npm run build
 # Startbefehl auf dem Host:
-node dist/portfolio-ng/server/server.mjs   # nutzt $PORT (Default 4000)
+node dist/breisgau-digital/server/server.mjs   # nutzt $PORT (Default 4000)
 ```
 
 ## Variante C — Docker
@@ -47,7 +47,7 @@ RUN npm ci --legacy-peer-deps
 COPY . .
 RUN npm run build
 EXPOSE 4000
-CMD ["node", "dist/portfolio-ng/server/server.mjs"]
+CMD ["node", "dist/breisgau-digital/server/server.mjs"]
 ```
 
 ---

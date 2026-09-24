@@ -38,7 +38,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 
 ## 2. Vercel ortam değişkenleri
 
-Vercel → proje **portfolio-ng** → **Settings → Environment Variables** (Production ve Preview):
+Vercel → proje **breisgau-digital** → **Settings → Environment Variables** (Production ve Preview):
 
 | Değişken | Nereden |
 |---|---|
@@ -89,4 +89,4 @@ Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiy
 - API: `src/server/` (Express, `src/server.ts` içine bağlı). Panel: `src/app/admin/`.
 - Fiyatlar derleme sırasında `scripts/fetch-catalog.mjs` ile veritabanından
   `src/app/core/data/catalog.json` dosyasına yazılır. Veritabanı yoksa dosyadaki değerler kullanılır.
-- Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr:portfolio-ng`.
+- Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr`.

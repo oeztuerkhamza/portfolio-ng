@@ -1,11 +1,11 @@
 // Generates sitemap.xml from the prerendered output.
-// Walks dist/portfolio-ng/browser for index.html files and maps each to a URL,
+// Walks dist/breisgau-digital/browser for index.html files and maps each to a URL,
 // so the sitemap always reflects exactly what was rendered.
 import { readdirSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const ORIGIN = 'https://hamzaoeztuerk.de';
-const BROWSER_DIR = join('dist', 'portfolio-ng', 'browser');
+const BROWSER_DIR = join('dist', 'breisgau-digital', 'browser');
 
 if (!existsSync(BROWSER_DIR)) {
   console.error(`[sitemap] ${BROWSER_DIR} not found — run the build first.`);

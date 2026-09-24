@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "portfolio-ng": {
+    "breisgau-digital": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -39,7 +39,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/portfolio-ng",
+            "outputPath": "dist/breisgau-digital",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -105,10 +105,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "portfolio-ng:build:production"
+              "buildTarget": "breisgau-digital:build:production"
             },
             "development": {
-              "buildTarget": "portfolio-ng:build:development"
+              "buildTarget": "breisgau-digital:build:development"
             }
           },
           "defaultConfiguration": "development"

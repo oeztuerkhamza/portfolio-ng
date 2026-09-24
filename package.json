@@ -1,5 +1,5 @@
 {
-  "name": "portfolio-ng",
+  "name": "breisgau-digital",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sitemap": "node scripts/generate-sitemap.mjs",
-    "serve:ssr:portfolio-ng": "node dist/portfolio-ng/server/server.mjs"
+    "serve:ssr": "node dist/breisgau-digital/server/server.mjs"
   },
   "private": true,
   "dependencies": {
