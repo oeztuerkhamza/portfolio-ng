@@ -213,18 +213,46 @@ api.post(
 );
 
 // ── Admin: Anmeldedaten für das Portal (öffentlich, nur Nicht-Geheimes) ──
-api.get('/admin/config', (_req, res) => {
-  res.json({
-    supabaseUrl: config.supabaseUrl,
-    supabaseAnonKey: config.supabaseAnonKey,
-    ready: {
-      db: !!config.databaseUrl,
-      auth: !!(config.supabaseUrl && config.supabaseAnonKey && config.adminEmails.length),
-      stripe: !!(config.stripeSecretKey && config.stripeWebhookSecret),
-      deployHook: !!config.deployHookUrl,
-    },
-  });
-});
+/**
+ * Verbindung zur Datenbank prüfen und einen verständlichen Grund liefern,
+ * ohne Zugangsdaten preiszugeben.
+ */
+async function checkDb(): Promise<string | null> {
+  const sql = db();
+  if (!sql) return 'DATABASE_URL fehlt';
+  try {
+    await Promise.race([
+      sql`select 1 from prices limit 1`,
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Zeitüberschreitung (10 s)')), 10_000)),
+    ]);
+    return null;
+  } catch (err) {
+    const e = err as { code?: string; message?: string };
+    const msg = String(e.message ?? err).replace(/postgres(ql)?:\/\/[^\s]+/gi, '[DATABASE_URL]');
+    if (e.code === '42P01') return 'Tabellen fehlen — SQL-Datei im Supabase SQL Editor ausführen';
+    return (e.code ? e.code + ': ' : '') + msg.slice(0, 300);
+  }
+}
+
+// ── Admin: Anmeldedaten für das Portal (öffentlich, nur Nicht-Geheimes) ──
+api.get(
+  '/admin/config',
+  h(async (_req, res) => {
+    res.set('Cache-Control', 'no-store');
+    const dbError = await checkDb();
+    res.json({
+      supabaseUrl: config.supabaseUrl,
+      supabaseAnonKey: config.supabaseAnonKey,
+      dbError,
+      ready: {
+        db: !dbError,
+        auth: !!(config.supabaseUrl && config.supabaseAnonKey && config.adminEmails.length),
+        stripe: !!(config.stripeSecretKey && config.stripeWebhookSecret),
+        deployHook: !!config.deployHookUrl,
+      },
+    });
+  }),
+);
 
 const admin = express.Router();
 api.use('/admin', requireAdmin, admin);

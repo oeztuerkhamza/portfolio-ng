@@ -27,18 +27,36 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'links' | 
     <div class="adm">
       @if (!api.config()) {
         <div class="adm-center"><p class="adm-muted">Yükleniyor…</p></div>
-      } @else if (!api.config()!.ready.auth) {
+      } @else if (api.config()!.apiError) {
+        <div class="adm-center">
+          <div class="adm-card adm-narrow">
+            <img src="/assets/images/logo/breisgau-digital.svg" alt="" class="adm-logo-big" />
+            <h1>Sunucuya ulaşılamıyor</h1>
+            <p>Yönetim API'si cevap vermedi. Vercel → Deployments → son derleme → <strong>Logs</strong> bölümündeki hatayı gönderin.</p>
+            <p class="adm-msg err">{{ api.config()!.apiError }}</p>
+          </div>
+        </div>
+      } @else if (!api.config()!.ready.auth || api.config()!.dbError) {
         <div class="adm-center">
           <div class="adm-card adm-narrow">
             <img src="/assets/images/logo/breisgau-digital.svg" alt="" class="adm-logo-big" />
             <h1>Yönetim paneli henüz kurulmadı</h1>
-            <p>Vercel ayarlarında şu değişkenler eksik:</p>
+            @if (!api.config()!.ready.auth || api.config()!.dbError === 'DATABASE_URL fehlt') { <p>Vercel ayarlarında şu değişkenler eksik:</p> }
             <ul class="adm-list">
               @if (!api.config()!.supabaseUrl) { <li><code>SUPABASE_URL</code></li> }
               @if (!api.config()!.supabaseAnonKey) { <li><code>SUPABASE_PUBLISHABLE_KEY</code></li> }
-              <li><code>ADMIN_EMAILS</code> (giriş yapabilecek e-posta adresleri)</li>
-              @if (!api.config()!.ready.db) { <li><code>DATABASE_URL</code></li> }
+              @if (!api.config()!.ready.auth && api.config()!.supabaseUrl && api.config()!.supabaseAnonKey) { <li><code>ADMIN_EMAILS</code> (giriş yapabilecek e-posta adresleri)</li> }
+              @if (api.config()!.dbError === 'DATABASE_URL fehlt') { <li><code>DATABASE_URL</code></li> }
             </ul>
+            @if (api.config()!.dbError && api.config()!.dbError !== 'DATABASE_URL fehlt') {
+              <p><strong>Veritabanına bağlanılamıyor.</strong> Supabase'in cevabı:</p>
+              <p class="adm-msg err">{{ api.config()!.dbError }}</p>
+              <p class="adm-muted small">
+                Sık nedenler: şifre yanlış veya <code>[YOUR-PASSWORD]</code> değiştirilmemiş · şifrede <code>?</code>, <code>#</code>, <code>&#64;</code> gibi
+                işaretler var (şifreyi sadece harf ve rakamla yenileyin) · “Transaction pooler” (port 6543) yerine başka adres kopyalandı ·
+                tablolar kurulmamış (SQL dosyası çalıştırılmadı).
+              </p>
+            }
             <p class="adm-muted">Adım adım kurulum: depodaki <code>ADMIN-KURULUM.md</code>.</p>
           </div>
         </div>
@@ -133,7 +151,15 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    if (this.browser) this.api.init().catch(() => this.api.config.set({ supabaseUrl: '', supabaseAnonKey: '', ready: { db: false, auth: false, stripe: false, deployHook: false } }));
+    if (this.browser)
+      this.api.init().catch((e: unknown) =>
+        this.api.config.set({
+          supabaseUrl: '',
+          supabaseAnonKey: '',
+          apiError: e instanceof Error ? e.message : String(e),
+          ready: { db: false, auth: false, stripe: false, deployHook: false },
+        }),
+      );
   }
 
   val(e: Event) {

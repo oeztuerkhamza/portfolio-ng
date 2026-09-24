@@ -4,6 +4,10 @@ import { isPlatformBrowser } from '@angular/common';
 export interface AdminConfig {
   supabaseUrl: string;
   supabaseAnonKey: string;
+  /** Grund, warum die Datenbank nicht erreichbar ist (null = alles gut). */
+  dbError?: string | null;
+  /** Die API selbst hat nicht geantwortet (z. B. Funktion abgestürzt). */
+  apiError?: string;
   ready: { db: boolean; auth: boolean; stripe: boolean; deployHook: boolean };
 }
 
@@ -43,7 +47,12 @@ export class AdminApi {
   async init(): Promise<void> {
     if (!this.browser) return;
     const res = await fetch('/api/admin/config');
-    this.config.set((await res.json()) as AdminConfig);
+    const text = await res.text();
+    try {
+      this.config.set(JSON.parse(text) as AdminConfig);
+    } catch {
+      throw new Error(`HTTP ${res.status}: ${text.slice(0, 200)}`);
+    }
 
     // Rückkehr aus einer Supabase-E-Mail: #access_token=…&type=recovery
     const hash = new URLSearchParams(location.hash.slice(1));
