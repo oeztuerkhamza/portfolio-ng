@@ -3,6 +3,17 @@
   "buildCommand": "npm run build",
   "redirects": [
     {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?hamzaoeztuerk\\.de"
+        }
+      ],
+      "destination": "https://breisgau-digital.de/:path*",
+      "permanent": true
+    },
+    {
       "source": "/:locale(de|fr|en|tr|ku)/experience",
       "destination": "/:locale/ueber-uns",
       "permanent": true

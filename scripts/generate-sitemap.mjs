@@ -4,7 +4,7 @@
 import { readdirSync, statSync, writeFileSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
-const ORIGIN = 'https://hamzaoeztuerk.de';
+const ORIGIN = 'https://breisgau-digital.de';
 const BROWSER_DIR = join('dist', 'breisgau-digital', 'browser');
 
 if (!existsSync(BROWSER_DIR)) {

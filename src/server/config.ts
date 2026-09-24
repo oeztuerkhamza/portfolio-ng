@@ -39,7 +39,7 @@ export const config = {
   get stripeWebhookSecret() {
     return env('STRIPE_WEBHOOK_SECRET');
   },
-  /** Öffentliche Adresse der Website, z. B. https://hamzaoeztuerk.de */
+  /** Öffentliche Adresse der Website, z. B. https://breisgau-digital.de */
   get siteUrl() {
     return env('SITE_URL').replace(/\/+$/, '');
   },

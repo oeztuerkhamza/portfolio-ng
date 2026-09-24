@@ -10,7 +10,7 @@ dist/breisgau-digital/
 
 > ⚠️ **GitHub Pages kann SSR NICHT ausführen** (nur statisch). Für Server-Side
 > Rendering muss die Seite auf einem Node-fähigen Host laufen. Die Domain
-> `hamzaoeztuerk.de` muss dann auf den neuen Host zeigen.
+> `breisgau-digital.de` muss dann auf den neuen Host zeigen.
 
 ---
 
@@ -26,7 +26,7 @@ vercel --prod     # produktiv deployen
 ```
 
 Danach in Vercel → Project → **Settings → Domains** die Domain
-`hamzaoeztuerk.de` hinzufügen und den DNS-Eintrag laut Anleitung setzen
+`breisgau-digital.de` hinzufügen und den DNS-Eintrag laut Anleitung setzen
 (A-Record / CNAME auf Vercel).
 
 ## Variante B — Beliebiger Node-Host (Render, Railway, Fly.io, Azure App Service)
@@ -55,8 +55,8 @@ CMD ["node", "dist/breisgau-digital/server/server.mjs"]
 ## Nach dem ersten Deploy — SEO scharf schalten
 
 1. **Google Search Console** (https://search.google.com/search-console)
-   - Property `https://hamzaoeztuerk.de` hinzufügen & per DNS verifizieren.
-   - Sitemap einreichen: `https://hamzaoeztuerk.de/sitemap.xml`
+   - Property `https://breisgau-digital.de` hinzufügen & per DNS verifizieren.
+   - Sitemap einreichen: `https://breisgau-digital.de/sitemap.xml`
 2. **Google Business Profil** anlegen (Webentwickler, Freiburg) — stärkster Hebel
    für lokale Sichtbarkeit. Adresse identisch zur Footer-/Schema-Adresse halten
    (NAP-Konsistenz!): *Bissierstr. 16, 79114 Freiburg*.
@@ -78,5 +78,5 @@ CMD ["node", "dist/breisgau-digital/server/server.mjs"]
   `SeoService.DEFAULT_IMAGE` darauf zeigen lassen.
 - **Live-Demo-Iframes:** Eigene .NET-Seiten (Bikehaus, Benlirad) senden ggf.
   `X-Frame-Options`/`CSP frame-ancestors`. Damit die Demo *im* Portfolio lädt,
-  auf diesen Servern `frame-ancestors https://hamzaoeztuerk.de` erlauben.
+  auf diesen Servern `frame-ancestors https://breisgau-digital.de` erlauben.
   Sonst greift automatisch der Poster-Fallback mit „in neuem Tab öffnen".

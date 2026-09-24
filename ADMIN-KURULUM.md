@@ -1,6 +1,6 @@
 # Yönetim paneli — kurulum
 
-Yönetim paneli `/admin` adresinde çalışır (ör. `https://hamzaoeztuerk.de/admin`). Bu dosya,
+Yönetim paneli `/admin` adresinde çalışır (ör. `https://breisgau-digital.de/admin`). Bu dosya,
 paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlatır.
 
 ## Panelde neler var
@@ -27,7 +27,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
 4. **Authentication → Users → Add user → Create new user**: kendi e-postanız ve şifreniz
    (“Auto Confirm User” işaretli).
-5. **Authentication → URL Configuration → Site URL**: `https://hamzaoeztuerk.de/admin`
+5. **Authentication → URL Configuration → Site URL**: `https://breisgau-digital.de/admin`
    (şifre sıfırlama e-postası buraya döner).
 6. **Settings → Data Processing Agreement (DPA)**: Supabase'in veri işleme sözleşmesini kabul edin
    (GDPR için gerekli).
@@ -46,7 +46,7 @@ Vercel → proje **breisgau-digital** → **Settings → Environment Variables**
 | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL (`https://xxxx.supabase.co`) |
 | `SUPABASE_ANON_KEY` | Aynı sayfa → `anon` / publishable key |
 | `ADMIN_EMAILS` | Panele girebilecek e-postalar, virgülle: `hamza.oeztuerk@web.de` |
-| `SITE_URL` | `https://hamzaoeztuerk.de` (yeni alan adına geçince onu yazın) |
+| `SITE_URL` | `https://breisgau-digital.de` |
 | `VERCEL_DEPLOY_HOOK_URL` | Vercel → Settings → Git → **Deploy Hooks** → ad: `fiyatlar`, branch: `main` → oluşan URL |
 
 Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/admin` açılır,
@@ -56,7 +56,7 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 
 1. Panel → **NFC linkleri → + Yeni link**: açıklama, kısa ad (ör. `cafe-muster`), hedef
    (müşterinin Google yorum linki), müşteri.
-2. Karta **hedef adresi değil**, kısa linki yazın: `https://hamzaoeztuerk.de/r/cafe-muster`
+2. Karta **hedef adresi değil**, kısa linki yazın: `https://breisgau-digital.de/r/cafe-muster`
    (NFC Tools gibi bir uygulamayla, “URL” kaydı).
 3. **QR (SVG)** ile aynı linkin QR kodunu indirip kartın baskısına koyun.
 4. Hedef değişirse (menü, Instagram, yeni Google linki) sadece paneldeki hedefi değiştirin.
@@ -75,7 +75,7 @@ Açmadan önce yapılacaklar:
 2. **Stripe hesabı** (<https://stripe.com>): işletme bilgileri, banka hesabı, ödeme yöntemleri
    (kart, PayPal, Klarna…).
 3. Stripe → Developers → **Webhooks → Add endpoint**:
-   - URL: `https://hamzaoeztuerk.de/api/stripe/webhook`
+   - URL: `https://breisgau-digital.de/api/stripe/webhook`
    - Olaylar: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
      `checkout.session.expired`
 4. Vercel'e ekleyin: `STRIPE_SECRET_KEY` (`sk_live_…`), `STRIPE_WEBHOOK_SECRET` (`whsec_…`) → Redeploy.
