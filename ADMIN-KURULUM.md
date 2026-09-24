@@ -44,7 +44,7 @@ Vercel → proje **breisgau-digital** → **Settings → Environment Variables**
 |---|---|
 | `DATABASE_URL` | Supabase → **Connect** → **Transaction pooler** (port **6543**) → URI. `[YOUR-PASSWORD]` yerine 1. adımdaki şifre. |
 | `SUPABASE_URL` | Supabase → Project Settings → API → Project URL (`https://xxxx.supabase.co`) |
-| `SUPABASE_ANON_KEY` | Aynı sayfa → `anon` / publishable key |
+| `SUPABASE_PUBLISHABLE_KEY` | Project Settings → API Keys → **Publishable key** (`sb_publishable_…`). Eski projelerde `SUPABASE_ANON_KEY` adıyla `anon` key de olur. **Secret key'i hiçbir yere eklemeyin; gerekmiyor.** |
 | `ADMIN_EMAILS` | Panele girebilecek e-postalar, virgülle: `hamza.oeztuerk@web.de` |
 | `SITE_URL` | `https://breisgau-digital.de` |
 | `VERCEL_DEPLOY_HOOK_URL` | Vercel → Settings → Git → **Deploy Hooks** → ad: `fiyatlar`, branch: `main` → oluşan URL |

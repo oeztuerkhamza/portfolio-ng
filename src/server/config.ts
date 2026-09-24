@@ -14,9 +14,9 @@ export const config = {
   get supabaseUrl() {
     return env('SUPABASE_URL').replace(/\/+$/, '');
   },
-  /** Öffentlicher „anon"-Schlüssel (Supabase → Project Settings → API). */
+  /** Öffentlicher Schlüssel: „publishable" (sb_publishable_…) oder der alte „anon"-Key. */
   get supabaseAnonKey() {
-    return env('SUPABASE_ANON_KEY');
+    return env('SUPABASE_PUBLISHABLE_KEY') || env('SUPABASE_ANON_KEY');
   },
   /** Kommagetrennte E-Mail-Adressen, die das Admin-Portal nutzen dürfen. */
   get adminEmails(): string[] {

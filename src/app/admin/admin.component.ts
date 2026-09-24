@@ -35,7 +35,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'links' | 
             <p>Vercel ayarlarında şu değişkenler eksik:</p>
             <ul class="adm-list">
               @if (!api.config()!.supabaseUrl) { <li><code>SUPABASE_URL</code></li> }
-              @if (!api.config()!.supabaseAnonKey) { <li><code>SUPABASE_ANON_KEY</code></li> }
+              @if (!api.config()!.supabaseAnonKey) { <li><code>SUPABASE_PUBLISHABLE_KEY</code></li> }
               <li><code>ADMIN_EMAILS</code> (giriş yapabilecek e-posta adresleri)</li>
               @if (!api.config()!.ready.db) { <li><code>DATABASE_URL</code></li> }
             </ul>
