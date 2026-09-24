@@ -1,0 +1,23 @@
+{
+  "form.karte": 39,
+  "form.aufsteller": 69,
+  "form.aufkleber": 39,
+  "form.anhaenger": 29,
+  "pkg.einzel": 39,
+  "pkg.team": 99,
+  "pkg.tresen": 149,
+  "web.from": 1290,
+  "sh.check": 79,
+  "sh.start": 490,
+  "sh.betrieb": 1290,
+  "abo.basis.monthly": 29,
+  "abo.basis.setup": 0,
+  "abo.basis.term": 12,
+  "abo.business.monthly": 69,
+  "abo.business.setup": 390,
+  "abo.business.term": 24,
+  "abo.premium.monthly": 129,
+  "abo.premium.setup": 390,
+  "abo.premium.term": 24,
+  "shop.shipping": 0
+}

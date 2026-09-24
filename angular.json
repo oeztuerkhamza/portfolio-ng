@@ -72,7 +72,10 @@
             },
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "qrcode-generator"
+            ]
           },
           "configurations": {
             "production": {

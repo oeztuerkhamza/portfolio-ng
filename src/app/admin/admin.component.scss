@@ -1,0 +1,235 @@
+@import "../../styles/variables";
+
+// Alle Stile hängen an .adm — die Komponente läuft ohne Kapselung.
+.adm {
+  min-height: 100vh;
+  background: $surface;
+  color: $text;
+  font-size: 0.95rem;
+
+  h1 { font-family: $font-display; font-weight: 500; font-size: 1.6rem; margin: 0 0 1rem; }
+  h2 { font-family: $font-display; font-weight: 500; font-size: 1.5rem; margin: 0 0 0.4rem; }
+  h3 { font-size: 1rem; font-weight: 600; margin: 0 0 0.8rem; }
+  code { font-size: 0.85em; background: $brand-tint; padding: 0.1em 0.35em; border-radius: 5px; }
+  a { color: $brand; }
+
+  select, input, textarea {
+    font: inherit;
+    color: $text;
+    background: #fff;
+    border: 1px solid $rule-strong;
+    border-radius: 9px;
+    padding: 0.5rem 0.65rem;
+    width: 100%;
+    &:focus { outline: 2px solid $brand-light; outline-offset: 1px; border-color: transparent; }
+  }
+  textarea { resize: vertical; }
+  select { width: auto; max-width: 100%; }
+  .btn-small { padding: 0.5rem 0.9rem; font-size: 0.88rem; }
+}
+
+.adm-center { min-height: 100vh; display: grid; place-items: center; padding: 1.25rem; }
+.adm-narrow { width: 100%; max-width: 420px; display: grid; gap: 0.9rem; }
+.adm-logo-big { height: 64px; width: auto; margin: 0 auto 0.25rem; }
+
+.adm-card {
+  background: #fff;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  padding: 1.25rem;
+  box-shadow: $shadow-sm;
+  margin-bottom: 1rem;
+}
+
+.adm-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem clamp(1rem, 3vw, 2rem);
+  background: #fff;
+  border-bottom: 1px solid $rule-soft;
+}
+.adm-brand {
+  display: flex; align-items: center; gap: 0.6rem;
+  img { height: 38px; width: auto; }
+  span { display: flex; flex-direction: column; line-height: 1.15; }
+  strong { font-family: $font-display; font-weight: 500; }
+  small { color: $text-mute; font-size: 0.75rem; }
+}
+.adm-user { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; justify-content: flex-end; }
+
+.adm-tabs {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding: 0.6rem clamp(1rem, 3vw, 2rem);
+  background: #fff;
+  border-bottom: 1px solid $rule-soft;
+  scrollbar-width: none;
+  button {
+    flex: none;
+    font: inherit;
+    font-weight: 500;
+    color: $text-dim;
+    background: none;
+    border: 0;
+    border-radius: 9px;
+    padding: 0.5rem 0.8rem;
+    cursor: pointer;
+    &:hover { background: $brand-tint; color: $text; }
+    &.on { background: $brand; color: #fff; }
+  }
+}
+
+.adm-main { max-width: 1100px; margin: 0 auto; padding: 1.5rem clamp(1rem, 3vw, 2rem) 4rem; }
+.adm-muted { color: $text-mute; }
+.small { font-size: 0.82rem; }
+.adm-ok { color: #1c7a44; font-size: 0.85rem; }
+.warn { color: #b25b00; font-weight: 600; }
+.dim { opacity: 0.6; }
+
+.adm-msg {
+  margin: 0.5rem 0 1rem;
+  padding: 0.65rem 0.85rem;
+  border-radius: 10px;
+  background: $brand-tint;
+  &.err { background: #fdecec; color: #9b1c1c; }
+}
+
+.adm-link {
+  font: inherit;
+  background: none;
+  border: 0;
+  color: $brand;
+  cursor: pointer;
+  padding: 0.2rem 0.3rem;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  &.danger { color: #b42318; }
+}
+
+.adm-field {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-dim;
+  margin-bottom: 0.7rem;
+}
+
+.adm-grid2 {
+  display: grid;
+  gap: 0 1rem;
+  @media (min-width: 700px) { grid-template-columns: 1fr 1fr; }
+}
+
+.adm-row-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.5rem; }
+.adm-actions { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.adm-search { margin: 0.5rem 0 1rem; max-width: 420px; }
+
+.adm-stats {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  margin: 1rem 0 1.25rem;
+}
+.adm-stat {
+  font: inherit;
+  text-align: left;
+  background: #fff;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  box-shadow: $shadow-sm;
+  strong { display: block; font-family: $font-display; font-size: 1.7rem; font-weight: 500; color: $brand; }
+  span { color: $text-mute; font-size: 0.85rem; }
+  &:hover { border-color: $rule-brand; }
+}
+
+.adm-checks {
+  list-style: none; margin: 0; padding: 0; display: grid; gap: 0.4rem;
+  li::before { content: '○'; margin-right: 0.5rem; color: $text-faint; }
+  li.ok::before { content: '✓'; color: #1c7a44; font-weight: 700; }
+}
+.adm-list { margin: 0; padding-left: 1.2rem; display: grid; gap: 0.3rem; }
+
+.adm-filters {
+  display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0 1rem;
+  button {
+    font: inherit; font-size: 0.85rem; cursor: pointer;
+    background: #fff; border: 1px solid $rule; border-radius: 999px; padding: 0.35rem 0.8rem;
+    &.on { background: $brand; border-color: $brand; color: #fff; }
+  }
+}
+
+.adm-item {
+  &.is-new { border-left: 4px solid $brand-light; }
+  .adm-message { white-space: pre-wrap; background: $surface; border-radius: 10px; padding: 0.7rem 0.85rem; margin: 0.6rem 0; }
+}
+.adm-item-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: 0.4rem; }
+.adm-reach { margin: 0.2rem 0 0.5rem; font-weight: 500; }
+.adm-tags {
+  display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.4rem;
+  span { font-size: 0.78rem; background: $brand-tint; color: $brand; border-radius: 999px; padding: 0.2rem 0.6rem; }
+  .accent { background: #fff1e3; color: #9a4a00; }
+}
+.adm-lines { margin: 0.3rem 0 0.8rem; padding-left: 1.1rem; }
+
+.adm-table-wrap { overflow-x: auto; background: #fff; border: 1px solid $rule-soft; border-radius: $radius; box-shadow: $shadow-sm; }
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+  th, td { text-align: left; padding: 0.7rem 0.85rem; border-bottom: 1px solid $rule-soft; vertical-align: top; }
+  th { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; color: $text-mute; font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+}
+
+.adm-shortlink { display: flex; flex-wrap: wrap; align-items: center; gap: 0.25rem; margin-top: 0.35rem; }
+.adm-scans {
+  text-align: right; flex: none;
+  strong { display: block; font-family: $font-display; font-size: 1.5rem; font-weight: 500; color: $brand; line-height: 1; }
+  span { font-size: 0.8rem; color: $text-mute; }
+  small { display: block; color: $text-mute; font-size: 0.75rem; margin-top: 0.2rem; }
+}
+.adm-toggle {
+  display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; font-weight: 500;
+  input { width: 18px; height: 18px; accent-color: $brand; }
+  &.big { font-size: 1.05rem; margin-top: 0.5rem; input { width: 22px; height: 22px; } }
+}
+
+.adm-prices { display: grid; gap: 0.5rem; }
+.adm-price {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.25rem 1rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid $rule-soft;
+  &:last-child { border-bottom: 0; }
+  .adm-ok { grid-column: 1 / -1; }
+}
+.adm-price-input {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  input { width: 110px; text-align: right; }
+  small { color: $text-mute; min-width: 48px; }
+}
+.adm-badge { font-style: normal; font-size: 0.7rem; background: #fff1e3; color: #9a4a00; border-radius: 999px; padding: 0.1rem 0.45rem; margin-left: 0.3rem; }
+
+.adm-publish {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  background: #fff; border: 1px solid $rule-soft; border-radius: $radius; padding: 1rem 1.25rem; margin-bottom: 1rem;
+  p { margin: 0.2rem 0 0; }
+  &.hot { border-color: #f0a35e; background: #fffaf4; }
+}
+
+@media (max-width: 640px) {
+  .adm-user .adm-muted { display: none; }
+  .adm-item-head { flex-direction: column; }
+  .adm-scans { text-align: left; }
+  .adm-publish { flex-direction: column; align-items: stretch; }
+}

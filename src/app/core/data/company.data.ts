@@ -1,6 +1,7 @@
 import type { Lang } from '../i18n/i18n.service';
 import { REVIEW_CARD_PACKAGES } from './review-cards.data';
 import { SMART_HOME_PACKAGES } from './smart-home.data';
+import { price } from './catalog';
 
 /**
  * Stammdaten des Unternehmens — eine Stelle für Telefon, WhatsApp und E-Mail,
@@ -23,13 +24,8 @@ export function whatsappUrl(text?: string): string {
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
 }
 
-/**
- * Einstiegspreis Firmen-Website (Festpreis, „ab").
- *
- * TODO(hamza): vor dem Livegang bestätigen. Die Leistungsseite spricht vom
- * „niedrigen vierstelligen Bereich"; der Wert hier muss dazu passen.
- */
-export const WEBSITE_PRICE_FROM = 1290;
+/** Einstiegspreis Firmen-Website (Festpreis, „ab"), aus catalog.json. */
+export const WEBSITE_PRICE_FROM = price('web.from');
 
 export type ProductId = 'cards' | 'web' | 'sh';
 

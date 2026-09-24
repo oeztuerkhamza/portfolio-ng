@@ -8,6 +8,8 @@ const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
 // HTML in each language. Unknown URLs are server-rendered (real 404 / redirect).
 export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Server },
+  // Admin-Portal: nur im Browser, wird nicht vorgerendert.
+  { path: 'admin', renderMode: RenderMode.Client },
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

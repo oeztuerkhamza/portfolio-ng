@@ -17,6 +17,9 @@
           <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
             <app-icon name="chat" /> {{ i18n.t('rc.cta.whatsapp') }}
           </a>
+          @if (shop.enabled()) {
+            <a [routerLink]="'/bestellen' | localize" class="btn btn-secondary btn-large">{{ i18n.t('rc.shop.cta') }}</a>
+          }
         </div>
       </div>
       <figure class="media-frame">

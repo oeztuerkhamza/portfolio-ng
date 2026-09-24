@@ -94,6 +94,9 @@
         <textarea id="cf-message" name="message" rows="5" [placeholder]="i18n.t('contact.f.message.ph')" [defaultValue]="prefill()" (input)="message.set(value($event))"></textarea>
       </div>
 
+      <!-- Falle für Spam-Bots: für Menschen unsichtbar -->
+      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
       <div class="form-actions">
         <button type="submit" class="btn btn-primary btn-large">
           <app-icon name="mail" /> {{ i18n.t('contact.f.send.mail') }}

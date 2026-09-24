@@ -4,7 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build && node scripts/generate-sitemap.mjs",
+    "build": "node scripts/fetch-catalog.mjs && ng build && node scripts/generate-sitemap.mjs",
+    "catalog": "node scripts/fetch-catalog.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "sitemap": "node scripts/generate-sitemap.mjs",
@@ -27,6 +28,8 @@
     "express": "^4.18.2",
     "framer-motion": "^12.38.0",
     "node": "^24.15.0",
+    "postgres": "^3.4.9",
+    "qrcode-generator": "^1.5.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.15.0"

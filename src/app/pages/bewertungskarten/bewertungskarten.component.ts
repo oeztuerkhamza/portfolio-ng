@@ -16,6 +16,7 @@ import {
   REVIEW_CARD_STEPS,
 } from '../../core/data/review-cards.data';
 import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { ShopStatus } from '../../core/shop/shop-status.service';
 import { REVIEW_CARDS_CONTENT } from './bewertungskarten.content';
 
 @Component({
@@ -28,6 +29,8 @@ import { REVIEW_CARDS_CONTENT } from './bewertungskarten.content';
 export class BewertungskartenComponent implements OnInit {
   private readonly seo = inject(SeoService);
   readonly i18n = inject(I18nService);
+  /** Button 'Online bestellen' nur bei offenem Shop (Schalter im Admin-Portal). */
+  readonly shop = inject(ShopStatus);
 
   readonly packages = REVIEW_CARD_PACKAGES;
   readonly steps = REVIEW_CARD_STEPS;
@@ -66,6 +69,7 @@ export class BewertungskartenComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.shop.check();
     this.seo.update({
       title: this.i18n.t('seo.rc.title'),
       description: this.i18n.t('seo.rc.desc'),

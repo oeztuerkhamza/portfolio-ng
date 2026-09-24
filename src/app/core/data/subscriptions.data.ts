@@ -1,3 +1,5 @@
+import { price } from './catalog';
+
 /**
  * Digital-Abo — drei Pakete zum Monatspreis.
  *
@@ -31,9 +33,9 @@ export interface SubscriptionPlan {
 export const YEARLY_MONTHS_CHARGED = 10;
 
 export const SUBSCRIPTION_PLANS: SubscriptionPlan[] = [
-  { id: 'basis', monthly: 29, setupFee: 0, minTermMonths: 12, points: 5 },
-  { id: 'business', monthly: 69, setupFee: 390, minTermMonths: 24, points: 6, featured: true },
-  { id: 'premium', monthly: 129, setupFee: 390, minTermMonths: 24, points: 6 },
+  { id: 'basis', monthly: price('abo.basis.monthly'), setupFee: price('abo.basis.setup'), minTermMonths: price('abo.basis.term'), points: 5 },
+  { id: 'business', monthly: price('abo.business.monthly'), setupFee: price('abo.business.setup'), minTermMonths: price('abo.business.term'), points: 6, featured: true },
+  { id: 'premium', monthly: price('abo.premium.monthly'), setupFee: price('abo.premium.setup'), minTermMonths: price('abo.premium.term'), points: 6 },
 ];
 
 export const SUBSCRIPTION_PRICE_FROM = Math.min(...SUBSCRIPTION_PLANS.map((p) => p.monthly));

@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /r/
+Disallow: /*/bestellen
 
 Sitemap: https://hamzaoeztuerk.de/sitemap.xml

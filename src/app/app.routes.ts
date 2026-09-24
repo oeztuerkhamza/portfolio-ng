@@ -72,6 +72,16 @@ const localeChildren: Routes = [
     data: { animation: 'ProjectDetail' },
   },
   {
+    path: 'bestellen',
+    loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
+    data: { animation: 'Shop' },
+  },
+  {
+    path: 'bestellen/danke',
+    loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
+    data: { animation: 'ShopThanks', thanks: true },
+  },
+  {
     path: 'contact',
     loadComponent: () =>
       import('./pages/contact/contact.component').then(
@@ -104,6 +114,11 @@ const localeChildren: Routes = [
 
 export const routes: Routes = [
   { path: '', redirectTo: '/' + DEFAULT_LANG, pathMatch: 'full' },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/admin.component').then((m) => m.AdminComponent),
+    data: { animation: 'Admin', bare: true },
+  },
   {
     path: ':locale',
     canActivate: [localeGuard],

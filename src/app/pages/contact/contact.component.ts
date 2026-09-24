@@ -102,6 +102,7 @@ export class ContactComponent implements OnInit {
     const form = event.target as HTMLFormElement;
     if (!form.reportValidity()) return;
     const subject = this.i18n.t('contact.mail.subject');
+    this.store(form);
     window.location.href =
       `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(this.compose())}`;
     this.sent.set(true);
@@ -109,8 +110,34 @@ export class ContactComponent implements OnInit {
 
   sendWhatsApp(form: HTMLFormElement): void {
     if (!form.reportValidity()) return;
+    this.store(form);
     window.open(whatsappUrl(this.compose()), '_blank', 'noopener');
     this.sent.set(true);
+  }
+
+  /**
+   * Anfrage zusätzlich im Admin-Portal ablegen. Läuft im Hintergrund; schlägt
+   * es fehl (z. B. ohne Datenbank), bleiben E-Mail und WhatsApp der Weg.
+   */
+  private store(form: HTMLFormElement): void {
+    const q = this.route.snapshot.queryParamMap;
+    const honeypot = (form.elements.namedItem('website') as HTMLInputElement | null)?.value ?? '';
+    fetch('/api/enquiry', {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: this.name(),
+        business: this.business(),
+        reach: this.reach(),
+        message: this.message(),
+        topics: this.chosen(),
+        plan: q.get('paket'),
+        billing: q.get('zahlung'),
+        lang: this.i18n.lang(),
+        website: honeypot,
+      }),
+    }).catch(() => undefined);
   }
 
   /** Nachrichtentext in der Sprache der Seite. */

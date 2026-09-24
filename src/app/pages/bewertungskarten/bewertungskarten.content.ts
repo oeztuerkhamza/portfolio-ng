@@ -89,4 +89,5 @@ export const REVIEW_CARDS_CONTENT: Record<string, Entry> = {
     tr: 'Örneklerdeki isimler temsilidir.',
     ku: 'Navên li ser mînakan tenê nimûne ne.',
   },
+  'rc.shop.cta': { de: 'Online bestellen', fr: 'Commander en ligne', en: 'Order online', tr: 'Online sipariş ver', ku: 'Serhêl siparîş bike' },
 };

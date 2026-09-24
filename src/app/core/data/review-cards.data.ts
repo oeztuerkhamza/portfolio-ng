@@ -1,8 +1,10 @@
+import { price } from './catalog';
+
 /**
  * Google-Bewertungskarten — Produktdaten.
  *
- * Preise stehen bewusst nur hier, nicht in den Übersetzungen: eine
- * Preisänderung ist damit eine Zeile und kein Suchlauf durch fünf Sprachen.
+ * Preise kommen aus catalog.json (im Admin-Portal unter „Fiyatlar" pflegbar),
+ * nie aus den Übersetzungen.
  *
  * Preislogik: gleicher Chip → gleiche Größenordnung. Karte 39 €, Anhänger
  * 29 €, Aufkleber im Zweierpack 39 €, Aufsteller 69 €. Pakete sind günstiger
@@ -28,9 +30,9 @@ export interface ReviewCardPackage {
 }
 
 export const REVIEW_CARD_PACKAGES: ReviewCardPackage[] = [
-  { id: 'einzel', price: 39, cards: 1, points: 4 },
-  { id: 'team', price: 99, cards: 3, featured: true, points: 4 },
-  { id: 'tresen', price: 149, cards: 3, stand: true, points: 4 },
+  { id: 'einzel', price: price('pkg.einzel'), cards: 1, points: 4 },
+  { id: 'team', price: price('pkg.team'), cards: 3, featured: true, points: 4 },
+  { id: 'tresen', price: price('pkg.tresen'), cards: 3, stand: true, points: 4 },
 ];
 
 /** Schritte des Ablaufs — Texte kommen aus `rc.step<N>.t` / `.d`. */
@@ -55,10 +57,10 @@ export interface ReviewCardForm {
 }
 
 export const REVIEW_CARD_FORMS: ReviewCardForm[] = [
-  { id: 'karte', price: 39, image: '/assets/images/products/review-card.webp', imageSmall: '/assets/images/products/review-card-800.webp' },
-  { id: 'aufsteller', price: 69, image: '/assets/images/products/stand.webp', imageSmall: '/assets/images/products/stand-800.webp' },
-  { id: 'aufkleber', price: 39, image: '/assets/images/products/sticker.webp', imageSmall: '/assets/images/products/sticker-800.webp' },
-  { id: 'anhaenger', price: 29, image: '/assets/images/products/keychain.webp', imageSmall: '/assets/images/products/keychain-800.webp' },
+  { id: 'karte', price: price('form.karte'), image: '/assets/images/products/review-card.webp', imageSmall: '/assets/images/products/review-card-800.webp' },
+  { id: 'aufsteller', price: price('form.aufsteller'), image: '/assets/images/products/stand.webp', imageSmall: '/assets/images/products/stand-800.webp' },
+  { id: 'aufkleber', price: price('form.aufkleber'), image: '/assets/images/products/sticker.webp', imageSmall: '/assets/images/products/sticker-800.webp' },
+  { id: 'anhaenger', price: price('form.anhaenger'), image: '/assets/images/products/keychain.webp', imageSmall: '/assets/images/products/keychain-800.webp' },
 ];
 
 /**

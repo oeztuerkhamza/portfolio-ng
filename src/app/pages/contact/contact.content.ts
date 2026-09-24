@@ -65,11 +65,11 @@ export const CONTACT_CONTENT: Record<string, Entry> = {
   'contact.f.send.mail': { de: 'Per E-Mail senden', fr: 'Envoyer par e-mail', en: 'Send by email', tr: 'E-posta ile gönder', ku: 'Bi e-name bişîne' },
   'contact.f.send.wa': { de: 'Per WhatsApp senden', fr: 'Envoyer par WhatsApp', en: 'Send via WhatsApp', tr: 'WhatsApp ile gönder', ku: 'Bi WhatsAppê bişîne' },
   'contact.f.privacy': {
-    de: 'Diese Website speichert Ihre Angaben nicht. Die Nachricht öffnet sich fertig ausgefüllt in Ihrem E-Mail-Programm oder in WhatsApp — abgeschickt wird sie erst von Ihnen.',
-    fr: 'Ce site n’enregistre pas vos données. Le message s’ouvre déjà rempli dans votre messagerie ou dans WhatsApp — c’est vous qui l’envoyez.',
-    en: 'This website doesn’t store your details. The message opens pre-filled in your email app or WhatsApp — you are the one who sends it.',
-    tr: 'Bu site bilgilerinizi kaydetmez. Mesaj, e-posta uygulamanızda veya WhatsApp’ta hazır doldurulmuş olarak açılır — gönderen sizsiniz.',
-    ku: 'Ev malper agahiyên we tomar nake. Peyam di sepana we ya e-nameyê an di WhatsAppê de amade vedibe — hûn bi xwe dişînin.',
+    de: 'Wir speichern Ihre Angaben, um Ihre Anfrage zu bearbeiten, und löschen sie, wenn sie nicht mehr gebraucht werden. Zusätzlich öffnet sich die Nachricht fertig ausgefüllt in Ihrem E-Mail-Programm oder in WhatsApp. Mehr in der Datenschutzerklärung.',
+    fr: 'Nous enregistrons vos données pour traiter votre demande et les supprimons lorsqu’elles ne sont plus nécessaires. Le message s’ouvre aussi déjà rempli dans votre messagerie ou dans WhatsApp. Plus de détails dans la politique de confidentialité.',
+    en: 'We store your details to handle your enquiry and delete them once they are no longer needed. The message also opens pre-filled in your email app or WhatsApp. More in the privacy policy.',
+    tr: 'Bilgilerinizi talebinizi işlemek için kaydeder, artık gerekmediğinde sileriz. Mesaj ayrıca e-posta uygulamanızda veya WhatsApp’ta hazır doldurulmuş olarak açılır. Ayrıntılar gizlilik politikasında.',
+    ku: 'Em agahiyên we ji bo pêvajoya daxwaza we tomar dikin û dema ku êdî ne hewce bin jê dibin. Peyam her wiha di sepana we ya e-nameyê an di WhatsAppê de amade vedibe. Zêdetir di siyaseta nepeniyê de.',
   },
   'contact.f.sent': {
     de: 'Hat sich nichts geöffnet? Schreiben Sie uns direkt:', fr: 'Rien ne s’est ouvert ? Écrivez-nous directement :', en: 'Nothing opened? Write to us directly:', tr: 'Hiçbir şey açılmadı mı? Doğrudan yazın:', ku: 'Tiştek venebû? Rasterast ji me re binivîsin:',
