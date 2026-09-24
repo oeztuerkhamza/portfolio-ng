@@ -5,11 +5,12 @@ import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
+import { IconComponent } from '../../shared/icon/icon.component';
 
 @Component({
   selector: 'app-projects',
   standalone: true,
-  imports: [RouterLink, LocalizePipe],
+  imports: [RouterLink, LocalizePipe, IconComponent],
   templateUrl: './projects.component.html',
   styleUrl: './projects.component.scss',
 })
@@ -24,17 +25,17 @@ export class ProjectsComponent implements OnInit {
       description: this.i18n.t('seo.projects.desc'),
       path: '/projects',
       keywords: [
-        'Webentwicklung Projekte Freiburg',
-        'Referenzen Webentwickler',
-        'Portfolio Webentwicklung',
-        'Angular .NET Projekte',
+        'Referenzen Digitalagentur Freiburg',
+        'Website Referenzen Freiburg',
+        'Webdesign Beispiele Südbaden',
+        'Kundenprojekte Breisgau Digital',
       ],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
-        { name: 'Projekte', path: '/projects' },
+        { name: 'Referenzen', path: '/projects' },
       ]),
     );
   }

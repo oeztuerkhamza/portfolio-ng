@@ -1,299 +1,213 @@
 @import "../../../styles/variables";
 
-:host { display: block; }
+// Kontaktseite. Seitenkopf, Karten, Chips und Formularfelder kommen aus dem
+// UI-Kit (src/styles/_ui.scss).
 
-.contact-page {
-  padding-top: 140px;
-  padding-bottom: clamp(80px, 14vh, 160px);
+:host {
+  display: block;
 }
 
-// --- Header ---
-.page-header { margin-bottom: 60px; }
+.container {
+  @include container;
+}
 
-.folio-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  font-family: $font-mono;
-  font-size: 0.7rem;
-  letter-spacing: 0.06em;
+.contact-hero {
+  align-items: start;
+}
+
+.contact-facts {
+  margin-top: 1.5rem;
+
+  .chip {
+    gap: 0.45rem;
+  }
+
+  app-icon {
+    color: $brand;
+  }
+}
+
+// ── Drei direkte Wege ───────────────────────────
+.channels {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.channel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+
+  &:hover .ch-arrow {
+    color: $brand;
+    transform: translateX(3px);
+  }
+}
+
+.ch-body {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.ch-type {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   color: $text-mute;
-  padding-bottom: 12px;
-
-  .folio-num { color: $brand; }
-  .folio-sep { opacity: 0.5; }
 }
 
-.rule {
-  height: 1px;
-  background: $rule;
-  border: 0;
-  margin: 0;
+.ch-value {
+  font-size: clamp(0.98rem, 3.8vw, 1.08rem);
+  font-weight: 650;
+  color: $text;
 }
 
-.header-grid {
+.ch-hint {
+  font-size: 0.86rem;
+  color: $text-dim;
+}
+
+.ch-arrow {
+  color: $text-faint;
+  transition:
+    color $transition-fast,
+    transform $transition-fast;
+
+  // Auf sehr schmalen Handys braucht die E-Mail-Adresse den Platz.
+  @media (max-width: 400px) {
+    display: none;
+  }
+}
+
+// ── Formular + Seitenspalte ─────────────────────
+.form-grid {
   display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: clamp(2rem, 6vw, 6rem);
-  padding: 60px 0;
-  align-items: end;
-
-  .section-label {
-    @include small-caps;
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    margin-bottom: 1.5rem;
-    .num { font-family: $font-mono; color: $brand; }
-    &::before { content: ""; width: 32px; height: 1px; background: $brand; }
-  }
-
-  .section-title {
-    font-family: $font-display;
-    font-size: clamp(3rem, 8vw, 6.5rem);
-    font-weight: 300;
-    line-height: 0.92;
-    letter-spacing: -0.04em;
-    color: $text;
-
-    em { font-style: italic; color: $brand; font-weight: 300; }
-  }
-
-  .section-subtitle {
-    font-family: $font-body;
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: $text-dim;
-    max-width: 50ch;
-    margin: 0;
-  }
-
-  @media (max-width: $bp-desktop) {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
-    padding: 40px 0;
-  }
-}
-
-// --- Contact grid ---
-.contact-grid {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr;
-  gap: clamp(2rem, 6vw, 6rem);
-  margin-top: 2rem;
-
-  @media (max-width: $bp-desktop) {
-    grid-template-columns: 1fr;
-  }
-}
-
-// --- Channels ---
-.channels-label {
-  @include mono-label;
-  text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-
-  .num { color: $brand; }
-}
-
-.channel-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  border-top: 1px solid $rule-strong;
-}
-
-.channel-row {
-  border-bottom: 1px solid $rule;
-
-  .channel-link {
-    display: grid;
-    grid-template-columns: 56px 1fr 32px;
-    align-items: center;
-    gap: 1.5rem;
-    padding: 22px 0;
-    color: $text;
-
-    &:hover {
-      .ch-meta .ch-value { color: $brand; }
-      .ch-num { color: $brand; }
-      .ch-arrow { transform: translate(4px, -4px); color: $brand; }
-    }
-  }
-
-  .ch-num {
-    font-family: $font-mono;
-    font-size: 0.78rem;
-    color: $text-mute;
-    letter-spacing: 0.05em;
-    transition: color $transition-fast;
-  }
-
-  .ch-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    .ch-type {
-      @include mono-label;
-      text-transform: uppercase;
-      color: $text-mute;
-    }
-
-    .ch-value {
-      font-family: $font-display;
-      font-style: italic;
-      font-weight: 300;
-      font-size: clamp(1.2rem, 2vw, 1.6rem);
-      color: $text;
-      letter-spacing: -0.01em;
-      transition: color $transition-fast;
-    }
-  }
-
-  .ch-arrow {
-    width: 18px;
-    height: 18px;
-    color: $text-dim;
-    transition: $transition-normal;
-  }
-}
-
-// --- Address card ---
-.contact-aside {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
 
   @media (min-width: $bp-desktop) {
-    position: sticky;
-    top: 120px;
-    align-self: start;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 2rem;
+    align-items: start;
   }
 }
 
-.address-card {
-  border: 1px solid $rule-strong;
-  padding: clamp(1.5rem, 3vw, 2.5rem);
-  background: $surface-2;
-  position: relative;
+.enquiry {
+  display: grid;
+  gap: 1.25rem;
 
-  // Editorial corner ornaments
-  &::before, &::after {
-    content: "";
-    position: absolute;
-    width: 12px;
-    height: 12px;
-    border: 1px solid $brand;
-  }
-  &::before { top: -1px; left: -1px; border-right: 0; border-bottom: 0; }
-  &::after { bottom: -1px; right: -1px; border-left: 0; border-top: 0; }
-
-  .card-label {
-    @include mono-label;
-    text-transform: uppercase;
-    margin-bottom: 1.25rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    .num { color: $brand; }
+  @media (min-width: $bp-desktop) {
+    padding: 2.25rem;
   }
 
-  .address-name {
-    font-family: $font-display;
-    font-weight: 400;
-    font-size: 1.6rem;
-    color: $text;
-    margin-bottom: 1rem;
-    letter-spacing: -0.015em;
+  fieldset {
+    border: 0;
+    padding: 0;
+    margin: 0;
+    min-width: 0;
   }
 
-  .address-lines {
-    font-family: $font-body;
-    font-style: normal;
-    font-size: 0.98rem;
-    line-height: 1.7;
-    color: $text-soft;
-    margin-bottom: 1.5rem;
+  legend {
+    padding: 0;
+    margin-bottom: 0.4rem;
   }
+}
 
-  .rule { margin: 1rem 0; }
+.enquiry-head {
+  .section-title {
+    font-size: clamp(1.8rem, 4.6vw, 2.5rem);
+    margin-bottom: 0.6rem;
+  }
+}
 
-  .address-meta {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 1rem;
+.field-row {
+  display: grid;
+  gap: 1.25rem;
 
-    > div {
-      display: grid;
-      grid-template-columns: 100px 1fr;
-      gap: 1rem;
-    }
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
 
-    dt {
-      @include mono-label;
-      text-transform: uppercase;
-      color: $text-mute;
-      padding-top: 2px;
-    }
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 
-    dd {
-      font-family: $font-body;
-      font-size: 0.92rem;
-      color: $text-soft;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      .status-dot {
-        width: 6px;
-        height: 6px;
-        border-radius: 50%;
-        background: $brand;
-        box-shadow: 0 0 8px $brand-glow;
-        animation: pulse 2s ease-in-out infinite;
-        display: inline-block;
-      }
+  .btn {
+    @media (max-width: 640px) {
+      flex: 1 1 100%;
     }
   }
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
-}
+.form-sent {
+  padding: 0.85rem 1rem;
+  border-radius: $radius-sm;
+  background: $brand-tint;
+  color: $text-soft;
+  font-size: 0.92rem;
 
-// --- Closing card ---
-.closing-card {
-  padding: 1.5rem 0;
-
-  .closing-label {
-    font-family: $font-display;
-    font-style: italic;
-    font-weight: 300;
-    font-size: 1.2rem;
-    color: $text-soft;
-    margin-bottom: 0.5rem;
-  }
-
-  .signature {
-    font-family: $font-display;
-    font-weight: 400;
-    font-size: 1.5rem;
+  a {
     color: $brand;
-    margin-bottom: 1.5rem;
-    letter-spacing: -0.01em;
+    font-weight: 600;
   }
+}
 
-  .closing-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+.form-note {
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: $text-mute;
+}
+
+.contact-aside {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.aside-label {
+  @include small-caps;
+  color: $brand;
+  margin-bottom: 1rem;
+}
+
+.next-steps {
+  display: grid;
+  gap: 0.9rem;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+    align-items: start;
+    color: $text-soft;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+}
+
+.step-dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: $brand;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.address {
+  font-style: normal;
+  color: $text-soft;
+  line-height: 1.7;
+  margin-bottom: 0.9rem;
+
+  strong {
+    color: $text;
   }
 }

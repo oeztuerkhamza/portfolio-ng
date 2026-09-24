@@ -1,175 +1,140 @@
-<section class="contact-page">
+<!-- Kopf mit den drei direkten Wegen -->
+<header class="page-hero">
   <div class="container">
-
-    <!-- Page header -->
-    <header class="page-header">
-      <div class="folio-line">
-        <span class="folio-num">Breisgau Digital</span>
-        <span class="folio-sep">—</span>
-        <span class="folio-place">{{ i18n.t('contact.folio') }}</span>
-      </div>
-      <hr class="rule" />
-
-      <div class="header-grid">
-        <div>
-          <p class="section-label">
-            <span class="num">05</span> {{ i18n.t('contact.label') }}
-          </p>
-          <h1 class="section-title" [innerHTML]="i18n.t('contact.title')"></h1>
-        </div>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('contact.label') }}</span>
+    </nav>
+    <div class="page-hero-grid contact-hero">
+      <div>
+        <p class="section-label">{{ i18n.t('contact.label') }}</p>
+        <h1 class="section-title" [innerHTML]="i18n.t('contact.title')"></h1>
         <p class="section-subtitle">{{ i18n.t('contact.subtitle') }}</p>
-      </div>
-      <hr class="rule" />
-    </header>
-
-    <!-- Two-column layout -->
-    <div class="contact-grid">
-
-      <!-- Left: Contact channels -->
-      <div class="contact-channels">
-        <p class="channels-label">
-          <span class="num">01</span> {{ i18n.t('contact.channels') }}
-        </p>
-
-        <ul class="channel-list">
-          <li class="channel-row">
-            <a href="mailto:hamza.oeztuerk@web.de" class="channel-link">
-              <span class="ch-num">01</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.email') }}</span>
-                <span class="ch-value">hamza.oeztuerk&#64;web.de</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="tel:+4915566859378" class="channel-link">
-              <span class="ch-num">02</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.phone') }}</span>
-                <span class="ch-value">+49 155 66859378</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="https://www.linkedin.com/in/hamzaoeztuerk/" target="_blank" rel="noopener" class="channel-link">
-              <span class="ch-num">03</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.linkedin') }}</span>
-                <span class="ch-value">in/hamzaoeztuerk</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="https://github.com/oeztuerkhamza" target="_blank" rel="noopener" class="channel-link">
-              <span class="ch-num">04</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.github') }}</span>
-                <span class="ch-value">&#64;oeztuerkhamza</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="https://wa.me/4915566859378" target="_blank" rel="noopener" class="channel-link">
-              <span class="ch-num">05</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.whatsapp') }}</span>
-                <span class="ch-value">+49 155 66859378</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="https://www.instagram.com/hamza_oeztuerk" target="_blank" rel="noopener" class="channel-link">
-              <span class="ch-num">06</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.instagram') }}</span>
-                <span class="ch-value">&#64;hamza_oeztuerk</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
-
-          <li class="channel-row">
-            <a href="https://www.hamzaoeztuerk.de" target="_blank" rel="noopener" class="channel-link">
-              <span class="ch-num">07</span>
-              <div class="ch-meta">
-                <span class="ch-type">{{ i18n.t('contact.ch.website') }}</span>
-                <span class="ch-value">www.hamzaoeztuerk.de</span>
-              </div>
-              <svg class="ch-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </a>
-          </li>
+        <ul class="chips contact-facts">
+          <li class="chip chip-outline"><app-icon name="clock" /> {{ i18n.t('contact.response') }}: {{ i18n.t('contact.responseval') }}</li>
+          <li class="chip chip-outline"><app-icon name="globe" /> {{ i18n.t('contact.langsval') }}</li>
+          <li class="chip chip-outline"><app-icon name="pin" /> Freiburg im Breisgau</li>
         </ul>
       </div>
 
-      <!-- Right: Address card + CTA -->
-      <aside class="contact-aside">
-        <div class="address-card">
-          <p class="card-label"><span class="num">02</span> {{ i18n.t('contact.post') }}</p>
-          <h3 class="address-name">Breisgau Digital</h3>
-          <address class="address-lines">
-            Hamza Öztürk<br />
-            Bissierstr. 16<br />
-            79114 Freiburg im Breisgau<br />
-            Deutschland
-          </address>
-          <hr class="rule" />
-          <dl class="address-meta">
-            <div>
-              <dt>{{ i18n.t('contact.langs') }}</dt>
-              <dd>{{ i18n.t('contact.langsval') }}</dd>
-            </div>
-            <div>
-              <dt>{{ i18n.t('contact.status') }}</dt>
-              <dd>
-                <span class="status-dot"></span>
-                {{ i18n.t('contact.statusval') }}
-              </dd>
-            </div>
-            <div>
-              <dt>{{ i18n.t('contact.response') }}</dt>
-              <dd>{{ i18n.t('contact.responseval') }}</dd>
-            </div>
-          </dl>
-        </div>
-
-        <div class="closing-card">
-          <p class="closing-label">{{ i18n.t('contact.closing') }}</p>
-          <p class="signature">— Hamza Öztürk</p>
-          <div class="closing-actions">
-            <a [routerLink]="'/projects' | localize" class="btn btn-secondary">
-              {{ i18n.t('contact.portfolio') }}
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </a>
-            <a [routerLink]="'/lebenslauf' | localize" class="btn btn-ghost">{{ i18n.t('common.resume_arrow') }}</a>
-          </div>
-        </div>
-      </aside>
+      <div class="channels">
+        <a [href]="company.phoneHref" class="card channel">
+          <span class="icon-badge"><app-icon name="phone" /></span>
+          <span class="ch-body">
+            <span class="ch-type">{{ i18n.t('contact.c.phone') }}</span>
+            <span class="ch-value">{{ company.phoneDisplay }}</span>
+            <span class="ch-hint">{{ i18n.t('contact.c.phone.hint') }}</span>
+          </span>
+          <app-icon class="ch-arrow" name="arrow" />
+        </a>
+        <a [href]="whatsapp" target="_blank" rel="noopener" class="card channel">
+          <span class="icon-badge"><app-icon name="chat" /></span>
+          <span class="ch-body">
+            <span class="ch-type">WhatsApp</span>
+            <span class="ch-value">{{ company.phoneDisplay }}</span>
+            <span class="ch-hint">{{ i18n.t('contact.c.wa.hint') }}</span>
+          </span>
+          <app-icon class="ch-arrow" name="arrow" />
+        </a>
+        <a [href]="'mailto:' + company.email" class="card channel">
+          <span class="icon-badge"><app-icon name="mail" /></span>
+          <span class="ch-body">
+            <span class="ch-type">{{ i18n.t('contact.c.mail') }}</span>
+            <span class="ch-value">{{ company.email }}</span>
+            <span class="ch-hint">{{ i18n.t('contact.c.mail.hint') }}</span>
+          </span>
+          <app-icon class="ch-arrow" name="arrow" />
+        </a>
+      </div>
     </div>
+  </div>
+</header>
+
+<!-- Anfrageformular -->
+<section class="section section-white" id="anfrage">
+  <div class="container form-grid">
+    <form class="card enquiry" #form (submit)="sendMail($event)">
+      <header class="enquiry-head">
+        <p class="section-label">{{ i18n.t('contact.form.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('contact.form.title')"></h2>
+        <p class="card-text">{{ i18n.t('contact.form.intro') }}</p>
+      </header>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="cf-name">{{ i18n.t('contact.f.name') }}</label>
+          <input id="cf-name" name="name" autocomplete="name" required (input)="name.set(value($event))" />
+        </div>
+        <div class="field">
+          <label for="cf-business">{{ i18n.t('contact.f.business') }}</label>
+          <input id="cf-business" name="business" autocomplete="organization" (input)="business.set(value($event))" />
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="cf-reach">{{ i18n.t('contact.f.reach') }}</label>
+        <input id="cf-reach" name="reach" autocomplete="tel" required (input)="reach.set(value($event))" />
+      </div>
+
+      <fieldset class="field">
+        <legend class="field-label">{{ i18n.t('contact.f.interest') }}</legend>
+        <div class="choice-group">
+          @for (o of interests; track o) {
+            <label [class.on]="chosen().includes(o)">
+              <input type="checkbox" [checked]="chosen().includes(o)" (change)="toggle(o)" />
+              {{ i18n.t('contact.f.opt.' + o) }}
+            </label>
+          }
+        </div>
+      </fieldset>
+
+      <div class="field">
+        <label for="cf-message">{{ i18n.t('contact.f.message') }}</label>
+        <textarea id="cf-message" name="message" rows="5" [placeholder]="i18n.t('contact.f.message.ph')" (input)="message.set(value($event))"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary btn-large">
+          <app-icon name="mail" /> {{ i18n.t('contact.f.send.mail') }}
+        </button>
+        <button type="button" class="btn btn-secondary btn-large" (click)="sendWhatsApp(form)">
+          <app-icon name="chat" /> {{ i18n.t('contact.f.send.wa') }}
+        </button>
+      </div>
+
+      @if (sent()) {
+        <p class="form-sent" role="status">
+          {{ i18n.t('contact.f.sent') }}
+          <a [href]="'mailto:' + company.email">{{ company.email }}</a>
+        </p>
+      }
+      <p class="form-note">{{ i18n.t('contact.f.privacy') }}</p>
+    </form>
+
+    <aside class="contact-aside">
+      <div class="card">
+        <p class="aside-label">{{ i18n.t('contact.next.label') }}</p>
+        <ol class="next-steps">
+          @for (n of [1, 2, 3]; track n) {
+            <li>
+              <span class="step-dot">{{ n }}</span>
+              <span>{{ i18n.t('contact.next' + n) }}</span>
+            </li>
+          }
+        </ol>
+      </div>
+
+      <div class="card">
+        <p class="aside-label">{{ i18n.t('contact.post') }}</p>
+        <address class="address">
+          <strong>Breisgau Digital</strong><br />
+          Inh. Hamza Öztürk<br />
+          {{ company.street }}<br />
+          {{ company.city }}
+        </address>
+        <p class="card-text">{{ i18n.t('contact.visit.text') }}</p>
+      </div>
+    </aside>
   </div>
 </section>

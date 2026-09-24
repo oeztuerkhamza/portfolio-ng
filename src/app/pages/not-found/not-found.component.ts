@@ -8,47 +8,26 @@ import { LocalizePipe } from '../../core/i18n/localize.pipe';
   standalone: true,
   imports: [RouterLink, LocalizePipe],
   template: `
-    <section class="not-found">
+    <header class="page-hero nf">
       <div class="container">
-        <p class="folio-line"><span>404</span></p>
-        <h1 class="nf-title">Seite nicht<br /><em>gefunden</em>.</h1>
-        <p class="nf-text">
-          Diese Seite existiert nicht (mehr). Vielleicht hilft einer dieser Wege
-          weiter:
+        <p class="section-label">404</p>
+        <h1 class="section-title">Seite nicht<br /><em>gefunden</em>.</h1>
+        <p class="section-subtitle">
+          Diese Seite gibt es nicht (mehr). Vielleicht hilft einer dieser Wege weiter:
         </p>
-        <div class="nf-actions">
-          <a [routerLink]="'/' | localize" class="btn btn-primary">Zur Startseite</a>
-          <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary">Leistungen</a>
-          <a [routerLink]="'/projects' | localize" class="btn btn-secondary">Projekte</a>
+        <div class="page-hero-actions">
+          <a [routerLink]="'/' | localize" class="btn btn-primary btn-large">Zur Startseite</a>
+          <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary btn-large">Leistungen</a>
+          <a [routerLink]="'/contact' | localize" class="btn btn-secondary btn-large">Kontakt</a>
         </div>
       </div>
-    </section>
+    </header>
   `,
   styles: [
     `
       @import '../../../styles/variables';
-      .not-found {
-        min-height: 70vh;
-        display: flex;
-        align-items: center;
-        padding: clamp(120px, 20vh, 220px) 0;
-      }
-      .folio-line {
-        @include mono-label;
-        color: $brand;
-        margin-bottom: 1.5rem;
-      }
-      .nf-title {
-        font-family: $font-display;
-        font-weight: 300;
-        font-size: clamp(2.8rem, 9vw, 6rem);
-        line-height: 1;
-        color: $text;
-        margin-bottom: 1.5rem;
-        em { font-style: italic; color: $brand; }
-      }
-      .nf-text { color: $text-dim; font-size: 1.1rem; max-width: 48ch; margin-bottom: 2rem; }
-      .nf-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+      .container { @include container; }
+      .nf { min-height: 70vh; display: flex; align-items: center; }
     `,
   ],
 })
@@ -57,7 +36,7 @@ export class NotFoundComponent implements OnInit {
 
   ngOnInit(): void {
     this.seo.update({
-      title: 'Seite nicht gefunden (404) — Hamza Öztürk',
+      title: 'Seite nicht gefunden (404) — Breisgau Digital',
       description: 'Die angeforderte Seite existiert nicht.',
       path: '/404',
       noIndex: true,

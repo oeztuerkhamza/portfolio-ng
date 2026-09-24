@@ -1,132 +1,168 @@
-<section class="leistungen">
+<!-- Kopf -->
+<header class="page-hero">
   <div class="container">
-
-    <!-- Header -->
-    <header class="page-header">
-      <div class="folio-line">
-        <span class="folio-num">Breisgau Digital</span>
-        <span class="folio-sep">—</span>
-        <span class="folio-place">{{ i18n.t('leist.folio') }}</span>
-      </div>
-      <hr class="rule" />
-      <div class="header-grid">
-        <div>
-          <p class="section-label"><span class="num">01</span> {{ i18n.t('leist.label') }}</p>
-          <h1 class="section-title" [innerHTML]="i18n.t('leist.title')"></h1>
-        </div>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('leist.label') }}</span>
+    </nav>
+    <div class="page-hero-grid">
+      <div>
+        <p class="section-label">{{ i18n.t('leist.label') }}</p>
+        <h1 class="section-title" [innerHTML]="i18n.t('leist.title')"></h1>
         <p class="section-subtitle" [innerHTML]="i18n.t('leist.intro')"></p>
+        <div class="page-hero-actions">
+          <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+            {{ i18n.t('cta.consult') }}
+            <app-icon name="arrow" />
+          </a>
+          <a [href]="company.phoneHref" class="btn btn-secondary btn-large">
+            <app-icon name="phone" /> {{ i18n.t('cta.call') }}
+          </a>
+        </div>
       </div>
-      <hr class="rule" />
-    </header>
+      <figure class="media-frame">
+        <img
+          src="/assets/images/products/website.webp"
+          srcset="/assets/images/products/website-800.webp 800w, /assets/images/products/website.webp 1600w"
+          sizes="(max-width: 1024px) 100vw, 55vw"
+          width="1600"
+          height="1200"
+          fetchpriority="high"
+          [alt]="i18n.t('home.prod.web.alt')"
+        />
+      </figure>
+    </div>
+  </div>
+</header>
 
-    <!-- Services -->
+<!-- Leistungen -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('leist.services.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('leist.services.title')"></h2>
+    </header>
     <div class="svc-list">
       @for (s of services; track s.titleKey) {
-        <article class="svc-item">
-          <span class="svc-num">{{ s.num }}</span>
-          <div class="svc-body">
-            <h2>{{ i18n.t(s.titleKey) }}</h2>
-            <p class="svc-text">{{ i18n.t(s.textKey) }}</p>
-            <ul class="svc-points">
-              @for (p of s.pointKeys; track p) {
-                <li>{{ i18n.t(p) }}</li>
-              }
-            </ul>
+        <article class="card svc-card">
+          <div class="svc-main">
+            <span class="icon-badge"><app-icon [name]="s.icon" /></span>
+            <div>
+              <h3 class="svc-title">{{ i18n.t(s.titleKey) }}</h3>
+              <p class="card-text">{{ i18n.t(s.textKey) }}</p>
+            </div>
           </div>
+          <ul class="check-list svc-points">
+            @for (p of s.pointKeys; track p) {
+              <li>{{ i18n.t(p) }}</li>
+            }
+          </ul>
         </article>
       }
     </div>
+  </div>
+</section>
 
-    <!-- Produkte zum Festpreis -->
-    <section class="svc-products">
+<!-- Produkte zum Festpreis -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
-      <div class="svc-prod-grid">
-        @for (p of products; track p.id) {
-          <a [routerLink]="p.path | localize" class="svc-prod">
-            <img [src]="p.imageSmall" width="800" height="600" loading="lazy" [alt]="i18n.t('home.prod.' + p.id + '.alt')" />
-            <div class="svc-prod-body">
-              <h3>{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
-              <p>{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
-              <span class="svc-prod-price">{{ i18n.tp('price.from', p.priceFrom) }} →</span>
-            </div>
-          </a>
-        }
-      </div>
-    </section>
+      <h2 class="section-title" [innerHTML]="i18n.t('leist.products.title')"></h2>
+    </header>
+    <div class="grid grid-2">
+      @for (p of products; track p.id) {
+        <a [routerLink]="p.path | localize" class="card prod-link">
+          <img [src]="p.imageSmall" width="800" height="600" loading="lazy" [alt]="i18n.t('home.prod.' + p.id + '.alt')" />
+          <div class="prod-link-body">
+            <h3 class="prod-link-title">{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
+            <p class="card-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
+            <p class="prod-link-foot">
+              <span class="prod-link-price">{{ i18n.tp('price.from', p.priceFrom) }}</span>
+              <span class="prod-link-more">{{ i18n.t('home.prod.' + p.id + '.cta') }} <app-icon name="arrow" /></span>
+            </p>
+          </div>
+        </a>
+      }
+    </div>
+  </div>
+</section>
 
-    <!-- Why me -->
-    <section class="why">
-      <p class="section-label"><span class="num">02</span> {{ i18n.t('leist.why.label') }}</p>
+<!-- Warum wir -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('leist.why.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('leist.why.title')"></h2>
-      <div class="why-grid">
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why1.t') }}</h3>
-          <p>{{ i18n.t('leist.why1.d') }}</p>
+    </header>
+    <div class="grid grid-3">
+      @for (w of reasons; track w.n) {
+        <div class="card feature">
+          <span class="icon-badge"><app-icon [name]="w.icon" /></span>
+          <h3 class="card-title">{{ i18n.t('leist.why' + w.n + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('leist.why' + w.n + '.d') }}</p>
         </div>
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why2.t') }}</h3>
-          <p>{{ i18n.t('leist.why2.d') }}</p>
-        </div>
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why3.t') }}</h3>
-          <p>{{ i18n.t('leist.why3.d') }}</p>
-        </div>
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why4.t') }}</h3>
-          <p>{{ i18n.t('leist.why4.d') }}</p>
-        </div>
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why5.t') }}</h3>
-          <p>{{ i18n.t('leist.why5.d') }}</p>
-        </div>
-        <div class="why-card">
-          <h3>{{ i18n.t('leist.why6.t') }}</h3>
-          <p>{{ i18n.t('leist.why6.d') }}</p>
-        </div>
-      </div>
-    </section>
+      }
+    </div>
+  </div>
+</section>
 
-    <!-- Process -->
-    <section class="process">
-      <p class="section-label"><span class="num">03</span> {{ i18n.t('leist.proc.label') }}</p>
+<!-- Ablauf -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('leist.proc.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('leist.proc.title')"></h2>
-      <ol class="process-list">
-        @for (step of process; track step.titleKey) {
-          <li class="process-step">
-            <span class="step-num">{{ step.num }}</span>
-            <h3>{{ i18n.t(step.titleKey) }}</h3>
-            <p>{{ i18n.t(step.textKey) }}</p>
-          </li>
-        }
-      </ol>
-    </section>
+    </header>
+    <ol class="steps">
+      @for (step of process; track step.titleKey; let i = $index) {
+        <li class="step">
+          <span class="step-num">{{ i + 1 }}</span>
+          <h3>{{ i18n.t(step.titleKey) }}</h3>
+          <p>{{ i18n.t(step.textKey) }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
 
-    <!-- FAQ -->
-    <section class="faq">
-      <p class="section-label"><span class="num">04</span> {{ i18n.t('leist.faq.label') }}</p>
+<!-- FAQ -->
+<section class="section section-white">
+  <div class="container faq-layout">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('leist.faq.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('leist.faq.title')"></h2>
-      <div class="faq-list">
-        @for (f of faqs; track f.qKey) {
-          <details class="faq-item">
-            <summary>{{ i18n.t(f.qKey) }}</summary>
-            <p>{{ i18n.t(f.aKey) }}</p>
-          </details>
-        }
+    </header>
+    <div class="faq-list">
+      @for (f of faqs; track f.qKey) {
+        <details class="faq-item">
+          <summary>{{ i18n.t(f.qKey) }}</summary>
+          <p>{{ i18n.t(f.aKey) }}</p>
+        </details>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('leist.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('leist.cta.text') }}</p>
       </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="svc-cta">
-      <hr class="rule" />
-      <h2 [innerHTML]="i18n.t('leist.cta.title')"></h2>
-      <p>{{ i18n.t('leist.cta.text') }}</p>
-      <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
-        {{ i18n.t('leist.cta.btn') }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </a>
-    </section>
-
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
+        </a>
+        <div class="cta-direct">
+          <a [href]="company.phoneHref" class="btn btn-outline-light"><app-icon name="phone" /> {{ i18n.t('cta.call') }}</a>
+          <a [href]="whatsapp" target="_blank" rel="noopener" class="btn btn-outline-light"><app-icon name="chat" /> WhatsApp</a>
+        </div>
+      </div>
+    </div>
   </div>
 </section>

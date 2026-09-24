@@ -1,77 +1,64 @@
-<section class="projects-page">
+<!-- Kopf -->
+<header class="page-hero">
   <div class="container">
-    <!-- Page header -->
-    <header class="page-header">
-      <div class="folio-line">
-        <span class="folio-num">Breisgau Digital</span>
-        <span class="folio-sep">—</span>
-        <span class="folio-place">{{ i18n.t('projects.folio') }}</span>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('nav.references') }}</span>
+    </nav>
+    <div class="sec-head sec-head-row refs-head">
+      <div>
+        <p class="section-label">{{ i18n.t('projects.label') }}</p>
+        <h1 class="section-title" [innerHTML]="i18n.t('projects.title')"></h1>
+        <p class="section-subtitle">{{ i18n.t('projects.subtitle') }}</p>
       </div>
-      <hr class="rule" />
+      <p class="chip chip-outline refs-count">{{ projects.length }} {{ i18n.t('projects.entries') }}</p>
+    </div>
+  </div>
+</header>
 
-      <div class="header-grid">
-        <div class="header-title-area">
-          <p class="section-label">
-            <span class="num">02</span> {{ i18n.t('projects.label') }}
-          </p>
-          <h1 class="section-title" [innerHTML]="i18n.t('projects.title')"></h1>
-        </div>
-        <div class="header-meta">
-          <p class="section-subtitle">{{ i18n.t('projects.subtitle') }}</p>
-          <p class="meta-count">
-            <span class="numeral">{{ projects.length }}</span>
-            <span class="meta-label">{{ i18n.t('projects.entries') }}</span>
-          </p>
-        </div>
-      </div>
-      <hr class="rule" />
-    </header>
-
-    <!-- Project list -->
-    <ul class="project-list">
-      @for (project of projects; track project.slug; let i = $index) {
-        <li class="project-row">
-          <a [routerLink]="['/projects', project.slug] | localize" class="project-link">
-            <span class="project-num">{{ (i + 1).toString().padStart(2, '0') }}</span>
-
-            <div class="project-meta">
-              <h2 class="project-title">{{ project.title }}</h2>
-              <p class="project-subtitle">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
-
-              <div class="project-info">
-                <div class="info-block">
-                  <span class="info-label">{{ i18n.t('common.role') }}</span>
-                  <span class="info-value">{{ i18n.ptx(project.slug, 'role', project.role) }}</span>
-                </div>
-                <div class="info-block">
-                  <span class="info-label">{{ i18n.t('common.period') }}</span>
-                  <span class="info-value">{{ project.duration }}</span>
-                </div>
-              </div>
-
-              <ul class="project-tags">
-                @for (tag of project.tags; track tag) {
-                  <li>{{ tag }}</li>
-                }
-              </ul>
-            </div>
-
-            <div class="project-thumb">
+<!-- Referenzen -->
+<section class="section section-white">
+  <div class="container">
+    <ul class="ref-grid">
+      @for (project of projects; track project.slug) {
+        <li>
+          <a [routerLink]="['/projects', project.slug] | localize" class="ref-card">
+            <div class="ref-media">
               @if (project.image) {
-                <img [src]="project.image" [alt]="project.title" loading="lazy" />
-              } @else {
-                <div class="thumb-fallback">{{ project.title[0] }}</div>
+                <img [src]="project.image" [alt]="project.title" width="1440" height="900" loading="lazy" />
               }
-              <div class="thumb-overlay">
-                <span class="overlay-text">{{ i18n.t('projects.case') }}</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                  <path d="M7 17L17 7M9 7h8v8" />
-                </svg>
-              </div>
+            </div>
+            <div class="ref-body">
+              <p class="ref-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</p>
+              <h2>{{ project.title }}</h2>
+              <p class="ref-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
+              <span class="ref-more">{{ i18n.t('cta.read_case') }}</span>
             </div>
           </a>
         </li>
       }
     </ul>
+  </div>
+</section>
+
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('pd.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('pd.cta.text') }}</p>
+      </div>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
+        </a>
+        <a [routerLink]="'/leistungen' | localize" class="btn btn-outline-light btn-large">
+          {{ i18n.t('nav.leistungen') }}
+        </a>
+      </div>
+    </div>
   </div>
 </section>

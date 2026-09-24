@@ -16,7 +16,6 @@ import {
   standalone: true,
   imports: [RouterOutlet, NavbarComponent, FooterComponent, MobileBarComponent],
   template: `
-    <div class="noise-overlay"></div>
     <app-navbar />
     <main class="page-wrapper" [@routeAnimations]="getRouteAnimationData()">
       <router-outlet #outlet="outlet" />

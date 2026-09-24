@@ -1,0 +1,841 @@
+// ============================================
+// UI-KIT — gemeinsame Bausteine aller Seiten
+// ============================================
+// Jede Seite setzt sich aus denselben Teilen zusammen: Seitenkopf, Abschnitt
+// mit Kopf, Karten, Häkchenlisten, Ablauf, FAQ, Abschluss-Box. Stehen sie
+// nur hier, sehen alle Seiten gleich aus — und ruhig: wenige Linien, weiche
+// Schatten, viel Luft, Fließtext nie breiter als gut lesbar.
+//
+// Mobil zuerst; Media-Queries erweitern nach oben.
+
+// ── Abschnitte ──────────────────────────────────
+.section {
+  padding-block: $section-y;
+}
+
+.section-white {
+  background: $surface-2;
+}
+
+// ── Abschnittskopf ──────────────────────────────
+.sec-head {
+  max-width: 760px;
+  margin-bottom: clamp(2rem, 5vw, 3.25rem);
+}
+
+.sec-head-center {
+  text-align: center;
+  margin-inline: auto;
+
+  .section-subtitle {
+    margin-inline: auto;
+  }
+}
+
+.sec-head-row {
+  max-width: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+
+  .section-title {
+    margin-bottom: 0;
+  }
+}
+
+// ── Seitenkopf der Unterseiten ──────────────────
+.page-hero {
+  padding: calc(72px + clamp(1.25rem, 4vw, 3rem)) 0 clamp(2.5rem, 7vw, 4.5rem);
+  background:
+    radial-gradient(ellipse 80% 60% at 85% 0%, rgba(47, 111, 196, 0.08), transparent 70%),
+    $surface;
+
+  h1.section-title {
+    font-size: clamp(2.2rem, 6.4vw, 3.8rem);
+  }
+
+  .section-subtitle {
+    margin-top: 0.25rem;
+  }
+}
+
+.page-hero-grid {
+  display: grid;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  align-items: center;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 1fr 1.05fr;
+  }
+}
+
+.page-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+
+  .btn {
+    @media (max-width: $bp-mobile) {
+      flex: 1 1 100%;
+    }
+  }
+}
+
+.hero-price {
+  margin-top: 1.25rem;
+  font-family: $font-display;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: $brand;
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  color: $text-mute;
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+
+  a {
+    color: $text-dim;
+
+    &:hover {
+      color: $brand;
+    }
+  }
+
+  .sep {
+    color: $text-faint;
+  }
+
+  [aria-current] {
+    color: $text;
+    font-weight: 500;
+  }
+}
+
+// ── Raster ──────────────────────────────────────
+.grid {
+  display: grid;
+  gap: 1rem;
+
+  @media (min-width: $bp-desktop) {
+    gap: 1.25rem;
+  }
+}
+
+.grid-2 {
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.grid-3 {
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.grid-4 {
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (min-width: 1100px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// ── Karte ───────────────────────────────────────
+.card {
+  background: $surface-2;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+  box-shadow: $shadow-sm;
+
+  // Auf weißem Grund trägt die Fläche statt des Schattens.
+  .section-white & {
+    background: $surface;
+    box-shadow: none;
+  }
+}
+
+a.card,
+.card-hover {
+  display: block;
+  color: inherit;
+  transition:
+    transform $transition-normal,
+    box-shadow $transition-normal,
+    border-color $transition-normal;
+
+  &:hover {
+    transform: translateY(-3px);
+    border-color: $rule;
+    box-shadow: $shadow-md;
+  }
+}
+
+.card-title {
+  font-family: $font-body;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  color: $text;
+  margin-bottom: 0.35rem;
+}
+
+.card-text {
+  color: $text-dim;
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+// Icon links, Titel und Text rechts — kompakt auf dem Handy, ruhig auf dem
+// Desktop.
+.feature {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 1rem;
+  align-items: start;
+
+  .icon-badge {
+    grid-row: span 2;
+  }
+}
+
+.icon-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-sm;
+  background: $brand-tint;
+  color: $brand;
+  font-size: 1.3rem;
+  flex: none;
+}
+
+// ── Häkchenliste ────────────────────────────────
+.check-list {
+  display: grid;
+  gap: 0.55rem;
+
+  li {
+    position: relative;
+    padding-left: 1.7rem;
+    color: $text-soft;
+    font-size: 0.95rem;
+    line-height: 1.55;
+
+    // Häkchen aus zwei Rahmenkanten — kein Icon-Font nötig.
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0.3rem;
+      top: 0.25em;
+      width: 0.42rem;
+      height: 0.8rem;
+      border: solid $brand;
+      border-width: 0 2px 2px 0;
+      transform: rotate(45deg);
+    }
+  }
+}
+
+// ── Chips ───────────────────────────────────────
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  background: $surface-3;
+  color: $text-soft;
+  font-size: 0.86rem;
+  line-height: 1.4;
+}
+
+.chip-outline {
+  background: $surface-2;
+  border: 1px solid $rule-strong;
+}
+
+.chip-dashed {
+  background: transparent;
+  border: 1px dashed $rule-strong;
+  color: $text-dim;
+}
+
+.chip-brand {
+  background: $brand;
+  color: #fff;
+  font-weight: 600;
+}
+
+// ── Foto-Rahmen ─────────────────────────────────
+.media-frame {
+  margin: 0;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: $surface-3;
+  box-shadow: $shadow-md;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+// ── Ablauf als Zeitleiste ───────────────────────
+// Senkrecht auf dem Handy, waagerecht ab 900 px.
+.steps {
+  display: grid;
+  gap: 1.5rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.step {
+  position: relative;
+  padding-left: 3.6rem;
+
+  .step-num {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: $brand;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: 0 0 0 6px $brand-tint;
+  }
+
+  &:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 52px;
+    bottom: -1.3rem;
+    width: 2px;
+    background: $rule;
+  }
+
+  h3 {
+    font-family: $font-body;
+    font-size: 1.06rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    margin: 0.55rem 0 0.35rem;
+  }
+
+  p {
+    color: $text-dim;
+    font-size: 0.94rem;
+    line-height: 1.6;
+  }
+
+  @media (min-width: 900px) {
+    padding-left: 0;
+    padding-top: 3.9rem;
+
+    h3 {
+      margin-top: 0;
+    }
+
+    &:not(:last-child)::before {
+      left: 54px;
+      right: -0.75rem;
+      top: 20px;
+      bottom: auto;
+      width: auto;
+      height: 2px;
+    }
+  }
+}
+
+// ── Kennzahlen ──────────────────────────────────
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem 1.25rem;
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  li {
+    padding-top: 1rem;
+    border-top: 1px solid $rule;
+  }
+
+  .stat-num {
+    display: block;
+    font-family: $font-display;
+    font-size: clamp(2.2rem, 6vw, 3rem);
+    font-weight: 350;
+    line-height: 1;
+    color: $brand;
+  }
+
+  .stat-label {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.88rem;
+    color: $text-dim;
+  }
+}
+
+// ── Referenzkarte ───────────────────────────────
+.ref-grid {
+  display: grid;
+  gap: 1.25rem;
+
+  @media (min-width: 700px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.ref-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: $surface-2;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  overflow: hidden;
+  color: $text;
+  box-shadow: $shadow-sm;
+  transition:
+    transform $transition-normal,
+    box-shadow $transition-normal;
+
+  .section-white & {
+    background: $surface;
+    box-shadow: none;
+  }
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-md;
+
+    .ref-media img {
+      transform: scale(1.03);
+    }
+  }
+}
+
+.ref-media {
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: $surface-3;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    transition: transform $transition-slow;
+  }
+}
+
+.ref-body {
+  padding: 1.2rem 1.25rem 1.35rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  h2,
+  h3 {
+    font-size: 1.35rem;
+    font-weight: 450;
+    margin: 0.35rem 0 0.4rem;
+  }
+}
+
+.ref-cat {
+  @include small-caps;
+  font-size: 0.68rem;
+  color: $brand;
+}
+
+.ref-sub {
+  color: $text-dim;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin-bottom: 0.9rem;
+}
+
+.ref-more {
+  margin-top: auto;
+  color: $brand;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+// ── FAQ ─────────────────────────────────────────
+.faq-list {
+  border-top: 1px solid $rule;
+}
+
+.faq-item {
+  border-bottom: 1px solid $rule;
+
+  summary {
+    position: relative;
+    padding: 1.15rem 2.5rem 1.15rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    font-size: 1.02rem;
+    line-height: 1.45;
+    color: $text;
+    transition: color $transition-fast;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    // Winkel aus zwei Rahmenkanten, dreht sich beim Öffnen.
+    &::after {
+      content: "";
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      width: 0.55rem;
+      height: 0.55rem;
+      border: solid $brand;
+      border-width: 0 2px 2px 0;
+      transform: translateY(-70%) rotate(45deg);
+      transition: transform $transition-fast;
+    }
+
+    &:hover {
+      color: $brand;
+    }
+
+    &:focus-visible {
+      outline: 2px solid $brand;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+  }
+
+  &[open] summary::after {
+    transform: translateY(-20%) rotate(-135deg);
+  }
+
+  p {
+    padding: 0 0 1.25rem;
+    color: $text-dim;
+    font-size: 0.97rem;
+    line-height: 1.75;
+    max-width: 66ch;
+  }
+}
+
+.faq-layout {
+  display: grid;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 0.8fr 1.2fr;
+    gap: 4rem;
+    align-items: start;
+  }
+}
+
+// ── Hinweisbox ──────────────────────────────────
+.note {
+  border: 1px solid $rule-brand;
+  border-left: 4px solid $brand;
+  border-radius: $radius;
+  background: $brand-tint;
+  padding: clamp(1.25rem, 3vw, 1.75rem);
+
+  .note-label {
+    @include small-caps;
+    color: $brand;
+    margin-bottom: 0.5rem;
+  }
+
+  .note-title {
+    font-family: $font-display;
+    font-weight: 450;
+    font-size: 1.35rem;
+    color: $text;
+    margin-bottom: 0.6rem;
+  }
+
+  .note-text {
+    color: $text-soft;
+    font-size: 0.97rem;
+    line-height: 1.75;
+    max-width: 78ch;
+  }
+}
+
+// ── Abschluss-Box ───────────────────────────────
+// Steht am Seitenende in <section class="final-cta">. Folgt sie auf eine
+// weiße Fläche, bekommt sie oben denselben Abstand wie ein Abschnitt.
+.final-cta {
+  padding-bottom: $section-y;
+}
+
+.section-white + .final-cta {
+  padding-top: $section-y;
+}
+
+.cta-box {
+  display: grid;
+  gap: 2rem;
+  padding: clamp(1.75rem, 6vw, 4rem);
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse 70% 90% at 100% 0%, rgba(91, 147, 214, 0.32), transparent 60%),
+    linear-gradient(145deg, $brand-deep, $surface-ink);
+  color: $text-on-ink;
+  box-shadow: $shadow-md;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 1.25fr 1fr;
+    gap: 3.5rem;
+    align-items: center;
+  }
+
+  .cta-title {
+    font-family: $font-display;
+    font-size: clamp(2rem, 5.4vw, 3.1rem);
+    font-weight: 350;
+    line-height: 1.06;
+    letter-spacing: -0.02em;
+    color: #fff;
+    margin-bottom: 1rem;
+
+    em {
+      font-style: italic;
+      color: #9cc1ef;
+    }
+  }
+
+  .cta-text {
+    color: rgba(242, 245, 249, 0.8);
+    font-size: clamp(1rem, 2.4vw, 1.08rem);
+    line-height: 1.65;
+    max-width: 52ch;
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    > .btn {
+      width: 100%;
+    }
+  }
+
+  .cta-or {
+    text-align: center;
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(242, 245, 249, 0.6);
+  }
+
+  .cta-direct {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+  }
+}
+
+// ── Fließtext (Rechtliches, Fallstudien) ────────
+.prose {
+  max-width: 68ch;
+
+  > :first-child {
+    margin-top: 0;
+  }
+
+  p,
+  li,
+  address {
+    color: $text-soft;
+    font-size: 1rem;
+    line-height: 1.8;
+    font-style: normal;
+  }
+
+  p,
+  address,
+  ul {
+    margin-bottom: 1.1rem;
+  }
+
+  ul li {
+    position: relative;
+    padding-left: 1.2rem;
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0.1rem;
+      top: 0.75em;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: $brand;
+    }
+  }
+
+  h2 {
+    font-family: $font-body;
+    font-size: 1.12rem;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+    line-height: 1.4;
+    color: $text;
+    margin: 2.25rem 0 0.6rem;
+  }
+
+  h3 {
+    font-family: $font-body;
+    font-size: 1rem;
+    font-weight: 650;
+    color: $text;
+    margin: 1.5rem 0 0.4rem;
+  }
+
+  a {
+    color: $brand;
+    text-decoration: underline;
+    text-decoration-color: $rule-brand;
+    text-underline-offset: 3px;
+    word-break: break-word;
+
+    &:hover {
+      text-decoration-color: $brand;
+    }
+  }
+
+  strong {
+    color: $text;
+    font-weight: 600;
+  }
+}
+
+// ── Formular ────────────────────────────────────
+.field {
+  display: grid;
+  gap: 0.4rem;
+
+  label,
+  .field-label {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: $text;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.95rem;
+    border: 1px solid $rule-strong;
+    border-radius: $radius-sm;
+    background: $surface-2;
+    color: $text;
+    font: inherit;
+    font-size: 1rem; // 16 px: iOS zoomt sonst beim Antippen
+    transition:
+      border-color $transition-fast,
+      box-shadow $transition-fast;
+
+    &::placeholder {
+      color: $text-faint;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: $brand;
+      box-shadow: 0 0 0 4px $brand-glow;
+    }
+  }
+
+  textarea {
+    min-height: 132px;
+    resize: vertical;
+    line-height: 1.6;
+  }
+}
+
+// Auswahl als antippbare Chips (Checkbox/Radio versteckt, Label sichtbar).
+.choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.45rem 0.95rem;
+    border: 1px solid $rule-strong;
+    border-radius: 999px;
+    background: $surface-2;
+    color: $text-soft;
+    font-size: 0.92rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background $transition-fast,
+      border-color $transition-fast,
+      color $transition-fast;
+
+    &.on,
+    &:has(input:checked) {
+      background: $brand;
+      border-color: $brand;
+      color: #fff;
+    }
+
+    &:has(input:focus-visible) {
+      outline: 2px solid $brand;
+      outline-offset: 2px;
+    }
+  }
+
+  input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+}

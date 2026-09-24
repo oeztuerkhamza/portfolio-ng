@@ -1,14 +1,19 @@
-<section class="legal">
+<header class="page-hero legal-hero">
   <div class="container">
-    <div class="folio-line">
-      <span>Breisgau Digital</span>
-      <span class="folio-sep">—</span>
-      <span>Rechtliches</span>
-    </div>
-    <h1 class="legal-title">Datenschutz<em>erklärung</em></h1>
-    <p class="legal-meta">Gemäß Art. 13 DSGVO</p>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Datenschutz</span>
+    </nav>
+    <p class="section-label">Rechtliches</p>
+    <h1 class="section-title">Datenschutzerklärung</h1>
+    <p class="section-subtitle">Gemäß Art. 13 DSGVO</p>
+  </div>
+</header>
 
-    <div class="legal-body">
+<section class="section section-white">
+  <div class="container">
+    <div class="prose">
       <h2>1. Verantwortlicher</h2>
       <p>Verantwortlich für die Datenverarbeitung auf dieser Website ist:</p>
       <address>
@@ -38,14 +43,11 @@
         Auftragsverarbeitung (Art. 28 DSGVO).
       </p>
 
-      <h2>4. Web-Schriftarten (Google Fonts)</h2>
+      <h2>4. Schriftarten</h2>
       <p>
-        Zur einheitlichen Darstellung von Schriftarten werden Schriften des Anbieters
-        <strong>Google</strong> (Google Ireland Limited, Gordon House, Barrow Street, Dublin 4,
-        Irland) verwendet. Beim Aufruf einer Seite lädt Ihr Browser die benötigten Schriften, um
-        Texte korrekt darzustellen; dabei wird Ihre IP-Adresse an Google übertragen.
-        Rechtsgrundlage ist Art. 6 Abs. 1 lit. f DSGVO. Weitere Informationen:
-        <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">https://policies.google.com/privacy</a>.
+        Die auf dieser Website verwendeten Schriftarten (Inter und Fraunces) werden lokal von
+        unserem Server ausgeliefert. Beim Aufruf der Seite wird keine Verbindung zu Servern
+        Dritter (etwa Google) aufgebaut; es werden dabei keine Daten an Dritte übertragen.
       </p>
 
       <h2>5. Eingebettete Projekt-Demos (iframes)</h2>
@@ -57,12 +59,11 @@
         jeweiligen Anbieter.
       </p>
 
-      <h2>6. Lokale Speicherung (Spracheinstellung)</h2>
+      <h2>6. Cookies und lokale Speicherung</h2>
       <p>
-        Zur Speicherung Ihrer gewählten Sprache wird der lokale Speicher Ihres Browsers
-        (localStorage) verwendet. Diese Information verbleibt auf Ihrem Gerät, wird nicht an uns
-        übertragen und dient ausschließlich der Funktionalität der Website. Es werden keine
-        Tracking- oder Marketing-Cookies eingesetzt.
+        Diese Website setzt keine Cookies und legt keine Daten im Speicher Ihres Browsers ab. Die
+        gewählte Sprache ist Teil der Adresse (zum Beispiel <em>/de/</em> oder <em>/en/</em>). Es
+        werden keine Tracking- oder Marketing-Dienste eingesetzt.
       </p>
 
       <h2>7. Kontaktaufnahme</h2>
@@ -71,6 +72,20 @@
         ausschließlich zur Bearbeitung der Anfrage verarbeitet (Art. 6 Abs. 1 lit. b bzw. f
         DSGVO). Diese Daten gebe ich nicht ohne Ihre Einwilligung weiter und lösche sie, sobald
         sie nicht mehr erforderlich sind und keine gesetzlichen Aufbewahrungspflichten entgegenstehen.
+      </p>
+      <p>
+        Das Anfrageformular auf der Kontaktseite speichert und versendet selbst keine Daten. Es
+        öffnet lediglich Ihr E-Mail-Programm oder WhatsApp mit einer vorbereiteten Nachricht, die
+        Sie anschließend selbst absenden.
+      </p>
+      <h3>Kontakt über WhatsApp</h3>
+      <p>
+        Wenn Sie uns über WhatsApp schreiben, wird die App bzw. Website des Anbieters WhatsApp
+        Ireland Limited (4 Grand Canal Square, Grand Canal Harbour, Dublin 2, Irland) geöffnet.
+        Ihre Nachricht und Ihre Telefonnummer werden dabei auch von WhatsApp verarbeitet; es gelten
+        dessen Datenschutzbestimmungen:
+        <a href="https://www.whatsapp.com/legal/privacy-policy-eea" target="_blank" rel="noopener">https://www.whatsapp.com/legal/privacy-policy-eea</a>.
+        Wenn Sie das nicht möchten, erreichen Sie uns ebenso per E-Mail oder Telefon.
       </p>
 
       <h2>8. Ihre Rechte</h2>
@@ -91,12 +106,6 @@
       <p>
         Diese Datenschutzerklärung ist aktuell gültig. Durch die Weiterentwicklung der Website
         oder geänderte gesetzliche Vorgaben kann es notwendig werden, sie anzupassen.
-      </p>
-
-      <p class="note">
-        Hinweis: Diese Datenschutzerklärung ist eine sorgfältig erstellte Vorlage. Bei
-        rechtlicher Unsicherheit – insbesondere bei Ergänzung weiterer Dienste – empfiehlt sich
-        eine anwaltliche Prüfung.
       </p>
     </div>
   </div>

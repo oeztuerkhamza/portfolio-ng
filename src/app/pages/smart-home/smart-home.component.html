@@ -1,125 +1,139 @@
-<section class="product-page">
+<!-- Kopf -->
+<header class="page-hero">
   <div class="container">
-
-    <!-- Kopf -->
-    <header class="pp-hero">
-      <nav class="crumbs" aria-label="Breadcrumb">
-        <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
-        <span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">{{ i18n.t('sh.folio') }}</span>
-      </nav>
-      <div class="pp-hero-grid">
-        <div>
-          <p class="section-label">{{ i18n.t('sh.label') }}</p>
-          <h1 class="section-title" [innerHTML]="i18n.t('sh.title')"></h1>
-          <p class="section-subtitle" [innerHTML]="i18n.t('sh.intro')"></p>
-          <p class="pp-price"><strong>{{ i18n.tp('price.from', priceFrom) }}</strong></p>
-          <div class="header-actions">
-            <a [href]="mailto('check')" class="btn btn-primary btn-large">{{ i18n.t('sh.cta.check') }}</a>
-            <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
-              <app-icon name="chat" /> WhatsApp
-            </a>
-          </div>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('sh.folio') }}</span>
+    </nav>
+    <div class="page-hero-grid">
+      <div>
+        <p class="section-label">{{ i18n.t('sh.label') }}</p>
+        <h1 class="section-title" [innerHTML]="i18n.t('sh.title')"></h1>
+        <p class="section-subtitle" [innerHTML]="i18n.t('sh.intro')"></p>
+        <p class="hero-price">{{ i18n.tp('price.from', priceFrom) }}</p>
+        <div class="page-hero-actions">
+          <a [href]="mailto('check')" class="btn btn-primary btn-large">{{ i18n.t('sh.cta.check') }}</a>
+          <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
+            <app-icon name="chat" /> WhatsApp
+          </a>
         </div>
-        <figure class="pp-hero-media">
-          <img
-            src="/assets/images/products/smart-home.webp"
-            srcset="/assets/images/products/smart-home-800.webp 800w, /assets/images/products/smart-home.webp 1600w"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-            width="1600"
-            height="1200"
-            fetchpriority="high"
-            [alt]="i18n.t('sh.img.alt')"
-          />
-        </figure>
       </div>
-    </header>
+      <figure class="media-frame">
+        <img
+          src="/assets/images/products/smart-home.webp"
+          srcset="/assets/images/products/smart-home-800.webp 800w, /assets/images/products/smart-home.webp 1600w"
+          sizes="(max-width: 1024px) 100vw, 55vw"
+          width="1600"
+          height="1200"
+          fetchpriority="high"
+          [alt]="i18n.t('sh.img.alt')"
+        />
+      </figure>
+    </div>
+  </div>
+</header>
 
-    <!-- Anwendungen -->
-    <section class="why">
+<!-- Anwendungen -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('sh.use.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('sh.use.title')"></h2>
-      <div class="why-grid">
-        @for (u of uses; track u.n) {
-          <div class="why-card">
-            <span class="icon-badge"><app-icon [name]="u.icon" /></span>
-            <h3>{{ i18n.t('sh.use' + u.n + '.t') }}</h3>
-            <p>{{ i18n.t('sh.use' + u.n + '.d') }}</p>
-          </div>
-        }
-      </div>
-    </section>
+    </header>
+    <div class="grid grid-3">
+      @for (u of uses; track u.n) {
+        <div class="card feature">
+          <span class="icon-badge"><app-icon [name]="u.icon" /></span>
+          <h3 class="card-title">{{ i18n.t('sh.use' + u.n + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('sh.use' + u.n + '.d') }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
 
-    <!-- Pakete -->
-    <section class="packages" id="pakete">
+<!-- Pakete -->
+<section class="section packages" id="pakete">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('sh.pkg.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('sh.pkg.title')"></h2>
+    </header>
 
-      <div class="pkg-grid">
-        @for (p of packages; track p.id) {
-          <article class="pkg-card" [class.featured]="p.featured">
-            @if (p.featured) {
-              <span class="pkg-badge">{{ i18n.t('sh.pkg.badge') }}</span>
+    <div class="pkg-grid">
+      @for (p of packages; track p.id) {
+        <article class="pkg-card" [class.featured]="p.featured">
+          @if (p.featured) {
+            <span class="pkg-badge">{{ i18n.t('sh.pkg.badge') }}</span>
+          }
+          <h3 class="pkg-name">{{ i18n.t('sh.pkg.' + p.id + '.name') }}</h3>
+          <p class="pkg-for">{{ i18n.t('sh.pkg.' + p.id + '.for') }}</p>
+
+          <p class="pkg-price">
+            @if (p.from) {
+              <span class="amount amount-from">{{ i18n.tp('price.from', p.price) }}</span>
+            } @else {
+              <span class="amount">{{ p.price }}</span>
+              <span class="currency">&euro;</span>
             }
-            <h3 class="pkg-name">{{ i18n.t('sh.pkg.' + p.id + '.name') }}</h3>
-            <p class="pkg-for">{{ i18n.t('sh.pkg.' + p.id + '.for') }}</p>
+          </p>
 
-            <p class="pkg-price">
-              @if (p.from) {
-                <span class="amount amount-from">{{ i18n.tp('price.from', p.price) }}</span>
-              } @else {
-                <span class="amount">{{ p.price }}</span>
-                <span class="currency">&euro;</span>
-              }
-            </p>
+          <ul class="check-list pkg-points">
+            @for (i of [1, 2, 3, 4].slice(0, p.points); track i) {
+              <li>{{ i18n.t('sh.pkg.' + p.id + '.p' + i) }}</li>
+            }
+          </ul>
 
-            <ul class="pkg-points">
-              @for (i of [1, 2, 3, 4].slice(0, p.points); track i) {
-                <li>{{ i18n.t('sh.pkg.' + p.id + '.p' + i) }}</li>
-              }
-            </ul>
+          <div class="pkg-actions">
+            <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
+              {{ p.id === 'check' ? i18n.t('sh.cta.check') : i18n.t('sh.cta.order') }}
+            </a>
+            <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
+              {{ i18n.t('rc.cta.whatsapp') }}
+            </a>
+          </div>
+        </article>
+      }
+    </div>
 
-            <div class="pkg-actions">
-              <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
-                {{ p.id === 'check' ? i18n.t('sh.cta.check') : i18n.t('sh.cta.order') }}
-              </a>
-              <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
-                {{ i18n.t('rc.cta.whatsapp') }}
-              </a>
-            </div>
-          </article>
-        }
-      </div>
+    <p class="price-note">{{ i18n.t('sh.price.note') }}</p>
+  </div>
+</section>
 
-      <p class="price-note">{{ i18n.t('sh.price.note') }}</p>
-    </section>
-
-    <!-- Ablauf -->
-    <section class="steps">
+<!-- Ablauf -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('sh.steps.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('sh.steps.title')"></h2>
-      <ol class="step-grid">
-        @for (n of steps; track n) {
-          <li class="step-card">
-            <span class="step-num">{{ n }}</span>
-            <h3>{{ i18n.t('sh.step' + n + '.t') }}</h3>
-            <p>{{ i18n.t('sh.step' + n + '.d') }}</p>
-          </li>
-        }
-      </ol>
-    </section>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('sh.step' + n + '.t') }}</h3>
+          <p>{{ i18n.t('sh.step' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
 
-    <!-- Datenschutz & Sicherheit -->
-    <aside class="fairplay">
-      <p class="fp-label">{{ i18n.t('sh.fair.label') }}</p>
-      <h3 class="fp-title">{{ i18n.t('sh.fair.title') }}</h3>
-      <p class="fp-text">{{ i18n.t('sh.fair.text') }}</p>
+<!-- Datenschutz & Sicherheit + FAQ -->
+<section class="section">
+  <div class="container">
+    <aside class="note">
+      <p class="note-label">{{ i18n.t('sh.fair.label') }}</p>
+      <h2 class="note-title">{{ i18n.t('sh.fair.title') }}</h2>
+      <p class="note-text">{{ i18n.t('sh.fair.text') }}</p>
     </aside>
 
-    <!-- FAQ -->
-    <section class="faq">
-      <p class="section-label">{{ i18n.t('sh.faq.label') }}</p>
-      <h2 class="section-title" [innerHTML]="i18n.t('sh.faq.title')"></h2>
+    <div class="faq-layout faq-block">
+      <header class="sec-head">
+        <p class="section-label">{{ i18n.t('sh.faq.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('sh.faq.title')"></h2>
+      </header>
       <div class="faq-list">
         @for (n of faqs; track n) {
           <details class="faq-item">
@@ -128,17 +142,22 @@
           </details>
         }
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- CTA -->
-    <section class="page-cta">
-      <h2 class="cta-title" [innerHTML]="i18n.t('sh.cta.title')"></h2>
-      <p class="cta-text">{{ i18n.t('sh.cta.text') }}</p>
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('sh.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('sh.cta.text') }}</p>
+      </div>
       <div class="cta-actions">
         <a [href]="mailto('check')" class="btn btn-light btn-large">{{ i18n.t('sh.cta.check') }}</a>
         <a [routerLink]="'/contact' | localize" class="btn btn-outline-light btn-large">{{ i18n.t('cta.contact') }}</a>
       </div>
-    </section>
-
+    </div>
   </div>
 </section>

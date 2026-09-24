@@ -1,127 +1,141 @@
-<section class="product-page">
+<!-- Kopf -->
+<header class="page-hero">
   <div class="container">
-
-    <!-- Kopf -->
-    <header class="pp-hero">
-      <nav class="crumbs" aria-label="Breadcrumb">
-        <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
-        <span class="sep" aria-hidden="true">/</span>
-        <span aria-current="page">{{ i18n.t('rc.label') }}</span>
-      </nav>
-      <div class="pp-hero-grid">
-        <div>
-          <p class="section-label">{{ i18n.t('rc.folio') }}</p>
-          <h1 class="section-title" [innerHTML]="i18n.t('rc.title')"></h1>
-          <p class="section-subtitle" [innerHTML]="i18n.t('rc.intro')"></p>
-          <p class="pp-price"><strong>{{ i18n.tp('price.from', priceFrom) }}</strong></p>
-          <div class="header-actions">
-            <a [href]="mailto()" class="btn btn-primary btn-large">{{ i18n.t('rc.cta.order') }}</a>
-            <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
-              <app-icon name="chat" /> {{ i18n.t('rc.cta.whatsapp') }}
-            </a>
-          </div>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('rc.label') }}</span>
+    </nav>
+    <div class="page-hero-grid">
+      <div>
+        <p class="section-label">{{ i18n.t('rc.folio') }}</p>
+        <h1 class="section-title" [innerHTML]="i18n.t('rc.title')"></h1>
+        <p class="section-subtitle" [innerHTML]="i18n.t('rc.intro')"></p>
+        <p class="hero-price">{{ i18n.tp('price.from', priceFrom) }}</p>
+        <div class="page-hero-actions">
+          <a [href]="mailto()" class="btn btn-primary btn-large">{{ i18n.t('rc.cta.order') }}</a>
+          <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
+            <app-icon name="chat" /> {{ i18n.t('rc.cta.whatsapp') }}
+          </a>
         </div>
-        <figure class="pp-hero-media">
-          <img
-            src="/assets/images/products/review-card.webp"
-            srcset="/assets/images/products/review-card-800.webp 800w, /assets/images/products/review-card.webp 1600w"
-            sizes="(max-width: 1024px) 100vw, 55vw"
-            width="1600"
-            height="1200"
-            fetchpriority="high"
-            [alt]="i18n.t('home.prod.cards.alt')"
-          />
-        </figure>
       </div>
-    </header>
+      <figure class="media-frame">
+        <img
+          src="/assets/images/products/review-card.webp"
+          srcset="/assets/images/products/review-card-800.webp 800w, /assets/images/products/review-card.webp 1600w"
+          sizes="(max-width: 1024px) 100vw, 55vw"
+          width="1600"
+          height="1200"
+          fetchpriority="high"
+          [alt]="i18n.t('home.prod.cards.alt')"
+        />
+      </figure>
+    </div>
+  </div>
+</header>
 
-    <!-- So funktioniert's -->
-    <section class="steps">
+<!-- So funktioniert's -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('rc.steps.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('rc.steps.title')"></h2>
-      <ol class="step-grid">
-        @for (n of steps; track n) {
-          <li class="step-card">
-            <span class="step-num">{{ n }}</span>
-            <h3>{{ i18n.t('rc.step' + n + '.t') }}</h3>
-            <p>{{ i18n.t('rc.step' + n + '.d') }}</p>
-          </li>
-        }
-      </ol>
-    </section>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('rc.step' + n + '.t') }}</h3>
+          <p>{{ i18n.t('rc.step' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
 
-    <!-- Pakete -->
-    <section class="packages" id="pakete">
+<!-- Pakete -->
+<section class="section packages" id="pakete">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('rc.pkg.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('rc.pkg.title')"></h2>
+    </header>
 
-      <div class="pkg-grid">
-        @for (p of packages; track p.id) {
-          <article class="pkg-card" [class.featured]="p.featured">
-            @if (p.featured) {
-              <span class="pkg-badge">{{ i18n.t('rc.pkg.badge') }}</span>
+    <div class="pkg-grid">
+      @for (p of packages; track p.id) {
+        <article class="pkg-card" [class.featured]="p.featured">
+          @if (p.featured) {
+            <span class="pkg-badge">{{ i18n.t('rc.pkg.badge') }}</span>
+          }
+          <h3 class="pkg-name">{{ i18n.t('rc.pkg.' + p.id + '.name') }}</h3>
+          <p class="pkg-for">{{ i18n.t('rc.pkg.' + p.id + '.for') }}</p>
+
+          <p class="pkg-price">
+            <span class="amount">{{ p.price }}</span>
+            <span class="currency">&euro;</span>
+          </p>
+
+          <ul class="check-list pkg-points">
+            <li>
+              {{ p.cards }}&times; {{ i18n.t(p.cards === 1 ? 'rc.unit.card' : 'rc.unit.cards') }}
+            </li>
+            @if (p.stand) {
+              <li>{{ i18n.t('rc.unit.stand') }}</li>
             }
-            <h3 class="pkg-name">{{ i18n.t('rc.pkg.' + p.id + '.name') }}</h3>
-            <p class="pkg-for">{{ i18n.t('rc.pkg.' + p.id + '.for') }}</p>
+            @for (i of [1, 2, 3, 4].slice(0, p.points); track i) {
+              <li>{{ i18n.t('rc.pkg.' + p.id + '.p' + i) }}</li>
+            }
+          </ul>
 
-            <p class="pkg-price">
-              <span class="amount">{{ p.price }}</span>
-              <span class="currency">&euro;</span>
-            </p>
+          <div class="pkg-actions">
+            <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
+              {{ i18n.t('rc.cta.order') }}
+            </a>
+            <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
+              {{ i18n.t('rc.cta.whatsapp') }}
+            </a>
+          </div>
+        </article>
+      }
+    </div>
 
-            <ul class="pkg-points">
-              <li>
-                {{ p.cards }}&times; {{ i18n.t(p.cards === 1 ? 'rc.unit.card' : 'rc.unit.cards') }}
-              </li>
-              @if (p.stand) {
-                <li>{{ i18n.t('rc.unit.stand') }}</li>
-              }
-              @for (i of [1, 2, 3, 4].slice(0, p.points); track i) {
-                <li>{{ i18n.t('rc.pkg.' + p.id + '.p' + i) }}</li>
-              }
-            </ul>
+    <p class="price-note">{{ i18n.t('rc.price.note') }}</p>
+  </div>
+</section>
 
-            <div class="pkg-actions">
-              <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
-                {{ i18n.t('rc.cta.order') }}
-              </a>
-              <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
-                {{ i18n.t('rc.cta.whatsapp') }}
-              </a>
-            </div>
-          </article>
-        }
-      </div>
-
-      <p class="price-note">{{ i18n.t('rc.price.note') }}</p>
-    </section>
-
-    <!-- Warum Bewertungen -->
-    <section class="why">
+<!-- Warum Bewertungen -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head">
       <p class="section-label">{{ i18n.t('rc.why.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('rc.why.title')"></h2>
-      <div class="why-grid">
-        @for (r of reasons; track r.n) {
-          <div class="why-card">
-            <span class="icon-badge"><app-icon [name]="r.icon" /></span>
-            <h3>{{ i18n.t('rc.why' + r.n + '.t') }}</h3>
-            <p>{{ i18n.t('rc.why' + r.n + '.d') }}</p>
-          </div>
-        }
-      </div>
-    </section>
+    </header>
+    <div class="grid grid-3">
+      @for (r of reasons; track r.n) {
+        <div class="card feature">
+          <span class="icon-badge"><app-icon [name]="r.icon" /></span>
+          <h3 class="card-title">{{ i18n.t('rc.why' + r.n + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('rc.why' + r.n + '.d') }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
 
-    <!-- Fairness / Google-Richtlinien -->
-    <aside class="fairplay">
-      <p class="fp-label">{{ i18n.t('rc.fair.label') }}</p>
-      <h3 class="fp-title">{{ i18n.t('rc.fair.title') }}</h3>
-      <p class="fp-text">{{ i18n.t('rc.fair.text') }}</p>
+<!-- Fairness + FAQ -->
+<section class="section">
+  <div class="container">
+    <aside class="note">
+      <p class="note-label">{{ i18n.t('rc.fair.label') }}</p>
+      <h2 class="note-title">{{ i18n.t('rc.fair.title') }}</h2>
+      <p class="note-text">{{ i18n.t('rc.fair.text') }}</p>
     </aside>
 
-    <!-- FAQ -->
-    <section class="faq">
-      <p class="section-label">{{ i18n.t('rc.faq.label') }}</p>
-      <h2 class="section-title" [innerHTML]="i18n.t('rc.faq.title')"></h2>
+    <div class="faq-layout faq-block">
+      <header class="sec-head">
+        <p class="section-label">{{ i18n.t('rc.faq.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('rc.faq.title')"></h2>
+      </header>
       <div class="faq-list">
         @for (n of faqs; track n) {
           <details class="faq-item">
@@ -130,19 +144,24 @@
           </details>
         }
       </div>
-    </section>
+    </div>
+  </div>
+</section>
 
-    <!-- CTA -->
-    <section class="page-cta">
-      <h2 class="cta-title" [innerHTML]="i18n.t('rc.cta.title')"></h2>
-      <p class="cta-text">{{ i18n.t('rc.cta.text') }}</p>
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('rc.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('rc.cta.text') }}</p>
+      </div>
       <div class="cta-actions">
         <a [href]="mailto()" class="btn btn-light btn-large">{{ i18n.t('rc.cta.order') }}</a>
         <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-outline-light btn-large">
           <app-icon name="chat" /> WhatsApp
         </a>
       </div>
-    </section>
-
+    </div>
   </div>
 </section>

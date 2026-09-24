@@ -11,7 +11,7 @@
       <h1 class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></h1>
       <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
-      <div class="hero-actions">
+      <div class="page-hero-actions">
         <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
           {{ i18n.t('cta.consult') }}
           <app-icon name="arrow" />
@@ -21,15 +21,15 @@
         </button>
       </div>
 
-      <ul class="trust-list">
+      <ul class="check-list trust-list">
         @for (key of trust; track key) {
-          <li><app-icon name="check" [stroke]="2.2" /> {{ i18n.t(key) }}</li>
+          <li>{{ i18n.t(key) }}</li>
         }
       </ul>
     </div>
 
     <div class="hero-visual">
-      <figure class="hero-photo">
+      <figure class="media-frame hero-photo">
         <img
           src="/assets/images/products/review-card.webp"
           srcset="/assets/images/products/review-card-800.webp 800w, /assets/images/products/review-card.webp 1600w"
@@ -61,7 +61,7 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- PRODUKTE                                       -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section products" id="produkte">
+<section class="section section-white" id="produkte">
   <div class="container">
     <header class="sec-head sec-head-center">
       <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
@@ -86,10 +86,10 @@
           </div>
           <div class="prod-body">
             <h3 class="prod-title">{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
-            <p class="prod-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
-            <ul class="prod-points">
+            <p class="card-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
+            <ul class="check-list prod-points">
               @for (n of [1, 2, 3]; track n) {
-                <li><app-icon name="check" [stroke]="2.2" /> {{ i18n.t('home.prod.' + p.id + '.p' + n) }}</li>
+                <li>{{ i18n.t('home.prod.' + p.id + '.p' + n) }}</li>
               }
             </ul>
             <div class="prod-foot">
@@ -106,9 +106,9 @@
 
     <div class="more-row">
       <p class="more-label">{{ i18n.t('home.prod.more.label') }}</p>
-      <ul class="more-chips">
+      <ul class="chips">
         @for (key of more; track key) {
-          <li>{{ i18n.t(key) }}</li>
+          <li class="chip">{{ i18n.t(key) }}</li>
         }
       </ul>
       <a [routerLink]="'/leistungen' | localize" class="more-link">
@@ -122,25 +122,25 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- WARUM WIR + ZAHLEN                             -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section why" id="why" data-reveal [class.in]="shown('why')">
+<section class="section" id="why" data-reveal [class.in]="shown('why')">
   <div class="container">
     <div class="why-layout">
       <header class="sec-head">
         <p class="section-label">{{ i18n.t('home.why.label') }}</p>
         <h2 class="section-title" [innerHTML]="i18n.t('home.why.title')"></h2>
       </header>
-      <div class="why-cards">
+      <div class="grid grid-2">
         @for (r of reasons; track r.n) {
-          <div class="why-card reveal">
+          <div class="card feature reveal">
             <span class="icon-badge"><app-icon [name]="r.icon" /></span>
-            <h3>{{ i18n.t('home.why' + r.n + '.t') }}</h3>
-            <p>{{ i18n.t('home.why' + r.n + '.d') }}</p>
+            <h3 class="card-title">{{ i18n.t('home.why' + r.n + '.t') }}</h3>
+            <p class="card-text">{{ i18n.t('home.why' + r.n + '.d') }}</p>
           </div>
         }
       </div>
     </div>
 
-    <ul class="stats">
+    <ul class="stats home-stats">
       @for (stat of stats; track stat.key) {
         <li>
           <span class="stat-num">{{ stat.target }}{{ stat.suffix }}</span>
@@ -155,20 +155,18 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- BRANCHEN                                       -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section industries" id="industries" data-reveal [class.in]="shown('industries')">
+<section class="section section-white" id="industries" data-reveal [class.in]="shown('industries')">
   <div class="container">
     <header class="sec-head">
       <p class="section-label">{{ i18n.t('home.ind.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.ind.title')"></h2>
     </header>
-    <ul class="ind-grid">
+    <ul class="grid grid-3">
       @for (ind of industries; track ind.n) {
-        <li class="ind-card reveal">
+        <li class="card feature reveal">
           <span class="icon-badge"><app-icon [name]="ind.icon" /></span>
-          <div>
-            <h3>{{ i18n.t('home.ind' + ind.n + '.t') }}</h3>
-            <p>{{ i18n.t('home.ind' + ind.n + '.d') }}</p>
-          </div>
+          <h3 class="card-title">{{ i18n.t('home.ind' + ind.n + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('home.ind' + ind.n + '.d') }}</p>
         </li>
       }
     </ul>
@@ -179,7 +177,7 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- ABLAUF                                         -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section process" id="process" data-reveal [class.in]="shown('process')">
+<section class="section" id="process" data-reveal [class.in]="shown('process')">
   <div class="container">
     <header class="sec-head sec-head-center">
       <p class="section-label">{{ i18n.t('home.proc.label') }}</p>
@@ -207,7 +205,7 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- REFERENZEN                                     -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section refs" id="refs" data-reveal [class.in]="shown('refs')">
+<section class="section section-white" id="refs" data-reveal [class.in]="shown('refs')">
   <div class="container">
     <div class="sec-head sec-head-row">
       <div>
@@ -244,24 +242,24 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- REGION                                         -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section region" id="region" data-reveal [class.in]="shown('region')">
+<section class="section" id="region" data-reveal [class.in]="shown('region')">
   <div class="container region-grid">
     <div class="reveal">
       <p class="section-label">{{ i18n.t('home.region.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.region.title')"></h2>
-      <p class="region-text">{{ i18n.t('home.region.text') }}</p>
+      <p class="section-subtitle">{{ i18n.t('home.region.text') }}</p>
     </div>
-    <div class="region-card reveal">
+    <div class="card reveal">
       <p class="town-head"><app-icon name="pin" /> {{ i18n.t('home.region.onsite') }}</p>
-      <ul class="towns">
+      <ul class="chips">
         @for (town of townsOnsite; track town) {
-          <li [class.home]="$first">{{ town }}</li>
+          <li class="chip" [class.chip-brand]="$first" [class.chip-outline]="!$first">{{ town }}</li>
         }
       </ul>
       <p class="town-head"><app-icon name="video" /> {{ i18n.t('home.region.remote') }}</p>
-      <ul class="towns towns-remote">
+      <ul class="chips">
         @for (town of townsRemote; track town) {
-          <li>{{ town }}</li>
+          <li class="chip chip-dashed">{{ town }}</li>
         }
       </ul>
     </div>
@@ -272,20 +270,20 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- ANSPRECHPARTNER                                -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section team" id="team" data-reveal [class.in]="shown('team')">
+<section class="section section-white" id="team" data-reveal [class.in]="shown('team')">
   <div class="container team-grid">
-    <figure class="team-photo reveal">
+    <figure class="media-frame team-photo reveal">
       <img src="/assets/images/profile.jpg" alt="Hamza Öztürk, Gründer von Breisgau Digital" width="533" height="800" loading="lazy" />
       <figcaption>
         <strong>Hamza Öztürk</strong>
         <span>{{ i18n.t('home.team.role') }}</span>
       </figcaption>
     </figure>
-    <div class="team-copy reveal">
+    <div class="reveal">
       <p class="section-label">{{ i18n.t('home.team.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.team.title')"></h2>
-      <p class="team-text">{{ i18n.t('home.team.text') }}</p>
-      <div class="team-actions">
+      <p class="section-subtitle">{{ i18n.t('home.team.text') }}</p>
+      <div class="page-hero-actions">
         <a [href]="company.phoneHref" class="btn btn-primary">
           <app-icon name="phone" /> {{ company.phoneDisplay }}
         </a>
@@ -301,8 +299,8 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- FAQ                                            -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section faq" id="faq" data-reveal [class.in]="shown('faq')">
-  <div class="container faq-grid">
+<section class="section" id="faq" data-reveal [class.in]="shown('faq')">
+  <div class="container faq-layout">
     <header class="sec-head reveal">
       <p class="section-label">{{ i18n.t('home.faq.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.faq.title')"></h2>
@@ -310,10 +308,7 @@
     <div class="faq-list reveal">
       @for (n of faqs; track n) {
         <details class="faq-item">
-          <summary>
-            {{ i18n.t('home.faq' + n + '.q') }}
-            <app-icon name="chevron" />
-          </summary>
+          <summary>{{ i18n.t('home.faq' + n + '.q') }}</summary>
           <p>{{ i18n.tp('home.faq' + n + '.a', websitePrice) }}</p>
         </details>
       }
@@ -323,12 +318,12 @@
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- ABSCHLUSS-CTA                                  -->
+<!-- ABSCHLUSS                                      -->
 <!-- ────────────────────────────────────────────── -->
 <section class="final-cta">
   <div class="container">
     <div class="cta-box">
-      <div class="cta-copy">
+      <div>
         <h2 class="cta-title" [innerHTML]="i18n.t('home.cta.title')"></h2>
         <p class="cta-text">{{ i18n.t('home.cta.text') }}</p>
       </div>

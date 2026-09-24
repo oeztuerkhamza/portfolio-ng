@@ -14,7 +14,7 @@
   border-radius: 8px;
   color: $text-dim;
   cursor: pointer;
-  font-family: $font-mono;
+  font-family: $font-body;
   font-size: 0.78rem;
   letter-spacing: 0.04em;
   transition: $transition-fast;
@@ -57,7 +57,7 @@
     transition: $transition-fast;
 
     .opt-code {
-      font-family: $font-mono;
+      font-family: $font-body;
       font-size: 0.72rem;
       color: $brand;
       min-width: 24px;

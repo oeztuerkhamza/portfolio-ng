@@ -6,11 +6,13 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { EXPERIENCES } from '../../core/data/experience.data';
 import { PROJECTS } from '../../core/data/project.data';
+import { COMPANY } from '../../core/data/company.data';
+import { IconComponent } from '../../shared/icon/icon.component';
 
 @Component({
   selector: 'app-ueber-uns',
   standalone: true,
-  imports: [RouterLink, LocalizePipe],
+  imports: [RouterLink, LocalizePipe, IconComponent],
   templateUrl: './ueber-uns.component.html',
   styleUrl: './ueber-uns.component.scss',
 })
@@ -25,7 +27,14 @@ export class UeberUnsComponent implements OnInit {
   readonly liveCount = PROJECTS.filter((p) => !!p.liveUrl).length;
   readonly projectCount = PROJECTS.length;
 
-  readonly principles = [1, 2, 3, 4] as const;
+  readonly company = COMPANY;
+
+  readonly principles = [
+    { n: 1, icon: 'euro' },
+    { n: 2, icon: 'key' },
+    { n: 3, icon: 'globe' },
+    { n: 4, icon: 'tool' },
+  ];
   readonly process = [1, 2, 3, 4] as const;
 
   ngOnInit(): void {

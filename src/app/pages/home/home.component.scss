@@ -1,7 +1,7 @@
 @import "../../../styles/variables";
 
-// Startseite — Firmenauftritt, mobil zuerst gebaut.
-// Grundlayout ist die Handy-Ansicht; Media-Queries erweitern nur nach oben.
+// Startseite. Karten, Listen, Ablauf, FAQ und Abschluss-Box kommen aus dem
+// UI-Kit (src/styles/_ui.scss); hier steht nur, was es nur hier gibt.
 
 :host {
   display: block;
@@ -9,75 +9,6 @@
 
 .container {
   @include container;
-}
-
-.section {
-  padding: clamp(64px, 10vw, 120px) 0;
-}
-
-// Abwechselnde Flächen, damit die Abschnitte auf dem Handy klar trennen.
-.products,
-.industries,
-.refs,
-.team {
-  background: $surface-2;
-  border-block: 1px solid $rule;
-}
-
-// ── Abschnittsköpfe ──────────────────────────────
-.sec-head {
-  margin-bottom: clamp(2rem, 5vw, 3.25rem);
-
-  .section-label {
-    margin-bottom: 1rem;
-  }
-}
-
-.sec-head-center {
-  text-align: center;
-  max-width: 760px;
-  margin-inline: auto;
-
-  .section-subtitle {
-    margin-inline: auto;
-  }
-}
-
-.sec-head-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1.25rem 2rem;
-
-  .section-title {
-    margin-bottom: 0;
-  }
-}
-
-.section-title {
-  font-size: clamp(2rem, 5.4vw, 3.3rem);
-  font-weight: 350;
-  line-height: 1.06;
-  letter-spacing: -0.025em;
-  margin-bottom: 1rem;
-}
-
-.section-subtitle {
-  margin-bottom: 0;
-  font-size: clamp(1rem, 2.4vw, 1.1rem);
-}
-
-.icon-badge {
-  display: inline-grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
-  background: $brand-tint;
-  color: $brand;
-  font-size: 1.3rem;
-  flex: none;
 }
 
 // ── Einblenden beim Scrollen ─────────────────────
@@ -89,12 +20,12 @@
 
 [data-reveal]:not(.in) .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(16px);
 }
 
 @for $i from 1 through 6 {
   .reveal:nth-child(#{$i}) {
-    transition-delay: #{($i - 1) * 0.07}s;
+    transition-delay: #{($i - 1) * 0.06}s;
   }
 }
 
@@ -112,9 +43,9 @@
 // HERO
 // ══════════════════════════════════════════════
 .hero {
-  padding: calc(76px + clamp(1.5rem, 5vw, 3.5rem)) 0 clamp(3rem, 8vw, 6rem);
+  padding: calc(72px + clamp(1.5rem, 5vw, 3.5rem)) 0 clamp(3rem, 8vw, 6rem);
   background:
-    radial-gradient(ellipse 80% 60% at 85% 20%, rgba(47, 111, 196, 0.1), transparent 70%),
+    radial-gradient(ellipse 80% 60% at 85% 20%, rgba(47, 111, 196, 0.08), transparent 70%),
     $surface;
   overflow: hidden;
 }
@@ -135,8 +66,8 @@
   gap: 0.5rem;
   padding: 0.45rem 0.9rem 0.45rem 0.7rem;
   margin-bottom: 1.25rem;
-  border: 1px solid $rule;
-  border-radius: 14px;
+  border: 1px solid $rule-soft;
+  border-radius: $radius-sm;
   background: $surface-2;
   color: $text-dim;
   font-size: 0.8rem;
@@ -150,9 +81,9 @@
 }
 
 .hero-title {
-  font-size: clamp(2.3rem, 8.4vw, 4.5rem);
+  font-size: clamp(2.3rem, 8.4vw, 4.4rem);
   font-weight: 350;
-  line-height: 1.02;
+  line-height: 1.03;
   letter-spacing: -0.03em;
   margin-bottom: 1.25rem;
 
@@ -163,45 +94,22 @@
 }
 
 .hero-lede {
-  font-size: clamp(1.02rem, 2.6vw, 1.18rem);
-  line-height: 1.65;
+  font-size: clamp(1.02rem, 2.6vw, 1.15rem);
+  line-height: 1.7;
   color: $text-dim;
   max-width: 54ch;
 }
 
-.hero-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.75rem;
-
-  .btn {
-    @media (max-width: $bp-mobile) {
-      flex: 1 1 100%;
-    }
-  }
-}
-
 .trust-list {
-  display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.6rem 1rem;
+  gap: 0.55rem 1rem;
   margin-top: 1.75rem;
   max-width: 520px;
 
   li {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.5rem;
     font-size: 0.88rem;
-    line-height: 1.35;
-    color: $text-soft;
+    line-height: 1.4;
     font-weight: 500;
-  }
-
-  app-icon {
-    color: #1b7a43;
-    margin-top: 0.05em;
   }
 }
 
@@ -210,21 +118,6 @@
 
   @media (min-width: $bp-desktop) {
     padding: 0 1.5rem 2.5rem 0;
-  }
-}
-
-.hero-photo {
-  margin: 0;
-  border-radius: 22px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: $surface-3;
-  box-shadow: $shadow-md;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
   }
 }
 
@@ -272,7 +165,7 @@
   max-width: calc(100% - 1.5rem);
   padding: 0.6rem 0.9rem 0.6rem 0.6rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(8px);
   box-shadow: $shadow-md;
   line-height: 1.25;
@@ -323,23 +216,21 @@
 .prod-card {
   display: flex;
   flex-direction: column;
-  background: $surface-2;
-  border: 1px solid $rule;
-  border-radius: 20px;
+  background: $surface;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
   overflow: hidden;
-  box-shadow: $shadow-sm;
   transition:
     transform $transition-normal,
-    box-shadow $transition-normal,
-    border-color $transition-normal;
+    box-shadow $transition-normal;
 
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     box-shadow: $shadow-md;
-    border-color: $rule-strong;
   }
 
   &.featured {
+    background: $surface-2;
     border-color: $rule-brand;
     box-shadow: 0 0 0 1px $rule-brand, $shadow-md;
   }
@@ -374,7 +265,7 @@
   left: 0.9rem;
   padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(255, 255, 255, 0.95);
   color: $brand-deep;
   font-size: 0.74rem;
   font-weight: 650;
@@ -395,41 +286,19 @@
 }
 
 .prod-title {
-  font-size: clamp(1.35rem, 3vw, 1.6rem);
+  font-size: clamp(1.35rem, 3vw, 1.55rem);
   font-weight: 450;
   margin-bottom: 0.6rem;
 }
 
-.prod-text {
-  color: $text-dim;
-  font-size: 0.97rem;
-  line-height: 1.6;
-}
-
 .prod-points {
-  display: grid;
-  gap: 0.45rem;
   margin: 1.1rem 0 1.4rem;
-
-  li {
-    display: flex;
-    gap: 0.55rem;
-    align-items: flex-start;
-    font-size: 0.93rem;
-    color: $text-soft;
-    line-height: 1.45;
-  }
-
-  app-icon {
-    color: $brand;
-    margin-top: 0.05em;
-  }
 }
 
 .prod-foot {
   margin-top: auto;
   padding-top: 1.1rem;
-  border-top: 1px solid $rule;
+  border-top: 1px solid $rule-soft;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -461,8 +330,7 @@
   align-items: center;
   gap: 0.75rem 1rem;
   padding: 1.1rem 1.25rem;
-  border: 1px dashed $rule-strong;
-  border-radius: 16px;
+  border-radius: $radius;
   background: $surface;
 }
 
@@ -470,20 +338,6 @@
   font-weight: 650;
   color: $text;
   font-size: 0.92rem;
-}
-
-.more-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-
-  li {
-    padding: 0.3rem 0.8rem;
-    border-radius: 999px;
-    background: $surface-3;
-    color: $text-soft;
-    font-size: 0.85rem;
-  }
 }
 
 .more-link {
@@ -504,11 +358,10 @@
 }
 
 // ══════════════════════════════════════════════
-// WARUM WIR + ZAHLEN
+// WARUM WIR
 // ══════════════════════════════════════════════
 .why-layout {
   display: grid;
-  gap: 0.5rem;
 
   @media (min-width: $bp-desktop) {
     grid-template-columns: 0.85fr 1.15fr;
@@ -517,202 +370,13 @@
   }
 }
 
-.why-cards {
-  display: grid;
-  gap: 1rem;
-
-  @media (min-width: 620px) {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.why-card {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 1rem;
-  padding: 1.25rem;
-  background: $surface-2;
-  border: 1px solid $rule;
-  border-radius: 18px;
-
-  .icon-badge {
-    grid-row: span 2;
-  }
-
-  h3 {
-    font-family: $font-body;
-    font-size: 1.05rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    margin: 0.1rem 0 0.3rem;
-  }
-
-  @media (min-width: 620px) {
-    display: block;
-    padding: 1.4rem;
-
-    h3 {
-      margin: 0.9rem 0 0.35rem;
-    }
-  }
-
-  p {
-    color: $text-dim;
-    font-size: 0.94rem;
-    line-height: 1.6;
-  }
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem 1.25rem;
+.home-stats {
   margin-top: clamp(2.5rem, 7vw, 4.5rem);
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  li {
-    padding-top: 1rem;
-    border-top: 1px solid $rule-strong;
-  }
-
-  .stat-num {
-    display: block;
-    font-family: $font-display;
-    font-size: clamp(2.2rem, 6vw, 3rem);
-    font-weight: 350;
-    line-height: 1;
-    color: $brand;
-  }
-
-  .stat-label {
-    display: block;
-    margin-top: 0.4rem;
-    font-size: 0.88rem;
-    color: $text-dim;
-  }
 }
 
 // ══════════════════════════════════════════════
-// BRANCHEN
+// ABLAUF, REGION, ANSPRECHPARTNER
 // ══════════════════════════════════════════════
-.ind-grid {
-  display: grid;
-  gap: 0.9rem;
-
-  @media (min-width: 640px) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.1rem;
-  }
-}
-
-.ind-card {
-  display: flex;
-  gap: 1rem;
-  align-items: flex-start;
-  padding: 1.25rem;
-  background: $surface;
-  border: 1px solid $rule;
-  border-radius: 16px;
-
-  h3 {
-    font-family: $font-body;
-    font-size: 1.02rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    margin-bottom: 0.3rem;
-  }
-
-  p {
-    color: $text-dim;
-    font-size: 0.92rem;
-    line-height: 1.55;
-  }
-}
-
-// ══════════════════════════════════════════════
-// ABLAUF
-// ══════════════════════════════════════════════
-.steps {
-  display: grid;
-  gap: 1.5rem;
-  counter-reset: none;
-
-  @media (min-width: 900px) {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.5rem;
-  }
-}
-
-.step {
-  position: relative;
-  padding-left: 3.6rem;
-
-  .step-num {
-    position: absolute;
-    left: 0;
-    top: 0;
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: $brand;
-    color: #fff;
-    font-weight: 700;
-    font-size: 1rem;
-    box-shadow: 0 0 0 6px $brand-tint;
-  }
-
-  // Verbindungslinie: senkrecht auf dem Handy, waagerecht ab Tablet quer.
-  &:not(:last-child)::before {
-    content: "";
-    position: absolute;
-    left: 20px;
-    top: 52px;
-    bottom: -1.3rem;
-    width: 2px;
-    background: $rule-strong;
-  }
-
-  h3 {
-    font-family: $font-body;
-    font-size: 1.08rem;
-    font-weight: 650;
-    letter-spacing: -0.01em;
-    margin: 0.55rem 0 0.35rem;
-  }
-
-  p {
-    color: $text-dim;
-    font-size: 0.94rem;
-    line-height: 1.6;
-  }
-
-  @media (min-width: 900px) {
-    padding-left: 0;
-    padding-top: 3.9rem;
-
-    h3 {
-      margin-top: 0;
-    }
-
-    &:not(:last-child)::before {
-      left: 54px;
-      right: -0.75rem;
-      top: 20px;
-      bottom: auto;
-      width: auto;
-      height: 2px;
-    }
-  }
-}
-
 .center-cta {
   margin-top: clamp(2.25rem, 6vw, 3.5rem);
   text-align: center;
@@ -724,94 +388,6 @@
   }
 }
 
-// ══════════════════════════════════════════════
-// REFERENZEN
-// ══════════════════════════════════════════════
-.ref-grid {
-  display: grid;
-  gap: 1.25rem;
-
-  @media (min-width: 700px) {
-    grid-template-columns: 1fr 1fr;
-  }
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.ref-card {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background: $surface;
-  border: 1px solid $rule;
-  border-radius: 18px;
-  overflow: hidden;
-  color: $text;
-  transition:
-    transform $transition-normal,
-    box-shadow $transition-normal;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: $shadow-md;
-
-    img {
-      transform: scale(1.03);
-    }
-  }
-}
-
-.ref-media {
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: $surface-3;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: top center;
-    transition: transform $transition-slow;
-  }
-}
-
-.ref-body {
-  padding: 1.2rem 1.25rem 1.35rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-
-  h3 {
-    font-size: 1.35rem;
-    font-weight: 450;
-    margin: 0.35rem 0 0.4rem;
-  }
-}
-
-.ref-cat {
-  @include small-caps;
-  font-size: 0.68rem;
-  color: $brand;
-}
-
-.ref-sub {
-  color: $text-dim;
-  font-size: 0.92rem;
-  line-height: 1.5;
-  margin-bottom: 0.9rem;
-}
-
-.ref-more {
-  margin-top: auto;
-  color: $brand;
-  font-weight: 600;
-  font-size: 0.88rem;
-}
-
-// ══════════════════════════════════════════════
-// REGION
-// ══════════════════════════════════════════════
 .region-grid {
   display: grid;
   gap: 2rem;
@@ -821,21 +397,6 @@
     gap: 4rem;
     align-items: center;
   }
-}
-
-.region-text {
-  color: $text-dim;
-  font-size: clamp(1rem, 2.4vw, 1.08rem);
-  line-height: 1.7;
-  max-width: 56ch;
-}
-
-.region-card {
-  padding: clamp(1.25rem, 4vw, 2rem);
-  background: $surface-2;
-  border: 1px solid $rule;
-  border-radius: 20px;
-  box-shadow: $shadow-sm;
 }
 
 .town-head {
@@ -856,36 +417,6 @@
   }
 }
 
-.towns {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-
-  li {
-    padding: 0.35rem 0.85rem;
-    border: 1px solid $rule-strong;
-    border-radius: 999px;
-    font-size: 0.87rem;
-    color: $text-soft;
-    background: $surface-2;
-
-    &.home {
-      background: $brand;
-      border-color: $brand;
-      color: #fff;
-      font-weight: 600;
-    }
-  }
-}
-
-.towns-remote li {
-  border-style: dashed;
-  color: $text-dim;
-}
-
-// ══════════════════════════════════════════════
-// ANSPRECHPARTNER
-// ══════════════════════════════════════════════
 .team-grid {
   display: grid;
   gap: 2rem;
@@ -899,17 +430,8 @@
 
 .team-photo {
   position: relative;
-  margin: 0;
-  border-radius: 20px;
-  overflow: hidden;
-  aspect-ratio: 4 / 3;
-  background: $surface-3;
-  box-shadow: $shadow-md;
 
   img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     object-position: center 18%;
   }
 
@@ -919,8 +441,8 @@
     right: 0.75rem;
     bottom: 0.75rem;
     padding: 0.7rem 1rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.94);
+    border-radius: $radius-sm;
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(8px);
     line-height: 1.3;
 
@@ -939,155 +461,4 @@
   @media (min-width: 900px) {
     aspect-ratio: 4 / 5;
   }
-}
-
-.team-text {
-  color: $text-dim;
-  font-size: clamp(1rem, 2.4vw, 1.08rem);
-  line-height: 1.7;
-  max-width: 58ch;
-}
-
-.team-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 1.75rem;
-
-  .btn {
-    @media (max-width: $bp-mobile) {
-      flex: 1 1 100%;
-    }
-  }
-}
-
-// ══════════════════════════════════════════════
-// FAQ
-// ══════════════════════════════════════════════
-.faq-grid {
-  display: grid;
-
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: 0.8fr 1.2fr;
-    gap: 4rem;
-    align-items: start;
-  }
-}
-
-.faq-list {
-  border-top: 1px solid $rule-strong;
-}
-
-.faq-item {
-  border-bottom: 1px solid $rule;
-
-  summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.15rem 0;
-    cursor: pointer;
-    list-style: none;
-    font-weight: 600;
-    font-size: 1.02rem;
-    line-height: 1.4;
-    color: $text;
-
-    &::-webkit-details-marker {
-      display: none;
-    }
-
-    app-icon {
-      color: $brand;
-      transition: transform $transition-fast;
-    }
-
-    &:focus-visible {
-      outline: 2px solid $brand;
-      outline-offset: 2px;
-      border-radius: 4px;
-    }
-  }
-
-  &[open] summary app-icon {
-    transform: rotate(180deg);
-  }
-
-  p {
-    padding: 0 0 1.25rem;
-    color: $text-dim;
-    font-size: 0.97rem;
-    line-height: 1.7;
-    max-width: 64ch;
-  }
-}
-
-// ══════════════════════════════════════════════
-// ABSCHLUSS-CTA
-// ══════════════════════════════════════════════
-.final-cta {
-  padding: 0 0 clamp(64px, 10vw, 120px);
-}
-
-.cta-box {
-  display: grid;
-  gap: 2rem;
-  padding: clamp(1.75rem, 6vw, 4rem);
-  border-radius: 28px;
-  background:
-    radial-gradient(ellipse 70% 90% at 100% 0%, rgba(91, 147, 214, 0.35), transparent 60%),
-    linear-gradient(145deg, $brand-deep, $surface-ink);
-  color: $text-on-ink;
-  box-shadow: $shadow-md;
-
-  @media (min-width: $bp-desktop) {
-    grid-template-columns: 1.25fr 1fr;
-    gap: 3.5rem;
-    align-items: center;
-  }
-}
-
-.cta-title {
-  font-size: clamp(2rem, 5.5vw, 3.2rem);
-  font-weight: 350;
-  line-height: 1.05;
-  color: #fff;
-  margin-bottom: 1rem;
-
-  ::ng-deep em {
-    font-style: italic;
-    color: #9cc1ef;
-  }
-}
-
-.cta-text {
-  color: rgba(242, 245, 249, 0.8);
-  font-size: clamp(1rem, 2.4vw, 1.1rem);
-  line-height: 1.65;
-  max-width: 52ch;
-}
-
-.cta-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-
-  > .btn {
-    width: 100%;
-  }
-}
-
-.cta-or {
-  text-align: center;
-  font-size: 0.8rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: rgba(242, 245, 249, 0.6);
-}
-
-.cta-direct {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
 }

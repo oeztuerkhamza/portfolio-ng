@@ -1,14 +1,19 @@
-<section class="legal">
+<header class="page-hero legal-hero">
   <div class="container">
-    <div class="folio-line">
-      <span>Breisgau Digital</span>
-      <span class="folio-sep">—</span>
-      <span>Rechtliches</span>
-    </div>
-    <h1 class="legal-title"><em>Impressum</em></h1>
-    <p class="legal-meta">Angaben gemäß § 5 DDG</p>
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Impressum</span>
+    </nav>
+    <p class="section-label">Rechtliches</p>
+    <h1 class="section-title">Impressum</h1>
+    <p class="section-subtitle">Angaben gemäß § 5 DDG</p>
+  </div>
+</header>
 
-    <div class="legal-body">
+<section class="section section-white">
+  <div class="container">
+    <div class="prose">
       <h2>Diensteanbieter</h2>
       <address>
         Hamza Öztürk<br />
@@ -82,7 +87,6 @@
         der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen
         Zustimmung des jeweiligen Autors bzw. Erstellers.
       </p>
-
     </div>
   </div>
 </section>

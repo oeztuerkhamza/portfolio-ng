@@ -26,9 +26,6 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   'cta.read_case': {
     de: 'Fallstudie lesen →', fr: 'Lire l’étude de cas →', en: 'Read case study →', tr: 'Vaka çalışmasını oku →', ku: 'Lêkolînê bixwîne →',
   },
-  'cta.view_work': {
-    de: 'Arbeiten ansehen', fr: 'Voir mes travaux', en: 'View my work', tr: 'Çalışmalarımı gör', ku: 'Karên min bibîne',
-  },
   'demo.open_tab': {
     de: 'In neuem Tab öffnen ↗', fr: 'Ouvrir dans un onglet ↗', en: 'Open in new tab ↗', tr: 'Yeni sekmede aç ↗', ku: 'Di tabek nû de veke ↗',
   },
@@ -76,13 +73,6 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   },
 
   // ---- Section: Services -----------------------------------------------------
-  'svc.new.title': {
-    de: 'Website & Relaunch',
-    fr: 'Site web & refonte',
-    en: 'Website & relaunch',
-    tr: 'Web sitesi & yenileme',
-    ku: 'Malper & nûkirin',
-  },
   'svc.relaunch.title': {
     de: 'Lokal gefunden werden',
     fr: 'Être trouvé localement',
@@ -145,18 +135,17 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   'common.live': { de: 'Live ansehen', fr: 'Voir en ligne', en: 'View live', tr: 'Canlı gör', ku: 'Zindî bibîne' },
   'common.role': { de: 'Rolle', fr: 'Rôle', en: 'Role', tr: 'Rol', ku: 'Rol' },
   'common.period': { de: 'Zeitraum', fr: 'Période', en: 'Period', tr: 'Süre', ku: 'Dem' },
-  'common.stack': { de: 'Stack', fr: 'Stack', en: 'Stack', tr: 'Stack', ku: 'Stack' },
-  'common.resume_arrow': { de: 'Lebenslauf →', fr: 'CV →', en: 'Résumé →', tr: 'Özgeçmiş →', ku: 'Jînenîgarî →' },
 
   // ---- Projects list -------------------------------------------------------
-  'projects.folio': { de: 'Werkverzeichnis', fr: 'Portfolio', en: 'Portfolio', tr: 'Eser listesi', ku: 'Lîsteya karan' },
-  'projects.label': { de: 'Projekte', fr: 'Projets', en: 'Projects', tr: 'Projeler', ku: 'Proje' },
+  'projects.label': {
+    de: 'Referenzen', fr: 'Références', en: 'References', tr: 'Referanslar', ku: 'Referans',
+  },
   'projects.title': {
-    de: 'Ein Werk-<br /><em>verzeichnis</em>.',
-    fr: 'Un <em>portfolio</em><br />de travaux.',
-    en: 'A body of<br /><em>work</em>.',
-    tr: 'Bir eser<br /><em>arşivi</em>.',
-    ku: 'Arşîvek<br /><em>karan</em>.',
+    de: 'Betriebe, die mit uns<br /><em>digital wurden</em>.',
+    fr: 'Des entreprises passées<br /><em>au numérique avec nous</em>.',
+    en: 'Businesses that went<br /><em>digital with us</em>.',
+    tr: 'Bizimle<br /><em>dijitalleşen işletmeler</em>.',
+    ku: 'Karsaziyên ku bi me re<br /><em>dîjîtal bûn</em>.',
   },
   'projects.subtitle': {
     de: 'Ausgewählte Arbeiten für kleine und mittlere Betriebe — von der Warenwirtschaft über Buchungssysteme bis zur mehrsprachigen Website.',
@@ -165,15 +154,19 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Küçük ve orta ölçekli işletmeler için seçilmiş işler — stok yönetiminden rezervasyon sistemlerine, çok dilli web sitelerine kadar.',
     ku: 'Karên hilbijartî ji bo karsaziyên biçûk û navîn — ji rêveberiya stokê heta pergalên rezervasyonê û malperên pirzimanî.',
   },
-  'projects.entries': { de: 'Einträge', fr: 'Entrées', en: 'Entries', tr: 'Kayıt', ku: 'Tomar' },
-  'projects.case': { de: 'Fallstudie', fr: 'Étude de cas', en: 'Case study', tr: 'Vaka çalışması', ku: 'Lêkolîn' },
+  'projects.entries': {
+    de: 'Projekte', fr: 'projets', en: 'projects', tr: 'proje', ku: 'proje',
+  },
 
   // ---- Project detail ------------------------------------------------------
-  'pd.back': { de: 'Zurück zum Verzeichnis', fr: 'Retour au portfolio', en: 'Back to portfolio', tr: 'Listeye dön', ku: 'Vegere lîsteyê' },
-  'pd.case': { de: 'Fallstudie', fr: 'Étude de cas', en: 'Case study', tr: 'Vaka çalışması', ku: 'Lêkolîn' },
+  'pd.back': {
+    de: 'Alle Referenzen', fr: 'Toutes les références', en: 'All references', tr: 'Tüm referanslar', ku: 'Hemû referans',
+  },
   'pd.about': { de: 'Über das Projekt', fr: 'À propos du projet', en: 'About the project', tr: 'Proje hakkında', ku: 'Derbarê projeyê' },
   'pd.highlights': { de: 'Highlights', fr: 'Points forts', en: 'Highlights', tr: 'Öne çıkanlar', ku: 'Girîng' },
-  'pd.tech': { de: 'Technologie-Stack', fr: 'Stack technique', en: 'Tech stack', tr: 'Teknoloji yığını', ku: 'Stacka teknolojiyê' },
+  'pd.tech': {
+    de: 'Eingesetzte Technik', fr: 'Technologies utilisées', en: 'Technology used', tr: 'Kullanılan teknoloji', ku: 'Teknolojiya bikaranî',
+  },
   'pd.cta.title': {
     de: 'Interesse an einer<br /><em>Zusammenarbeit?</em>',
     fr: 'Envie de<br /><em>collaborer ?</em>',
@@ -189,23 +182,24 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Ji me re behsa plana xwe bikin — em bi rastî dibêjin çi hewce ye û çiqas dike.',
   },
   'pd.nf.title': {
-    de: 'Eintrag nicht<br /><em>aufgefunden</em>.',
-    fr: 'Entrée<br /><em>introuvable</em>.',
-    en: 'Entry not<br /><em>found</em>.',
-    tr: 'Kayıt<br /><em>bulunamadı</em>.',
-    ku: 'Tomar nehat<br /><em>dîtin</em>.',
+    de: 'Referenz nicht<br /><em>gefunden</em>.',
+    fr: 'Référence<br /><em>introuvable</em>.',
+    en: 'Reference<br /><em>not found</em>.',
+    tr: 'Referans<br /><em>bulunamadı</em>.',
+    ku: 'Referans<br /><em>nehat dîtin</em>.',
   },
   'pd.nf.text': {
-    de: 'Das gesuchte Werk existiert nicht im Verzeichnis. Womöglich wurde es archiviert oder neu sortiert.',
-    fr: 'Le projet recherché n’existe pas dans le portfolio. Il a peut-être été archivé ou réorganisé.',
-    en: 'The work you’re looking for isn’t in the portfolio. It may have been archived or reorganised.',
-    tr: 'Aradığınız çalışma listede yok. Arşivlenmiş veya yeniden düzenlenmiş olabilir.',
-    ku: 'Kara ku hûn lê digerin di lîsteyê de tune. Dibe ku hatibe arşîvkirin an ji nû ve hatibe rêzkirin.',
+    de: 'Diese Seite gibt es nicht (mehr). In der Übersicht finden Sie alle aktuellen Referenzen.',
+    fr: 'Cette page n’existe pas (ou plus). Toutes les références actuelles se trouvent dans la vue d’ensemble.',
+    en: 'This page doesn’t exist (any more). You’ll find all current references in the overview.',
+    tr: 'Bu sayfa mevcut değil (artık yok). Tüm güncel referansları genel bakışta bulabilirsiniz.',
+    ku: 'Ev rûpel tune ye (êdî tune ye). Hemû referansên heyî di nêrîna giştî de ne.',
   },
-  'pd.nf.cta': { de: 'Zum Werkverzeichnis', fr: 'Voir le portfolio', en: 'To the portfolio', tr: 'Eser listesine', ku: 'Bo lîsteya karan' },
+  'pd.nf.cta': {
+    de: 'Zu den Referenzen', fr: 'Voir les références', en: 'Go to references', tr: 'Referanslara git', ku: 'Here referansan',
+  },
 
   // ---- Contact -------------------------------------------------------------
-  'contact.folio': { de: 'Korrespondenz', fr: 'Correspondance', en: 'Correspondence', tr: 'Yazışma', ku: 'Nameyî' },
   'contact.label': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },
   'contact.title': {
     de: 'Lassen Sie uns<br /><em>zusammenarbeiten</em>.',
@@ -221,33 +215,19 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'İlginiz için teşekkürler. Yeni bir iş, mevcut bir sistem ya da kısa bir soru — mesajınızı bekliyoruz.',
     ku: 'Spas ji bo eleqeya we. Projeyeke nû, pergaleke heyî an pirsek kurt — em li benda peyama we ne.',
   },
-  'contact.channels': { de: 'Direkte Kanäle', fr: 'Canaux directs', en: 'Direct channels', tr: 'Doğrudan kanallar', ku: 'Kanalên rasterast' },
-  'contact.ch.email': { de: 'E-Mail · Bevorzugt', fr: 'E-mail · Préféré', en: 'Email · Preferred', tr: 'E-posta · Tercih edilen', ku: 'E-name · Tercîh' },
-  'contact.ch.phone': { de: 'Telefon · Mobil', fr: 'Téléphone · Mobile', en: 'Phone · Mobile', tr: 'Telefon · Mobil', ku: 'Telefon · Mobîl' },
-  'contact.ch.linkedin': { de: 'LinkedIn · Beruflich', fr: 'LinkedIn · Pro', en: 'LinkedIn · Professional', tr: 'LinkedIn · Profesyonel', ku: 'LinkedIn · Pîşeyî' },
-  'contact.ch.github': { de: 'GitHub · Code', fr: 'GitHub · Code', en: 'GitHub · Code', tr: 'GitHub · Kod', ku: 'GitHub · Kod' },
-  'contact.ch.whatsapp': { de: 'WhatsApp · Schnell', fr: 'WhatsApp · Rapide', en: 'WhatsApp · Fast', tr: 'WhatsApp · Hızlı', ku: 'WhatsApp · Bilez' },
-  'contact.ch.instagram': { de: 'Instagram · Persönlich', fr: 'Instagram · Personnel', en: 'Instagram · Personal', tr: 'Instagram · Kişisel', ku: 'Instagram · Şexsî' },
-  'contact.ch.website': { de: 'Website · Diese Seite', fr: 'Site · Cette page', en: 'Website · This site', tr: 'Web sitesi · Bu sayfa', ku: 'Malper · Ev rûpel' },
   'contact.post': { de: 'Postanschrift', fr: 'Adresse postale', en: 'Postal address', tr: 'Posta adresi', ku: 'Navnîşana postê' },
-  'contact.langs': { de: 'Sprachen', fr: 'Langues', en: 'Languages', tr: 'Diller', ku: 'Ziman' },
   'contact.langsval': { de: 'Deutsch · Türkisch · Englisch', fr: 'Allemand · Turc · Anglais', en: 'German · Turkish · English', tr: 'Almanca · Türkçe · İngilizce', ku: 'Almanî · Tirkî · Îngilîzî' },
-  'contact.status': { de: 'Status', fr: 'Statut', en: 'Status', tr: 'Durum', ku: 'Rewş' },
-  'contact.statusval': { de: 'Verfügbar für Projekte', fr: 'Disponible pour des projets', en: 'Available for projects', tr: 'Projelere açık', ku: 'Ji bo projeyan berdest' },
   'contact.response': { de: 'Antwortzeit', fr: 'Délai de réponse', en: 'Response time', tr: 'Yanıt süresi', ku: 'Dema bersivê' },
   'contact.responseval': { de: '< 24 Stunden', fr: '< 24 heures', en: '< 24 hours', tr: '< 24 saat', ku: '< 24 saet' },
-  'contact.closing': { de: 'Hochachtungsvoll,', fr: 'Cordialement,', en: 'Sincerely,', tr: 'Saygılarımla,', ku: 'Bi rêz,' },
-  'contact.portfolio': { de: 'Werkverzeichnis', fr: 'Portfolio', en: 'Portfolio', tr: 'Eser listesi', ku: 'Lîsteya karan' },
 
   // ---- Leistungen page -----------------------------------------------------
-  'leist.folio': { de: 'Leistungen · Freiburg', fr: 'Services · Fribourg', en: 'Services · Freiburg', tr: 'Hizmetler · Freiburg', ku: 'Xizmet · Freiburg' },
   'leist.label': { de: 'Leistungen', fr: 'Services', en: 'Services', tr: 'Hizmetler', ku: 'Xizmet' },
   'leist.title': {
-    de: 'Webentwicklung,<br />die <em>gefunden wird</em>.',
-    fr: 'Du développement web<br />qui <em>se fait trouver</em>.',
-    en: 'Web development<br />that <em>gets found</em>.',
-    tr: '<em>Bulunan</em><br />web geliştirme.',
-    ku: 'Pêşxistina webê<br /> ku <em>tê dîtin</em>.',
+    de: 'Alles, was Ihr Betrieb<br /><em>online braucht</em>.',
+    fr: 'Tout ce dont votre entreprise<br /><em>a besoin en ligne</em>.',
+    en: 'Everything your business<br /><em>needs online</em>.',
+    tr: 'İşletmenizin internette<br /><em>ihtiyaç duyduğu her şey</em>.',
+    ku: 'Her tiştê ku karsaziya we<br /><em>li ser înternetê hewce dike</em>.',
   },
   'leist.intro': {
     de: 'Wir sind <strong>Breisgau Digital</strong> aus <strong>Freiburg im Breisgau</strong> und digitalisieren kleine und mittlere Betriebe: Websites, die gefunden werden, Abläufe, die Zeit sparen, und Shops, die verkaufen — persönlich, direkt und ohne Agentur-Aufschlag.',
@@ -280,16 +260,20 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   'leist.s2.p3': { de: 'Sanfte Migration ohne Ranking-Verlust', fr: 'Migration en douceur sans perte SEO', en: 'Smooth migration with no ranking loss', tr: 'Sıralama kaybı olmadan sorunsuz geçiş', ku: 'Veguhastina nerm bê windakirina rêzê' },
   'leist.s2.p4': { de: 'Messbar schnellere Ladezeiten', fr: 'Temps de chargement nettement réduits', en: 'Measurably faster load times', tr: 'Ölçülebilir şekilde daha hızlı yükleme', ku: 'Demên barkirinê yên bi pîvan zûtir' },
   'leist.s3.text': {
-    de: 'Wenn Standardsoftware nicht reicht: maßgeschneiderte Web-Anwendungen, Kundenportale und Geschäftsprozesse — sauber architektiert mit Angular, .NET und der Azure Cloud.',
-    fr: 'Quand les logiciels standards ne suffisent pas : applications web, portails clients et processus métier sur mesure — proprement architecturés avec Angular, .NET et Azure.',
-    en: 'When off-the-shelf software falls short: tailor-made web applications, customer portals and business processes — cleanly architected with Angular, .NET and Azure.',
-    tr: 'Hazır yazılım yetmediğinde: size özel web uygulamaları, müşteri portalları ve iş süreçleri — Angular, .NET ve Azure ile temiz mimaride.',
-    ku: 'Gava nermalava standard têra nake: sepanên webê yên taybetî, portalên xerîdaran û pêvajoyên karsaziyê — bi Angular, .NET û Azure bi paqijî hatine avakirin.',
+    de: 'Wenn Standardsoftware nicht passt: Terminplanung, Bestand, Angebote oder ein Kundenportal — zugeschnitten auf Ihren Betrieb und so einfach, dass Ihr Team es ohne Schulung bedient.',
+    fr: 'Quand les logiciels standard ne suffisent pas : planning, stock, devis ou espace client — sur mesure pour votre entreprise et si simple que votre équipe l’utilise sans formation.',
+    en: 'When off-the-shelf software doesn’t fit: scheduling, stock, quotes or a customer portal — tailored to your business and simple enough for your team to use without training.',
+    tr: 'Hazır yazılım yetmediğinde: randevu planlama, stok, teklifler veya müşteri portalı — işletmenize göre uyarlanmış ve ekibinizin eğitimsiz kullanabileceği kadar basit.',
+    ku: 'Dema ku nermalava standard têr nake: plansaziya randevûyan, stok, pêşniyar an portala xerîdaran — li gorî karsaziya we û ew qas hêsan ku tîma we bê perwerde bi kar tîne.',
   },
   'leist.s3.p1': { de: 'Kundenportale & interne Tools', fr: 'Portails clients & outils internes', en: 'Customer portals & internal tools', tr: 'Müşteri portalları & dahili araçlar', ku: 'Portalên xerîdaran & amûrên hundirîn' },
   'leist.s3.p2': { de: 'Schnittstellen (APIs) zu Ihren Systemen', fr: 'Interfaces (API) vers vos systèmes', en: 'Interfaces (APIs) to your systems', tr: 'Sistemlerinize arayüzler (API)', ku: 'Navrûyên (API) bi pergalên we' },
-  'leist.s3.p3': { de: 'Saubere, wartbare Clean Architecture', fr: 'Clean Architecture propre et maintenable', en: 'Clean, maintainable architecture', tr: 'Temiz, sürdürülebilir mimari', ku: 'Avahiyek paqij û domdar' },
-  'leist.s3.p4': { de: 'Skalierbar in der Cloud (Azure)', fr: 'Évolutif dans le cloud (Azure)', en: 'Scalable in the cloud (Azure)', tr: 'Bulutta ölçeklenebilir (Azure)', ku: 'Di ewr de berfireh (Azure)' },
+  'leist.s3.p3': {
+    de: 'Einfach zu bedienen, auch auf dem Handy', fr: 'Simple à utiliser, même sur mobile', en: 'Easy to use, even on a phone', tr: 'Telefonda bile kolay kullanım', ku: 'Hêsan e, li ser telefonê jî',
+  },
+  'leist.s3.p4': {
+    de: 'Sicherer Betrieb mit Updates und Backups', fr: 'Exploitation sûre avec mises à jour et sauvegardes', en: 'Safe operation with updates and backups', tr: 'Güncelleme ve yedeklemeyle güvenli işletim', ku: 'Xebata ewle bi nûkirin û paşeqeydan',
+  },
   'leist.s4.text': {
     de: 'Verkaufen Sie online — mit einem Shop, der schnell ist, Vertrauen schafft und sich leicht verwalten lässt. Inklusive Zahlungsanbindung und mehrsprachigem Auftritt.',
     fr: 'Vendez en ligne — avec une boutique rapide, rassurante et facile à gérer. Paiement intégré et site multilingue inclus.',
@@ -316,7 +300,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Bizden <em>ne</em><br />bekleyebilirsiniz.',
     ku: 'Hûn dikarin ji me<br /><em>çi hêvî bikin</em>.',
   },
-  'leist.why1.t': { de: '🤝 Direkt & persönlich', fr: '🤝 Direct & personnel', en: '🤝 Direct & personal', tr: '🤝 Doğrudan & kişisel', ku: '🤝 Rasterast & şexsî' },
+  'leist.why1.t': { de: 'Direkt & persönlich', fr: 'Direct & personnel', en: 'Direct & personal', tr: 'Doğrudan & kişisel', ku: 'Rasterast & şexsî' },
   'leist.why1.d': {
     de: 'Sie sprechen immer mit derselben Person — nicht mit einem Callcenter. Kurze Wege, schnelle Antworten.',
     fr: 'Vous parlez toujours à la même personne — pas à un centre d’appels. Circuits courts, réponses rapides.',
@@ -324,7 +308,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Her zaman aynı kişiyle konuşursunuz — çağrı merkeziyle değil. Kısa yol, hızlı cevap.',
     ku: 'Hûn her tim bi heman kesî re dipeyivin — ne bi navendeke telefonê. Rêyên kurt, bersivên bilez.',
   },
-  'leist.why2.t': { de: '📍 Aus Freiburg', fr: '📍 Depuis Fribourg', en: '📍 From Freiburg', tr: '📍 Freiburg’dan', ku: '📍 Ji Freiburgê' },
+  'leist.why2.t': { de: 'Aus Freiburg', fr: 'Depuis Fribourg', en: 'From Freiburg', tr: 'Freiburg’dan', ku: 'Ji Freiburgê' },
   'leist.why2.d': {
     de: 'Lokal verankert in der Region. Auf Wunsch treffen wir uns persönlich auf einen Kaffee.',
     fr: 'Ancré dans la région. Sur demande, on se voit autour d’un café.',
@@ -332,15 +316,17 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Bölgede yerel olarak köklü. İsterseniz bir kahve eşliğinde yüz yüze görüşürüz.',
     ku: 'Bi awayekî herêmî di herêmê de bi rehên xwe. Li ser daxwazê em rûbirû li ser qehweyekê hev dibînin.',
   },
-  'leist.why3.t': { de: '⚡ Moderne Technik', fr: '⚡ Technologie moderne', en: '⚡ Modern technology', tr: '⚡ Modern teknoloji', ku: '⚡ Teknolojiya nûjen' },
-  'leist.why3.d': {
-    de: 'Aktueller Stack (Angular, .NET, Next.js), Server-Side-Rendering und Top-Ladezeiten.',
-    fr: 'Stack actuel (Angular, .NET, Next.js), rendu côté serveur et temps de chargement au top.',
-    en: 'Current stack (Angular, .NET, Next.js), server-side rendering and top load times.',
-    tr: 'Güncel stack (Angular, .NET, Next.js), sunucu taraflı render ve üst düzey yükleme süreleri.',
-    ku: 'Stacka heyî (Angular, .NET, Next.js), renderkirina aliyê serverê û demên barkirinê yên herî baş.',
+  'leist.why3.t': {
+    de: 'Schnell & sicher', fr: 'Rapide et sûr', en: 'Fast & secure', tr: 'Hızlı ve güvenli', ku: 'Bilez û ewle',
   },
-  'leist.why4.t': { de: '🔍 SEO inklusive', fr: '🔍 SEO inclus', en: '🔍 SEO included', tr: '🔍 SEO dahil', ku: '🔍 SEO tê de' },
+  'leist.why3.d': {
+    de: 'Kurze Ladezeiten, aktuelle Technik und regelmäßige Updates — darum kümmern wir uns, nicht Sie.',
+    fr: 'Chargement rapide, technique à jour et mises à jour régulières — c’est notre affaire, pas la vôtre.',
+    en: 'Fast loading, up-to-date technology and regular updates — we take care of it, not you.',
+    tr: 'Kısa yüklenme süreleri, güncel teknoloji ve düzenli güncellemeler — bunlarla siz değil biz ilgileniriz.',
+    ku: 'Barkirina bilez, teknolojiya nû û nûkirinên birêkûpêk — em pê re mijûl dibin, ne hûn.',
+  },
+  'leist.why4.t': { de: 'SEO inklusive', fr: 'SEO inclus', en: 'SEO included', tr: 'SEO dahil', ku: 'SEO tê de' },
   'leist.why4.d': {
     de: 'Suchmaschinenoptimierung ist eingebaut, kein teures Extra. Damit Sie gefunden werden.',
     fr: 'Le référencement est intégré, pas une option coûteuse. Pour être trouvé.',
@@ -348,7 +334,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Arama motoru optimizasyonu dahildir, pahalı bir ek değil. Bulunmanız için.',
     ku: 'Xweşkirina motora lêgerînê tê de ye, ne zêdeyek biha. Da ku hûn werin dîtin.',
   },
-  'leist.why5.t': { de: '💶 Transparenter Festpreis', fr: '💶 Prix fixe transparent', en: '💶 Transparent fixed price', tr: '💶 Şeffaf sabit fiyat', ku: '💶 Bihayê sabît ê zelal' },
+  'leist.why5.t': { de: 'Transparenter Festpreis', fr: 'Prix fixe transparent', en: 'Transparent fixed price', tr: 'Şeffaf sabit fiyat', ku: 'Bihayê sabît ê zelal' },
   'leist.why5.d': {
     de: 'Klares Angebot vor Projektstart. Keine versteckten Kosten, keine Überraschungen.',
     fr: 'Devis clair avant le démarrage. Aucun coût caché, aucune surprise.',
@@ -356,7 +342,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Proje başlamadan net teklif. Gizli maliyet yok, sürpriz yok.',
     ku: 'Pêşniyarek zelal berî destpêka projeyê. Ti lêçûnên veşartî, ti sosret tune.',
   },
-  'leist.why6.t': { de: '🛠️ Betreuung danach', fr: '🛠️ Suivi après-projet', en: '🛠️ Ongoing support', tr: '🛠️ Sonrasında destek', ku: '🛠️ Piştgiriya piştî' },
+  'leist.why6.t': { de: 'Betreuung danach', fr: 'Suivi après-projet', en: 'Ongoing support', tr: 'Sonrasında destek', ku: 'Piştgiriya piştî' },
   'leist.why6.d': {
     de: 'Auch nach dem Start sind wir für Updates, Hosting und Weiterentwicklung da.',
     fr: 'Après la mise en ligne aussi, nous restons là pour les mises à jour, l’hébergement et les évolutions.',
@@ -495,7 +481,6 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Ücretsiz ve bağlayıcı olmayan ilk görüşme — planınızı anlatmanız yeterli.',
     ku: 'Axaftina yekem a belaş û bê mecbûrî — tenê behsa plana xwe ji me re bikin.',
   },
-  'leist.cta.btn': { de: 'Jetzt anfragen', fr: 'Demander maintenant', en: 'Get in touch now', tr: 'Şimdi iletişime geç', ku: 'Niha têkilî daîne' },
 
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
@@ -1327,11 +1312,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Kî <em>li ser telefonê</em> ye.',
   },
   'about.who.role': {
-    de: 'Gründer · Full-Stack-Entwickler',
-    fr: 'Fondateur · développeur full-stack',
-    en: 'Founder · full-stack developer',
-    tr: 'Kurucu · full-stack geliştirici',
-    ku: 'Damezirîner · pêşvebirê full-stack',
+    de: 'Gründer · Fachinformatiker (IHK)',
+    fr: 'Fondateur · informaticien (IHK)',
+    en: 'Founder · IT specialist (IHK)',
+    tr: 'Kurucu · Bilişim uzmanı (IHK)',
+    ku: 'Damezrîner · Pisporê IT (IHK)',
   },
   'about.who.text': {
     de: 'Breisgau Digital ist das Einzelunternehmen von <strong>Hamza Öztürk</strong>. Ausgebildeter Fachinformatiker (IHK), vorher Full-Stack-Entwickler bei einem Freiburger Softwarehaus, wo unter anderem ein Desktop-ERP in eine Web-Anwendung überführt wurde. Für größere Vorhaben arbeiten wir mit festen Partnern für Gestaltung, Text und Fotografie — Ihr Ansprechpartner bleibt derselbe.',
