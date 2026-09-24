@@ -8,8 +8,9 @@ const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
 // HTML in each language. Unknown URLs are server-rendered (real 404 / redirect).
 export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Server },
-  // Admin-Portal: nur im Browser, wird nicht vorgerendert.
-  { path: 'admin', renderMode: RenderMode.Client },
+  // Admin-Portal: als leere Hülle vorgerendert (Vercel liefert nur fertige
+  // Seiten aus); Anmeldung und Daten laufen danach im Browser.
+  { path: 'admin', renderMode: RenderMode.Prerender },
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
@@ -26,6 +27,8 @@ export const serverRoutes: ServerRoute[] = [
       ),
   },
   { path: ':locale/contact', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/bestellen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/bestellen/danke', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/datenschutz', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: '**', renderMode: RenderMode.Server },

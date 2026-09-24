@@ -47,6 +47,8 @@ const urls = collect(BROWSER_DIR)
   })
   // Drop 404/error helper folders if any slip in.
   .filter((p) => !p.includes('404'))
+  // Admin-Portal und Bestellstrecke gehören nicht in den Suchindex.
+  .filter((p) => !/^\/admin|\/bestellen(\/|$)/.test(p))
   .sort();
 
 const body = urls
