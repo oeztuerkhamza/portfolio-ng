@@ -431,47 +431,6 @@ Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit SQL Server
     },
   },
   {
-    slug: 'hochzeitseinladung',
-    title: 'Digitale Hochzeitseinladung',
-    subtitle: 'Interaktive Einladungswebsite mit Countdown & Galerie',
-    category: 'Website',
-    tags: ['Angular 19', 'Frontend', 'SSR', 'Netlify'],
-    image: '/assets/images/hohezeit.png',
-    liveUrl: 'https://melike-ve-musa-evleniyor.netlify.app/',
-    githubUrl: 'https://github.com/oeztuerkhamza/dugun',
-    description:
-      'Elegante digitale Hochzeitseinladung mit Countdown, Fotogalerie, Veranstaltungsort-Karte, Geschenke-Bereich und Sprachwechsler.',
-    longDescription: `Eine elegante digitale Hochzeitseinladung, die als Single-Page-Application mit Angular 19 entwickelt wurde. Die Anwendung ersetzt klassische Papier-Einladungen durch ein interaktives, modernes Web-Erlebnis mit Animationen und Echtzeit-Countdown.
-
-Die Seite umfasst einen Hero-Bereich mit Splash-Screen, einen Live-Countdown bis zur Hochzeit, eine Fotogalerie, YouTube-Video-Integration, interaktive Veranstaltungsort-Karte, Geschenke-Bereich mit IBAN- und PayPal-QR-Codes sowie einen Sprachwechsler. Deployment erfolgt automatisiert über GitHub Actions auf Netlify mit eigener Custom Domain.`,
-    features: [
-      'Animierter Splash-Screen und Hero-Bereich',
-      'Echtzeit-Countdown bis zur Hochzeit',
-      'Fotogalerie mit Lightbox-Effekt',
-      'Geschenke-Bereich mit IBAN & PayPal QR-Codes',
-      'Interaktive Veranstaltungsort-Karte',
-      'YouTube-Video-Integration',
-      'Custom Domain mit GitHub Actions CI/CD',
-    ],
-    techStack: [
-      { name: 'Angular 19', icon: '🅰️' },
-      { name: 'TypeScript', icon: '📘' },
-      { name: 'SCSS', icon: '🎨' },
-      { name: 'Netlify', icon: '🚀' },
-      { name: 'SSR', icon: '⚡' },
-      { name: 'GitHub Actions', icon: '🔄' },
-    ],
-    screenshots: ['/assets/images/hohezeit.png'],
-    role: 'Full-Stack Developer',
-    duration: '2025',
-    demo: {
-      type: 'iframe',
-      url: 'https://melike-ve-musa-evleniyor.netlify.app/',
-      poster: '/assets/images/hohezeit.png',
-      note: 'Live-Demo — geöffnet im eingebetteten Browser',
-    },
-  },
-  {
     slug: 'bewerbungs-manager',
     title: 'Bewerbungs-Manager',
     subtitle: 'KI-gestützte Bewerbungsautomatisierung',
