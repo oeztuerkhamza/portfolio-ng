@@ -94,16 +94,9 @@ footer {
   color: $text;
 
   .brand-mark {
-    display: grid;
-    place-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
-    background: linear-gradient(145deg, $brand-light, $brand-deep 70%);
-    color: #fff;
-    font-family: $font-display;
-    font-weight: 600;
-    font-size: 1rem;
+    display: block;
+    width: auto;
+    height: 56px;
   }
 
   .mark-name {
