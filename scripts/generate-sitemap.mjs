@@ -25,13 +25,18 @@ function collect(dir, acc = []) {
 
 const today = new Date().toISOString().slice(0, 10);
 
-// Priority/frequency hints by top-level path.
+// Priority/frequency hints. Paths carry the locale prefix (/de/…); the part
+// after it decides the weight.
 function meta(path) {
   if (path === '/') return { priority: '1.0', freq: 'weekly' };
-  if (path === '/leistungen') return { priority: '0.9', freq: 'monthly' };
-  if (path === '/projects') return { priority: '0.8', freq: 'weekly' };
-  if (path.startsWith('/projects/')) return { priority: '0.7', freq: 'monthly' };
-  if (path === '/contact') return { priority: '0.7', freq: 'yearly' };
+  const page = path.replace(/^\/(de|fr|en|tr|ku)(?=\/|$)/, '') || '/';
+  if (page === '/') return { priority: '0.9', freq: 'weekly' };
+  if (['/leistungen', '/bewertungskarten', '/smart-home'].includes(page)) {
+    return { priority: '0.9', freq: 'monthly' };
+  }
+  if (page === '/projects') return { priority: '0.7', freq: 'monthly' };
+  if (page.startsWith('/projects/')) return { priority: '0.6', freq: 'monthly' };
+  if (page === '/contact' || page === '/ueber-uns') return { priority: '0.7', freq: 'yearly' };
   return { priority: '0.5', freq: 'yearly' };
 }
 

@@ -31,8 +31,6 @@ export interface Project {
   screenshots: string[];
   role: string;
   duration: string;
-  /** Surface in the home "Live-Demos" showcase. */
-  featured?: boolean;
   /** Drives the interactive browser/phone-frame demo. */
   demo?: ProjectDemo;
 }
@@ -81,7 +79,6 @@ Dazu kommt, was ein einzelner Laden sonst von Hand macht: Ein Hintergrunddienst 
     ],
     role: 'Full-Stack Developer & Architekt',
     duration: '2026/3 – Heute',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://bikehausfreiburg.com',
@@ -132,7 +129,6 @@ Betrieben wird das Ganze auf einem eigenen Server mit Docker und nginx: API, Adm
     ],
     role: 'Full-Stack Developer & Architekt',
     duration: '2025 – Heute',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://benlirad.de',
@@ -176,7 +172,6 @@ Das System erkennt automatisch gesetzlich vorgeschriebene Pausen, validiert maxi
     screenshots: ['/assets/images/diflux-1.png'],
     role: 'Full-Stack Developer',
     duration: '2025 – 2026',
-    featured: true,
     demo: {
       type: 'image',
       screens: ['/assets/images/diflux-1.png'],
@@ -226,7 +221,6 @@ Die Besonderheit liegt hinter den Kulissen: Das Studio betreibt zwei Marken — 
     ],
     role: 'Full-Stack Developer & Designer',
     duration: '2026 – Heute',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://gknportraits.de',
@@ -277,7 +271,6 @@ Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit nginx und 
     ],
     role: 'Full-Stack Developer & Designer',
     duration: '2026',
-    featured: true,
     demo: {
       type: 'image',
       url: 'https://dj-veys.de',
@@ -332,7 +325,6 @@ Darunter liegt Next.js 16 mit React Server Components und Server Actions, Prisma
     ],
     role: 'Solo Developer & Designer',
     duration: '2025 – Heute',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://zerin-gold.de',
@@ -381,7 +373,6 @@ Technisch ist es bewusst die einfachste tragfähige Lösung. Angular 21 mit Stan
     ],
     role: 'Full-Stack Developer & Designer',
     duration: '2025 – Heute',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://oeztuerkhamza.github.io/bergfrieden-hotel/',
@@ -473,7 +464,6 @@ Die Seite umfasst einen Hero-Bereich mit Splash-Screen, einen Live-Countdown bis
     screenshots: ['/assets/images/hohezeit.png'],
     role: 'Full-Stack Developer',
     duration: '2025',
-    featured: true,
     demo: {
       type: 'iframe',
       url: 'https://melike-ve-musa-evleniyor.netlify.app/',
@@ -519,6 +509,3 @@ Das System analysiert Stellenausschreibungen, extrahiert relevante Keywords und 
     },
   },
 ];
-
-/** Projects surfaced in the home "Live-Demos" showcase, in order. */
-export const FEATURED_PROJECTS = PROJECTS.filter((p) => p.featured);

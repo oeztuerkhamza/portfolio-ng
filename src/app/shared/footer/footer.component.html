@@ -1,97 +1,55 @@
 <footer>
   <div class="footer-inner">
 
-    <!-- Editorial sign-off -->
-    <div class="signoff">
-      <p class="eyebrow">{{ i18n.t('footer.eyebrow') }}</p>
-      <h2 class="signoff-title" [innerHTML]="i18n.t('footer.signoff')"></h2>
-      <a [routerLink]="'/contact' | localize" class="btn btn-secondary">
-        {{ i18n.t('cta.contact') }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </a>
-    </div>
-
-    <hr class="rule" />
-
-    <!-- Footer columns -->
     <div class="footer-grid">
       <div class="col col-brand">
         <a [routerLink]="'/' | localize" class="footer-mark">
-          <span class="mark-num">B&#8202;D</span>
+          <span class="brand-mark" aria-hidden="true">BD</span>
           <span class="mark-name">Breisgau Digital</span>
         </a>
         <p class="brand-tagline" [innerHTML]="i18n.t('footer.tagline')"></p>
       </div>
 
       <div class="col">
-        <p class="col-label"><span class="num">01</span> {{ i18n.t('footer.col.content') }}</p>
+        <p class="col-label">{{ i18n.t('footer.col.products') }}</p>
         <ul>
-          <li><a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a></li>
-          <li><a [routerLink]="'/leistungen' | localize">{{ i18n.t('nav.leistungen') }}</a></li>
-          <li><a [routerLink]="'/bewertungskarten' | localize">{{ i18n.t('nav.cards') }}</a></li>
-          <li><a [routerLink]="'/projects' | localize">{{ i18n.t('nav.projects') }}</a></li>
+          <li><a [routerLink]="'/bewertungskarten' | localize">{{ i18n.t('home.prod.cards.title') }}</a></li>
+          <li><a [routerLink]="'/leistungen' | localize">{{ i18n.t('home.prod.web.title') }}</a></li>
+          <li><a [routerLink]="'/smart-home' | localize">{{ i18n.t('home.prod.sh.title') }}</a></li>
+          <li><a [routerLink]="'/leistungen' | localize">{{ i18n.t('home.services.more') }}</a></li>
+        </ul>
+      </div>
+
+      <div class="col">
+        <p class="col-label">{{ i18n.t('footer.col.company') }}</p>
+        <ul>
           <li><a [routerLink]="'/ueber-uns' | localize">{{ i18n.t('nav.about') }}</a></li>
+          <li><a [routerLink]="'/projects' | localize">{{ i18n.t('nav.references') }}</a></li>
           <li><a [routerLink]="'/contact' | localize">{{ i18n.t('nav.contact') }}</a></li>
+          <li><a [routerLink]="'/impressum' | localize">{{ i18n.t('nav.impressum') }}</a></li>
+          <li><a [routerLink]="'/datenschutz' | localize">{{ i18n.t('nav.datenschutz') }}</a></li>
         </ul>
       </div>
 
       <div class="col">
-        <p class="col-label"><span class="num">02</span> {{ i18n.t('footer.col.elsewhere') }}</p>
-        <ul>
-          <li>
-            <a href="https://github.com/oeztuerkhamza" target="_blank" rel="noopener">
-              GitHub <span class="ext">↗</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://www.linkedin.com/in/hamzaoeztuerk/" target="_blank" rel="noopener">
-              LinkedIn <span class="ext">↗</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://wa.me/4915566859378" target="_blank" rel="noopener">
-              WhatsApp <span class="ext">↗</span>
-            </a>
-          </li>
-          <li>
-            <a href="https://www.instagram.com/hamza_oeztuerk" target="_blank" rel="noopener">
-              Instagram <span class="ext">↗</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-
-      <div class="col">
-        <p class="col-label"><span class="num">03</span> {{ i18n.t('footer.col.direct') }}</p>
-        <ul>
-          <li>
-            <a href="mailto:hamza.oeztuerk@web.de">hamza.oeztuerk&#64;web.de</a>
-          </li>
-          <li>
-            <a href="tel:+4915566859378">+49 155 66859378</a>
-          </li>
-          <li class="addr">Bissierstr. 16<br />79114 Freiburg, DE</li>
+        <p class="col-label">{{ i18n.t('footer.col.direct') }}</p>
+        <ul class="contact-list">
+          <li><a [href]="company.phoneHref"><app-icon name="phone" /> {{ company.phoneDisplay }}</a></li>
+          <li><a [href]="whatsapp" target="_blank" rel="noopener"><app-icon name="chat" /> WhatsApp</a></li>
+          <li><a [href]="'mailto:' + company.email"><app-icon name="mail" /> {{ company.email }}</a></li>
+          <li><a [href]="company.instagram" target="_blank" rel="noopener"><app-icon name="instagram" /> Instagram</a></li>
+          <li class="addr"><app-icon name="pin" /> <span>{{ company.street }}<br />{{ company.city }}</span></li>
         </ul>
       </div>
     </div>
 
     <hr class="rule" />
 
-    <!-- Imprint line -->
     <div class="imprint">
-      <p class="imprint-left">
-        <span class="numeral">{{ currentYear }}</span>
-        &nbsp;·&nbsp; Breisgau Digital &nbsp;·&nbsp; Hamza Öztürk &nbsp;·&nbsp; {{ i18n.t('footer.rights') }}
-        &nbsp;·&nbsp;
+      <p>© {{ currentYear }} Breisgau Digital · Inh. Hamza Öztürk · {{ i18n.t('footer.rights') }}</p>
+      <p class="imprint-links">
         <a [routerLink]="'/impressum' | localize">{{ i18n.t('nav.impressum') }}</a>
-        &nbsp;·&nbsp;
         <a [routerLink]="'/datenschutz' | localize">{{ i18n.t('nav.datenschutz') }}</a>
-      </p>
-      <p class="imprint-right">
-        Gesetzt in <em>Fraunces</em> &amp; <em>Inter</em>.
-        Gebaut mit Angular 19.
       </p>
     </div>
 

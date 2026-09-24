@@ -1,231 +1,238 @@
 <!-- ────────────────────────────────────────────── -->
-<!-- HERO — Magazine cover                          -->
+<!-- HERO                                           -->
 <!-- ────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="hero-grid">
-
-    <header class="folio-line">
-      <span class="folio-num">Folio &numero;01</span>
-      <span class="folio-sep" aria-hidden="true">—</span>
-      <span class="folio-place">Freiburg im Breisgau, DE</span>
-      <span class="folio-sep" aria-hidden="true">—</span>
-      <span class="folio-status">
-        <span class="status-dot" aria-hidden="true"></span>
-        {{ i18n.t('home.hero.available') }}
-      </span>
-    </header>
-
-    <hr class="rule rule-top" />
-
-    <div class="hero-body" @fadeIn>
-      <p class="hero-eyebrow">{{ i18n.t('home.hero.eyebrow') }}</p>
-      <h1 class="hero-name">
-        Breisgau<br />
-        <em>Digital</em>
-      </h1>
-
-      <div class="hero-role">
-        <span class="role-mono">{{ '/* role */' }}</span>
-        <span class="role-text">{{ typedText() }}</span>
-      </div>
-
-      <div class="hero-lede">
-        <p class="lede-num"><span class="numeral">i</span></p>
-        <p class="lede-text">{{ i18n.t('home.hero.lede') }}</p>
-      </div>
+  <div class="container hero-grid">
+    <div class="hero-copy" @fadeIn>
+      <p class="hero-eyebrow">
+        <app-icon name="pin" />
+        {{ i18n.t('home.hero.eyebrow') }}
+      </p>
+      <h1 class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></h1>
+      <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
       <div class="hero-actions">
-        <a [routerLink]="'/projects' | localize" class="btn btn-primary btn-large">
-          {{ i18n.t('cta.view_work') }}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+        <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
         </a>
-        <a [routerLink]="'/bewertungskarten' | localize" class="btn btn-secondary btn-large">
-          {{ i18n.t('nav.cards') }}
-        </a>
+        <button type="button" class="btn btn-secondary btn-large" (click)="scrollTo('produkte')">
+          {{ i18n.t('cta.products') }}
+        </button>
       </div>
+
+      <ul class="trust-list">
+        @for (key of trust; track key) {
+          <li><app-icon name="check" [stroke]="2.2" /> {{ i18n.t(key) }}</li>
+        }
+      </ul>
     </div>
 
-    <hr class="rule rule-bottom" />
-
-    <!-- Cover index -->
-    <div class="cover-index">
-      <div class="idx-col">
-        <span class="idx-num">01</span>
-        <span class="idx-label">{{ i18n.t('home.idx.about') }}</span>
-      </div>
-      <div class="idx-col">
-        <span class="idx-num">02</span>
-        <span class="idx-label">{{ i18n.t('home.idx.stats') }}</span>
-      </div>
-      <div class="idx-col">
-        <span class="idx-num">03</span>
-        <span class="idx-label">{{ i18n.t('home.idx.stack') }}</span>
-      </div>
-      <div class="idx-col">
-        <span class="idx-num">04</span>
-        <span class="idx-label">{{ i18n.t('home.idx.work') }}</span>
-      </div>
-      <div class="idx-scroll">
-        <span class="scroll-text">{{ i18n.t('home.idx.scroll') }}</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
-      </div>
+    <div class="hero-visual">
+      <figure class="hero-photo">
+        <img
+          src="/assets/images/products/review-card.webp"
+          srcset="/assets/images/products/review-card-800.webp 800w, /assets/images/products/review-card.webp 1600w"
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          width="1600"
+          height="1200"
+          fetchpriority="high"
+          [alt]="i18n.t('home.prod.cards.alt')"
+        />
+      </figure>
+      <figure class="hero-thumb thumb-web">
+        <img src="/assets/images/products/website-800.webp" width="800" height="600" alt="" loading="lazy" />
+      </figure>
+      <figure class="hero-thumb thumb-sh">
+        <img src="/assets/images/products/smart-home-800.webp" width="800" height="600" alt="" loading="lazy" />
+      </figure>
+      <p class="hero-chip">
+        <span class="chip-icon"><app-icon name="nfc" [stroke]="2" /></span>
+        <span>
+          <strong>{{ i18n.t('home.hero.badge') }}</strong>
+          <small>{{ i18n.t('home.prod.cards.title') }} · {{ i18n.tp('price.from', products[0].priceFrom) }}</small>
+        </span>
+      </p>
     </div>
   </div>
 </section>
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 01 · ABOUT — Drop cap article                  -->
+<!-- PRODUKTE                                       -->
 <!-- ────────────────────────────────────────────── -->
-<section class="about" id="about-section" data-animate>
+<section class="section products" id="produkte">
   <div class="container">
-    <div class="section-head" [ngClass]="{ visible: isVisible('about-section') }">
-      <p class="section-label">
-        <span class="num">01</span> {{ i18n.t('home.about.label') }}
-      </p>
-      <h2 class="section-title" [innerHTML]="i18n.t('home.about.title')"></h2>
-    </div>
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.prod.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('home.prod.subtitle') }}</p>
+    </header>
 
-    <div class="about-grid" [ngClass]="{ visible: isVisible('about-section') }">
-      <article class="about-prose">
-        <p class="lead" [innerHTML]="i18n.t('home.about.lead')"></p>
-        <p [innerHTML]="i18n.t('home.about.p2')"></p>
-        <p [innerHTML]="i18n.t('home.about.p3')"></p>
-        <div class="about-actions">
-          <a [routerLink]="'/ueber-uns' | localize" class="btn btn-ghost">{{ i18n.t('nav.about') }} →</a>
-          <a [routerLink]="'/contact' | localize" class="btn btn-ghost">{{ i18n.t('cta.contact') }} →</a>
-        </div>
-      </article>
-
-      <aside class="about-portrait">
-        <figure>
-          <div class="portrait-frame">
-            <img src="/assets/images/profile.jpg" alt="Porträt Hamza Öztürk" />
+    <div class="prod-grid">
+      @for (p of products; track p.id) {
+        <article class="prod-card" [class.featured]="p.featured">
+          <div class="prod-media">
+            <img
+              [src]="p.imageSmall"
+              [attr.srcset]="p.imageSmall + ' 800w, ' + p.image + ' 1600w'"
+              sizes="(max-width: 700px) 100vw, (max-width: 1100px) 50vw, 420px"
+              width="800"
+              height="600"
+              loading="lazy"
+              [alt]="i18n.t('home.prod.' + p.id + '.alt')"
+            />
+            <span class="prod-tag">{{ i18n.t('home.prod.' + p.id + '.tag') }}</span>
           </div>
-          <figcaption>
-            <span class="cap-num">Fig. 01</span>
-            <span class="cap-text">{{ i18n.t('home.about.caption') }}</span>
-          </figcaption>
-        </figure>
-      </aside>
+          <div class="prod-body">
+            <h3 class="prod-title">{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
+            <p class="prod-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
+            <ul class="prod-points">
+              @for (n of [1, 2, 3]; track n) {
+                <li><app-icon name="check" [stroke]="2.2" /> {{ i18n.t('home.prod.' + p.id + '.p' + n) }}</li>
+              }
+            </ul>
+            <div class="prod-foot">
+              <p class="prod-price">{{ i18n.tp('price.from', p.priceFrom) }}</p>
+              <a [routerLink]="p.path | localize" class="btn" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
+                {{ i18n.t('home.prod.' + p.id + '.cta') }}
+                <app-icon name="arrow" />
+              </a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+
+    <div class="more-row">
+      <p class="more-label">{{ i18n.t('home.prod.more.label') }}</p>
+      <ul class="more-chips">
+        @for (key of more; track key) {
+          <li>{{ i18n.t(key) }}</li>
+        }
+      </ul>
+      <a [routerLink]="'/leistungen' | localize" class="more-link">
+        {{ i18n.t('home.services.more') }} <app-icon name="arrow" />
+      </a>
     </div>
   </div>
 </section>
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 02 · STATS — Editorial numerals                -->
+<!-- WARUM WIR + ZAHLEN                             -->
 <!-- ────────────────────────────────────────────── -->
-<section class="stats" id="stats-section" data-animate>
+<section class="section why" id="why" data-reveal [class.in]="shown('why')">
   <div class="container">
-    <hr class="rule" />
-    <div class="stats-grid" [ngClass]="{ visible: isVisible('stats-section') }">
-      @for (stat of stats; track stat.label; let i = $index) {
-        <div class="stat-cell">
-          <span class="stat-num">{{ counterValues()[i] }}<em>{{ stat.suffix }}</em></span>
+    <div class="why-layout">
+      <header class="sec-head">
+        <p class="section-label">{{ i18n.t('home.why.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('home.why.title')"></h2>
+      </header>
+      <div class="why-cards">
+        @for (r of reasons; track r.n) {
+          <div class="why-card reveal">
+            <span class="icon-badge"><app-icon [name]="r.icon" /></span>
+            <h3>{{ i18n.t('home.why' + r.n + '.t') }}</h3>
+            <p>{{ i18n.t('home.why' + r.n + '.d') }}</p>
+          </div>
+        }
+      </div>
+    </div>
+
+    <ul class="stats">
+      @for (stat of stats; track stat.key) {
+        <li>
+          <span class="stat-num">{{ stat.target }}{{ stat.suffix }}</span>
           <span class="stat-label">{{ i18n.t(stat.key) }}</span>
-        </div>
+        </li>
       }
-    </div>
-    <hr class="rule" />
+    </ul>
   </div>
 </section>
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 03 · STACK — Editorial skill list              -->
+<!-- BRANCHEN                                       -->
 <!-- ────────────────────────────────────────────── -->
-<section class="stack" id="skills-section" data-animate>
+<section class="section industries" id="industries" data-reveal [class.in]="shown('industries')">
   <div class="container">
-    <div class="section-head">
-      <p class="section-label">
-        <span class="num">03</span> {{ i18n.t('home.stack.label') }}
-      </p>
-      <h2 class="section-title" [innerHTML]="i18n.t('home.stack.title')"></h2>
-      <p class="section-subtitle">{{ i18n.t('home.stack.subtitle') }}</p>
-    </div>
-
-    <div class="stack-grid" [ngClass]="{ visible: isVisible('skills-section') }">
-      @for (category of skills; track category.title; let ci = $index) {
-        <div class="stack-col">
-          <header class="stack-col-head">
-            <span class="col-num">0{{ ci + 1 }}</span>
-            <h3 class="col-title">{{ i18n.t(category.key) }}</h3>
-          </header>
-          <ul class="stack-list">
-            @for (skill of category.skills; track skill.name) {
-              <li class="stack-row">
-                <span class="row-name">{{ skill.name }}</span>
-                <span class="row-bar">
-                  <span
-                    class="row-fill"
-                    [style.width.%]="isVisible('skills-section') ? skill.level : 0"
-                  ></span>
-                </span>
-                <span class="row-pct">{{ skill.level }}<em>%</em></span>
-              </li>
-            }
-          </ul>
-        </div>
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('home.ind.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.ind.title')"></h2>
+    </header>
+    <ul class="ind-grid">
+      @for (ind of industries; track ind.n) {
+        <li class="ind-card reveal">
+          <span class="icon-badge"><app-icon [name]="ind.icon" /></span>
+          <div>
+            <h3>{{ i18n.t('home.ind' + ind.n + '.t') }}</h3>
+            <p>{{ i18n.t('home.ind' + ind.n + '.d') }}</p>
+          </div>
+        </li>
       }
+    </ul>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- ABLAUF                                         -->
+<!-- ────────────────────────────────────────────── -->
+<section class="section process" id="process" data-reveal [class.in]="shown('process')">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('home.proc.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.proc.title')"></h2>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step reveal">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('home.proc' + n + '.t') }}</h3>
+          <p>{{ i18n.t('home.proc' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+    <div class="center-cta">
+      <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
+        {{ i18n.t('cta.consult') }}
+        <app-icon name="arrow" />
+      </a>
     </div>
   </div>
 </section>
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 04 · WORK — Featured case studies              -->
+<!-- REFERENZEN                                     -->
 <!-- ────────────────────────────────────────────── -->
-<section class="work" id="featured-section" data-animate>
+<section class="section refs" id="refs" data-reveal [class.in]="shown('refs')">
   <div class="container">
-    <div class="work-head">
+    <div class="sec-head sec-head-row">
       <div>
-        <p class="section-label">
-          <span class="num">04</span> {{ i18n.t('home.work.label') }}
-        </p>
-        <h2 class="section-title" [innerHTML]="i18n.t('home.work.title')"></h2>
+        <p class="section-label">{{ i18n.t('home.ref.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('home.ref.title')"></h2>
       </div>
       <a [routerLink]="'/projects' | localize" class="btn btn-secondary">
-        {{ i18n.t('cta.all_projects') }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
+        {{ i18n.t('home.ref.all') }}
+        <app-icon name="arrow" />
       </a>
     </div>
 
-    <ul class="work-list" [ngClass]="{ visible: isVisible('featured-section') }">
-      @for (project of featuredProjects; track project.slug; let i = $index) {
-        <li class="work-row">
-          <a [routerLink]="['/projects', project.slug] | localize" class="work-link">
-            <span class="work-num">0{{ i + 1 }}</span>
-
-            <div class="work-meta">
-              <h3 class="work-title">{{ project.title }}</h3>
-              <p class="work-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
-              <ul class="work-tags">
-                @for (tag of project.tags.slice(0, 3); track tag) {
-                  <li>{{ tag }}</li>
-                }
-              </ul>
+    <ul class="ref-grid">
+      @for (project of references; track project.slug) {
+        <li class="reveal">
+          <a [routerLink]="['/projects', project.slug] | localize" class="ref-card">
+            <div class="ref-media">
+              <img [src]="project.image" [alt]="project.title" width="1440" height="900" loading="lazy" />
             </div>
-
-            <div class="work-thumb">
-              @if (project.image) {
-                <img [src]="project.image" [alt]="project.title" loading="lazy" />
-              } @else {
-                <div class="thumb-fallback">{{ project.title[0] }}</div>
-              }
+            <div class="ref-body">
+              <p class="ref-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</p>
+              <h3>{{ project.title }}</h3>
+              <p class="ref-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
+              <span class="ref-more">{{ i18n.t('cta.read_case') }}</span>
             </div>
-
-            <span class="work-arrow">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M7 17L17 7M9 7h8v8" />
-              </svg>
-            </span>
           </a>
         </li>
       }
@@ -235,51 +242,56 @@
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 05 · LIVE-DEMOS — Interactive browser preview   -->
+<!-- REGION                                         -->
 <!-- ────────────────────────────────────────────── -->
-<section class="demos" id="demos-section" data-animate>
-  <div class="container">
-    <div class="section-head">
-      <p class="section-label"><span class="num">05</span> {{ i18n.t('home.demos.label') }}</p>
-      <h2 class="section-title" [innerHTML]="i18n.t('home.demos.title')"></h2>
-      <p class="section-subtitle">{{ i18n.t('home.demos.subtitle') }}</p>
+<section class="section region" id="region" data-reveal [class.in]="shown('region')">
+  <div class="container region-grid">
+    <div class="reveal">
+      <p class="section-label">{{ i18n.t('home.region.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.region.title')"></h2>
+      <p class="region-text">{{ i18n.t('home.region.text') }}</p>
     </div>
-
-    <div class="demo-shell" [ngClass]="{ visible: isVisible('demos-section') }">
-      <aside class="demo-tabs" role="tablist" aria-label="Projekt-Demos">
-        @for (project of demoProjects; track project.slug; let i = $index) {
-          <button
-            type="button"
-            class="demo-tab"
-            role="tab"
-            [class.active]="i === activeDemo()"
-            [attr.aria-selected]="i === activeDemo()"
-            (click)="selectDemo(i)"
-          >
-            <span class="tab-index">0{{ i + 1 }}</span>
-            <span class="tab-meta">
-              <span class="tab-title">{{ project.title }}</span>
-              <span class="tab-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</span>
-            </span>
-            <span class="tab-arrow" aria-hidden="true">→</span>
-          </button>
+    <div class="region-card reveal">
+      <p class="town-head"><app-icon name="pin" /> {{ i18n.t('home.region.onsite') }}</p>
+      <ul class="towns">
+        @for (town of townsOnsite; track town) {
+          <li [class.home]="$first">{{ town }}</li>
         }
-      </aside>
-
-      <div class="demo-stage">
-        @for (project of demoProjects; track project.slug; let i = $index) {
-          @if (i === activeDemo() && project.demo) {
-            <div class="demo-active">
-              <app-live-demo [demo]="project.demo" [title]="project.title" />
-              <div class="demo-foot">
-                <p>{{ i18n.ptx(project.slug, 'description', project.description) }}</p>
-                <a [routerLink]="['/projects', project.slug] | localize" class="btn btn-ghost">
-                  {{ i18n.t('cta.read_case') }}
-                </a>
-              </div>
-            </div>
-          }
+      </ul>
+      <p class="town-head"><app-icon name="video" /> {{ i18n.t('home.region.remote') }}</p>
+      <ul class="towns towns-remote">
+        @for (town of townsRemote; track town) {
+          <li>{{ town }}</li>
         }
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- ANSPRECHPARTNER                                -->
+<!-- ────────────────────────────────────────────── -->
+<section class="section team" id="team" data-reveal [class.in]="shown('team')">
+  <div class="container team-grid">
+    <figure class="team-photo reveal">
+      <img src="/assets/images/profile.jpg" alt="Hamza Öztürk, Gründer von Breisgau Digital" width="533" height="800" loading="lazy" />
+      <figcaption>
+        <strong>Hamza Öztürk</strong>
+        <span>{{ i18n.t('home.team.role') }}</span>
+      </figcaption>
+    </figure>
+    <div class="team-copy reveal">
+      <p class="section-label">{{ i18n.t('home.team.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.team.title')"></h2>
+      <p class="team-text">{{ i18n.t('home.team.text') }}</p>
+      <div class="team-actions">
+        <a [href]="company.phoneHref" class="btn btn-primary">
+          <app-icon name="phone" /> {{ company.phoneDisplay }}
+        </a>
+        <a [routerLink]="'/ueber-uns' | localize" class="btn btn-secondary">
+          {{ i18n.t('cta.more_about') }}
+        </a>
       </div>
     </div>
   </div>
@@ -287,75 +299,53 @@
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- 06 · LEISTUNGEN — Freelance services (Freiburg)  -->
+<!-- FAQ                                            -->
 <!-- ────────────────────────────────────────────── -->
-<section class="services" id="services-section" data-animate>
-  <div class="container">
-    <div class="section-head">
-      <p class="section-label"><span class="num">06</span> {{ i18n.t('home.services.label') }}</p>
-      <h2 class="section-title" [innerHTML]="i18n.t('home.services.title')"></h2>
-      <p class="section-subtitle">{{ i18n.t('home.services.subtitle') }}</p>
-    </div>
-
-    <div class="service-grid" [ngClass]="{ visible: isVisible('services-section') }">
-      <article class="service-card">
-        <span class="svc-num">01</span>
-        <h3>{{ i18n.t('svc.new.title') }}</h3>
-        <p>{{ i18n.t('svc.new.text') }}</p>
-      </article>
-      <article class="service-card">
-        <span class="svc-num">02</span>
-        <h3>{{ i18n.t('svc.relaunch.title') }}</h3>
-        <p>{{ i18n.t('svc.relaunch.text') }}</p>
-      </article>
-      <article class="service-card">
-        <span class="svc-num">03</span>
-        <h3>{{ i18n.t('svc.app.title') }}</h3>
-        <p>{{ i18n.t('svc.app.text') }}</p>
-      </article>
-      <article class="service-card">
-        <span class="svc-num">04</span>
-        <h3>{{ i18n.t('svc.shop.title') }}</h3>
-        <p>{{ i18n.t('svc.shop.text') }}</p>
-      </article>
-      <a [routerLink]="'/bewertungskarten' | localize" class="service-card service-card-product">
-        <span class="svc-num">05</span>
-        <h3>{{ i18n.t('svc.cards.title') }}</h3>
-        <p>{{ i18n.t('svc.cards.text') }}</p>
-        <span class="svc-more">{{ i18n.t('rc.cta.order') }} &rarr;</span>
-      </a>
-    </div>
-
-    <div class="services-cta">
-      <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary">
-        {{ i18n.t('home.services.more') }}
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M5 12h14M12 5l7 7-7 7" />
-        </svg>
-      </a>
+<section class="section faq" id="faq" data-reveal [class.in]="shown('faq')">
+  <div class="container faq-grid">
+    <header class="sec-head reveal">
+      <p class="section-label">{{ i18n.t('home.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('home.faq.title')"></h2>
+    </header>
+    <div class="faq-list reveal">
+      @for (n of faqs; track n) {
+        <details class="faq-item">
+          <summary>
+            {{ i18n.t('home.faq' + n + '.q') }}
+            <app-icon name="chevron" />
+          </summary>
+          <p>{{ i18n.tp('home.faq' + n + '.a', websitePrice) }}</p>
+        </details>
+      }
     </div>
   </div>
 </section>
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- CTA — Auftrag                                    -->
+<!-- ABSCHLUSS-CTA                                  -->
 <!-- ────────────────────────────────────────────── -->
-<section class="home-cta">
+<section class="final-cta">
   <div class="container">
-    <hr class="rule" />
-    <div class="cta-inner">
-      <p class="section-label"><span class="num">07</span> {{ i18n.t('home.cta.label') }}</p>
-      <h2 class="cta-title" [innerHTML]="i18n.t('home.cta.title')"></h2>
-      <p class="cta-text">{{ i18n.t('home.cta.text') }}</p>
+    <div class="cta-box">
+      <div class="cta-copy">
+        <h2 class="cta-title" [innerHTML]="i18n.t('home.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('home.cta.text') }}</p>
+      </div>
       <div class="cta-actions">
-        <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
-          {{ i18n.t('cta.request') }}
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <path d="M5 12h14M12 5l7 7-7 7" />
-          </svg>
+        <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
         </a>
-        <a [routerLink]="'/leistungen' | localize" class="btn btn-secondary btn-large">{{ i18n.t('cta.services') }}</a>
+        <p class="cta-or">{{ i18n.t('home.cta.or') }}</p>
+        <div class="cta-direct">
+          <a [href]="company.phoneHref" class="btn btn-outline-light">
+            <app-icon name="phone" /> {{ i18n.t('cta.call') }}
+          </a>
+          <a [href]="whatsapp" target="_blank" rel="noopener" class="btn btn-outline-light">
+            <app-icon name="chat" /> WhatsApp
+          </a>
+        </div>
       </div>
     </div>
   </div>

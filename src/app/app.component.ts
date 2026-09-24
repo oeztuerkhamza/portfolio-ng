@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
+import { MobileBarComponent } from './shared/mobile-bar/mobile-bar.component';
 import { fadeAnimation } from './core/animations/route.animations';
 import { SeoService } from './core/seo/seo.service';
 import {
@@ -13,7 +14,7 @@ import {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, MobileBarComponent],
   template: `
     <div class="noise-overlay"></div>
     <app-navbar />
@@ -21,6 +22,7 @@ import {
       <router-outlet #outlet="outlet" />
     </main>
     <app-footer />
+    <app-mobile-bar />
   `,
   styles: [],
   animations: [fadeAnimation],

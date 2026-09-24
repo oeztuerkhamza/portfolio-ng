@@ -1,43 +1,61 @@
-import { Component, HostListener, signal, inject } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { NgClass } from '@angular/common';
-import { I18nService } from '../../core/i18n/i18n.service';
+import { I18nService, Lang } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
+import { COMPANY, whatsappUrl } from '../../core/data/company.data';
 import { LangSwitcherComponent } from '../lang-switcher/lang-switcher.component';
+import { IconComponent } from '../icon/icon.component';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, NgClass, LangSwitcherComponent, LocalizePipe],
+  imports: [RouterLink, RouterLinkActive, LangSwitcherComponent, LocalizePipe, IconComponent],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent {
+  private readonly doc = inject(DOCUMENT);
   readonly i18n = inject(I18nService);
+  readonly company = COMPANY;
+  readonly whatsapp = whatsappUrl();
+
   scrolled = signal(false);
   mobileMenuOpen = signal(false);
 
-  navLinks = [
-    { num: '01', path: '/', key: 'nav.home', exact: true },
-    { num: '02', path: '/leistungen', key: 'nav.leistungen', exact: false },
-    { num: '03', path: '/bewertungskarten', key: 'nav.cards', exact: false },
-    { num: '04', path: '/projects', key: 'nav.projects', exact: false },
-    { num: '05', path: '/ueber-uns', key: 'nav.about', exact: false },
-    { num: '06', path: '/contact', key: 'nav.contact', exact: false },
+  /** Desktop: „Kontakt" steckt im Button „Erstgespräch" rechts daneben. */
+  readonly navLinks = [
+    { path: '/leistungen', key: 'nav.leistungen' },
+    { path: '/bewertungskarten', key: 'nav.cards' },
+    { path: '/smart-home', key: 'nav.smarthome' },
+    { path: '/projects', key: 'nav.references' },
+    { path: '/ueber-uns', key: 'nav.about' },
   ];
+
+  readonly drawerLinks = [...this.navLinks, { path: '/contact', key: 'nav.contact' }];
 
   @HostListener('window:scroll')
   onScroll() {
-    this.scrolled.set(window.scrollY > 40);
+    this.scrolled.set(window.scrollY > 16);
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape() {
+    if (this.mobileMenuOpen()) this.closeMobile();
   }
 
   toggleMobile() {
     this.mobileMenuOpen.update((v) => !v);
-    document.body.style.overflow = this.mobileMenuOpen() ? 'hidden' : '';
+    this.doc.body.style.overflow = this.mobileMenuOpen() ? 'hidden' : '';
+  }
+
+  switchLang(lang: Lang) {
+    this.closeMobile();
+    this.i18n.setLang(lang);
   }
 
   closeMobile() {
     this.mobileMenuOpen.set(false);
-    document.body.style.overflow = '';
+    this.doc.body.style.overflow = '';
   }
 }

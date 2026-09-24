@@ -30,7 +30,7 @@ export class SeoService {
   private readonly i18n = inject(I18nService);
 
   static readonly ORIGIN = 'https://hamzaoeztuerk.de';
-  static readonly DEFAULT_IMAGE = `${SeoService.ORIGIN}/assets/images/og-cover.png`;
+  static readonly DEFAULT_IMAGE = `${SeoService.ORIGIN}/assets/images/og-cover.jpg`;
   static readonly SITE_NAME = 'Breisgau Digital — Digitalisierung für den Mittelstand';
 
   update(config: SeoConfig): void {

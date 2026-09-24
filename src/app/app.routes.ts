@@ -34,6 +34,14 @@ const localeChildren: Routes = [
     data: { animation: 'ReviewCards' },
   },
   {
+    path: 'smart-home',
+    loadComponent: () =>
+      import('./pages/smart-home/smart-home.component').then(
+        (m) => m.SmartHomeComponent,
+      ),
+    data: { animation: 'SmartHome' },
+  },
+  {
     path: 'ueber-uns',
     loadComponent: () =>
       import('./pages/ueber-uns/ueber-uns.component').then(

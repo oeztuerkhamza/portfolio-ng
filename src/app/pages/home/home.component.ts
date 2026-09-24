@@ -8,168 +8,137 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { NgClass, isPlatformBrowser } from '@angular/common';
-import { SKILL_CATEGORIES, STATS, Stat } from '../../core/data/skills.data';
-import { PROJECTS, FEATURED_PROJECTS } from '../../core/data/project.data';
-import { fadeIn, staggerFadeIn } from '../../core/animations/shared.animations';
-import { LiveDemoComponent } from '../../shared/live-demo/live-demo.component';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { STATS } from '../../core/data/skills.data';
+import { PROJECTS, Project } from '../../core/data/project.data';
+import {
+  COMPANY,
+  PRODUCTS,
+  TOWNS_ONSITE,
+  TOWNS_REMOTE,
+  WEBSITE_PRICE_FROM,
+  whatsappUrl,
+} from '../../core/data/company.data';
+import { fadeIn } from '../../core/animations/shared.animations';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
+import { IconComponent } from '../../shared/icon/icon.component';
+import { HOME_CONTENT } from './home.content';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, NgClass, LiveDemoComponent, LocalizePipe],
+  imports: [RouterLink, LocalizePipe, IconComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
-  animations: [fadeIn, staggerFadeIn],
+  animations: [fadeIn],
 })
-export class HomeComponent implements OnInit, OnDestroy, AfterViewInit {
+export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   private readonly seo = inject(SeoService);
-  readonly i18n = inject(I18nService);
-  skills = SKILL_CATEGORIES;
-  stats = STATS;
-  featuredProjects = PROJECTS.slice(0, 3);
-  /** Projects shown in the interactive "Live-Demos" showcase. */
-  demoProjects = FEATURED_PROJECTS;
-  activeDemo = signal(0);
-
-  counterValues = signal<number[]>(STATS.map(() => 0));
-  private countersStarted = false;
-
-  // Was der Betrieb bekommt, nicht welche Technik dahintersteckt.
-  private textArray = [
-    'Websites & Online-Shops',
-    'Digitale Abläufe',
-    'Sichtbar bei Google',
-    'Bewertungskarten',
-  ];
-  // Render the first phrase server-side so there is meaningful, crawlable text
-  // and no layout shift before hydration.
-  typedText = signal(this.textArray[0]);
-  private textIndex = 0;
-  private charIndex = 0;
-  private isErasing = false;
-  private typingTimer: any;
-
+  private readonly doc = inject(DOCUMENT);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
+  readonly i18n = inject(I18nService);
 
-  visibleSections = signal<Set<string>>(new Set());
-  private observer!: IntersectionObserver;
+  readonly company = COMPANY;
+  readonly whatsapp = whatsappUrl();
+  readonly products = PRODUCTS;
+  readonly stats = STATS;
+  /** Drei Betriebe aus drei Branchen — Handel, Hotellerie, Dienstleistung. */
+  readonly references = ['bikehaus-freiburg', 'hotel-bergfrieden', 'gkn-portraits']
+    .map((slug) => PROJECTS.find((p) => p.slug === slug))
+    .filter((p): p is Project => !!p);
+  readonly townsOnsite = TOWNS_ONSITE;
+  readonly townsRemote = TOWNS_REMOTE;
+  readonly websitePrice = WEBSITE_PRICE_FROM;
 
-  ngOnInit() {
+  readonly trust = ['home.trust1', 'home.trust2', 'home.trust3', 'home.trust4'];
+  readonly more = ['home.more1', 'home.more2', 'home.more3', 'home.more4'];
+  readonly reasons = [
+    { n: 1, icon: 'euro' },
+    { n: 2, icon: 'pin' },
+    { n: 3, icon: 'layers' },
+    { n: 4, icon: 'shield' },
+  ];
+  readonly industries = [
+    { n: 1, icon: 'cup' },
+    { n: 2, icon: 'hammer' },
+    { n: 3, icon: 'bag' },
+    { n: 4, icon: 'scissors' },
+    { n: 5, icon: 'briefcase' },
+    { n: 6, icon: 'bed' },
+  ];
+  readonly steps = [1, 2, 3, 4];
+  readonly faqs = [1, 2, 3, 4, 5];
+
+  constructor() {
+    this.i18n.register(HOME_CONTENT);
+  }
+
+  /** Abschnitte, die beim Scrollen eingeblendet werden. */
+  readonly visible = signal<Set<string>>(new Set());
+  private observer?: IntersectionObserver;
+
+  ngOnInit(): void {
     this.seo.update({
       title: this.i18n.t('seo.home.title'),
       description: this.i18n.t('seo.home.desc'),
       path: '/',
       keywords: [
-        'Webentwickler Freiburg',
+        'Digitalisierung Freiburg',
+        'Google Bewertungskarte Freiburg',
+        'NFC Bewertungskarte',
         'Webseite erstellen lassen Freiburg',
-        'Webdesign Freiburg',
-        'Website Relaunch Freiburg',
-        'Freelancer Webentwicklung',
-        'Angular .NET Entwickler Freiburg',
+        'Smart Home Freiburg',
+        'Digitalisierung kleine Unternehmen Baden-Württemberg',
       ],
     });
-    this.seo.setJsonLd(
-      'breadcrumb',
-      breadcrumbSchema([{ name: 'Start', path: '/' }]),
-    );
+    this.seo.setJsonLd('breadcrumb', breadcrumbSchema([{ name: 'Start', path: '/' }]));
 
-    if (this.isBrowser) {
-      this.charIndex = this.textArray[0].length;
-      this.startTyping();
-    }
-  }
-
-  selectDemo(i: number): void {
-    this.activeDemo.set(i);
-  }
-
-  ngAfterViewInit() {
-    if (!this.isBrowser) return;
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.visibleSections.update((set) => {
-              const newSet = new Set(set);
-              newSet.add(entry.target.id);
-              return newSet;
-            });
-            if (entry.target.id === 'stats-section' && !this.countersStarted) {
-              this.countersStarted = true;
-              this.animateCounters();
-            }
-          }
-        });
-      },
-      { threshold: 0.1 },
-    );
-
-    document.querySelectorAll('[data-animate]').forEach((el) => {
-      this.observer.observe(el);
+    // FAQ als Rich Result — immer deutsch, wie die übrigen Schemas der Seite.
+    const de = (key: string) =>
+      HOME_CONTENT[key].de.replace('{p}', WEBSITE_PRICE_FROM.toLocaleString('de-DE'));
+    this.seo.setJsonLd('faq', {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: this.faqs.map((n) => ({
+        '@type': 'Question',
+        name: de(`home.faq${n}.q`),
+        acceptedAnswer: { '@type': 'Answer', text: de(`home.faq${n}.a`) },
+      })),
     });
   }
 
-  ngOnDestroy() {
-    clearTimeout(this.typingTimer);
+  ngAfterViewInit(): void {
+    if (!this.isBrowser || !('IntersectionObserver' in window)) return;
+    this.observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const id = (entry.target as HTMLElement).id;
+          this.visible.update((set) => new Set(set).add(id));
+          this.observer?.unobserve(entry.target);
+        }
+      },
+      { threshold: 0.12 },
+    );
+    this.doc.querySelectorAll('[data-reveal]').forEach((el) => this.observer!.observe(el));
+  }
+
+  ngOnDestroy(): void {
     this.observer?.disconnect();
   }
 
-  isVisible(id: string): boolean {
-    return this.visibleSections().has(id);
+  /**
+   * Ohne JavaScript (SSR-HTML, Crawler) ist alles sichtbar; erst im Browser
+   * werden noch nicht gesehene Abschnitte für die Einblendung zurückgesetzt.
+   */
+  shown(id: string): boolean {
+    return !this.isBrowser || this.visible().has(id);
   }
 
-  private animateCounters() {
-    const duration = 2000;
-    const steps = 60;
-    const interval = duration / steps;
-    let step = 0;
-
-    const timer = setInterval(() => {
-      step++;
-      const progress = step / steps;
-      // ease-out quad
-      const eased = 1 - (1 - progress) * (1 - progress);
-
-      this.counterValues.set(
-        this.stats.map((stat) => Math.round(eased * stat.target)),
-      );
-
-      if (step >= steps) {
-        clearInterval(timer);
-        this.counterValues.set(this.stats.map((stat) => stat.target));
-      }
-    }, interval);
-  }
-
-  private startTyping() {
-    if (!this.isErasing) {
-      if (this.charIndex < this.textArray[this.textIndex].length) {
-        this.typedText.set(
-          this.textArray[this.textIndex].substring(0, this.charIndex + 1),
-        );
-        this.charIndex++;
-        this.typingTimer = setTimeout(() => this.startTyping(), 80);
-      } else {
-        this.isErasing = true;
-        this.typingTimer = setTimeout(() => this.startTyping(), 2000);
-      }
-    } else {
-      if (this.charIndex > 0) {
-        this.typedText.set(
-          this.textArray[this.textIndex].substring(0, this.charIndex - 1),
-        );
-        this.charIndex--;
-        this.typingTimer = setTimeout(() => this.startTyping(), 40);
-      } else {
-        this.isErasing = false;
-        this.textIndex = (this.textIndex + 1) % this.textArray.length;
-        this.typingTimer = setTimeout(() => this.startTyping(), 500);
-      }
-    }
+  scrollTo(id: string): void {
+    this.doc.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

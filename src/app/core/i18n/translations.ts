@@ -1,6 +1,7 @@
 import { Lang } from './i18n.service';
+import { COMPANY_TRANSLATIONS } from './company-content';
 
-type Entry = Record<Lang, string>;
+export type Entry = Record<Lang, string>;
 
 /**
  * UI translation table. Values may contain inline <em>/<br> markup and are
@@ -10,14 +11,10 @@ type Entry = Record<Lang, string>;
  * Scope: navigation, global chrome (footer), common actions and the home page.
  * Long-form editorial prose (case studies, detailed service copy) stays German.
  */
-export const TRANSLATIONS: Record<string, Entry> = {
+const BASE_TRANSLATIONS: Record<string, Entry> = {
   // ---- Navigation ----------------------------------------------------------
-  'nav.available': {
-    de: 'Verfügbar', fr: 'Disponible', en: 'Available', tr: 'Müsait', ku: 'Berdest',
-  },
-  'nav.home': { de: 'Index', fr: 'Accueil', en: 'Home', tr: 'Anasayfa', ku: 'Serûpel' },
+  'nav.home': { de: 'Start', fr: 'Accueil', en: 'Home', tr: 'Anasayfa', ku: 'Serûpel' },
   'nav.leistungen': { de: 'Leistungen', fr: 'Services', en: 'Services', tr: 'Hizmetler', ku: 'Xizmet' },
-  'nav.projects': { de: 'Projekte', fr: 'Projets', en: 'Projects', tr: 'Projeler', ku: 'Proje' },
   'nav.contact': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },
   'nav.impressum': { de: 'Impressum', fr: 'Mentions légales', en: 'Imprint', tr: 'Künye', ku: 'Impressum' },
   'nav.datenschutz': { de: 'Datenschutz', fr: 'Confidentialité', en: 'Privacy', tr: 'Gizlilik', ku: 'Nepenî' },
@@ -26,20 +23,11 @@ export const TRANSLATIONS: Record<string, Entry> = {
   'cta.contact': {
     de: 'Kontakt aufnehmen', fr: 'Me contacter', en: 'Get in touch', tr: 'İletişime geç', ku: 'Têkilî daînin',
   },
-  'cta.request': {
-    de: 'Projekt anfragen', fr: 'Demander un devis', en: 'Request a project', tr: 'Proje talep et', ku: 'Daxwaza projeyê',
-  },
-  'cta.all_projects': {
-    de: 'Alle Projekte', fr: 'Tous les projets', en: 'All projects', tr: 'Tüm projeler', ku: 'Hemû proje',
-  },
   'cta.read_case': {
     de: 'Fallstudie lesen →', fr: 'Lire l’étude de cas →', en: 'Read case study →', tr: 'Vaka çalışmasını oku →', ku: 'Lêkolînê bixwîne →',
   },
   'cta.view_work': {
     de: 'Arbeiten ansehen', fr: 'Voir mes travaux', en: 'View my work', tr: 'Çalışmalarımı gör', ku: 'Karên min bibîne',
-  },
-  'cta.start_demo': {
-    de: 'Demo starten', fr: 'Lancer la démo', en: 'Start demo', tr: 'Demoyu başlat', ku: 'Demo dest pê bike',
   },
   'demo.open_tab': {
     de: 'In neuem Tab öffnen ↗', fr: 'Ouvrir dans un onglet ↗', en: 'Open in new tab ↗', tr: 'Yeni sekmede aç ↗', ku: 'Di tabek nû de veke ↗',
@@ -54,54 +42,21 @@ export const TRANSLATIONS: Record<string, Entry> = {
   'demo.loading': {
     de: 'Live-Vorschau wird geladen …', fr: 'Chargement de l’aperçu en direct …', en: 'Loading live preview …', tr: 'Canlı önizleme yükleniyor …', ku: 'Pêşdîtina zindî tê barkirin …',
   },
-  'cta.services': {
-    de: 'Leistungen ansehen', fr: 'Voir les services', en: 'View services', tr: 'Hizmetleri gör', ku: 'Xizmetan bibîne',
-  },
 
   // ---- Hero ----------------------------------------------------------------
   'home.hero.eyebrow': {
-    de: 'Digitalisierung für kleine und mittlere Unternehmen',
-    fr: 'Numérisation pour les PME',
-    en: 'Digitalisation for small and medium businesses',
-    tr: 'Küçük ve orta ölçekli işletmeler için dijitalleşme',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk û navîn',
-  },
-  'home.hero.available': {
-    de: 'Freie Kapazität für neue Projekte',
-    fr: 'Capacité disponible pour de nouveaux projets',
-    en: 'Capacity available for new projects',
-    tr: 'Yeni projeler için kapasite var',
-    ku: 'Kapasîte ji bo projeyên nû heye',
+    de: 'Digitalisierung für kleine Betriebe · Freiburg & Baden-Württemberg',
+    fr: 'Numérisation pour petites entreprises · Fribourg & Bade-Wurtemberg',
+    en: 'Digitalisation for small businesses · Freiburg & Baden-Württemberg',
+    tr: 'Küçük işletmeler için dijitalleşme · Freiburg & Baden-Württemberg',
+    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk · Freiburg & Baden-Württemberg',
   },
   'home.hero.lede': {
-    de: 'Wir bringen kleine und mittlere Betriebe in Südbaden ins Netz — mit Websites, die gefunden werden, und Software, die den Papierkram von der Theke nimmt. Vom ersten Gespräch bis zum laufenden Betrieb aus einer Hand.',
-    fr: 'Nous mettons en ligne les petites et moyennes entreprises du sud du pays de Bade — avec des sites qu’on trouve et des logiciels qui enlèvent la paperasse du comptoir. Du premier échange à l’exploitation quotidienne, un seul interlocuteur.',
-    en: 'We bring small and medium businesses in southern Baden online — with websites that get found and software that takes the paperwork off the counter. From the first conversation to day-to-day operation, from one source.',
-    tr: 'Güney Baden’deki küçük ve orta ölçekli işletmeleri internete taşıyoruz — bulunan web siteleri ve tezgâhtaki kâğıt işini ortadan kaldıran yazılımlarla. İlk görüşmeden günlük işleyişe kadar tek elden.',
-    ku: 'Em karsaziyên biçûk û navîn ên li başûrê Badenê tînin ser înternetê — bi malperên ku têne dîtin û nermalava ku kaxezkariyê ji ser tezgehê radike. Ji axaftina yekem heta xebata rojane, ji destekî.',
-  },
-
-  // ---- Cover index ---------------------------------------------------------
-  'home.idx.about': { de: 'Über', fr: 'À propos', en: 'About', tr: 'Hakkında', ku: 'Derbarê' },
-  'home.idx.stats': { de: 'Statistik', fr: 'Chiffres', en: 'Stats', tr: 'İstatistik', ku: 'Statîstîk' },
-  'home.idx.stack': { de: 'Stack', fr: 'Stack', en: 'Stack', tr: 'Stack', ku: 'Stack' },
-  'home.idx.work': { de: 'Arbeiten', fr: 'Travaux', en: 'Work', tr: 'Çalışmalar', ku: 'Kar' },
-  'home.idx.scroll': { de: 'Scrollen', fr: 'Défiler', en: 'Scroll', tr: 'Kaydır', ku: 'Bişemitîne' },
-
-  // ---- Section: About ------------------------------------------------------
-  'home.about.label': {
-    de: 'Über uns',
-    fr: 'À propos',
-    en: 'About us',
-    tr: 'Hakkımızda',
-    ku: 'Derbarê me',
-  },
-  'home.about.title': {
-    de: 'Digitalisierung für Betriebe, die<br /><em>keine IT-Abteilung haben</em>.',
-    fr: 'La numérisation pour les entreprises<br /><em>sans service informatique</em>.',
-    en: 'Digitalisation for businesses<br /><em>without an IT department</em>.',
-    tr: '<em>BT departmanı olmayan</em><br />işletmeler için dijitalleşme.',
-    ku: 'Dîjîtalkirin ji bo karsaziyên ku<br /><em>beşa IT nîne</em>.',
+    de: 'Breisgau Digital macht kleine und mittlere Betriebe digital: NFC-Karten für mehr Google-Bewertungen, Websites, die Kunden bringen, und Smart Home, das Energie und Zeit spart. Persönlich vor Ort, zum Festpreis, aus einer Hand.',
+    fr: 'Breisgau Digital numérise les petites et moyennes entreprises : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et maison connectée qui économise énergie et temps. Sur place, à prix fixe, un seul interlocuteur.',
+    en: 'Breisgau Digital takes small and medium businesses digital: NFC cards for more Google reviews, websites that bring in customers, and smart home tech that saves energy and time. In person, at a fixed price, from one source.',
+    tr: 'Breisgau Digital küçük ve orta ölçekli işletmeleri dijitalleştirir: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve enerji ile zaman kazandıran akıllı ev sistemleri. Yerinde, sabit fiyatla, tek elden.',
+    ku: 'Breisgau Digital karsaziyên biçûk û navîn dîjîtal dike: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û mala biaqil ku enerjî û dem teserûf dike. Li cih, bi bihayê sabît, ji destekî.',
   },
 
   // ---- Section: Stats ------------------------------------------------------
@@ -120,85 +75,13 @@ export const TRANSLATIONS: Record<string, Entry> = {
     ku: 'Projeyên xerîdaran',
   },
 
-  // ---- Section: Stack ------------------------------------------------------
-  'home.stack.label': { de: 'Stack', fr: 'Stack', en: 'Stack', tr: 'Stack', ku: 'Stack' },
-  'home.stack.title': {
-    de: 'Werkzeuge, mit denen<br /><em>wir täglich bauen</em>.',
-    fr: 'Les outils avec lesquels<br /><em>nous construisons chaque jour</em>.',
-    en: 'The tools we<br /><em>build with every day</em>.',
-    tr: 'Her gün<br /><em>kullandığımız araçlar</em>.',
-    ku: 'Amûrên ku em<br /><em>her roj pê ava dikin</em>.',
-  },
-  'home.stack.subtitle': {
-    de: 'Eine Auswahl der Technologien, mit denen wir produktive, wartbare Systeme bauen.',
-    fr: 'Une sélection des technologies avec lesquelles nous construisons des systèmes fiables et maintenables.',
-    en: 'A selection of the technologies we use to build productive, maintainable systems.',
-    tr: 'Üretken ve bakımı kolay sistemler kurarken kullandığımız teknolojilerden bir seçki.',
-    ku: 'Hilbijartinek ji teknolojiyên ku em pê pergalên berhemdar û parastinbar ava dikin.',
-  },
-
-  // ---- Section: Work -------------------------------------------------------
-  'home.work.label': { de: 'Arbeiten', fr: 'Travaux', en: 'Work', tr: 'Çalışmalar', ku: 'Kar' },
-  'home.work.title': {
-    de: 'Ausgewählte<br /><em>Kundenprojekte</em>.',
-    fr: 'Projets clients<br /><em>sélectionnés</em>.',
-    en: 'Selected<br /><em>client projects</em>.',
-    tr: 'Seçilmiş<br /><em>müşteri projeleri</em>.',
-    ku: 'Projeyên xerîdaran ên<br /><em>hilbijartî</em>.',
-  },
-
-  // ---- Section: Live demos -------------------------------------------------
-  'home.demos.label': { de: 'Live-Demos', fr: 'Démos live', en: 'Live demos', tr: 'Canlı demolar', ku: 'Demoyên zindî' },
-  'home.demos.title': {
-    de: 'Nicht nur Worte —<br /><em>klicken &amp; ausprobieren</em>.',
-    fr: 'Pas que des mots —<br /><em>cliquez &amp; essayez</em>.',
-    en: 'Not just words —<br /><em>click &amp; try it</em>.',
-    tr: 'Sadece söz değil —<br /><em>tıkla &amp; dene</em>.',
-    ku: 'Ne tenê gotin —<br /><em>bitikîne &amp; biceribîne</em>.',
-  },
-  'home.demos.subtitle': {
-    de: 'Wählen Sie ein Projekt und erleben Sie es direkt hier im eingebetteten Browser. Echte, live laufende Anwendungen — kein Mockup.',
-    fr: 'Choisissez un projet et découvrez-le directement ici, dans le navigateur intégré. De vraies applications en ligne — pas une maquette.',
-    en: 'Pick a project and experience it right here in the embedded browser. Real, live applications — not a mockup.',
-    tr: 'Bir proje seçin ve doğrudan burada, gömülü tarayıcıda deneyimleyin. Gerçek, canlı uygulamalar — maket değil.',
-    ku: 'Projeyek hilbijêre û rasterast li vir, di geroka veşartî de biceribîne. Sepanên rastîn ên zindî — ne mockup.',
-  },
-
-  // ---- Section: Services (teaser) -----------------------------------------
-  'home.services.label': {
-    de: 'Leistungen',
-    fr: 'Services',
-    en: 'Services',
-    tr: 'Hizmetler',
-    ku: 'Xizmet',
-  },
-  'home.services.title': {
-    de: 'Was wir für<br /><em>Ihren Betrieb</em> tun.',
-    fr: 'Ce que nous faisons<br />pour <em>votre entreprise</em>.',
-    en: 'What we do for<br /><em>your business</em>.',
-    tr: '<em>İşletmeniz</em> için<br />ne yapıyoruz.',
-    ku: 'Em ji bo <em>karsaziya we</em><br />çi dikin.',
-  },
-  'home.services.subtitle': {
-    de: 'Vier Bereiche, ein Ansprechpartner — dazu ein Produkt, das Sie einfach bestellen können.',
-    fr: 'Quatre domaines, un seul interlocuteur — plus un produit que vous pouvez simplement commander.',
-    en: 'Four areas, one contact person — plus one product you can simply order.',
-    tr: 'Dört alan, tek muhatap — ve doğrudan sipariş verebileceğiniz bir ürün.',
-    ku: 'Çar war, yek kesê berpirs — û hilberek ku hûn dikarin rasterast siparîş bikin.',
-  },
+  // ---- Section: Services -----------------------------------------------------
   'svc.new.title': {
     de: 'Website & Relaunch',
     fr: 'Site web & refonte',
     en: 'Website & relaunch',
     tr: 'Web sitesi & yenileme',
     ku: 'Malper & nûkirin',
-  },
-  'svc.new.text': {
-    de: 'Eine Seite, die Ihren Betrieb erklärt, auf dem Handy funktioniert und bei Google gefunden wird — statt einer Visitenkarte, die seit Jahren niemand angefasst hat.',
-    fr: 'Un site qui explique votre entreprise, fonctionne sur mobile et se trouve sur Google — au lieu d’une carte de visite que personne n’a touchée depuis des années.',
-    en: 'A site that explains your business, works on a phone and gets found on Google — instead of a business card nobody has touched in years.',
-    tr: 'İşletmenizi anlatan, telefonda düzgün çalışan ve Google’da bulunan bir site — yıllardır kimsenin dokunmadığı bir kartvizit yerine.',
-    ku: 'Rûpelek ku karsaziya we rave dike, li ser telefonê dixebite û li Google tê dîtin — li şûna kartek ku bi salan kes destê xwe lê nedaye.',
   },
   'svc.relaunch.title': {
     de: 'Lokal gefunden werden',
@@ -207,13 +90,6 @@ export const TRANSLATIONS: Record<string, Entry> = {
     tr: 'Yerelde bulunmak',
     ku: 'Li herêmê were dîtin',
   },
-  'svc.relaunch.text': {
-    de: 'Google-Unternehmensprofil, Ortsseiten, Bewertungen: Wir sorgen dafür, dass Sie auftauchen, wenn jemand in Ihrer Nähe sucht — nicht erst auf Seite drei.',
-    fr: 'Profil d’établissement Google, pages locales, avis : nous faisons en sorte que vous apparaissiez quand quelqu’un cherche près de chez vous — pas en page trois.',
-    en: 'Google Business Profile, local pages, reviews: we make sure you show up when someone nearby searches — not on page three.',
-    tr: 'Google İşletme Profili, yerel sayfalar, değerlendirmeler: Yakınınızdaki biri aradığında görünmenizi sağlıyoruz — üçüncü sayfada değil.',
-    ku: 'Profîla Karsaziyê ya Google, rûpelên herêmî, nirxandin: Em dikin ku hûn xuya bibin gava kesek li nêzîkî we digere — ne li rûpela sêyem.',
-  },
   'svc.app.title': {
     de: 'Abläufe digitalisieren',
     fr: 'Numériser les processus',
@@ -221,26 +97,12 @@ export const TRANSLATIONS: Record<string, Entry> = {
     tr: 'Süreçleri dijitalleştirmek',
     ku: 'Dîjîtalkirina pêvajoyan',
   },
-  'svc.app.text': {
-    de: 'Bestand, Termine, Angebote, Rechnungen — was heute in Excel, Zettelwirtschaft und WhatsApp liegt, bekommt eine Oberfläche, die Ihr Team ohne Schulung bedient.',
-    fr: 'Stock, rendez-vous, devis, factures — ce qui vit aujourd’hui dans Excel, des papiers et WhatsApp reçoit une interface que votre équipe utilise sans formation.',
-    en: 'Stock, appointments, quotes, invoices — what lives in Excel, paper notes and WhatsApp today gets an interface your team can use without training.',
-    tr: 'Stok, randevu, teklif, fatura — bugün Excel’de, kâğıtlarda ve WhatsApp’ta duran her şey, ekibinizin eğitimsiz kullanabileceği bir arayüze kavuşur.',
-    ku: 'Stok, randevû, pêşniyar, fatûre — tiştê ku îro di Excel, kaxez û WhatsAppê de ye, navrûyek digire ku tîma we bê perwerde bi kar tîne.',
-  },
   'svc.shop.title': {
     de: 'Shop, Buchung & Verleih',
     fr: 'Boutique, réservation & location',
     en: 'Shop, booking & rental',
     tr: 'Mağaza, rezervasyon & kiralama',
     ku: 'Firotgeh, rezervasyon & kirê',
-  },
-  'svc.shop.text': {
-    de: 'Verkaufen, vermieten oder Termine vergeben — online, mit Bezahlung, und die Buchung landet direkt in Ihrer Verwaltung statt in einem zweiten Kalender.',
-    fr: 'Vendre, louer ou donner des rendez-vous — en ligne, avec paiement, et la réservation arrive directement dans votre administration, pas dans un second agenda.',
-    en: 'Sell, rent out or take appointments — online, with payment, and the booking lands straight in your admin area instead of a second calendar.',
-    tr: 'Satış, kiralama veya randevu — online, ödemeli; rezervasyon ikinci bir takvime değil, doğrudan yönetim panelinize düşer.',
-    ku: 'Firotin, kirêdan an randevû — online, bi dayînê, û rezervasyon rasterast dikeve beşa rêveberiyê, ne di salnameyeke duyem de.',
   },
   'home.services.more': {
     de: 'Alle Leistungen',
@@ -251,7 +113,6 @@ export const TRANSLATIONS: Record<string, Entry> = {
   },
 
   // ---- Section: CTA --------------------------------------------------------
-  'home.cta.label': { de: 'Zusammenarbeit', fr: 'Collaboration', en: 'Let’s work together', tr: 'İş birliği', ku: 'Hevkarî' },
   'home.cta.title': {
     de: 'Wo hängt es<br /><em>in Ihrem Betrieb?</em>',
     fr: 'Où ça coince<br /><em>dans votre entreprise ?</em>',
@@ -268,23 +129,13 @@ export const TRANSLATIONS: Record<string, Entry> = {
   },
 
   // ---- Footer --------------------------------------------------------------
-  'footer.eyebrow': { de: 'Colophon', fr: 'Colophon', en: 'Colophon', tr: 'Künye', ku: 'Kolofon' },
-  'footer.signoff': {
-    de: 'Lassen Sie uns Ihren Betrieb <em>ins Netz bringen</em>.',
-    fr: 'Mettons <em>votre entreprise en ligne</em>.',
-    en: 'Let’s get your business <em>online</em>.',
-    tr: 'Hadi <em>işletmenizi internete taşıyalım</em>.',
-    ku: 'Werin em <em>karsaziya we bînin ser înternetê</em>.',
-  },
-  'footer.col.content': { de: 'Inhalt', fr: 'Contenu', en: 'Content', tr: 'İçerik', ku: 'Naverok' },
-  'footer.col.elsewhere': { de: 'Anderswo', fr: 'Ailleurs', en: 'Elsewhere', tr: 'Başka yerde', ku: 'Ciyên din' },
   'footer.col.direct': { de: 'Direkt', fr: 'Direct', en: 'Direct', tr: 'Doğrudan', ku: 'Rasterast' },
   'footer.tagline': {
-    de: 'Breisgau Digital — Digitalisierung für kleine und mittlere Unternehmen.<br />Websites · Abläufe · Shops · Bewertungskarten.',
-    fr: 'Breisgau Digital — numérisation pour les PME.<br />Sites · Processus · Boutiques · Cartes d’avis.',
-    en: 'Breisgau Digital — digitalisation for small and medium businesses.<br />Websites · Workflows · Shops · Review cards.',
-    tr: 'Breisgau Digital — küçük ve orta ölçekli işletmeler için dijitalleşme.<br />Web siteleri · Süreçler · Mağazalar · Değerlendirme kartları.',
-    ku: 'Breisgau Digital — dîjîtalkirin ji bo karsaziyên biçûk û navîn.<br />Malper · Pêvajo · Firotgeh · Kartên nirxandinê.',
+    de: 'Digitalisierung für kleine und mittlere Betriebe in Freiburg und Baden-Württemberg.<br />Bewertungskarten · Websites · Smart Home.',
+    fr: 'Numérisation pour les petites et moyennes entreprises à Fribourg et dans le Bade-Wurtemberg.<br />Cartes d’avis · Sites web · Maison connectée.',
+    en: 'Digitalisation for small and medium businesses in Freiburg and Baden-Württemberg.<br />Review cards · Websites · Smart home.',
+    tr: 'Freiburg ve Baden-Württemberg’deki küçük ve orta ölçekli işletmeler için dijitalleşme.<br />Değerlendirme kartları · Web siteleri · Akıllı ev.',
+    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk û navîn li Freiburg û Baden-Württemberg.<br />Kartên nirxandinê · Malper · Mala biaqil.',
   },
   'footer.rights': {
     de: 'Alle Rechte vorbehalten', fr: 'Tous droits réservés', en: 'All rights reserved', tr: 'Tüm hakları saklıdır', ku: 'Hemû maf parastî ne',
@@ -292,7 +143,6 @@ export const TRANSLATIONS: Record<string, Entry> = {
 
   // ---- Common (extra) ------------------------------------------------------
   'common.live': { de: 'Live ansehen', fr: 'Voir en ligne', en: 'View live', tr: 'Canlı gör', ku: 'Zindî bibîne' },
-  'common.github': { de: 'GitHub', fr: 'GitHub', en: 'GitHub', tr: 'GitHub', ku: 'GitHub' },
   'common.role': { de: 'Rolle', fr: 'Rôle', en: 'Role', tr: 'Rol', ku: 'Rol' },
   'common.period': { de: 'Zeitraum', fr: 'Période', en: 'Period', tr: 'Süre', ku: 'Dem' },
   'common.stack': { de: 'Stack', fr: 'Stack', en: 'Stack', tr: 'Stack', ku: 'Stack' },
@@ -353,10 +203,6 @@ export const TRANSLATIONS: Record<string, Entry> = {
     ku: 'Kara ku hûn lê digerin di lîsteyê de tune. Dibe ku hatibe arşîvkirin an ji nû ve hatibe rêzkirin.',
   },
   'pd.nf.cta': { de: 'Zum Werkverzeichnis', fr: 'Voir le portfolio', en: 'To the portfolio', tr: 'Eser listesine', ku: 'Bo lîsteya karan' },
-
-  // ---- Experience ----------------------------------------------------------
-
-  // ---- Resume --------------------------------------------------------------
 
   // ---- Contact -------------------------------------------------------------
   'contact.folio': { de: 'Korrespondenz', fr: 'Correspondance', en: 'Correspondence', tr: 'Yazışma', ku: 'Nameyî' },
@@ -653,18 +499,18 @@ export const TRANSLATIONS: Record<string, Entry> = {
 
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
-    de: 'Breisgau Digital — Digitalisierung für KMU in Freiburg & Südbaden',
-    fr: 'Breisgau Digital — numérisation des PME à Fribourg et en Pays de Bade',
-    en: 'Breisgau Digital — digitalisation for SMEs in Freiburg, Germany',
-    tr: 'Breisgau Digital — Freiburg ve Güney Baden’de KOBİ dijitalleşmesi',
-    ku: 'Breisgau Digital — dîjîtalkirina KOBÎyan li Freiburg û başûrê Badenê',
+    de: 'Breisgau Digital — Websites, Google-Bewertungskarten & Smart Home in Freiburg',
+    fr: 'Breisgau Digital — sites web, cartes d’avis Google & maison connectée à Fribourg',
+    en: 'Breisgau Digital — websites, Google review cards & smart home in Freiburg',
+    tr: 'Breisgau Digital — Freiburg’da web siteleri, Google değerlendirme kartları ve akıllı ev',
+    ku: 'Breisgau Digital — malper, kartên nirxandinê yên Google û mala biaqil li Freiburg',
   },
   'seo.home.desc': {
-    de: 'Websites, Online-Shops, digitale Abläufe und Google-Bewertungskarten für kleine und mittlere Unternehmen in Freiburg und Südbaden — alles aus einer Hand.',
-    fr: 'Sites web, boutiques en ligne, processus numériques et cartes d’avis Google pour les PME de Fribourg et du sud du pays de Bade — un seul interlocuteur.',
-    en: 'Websites, online shops, digital workflows and Google review cards for small and medium businesses in Freiburg and southern Baden — all from one source.',
-    tr: 'Freiburg ve Güney Baden’deki küçük ve orta ölçekli işletmeler için web siteleri, online mağazalar, dijital süreçler ve Google değerlendirme kartları — tek elden.',
-    ku: 'Malper, firotgehên online, pêvajoyên dîjîtal û kartên nirxandinê yên Google ji bo karsaziyên biçûk û navîn li Freiburg û başûrê Badenê — ji destekî.',
+    de: 'Digitalisierung für kleine Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites, die Kunden bringen, und Smart Home. Festpreis, persönlich vor Ort.',
+    fr: 'Numérisation des petites entreprises à Fribourg et dans le Bade-Wurtemberg : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et maison connectée. Prix fixe, sur place.',
+    en: 'Digitalisation for small businesses in Freiburg and Baden-Württemberg: NFC review cards for more Google reviews, websites that bring in customers, and smart home. Fixed price, in person.',
+    tr: 'Freiburg ve Baden-Württemberg’deki küçük işletmeler için dijitalleşme: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve akıllı ev. Sabit fiyat, yerinde hizmet.',
+    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk li Freiburg û Baden-Württemberg: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û mala biaqil. Bihayê sabît, li cih.',
   },
   'seo.leist.title': {
     de: 'Leistungen — Website, Abläufe & Shop für KMU | Breisgau Digital',
@@ -709,41 +555,7 @@ export const TRANSLATIONS: Record<string, Entry> = {
     ku: 'Axaftina yekem saz bikin: e-name, telefon an WhatsApp. Breisgau Digital karsaziyên biçûk û navîn li Freiburg û başûrê Badenê dîjîtal dike.',
   },
 
-  // ---- Home: About prose (innerHTML, dropcap baked in) ---------------------
-  'home.about.lead': {
-    de: '<span class="dropcap">B</span>reisgau Digital ist die Digitalagentur von Hamza Öztürk in Freiburg im Breisgau. Wir arbeiten für Handwerk, Handel, Gastronomie, Hotellerie und Vereine — also für Betriebe, bei denen <em>niemand nebenbei die IT macht</em>.',
-    fr: '<span class="dropcap">B</span>reisgau Digital est l’agence numérique de Hamza Öztürk à Fribourg-en-Brisgau. Nous travaillons pour l’artisanat, le commerce, la restauration, l’hôtellerie et les associations — des structures où <em>personne ne s’occupe de l’informatique en plus du reste</em>.',
-    en: '<span class="dropcap">B</span>reisgau Digital is Hamza Öztürk’s digital studio in Freiburg, Germany. We work for trades, retail, restaurants, hotels and associations — businesses where <em>nobody does the IT on the side</em>.',
-    tr: '<span class="dropcap">B</span>reisgau Digital, Hamza Öztürk’ün Freiburg im Breisgau’daki dijital ajansıdır. Esnaf, perakende, gastronomi, otelcilik ve dernekler için çalışıyoruz — yani <em>BT işine bakan kimsesi olmayan</em> işletmeler için.',
-    ku: '<span class="dropcap">B</span>reisgau Digital ajansa dîjîtal a Hamza Öztürk e li Freiburg im Breisgau. Em ji bo pîşesazî, bazirganî, xwaringeh, otêl û komeleyan dixebitin — ango ji bo karsaziyên ku <em>kes bi aliyekî din IT nake</em>.',
-  },
-  'home.about.p2': {
-    de: 'Unsere Kunden sind Fahrradläden, ein Hotel im Hochschwarzwald, ein Fotostudio, ein Hochzeits-DJ und ein Kulturverein. Für sie haben wir Warenwirtschaft, Online-Buchung, mehrsprachige Websites und Terminvergabe gebaut — und betreiben das meiste davon bis heute.',
-    fr: 'Nos clients sont des magasins de vélos, un hôtel de Haute-Forêt-Noire, un studio photo, un DJ de mariage et une association culturelle. Nous leur avons construit gestion des stocks, réservation en ligne, sites multilingues et prise de rendez-vous — et nous en exploitons encore la plupart.',
-    en: 'Our clients are bicycle shops, a hotel in the High Black Forest, a photo studio, a wedding DJ and a cultural association. We built them inventory management, online booking, multilingual websites and appointment scheduling — and still run most of it.',
-    tr: 'Müşterilerimiz bisiklet mağazaları, Yüksek Kara Orman’da bir otel, bir fotoğraf stüdyosu, bir düğün DJ’i ve bir kültür derneği. Onlar için stok yönetimi, online rezervasyon, çok dilli web siteleri ve randevu sistemleri kurduk — çoğunu hâlâ biz işletiyoruz.',
-    ku: 'Xerîdarên me firotgehên bisîkletan, otêlek li Daristana Reş a Bilind, studyoyek wênegiriyê, DJ-yekî daweta û komeleyek çandî ne. Ji bo wan me rêveberiya stokê, rezervasyona online, malperên pirzimanî û pergala randevûyê ava kir — û piraniya wan hîn jî em dimeşînin.',
-  },
-  'home.about.p3': {
-    de: 'Unser Anspruch: <em>Technik, die im Alltag verschwindet</em>. Wer morgens den Laden aufschließt, soll kein Handbuch lesen müssen — und niemand soll für jede Kleinigkeit eine Agentur anrufen.',
-    fr: 'Notre exigence : <em>une technique qui s’efface dans le quotidien</em>. Celui qui ouvre la boutique le matin ne doit pas lire un manuel — et personne ne devrait appeler une agence pour chaque détail.',
-    en: 'Our standard: <em>technology that disappears into the working day</em>. Whoever unlocks the shop in the morning shouldn’t need a manual — and nobody should have to call an agency for every small change.',
-    tr: 'Ölçümüz: <em>günlük işin içinde kaybolan teknoloji</em>. Sabah dükkânı açan kişi kılavuz okumak zorunda kalmamalı — ve kimse her küçük şey için ajans aramamalı.',
-    ku: 'Pîvana me: <em>teknîka ku di karê rojane de winda dibe</em>. Yê ku sibehê firotgehê vedike ne hewce ye pirtûkek bixwîne — û divê kes ji bo her tiştekî biçûk telefonî ajansekê neke.',
-  },
-  'home.about.caption': {
-    de: 'Hamza Öztürk — Gründer von Breisgau Digital, Freiburg im Breisgau',
-    fr: 'Hamza Öztürk — fondateur de Breisgau Digital, Fribourg-en-Brisgau',
-    en: 'Hamza Öztürk — founder of Breisgau Digital, Freiburg, Germany',
-    tr: 'Hamza Öztürk — Breisgau Digital kurucusu, Freiburg im Breisgau',
-    ku: 'Hamza Öztürk — damezirînerê Breisgau Digital, Freiburg im Breisgau',
-  },
-
-  // ---- Skill category titles ----------------------------------------------
-  'skills.backend': { de: 'Backend', fr: 'Backend', en: 'Backend', tr: 'Backend', ku: 'Backend' },
-  'skills.frontend': { de: 'Frontend', fr: 'Frontend', en: 'Frontend', tr: 'Frontend', ku: 'Frontend' },
-  'skills.devops': { de: 'DevOps & Cloud', fr: 'DevOps & Cloud', en: 'DevOps & Cloud', tr: 'DevOps & Bulut', ku: 'DevOps & Ewr' },
-  'skills.data': { de: 'Datenbanken & Tools', fr: 'Bases de données & outils', en: 'Databases & Tools', tr: 'Veritabanları & Araçlar', ku: 'Danegeh & Amûr' },
+  // ---- Navigation & Produkte (Nachtrag) -------------------------------------
   'nav.cards': {
     de: 'Bewertungskarten',
     fr: 'Cartes d’avis',
@@ -771,20 +583,6 @@ export const TRANSLATIONS: Record<string, Entry> = {
     en: 'Languages shipped',
     tr: 'Teslim edilen dil',
     ku: 'Zimanên hatine teslîmkirin',
-  },
-  'svc.cards.title': {
-    de: 'Google-Bewertungskarten',
-    fr: 'Cartes d’avis Google',
-    en: 'Google review cards',
-    tr: 'Google değerlendirme kartları',
-    ku: 'Kartên nirxandinê yên Google',
-  },
-  'svc.cards.text': {
-    de: 'NFC-Karte auf den Tresen, Handy dranhalten, Bewertung abgeben. Fertig eingerichtet auf Ihr Google-Profil — ab 39 €.',
-    fr: 'Carte NFC sur le comptoir, on approche le téléphone, on laisse un avis. Configurée sur votre profil Google — à partir de 39 €.',
-    en: 'NFC card on the counter, hold your phone to it, leave a review. Set up on your Google profile — from €39.',
-    tr: 'Tezgâha NFC kart, telefonu yaklaştır, değerlendirme bırak. Google profilinize göre ayarlanmış — 39 €’dan başlayan fiyatlarla.',
-    ku: 'Karta NFC li ser tezgehê, telefonê nêzîk bike, nirxandinê bihêle. Li gorî profîla we ya Google hatiye amadekirin — ji 39 € ve.',
   },
   'seo.rc.title': {
     de: 'Google-Bewertungskarten — NFC-Karten ab 39 € | Breisgau Digital',
@@ -1556,4 +1354,9 @@ export const TRANSLATIONS: Record<string, Entry> = {
     tr: 'Bir telefon, yarım saat, yükümlülük yok. Sonrasında işletmeniz için neyin değdiğini — ve neyden tasarruf edebileceğinizi bilirsiniz.',
     ku: 'Telefonek, nîv saetek, bê mecbûrî. Piştî wê hûn dizanin çi ji bo karsaziya we hêjayî ye — û hûn dikarin çi nekin.',
   },
+};
+
+export const TRANSLATIONS: Record<string, Entry> = {
+  ...BASE_TRANSLATIONS,
+  ...COMPANY_TRANSLATIONS,
 };

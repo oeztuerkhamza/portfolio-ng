@@ -10,7 +10,7 @@ import { LocalizePipe } from '../../core/i18n/localize.pipe';
   template: `
     <section class="not-found">
       <div class="container">
-        <p class="folio-line"><span>Folio &numero;404</span></p>
+        <p class="folio-line"><span>404</span></p>
         <h1 class="nf-title">Seite nicht<br /><em>gefunden</em>.</h1>
         <p class="nf-text">
           Diese Seite existiert nicht (mehr). Vielleicht hilft einer dieser Wege

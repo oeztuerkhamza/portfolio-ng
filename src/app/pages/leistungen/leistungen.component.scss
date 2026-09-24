@@ -170,3 +170,64 @@
   p { color: $text-dim; font-size: 1.1rem; margin-bottom: 2rem; }
   .rule { max-width: 64px; margin: 0 auto; border-top-color: $brand; }
 }
+
+// ── Produkte zum Festpreis ──────────────────────
+.svc-products {
+  margin: clamp(3rem, 8vw, 5rem) 0;
+}
+
+.svc-prod-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+
+  @media (min-width: $bp-tablet) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.svc-prod {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $rule;
+  border-radius: 20px;
+  overflow: hidden;
+  background: $surface-2;
+  color: $text;
+  box-shadow: $shadow-sm;
+  transition: transform $transition-normal, box-shadow $transition-normal;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: $shadow-md;
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+}
+
+.svc-prod-body {
+  padding: 1.25rem 1.4rem 1.5rem;
+
+  h3 {
+    font-family: $font-display;
+    font-weight: 450;
+    font-size: 1.4rem;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: $text-dim;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.9rem;
+  }
+}
+
+.svc-prod-price {
+  color: $brand;
+  font-weight: 650;
+}

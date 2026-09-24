@@ -16,7 +16,7 @@ export function personSchema(): Record<string, unknown> {
     jobTitle: 'Gründer & Full-Stack-Entwickler',
     worksFor: { '@id': `${ORIGIN}/#service` },
     description:
-      'Gründer von Breisgau Digital in Freiburg im Breisgau. Digitalisiert kleine und mittlere Betriebe: Websites, Online-Shops, digitale Abläufe und Google-Bewertungskarten.',
+      'Gründer von Breisgau Digital in Freiburg im Breisgau. Digitalisiert kleine und mittlere Betriebe: Google-Bewertungskarten, Websites und Smart Home.',
     knowsAbout: [
       'Webentwicklung',
       'Webdesign',
@@ -56,11 +56,11 @@ export function professionalServiceSchema(): Record<string, unknown> {
     name: 'Breisgau Digital',
     legalName: 'Hamza Öztürk — Breisgau Digital',
     alternateName: 'Breisgau Digital — Digitalisierung für den Mittelstand',
-    image: `${ORIGIN}/assets/images/og-cover.png`,
+    image: `${ORIGIN}/assets/images/og-cover.jpg`,
     url: ORIGIN,
     priceRange: '€€',
     description:
-      'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Südbaden: Websites und Relaunch, lokale Sichtbarkeit, digitale Abläufe, Shop und Buchung sowie Google-Bewertungskarten.',
+      'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites und Relaunch, Smart Home und Automatisierung, digitale Abläufe sowie Shop und Buchung.',
     founder: { '@id': `${ORIGIN}/#person` },
     areaServed: [
       { '@type': 'City', name: 'Freiburg im Breisgau' },
@@ -96,6 +96,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
       'Web-App Entwicklung',
       'E-Commerce',
       'Google-Bewertungskarten',
+      'Smart Home Einrichtung',
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
@@ -106,6 +107,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
         offer('Abläufe digitalisieren', 'Bestand, Termine, Angebote und Rechnungen in einer Oberfläche, die das Team bedienen kann.'),
         offer('Shop, Buchung & Verleih', 'Online verkaufen, vermieten oder Termine vergeben — inklusive Bezahlung und Verwaltung.'),
         offer('Google-Bewertungskarten', 'NFC- und QR-Karten, eingerichtet auf das Google-Profil des Betriebs.'),
+        offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.'),
       ],
     },
   };

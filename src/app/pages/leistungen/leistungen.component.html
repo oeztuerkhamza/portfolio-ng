@@ -4,7 +4,7 @@
     <!-- Header -->
     <header class="page-header">
       <div class="folio-line">
-        <span class="folio-num">Folio &numero;02</span>
+        <span class="folio-num">Breisgau Digital</span>
         <span class="folio-sep">—</span>
         <span class="folio-place">{{ i18n.t('leist.folio') }}</span>
       </div>
@@ -36,6 +36,23 @@
         </article>
       }
     </div>
+
+    <!-- Produkte zum Festpreis -->
+    <section class="svc-products">
+      <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
+      <div class="svc-prod-grid">
+        @for (p of products; track p.id) {
+          <a [routerLink]="p.path | localize" class="svc-prod">
+            <img [src]="p.imageSmall" width="800" height="600" loading="lazy" [alt]="i18n.t('home.prod.' + p.id + '.alt')" />
+            <div class="svc-prod-body">
+              <h3>{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
+              <p>{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
+              <span class="svc-prod-price">{{ i18n.tp('price.from', p.priceFrom) }} →</span>
+            </div>
+          </a>
+        }
+      </div>
+    </section>
 
     <!-- Why me -->
     <section class="why">

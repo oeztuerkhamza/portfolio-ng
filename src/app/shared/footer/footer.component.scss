@@ -7,7 +7,7 @@
 footer {
   background: $surface;
   border-top: 1px solid $rule;
-  padding: clamp(60px, 10vw, 120px) 0 40px;
+  padding: clamp(8px, 2vw, 24px) 0 40px;
   color: $text-dim;
 }
 
@@ -15,49 +15,6 @@ footer {
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 clamp(1.25rem, 5vw, 4rem);
-}
-
-.signoff {
-  padding-bottom: 80px;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: 2rem;
-
-  .eyebrow {
-    @include small-caps;
-    margin-bottom: 1rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    &::before {
-      content: "";
-      width: 24px;
-      height: 1px;
-      background: $brand;
-    }
-  }
-
-  .signoff-title {
-    font-family: $font-display;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 300;
-    line-height: 1.05;
-    letter-spacing: -0.025em;
-    color: $text;
-    max-width: 22ch;
-
-    em {
-      font-style: italic;
-      color: $brand;
-    }
-  }
-
-  @media (max-width: $bp-tablet) {
-    grid-template-columns: 1fr;
-    align-items: start;
-    padding-bottom: 60px;
-  }
 }
 
 .rule {
@@ -77,97 +34,106 @@ footer {
     grid-template-columns: 1fr 1fr;
   }
   @media (max-width: $bp-tablet) {
-    grid-template-columns: 1fr;
-    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.25rem 1.5rem;
+
+    .col-brand,
+    .col:last-child { grid-column: 1 / -1; }
   }
 }
 
 .col-label {
-  @include mono-label;
+  font-size: 0.8rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  margin-bottom: 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  .num { color: $brand; }
+  color: $text;
+  margin-bottom: 1.1rem;
 }
 
 .col {
   ul {
     display: flex;
     flex-direction: column;
-    gap: 0.7rem;
+    gap: 0.35rem;
 
     a {
       font-family: $font-body;
-      font-size: 0.9rem;
+      font-size: 0.93rem;
       color: $text-dim;
       transition: color $transition-fast;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 0.5rem;
+      min-height: 36px;
 
       &:hover { color: $brand; }
-
-      .ext {
-        font-family: $font-mono;
-        font-size: 0.7rem;
-        color: $text-mute;
-      }
     }
 
+    app-icon { color: $brand; }
+
     .addr {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
       color: $text-mute;
-      font-size: 0.9rem;
-      line-height: 1.6;
+      font-size: 0.93rem;
+      line-height: 1.55;
+      margin-top: 0.35rem;
+
+      app-icon { margin-top: 0.15em; }
     }
   }
 }
 
 .footer-mark {
-  display: flex;
-  align-items: baseline;
-  gap: 14px;
-  margin-bottom: 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 1rem;
   color: $text;
 
-  .mark-num {
+  .brand-mark {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 11px;
+    background: linear-gradient(145deg, $brand-light, $brand-deep 70%);
+    color: #fff;
     font-family: $font-display;
-    font-style: italic;
-    font-weight: 300;
-    font-size: 1.6rem;
-    color: $brand;
+    font-weight: 600;
+    font-size: 1rem;
   }
+
   .mark-name {
     font-family: $font-display;
-    font-weight: 400;
-    font-size: 1.1rem;
+    font-weight: 500;
+    font-size: 1.15rem;
     color: $text;
   }
 }
 
 .brand-tagline {
   font-family: $font-body;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   line-height: 1.7;
   color: $text-mute;
-  max-width: 36ch;
+  max-width: 38ch;
 }
 
 .imprint {
-  padding-top: 28px;
+  padding-top: 24px;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
-  gap: 1rem;
-  font-family: $font-mono;
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
+  gap: 0.75rem 1.5rem;
+  font-size: 0.82rem;
   color: $text-mute;
 
-  .numeral {
-    @include numeral;
-    font-size: 0.9rem;
+  .imprint-links {
+    display: flex;
+    gap: 1.25rem;
   }
 
   a {
@@ -175,17 +141,5 @@ footer {
     text-decoration: none;
     transition: color $transition-fast;
     &:hover { color: $brand; }
-  }
-
-  em {
-    font-style: italic;
-    color: $text-dim;
-    font-family: $font-display;
-    font-size: 0.85rem;
-  }
-
-  @media (max-width: $bp-tablet) {
-    flex-direction: column;
-    text-align: left;
   }
 }

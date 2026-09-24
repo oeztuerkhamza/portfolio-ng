@@ -5,6 +5,7 @@ import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { TRANSLATIONS } from '../../core/i18n/translations';
+import { PRODUCTS } from '../../core/data/company.data';
 
 interface ServiceDetail {
   num: string;
@@ -34,6 +35,9 @@ interface Faq {
 export class LeistungenComponent implements OnInit {
   private readonly seo = inject(SeoService);
   readonly i18n = inject(I18nService);
+
+  /** Die beiden Festpreis-Produkte neben den Projektleistungen. */
+  readonly products = PRODUCTS.filter((p) => p.id !== 'web');
 
   services: ServiceDetail[] = [
     { num: '01', titleKey: 'svc.new.title', textKey: 'leist.s1.text', pointKeys: ['leist.s1.p1', 'leist.s1.p2', 'leist.s1.p3', 'leist.s1.p4'] },

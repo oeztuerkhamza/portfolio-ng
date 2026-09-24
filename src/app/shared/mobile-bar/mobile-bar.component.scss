@@ -1,0 +1,63 @@
+@import "../../../styles/variables";
+
+:host {
+  display: none;
+
+  @media (max-width: 899.98px) {
+    display: block;
+  }
+}
+
+.mbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 90;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.2fr;
+  gap: 0.5rem;
+  padding: 0.55rem 0.75rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-top: 1px solid $rule;
+  box-shadow: 0 -6px 24px rgba(14, 26, 43, 0.08);
+}
+
+.mbar-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid $rule-strong;
+  background: $surface-2;
+  color: $text;
+  font-size: 0.9rem;
+  font-weight: 600;
+
+  app-icon {
+    color: $brand;
+    font-size: 1.1rem;
+  }
+
+  &:active {
+    background: $surface-3;
+  }
+}
+
+.mbar-primary {
+  background: $brand;
+  border-color: $brand;
+  color: #fff;
+
+  app-icon {
+    color: #fff;
+  }
+
+  &:active {
+    background: $brand-deep;
+  }
+}

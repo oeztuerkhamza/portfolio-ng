@@ -5,6 +5,8 @@ import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { TRANSLATIONS } from '../../core/i18n/translations';
+import { COMPANY, whatsappUrl } from '../../core/data/company.data';
+import { IconComponent } from '../../shared/icon/icon.component';
 import {
   REVIEW_CARD_FAQS,
   REVIEW_CARD_PACKAGES,
@@ -12,14 +14,10 @@ import {
   REVIEW_CARD_STEPS,
 } from '../../core/data/review-cards.data';
 
-/** Empfänger der Bestellanfrage — identisch mit der Kontaktseite. */
-const ORDER_EMAIL = 'hamza.oeztuerk@web.de';
-const ORDER_WHATSAPP = '4915566859378';
-
 @Component({
   selector: 'app-bewertungskarten',
   standalone: true,
-  imports: [RouterLink, LocalizePipe],
+  imports: [RouterLink, LocalizePipe, IconComponent],
   templateUrl: './bewertungskarten.component.html',
   styleUrl: './bewertungskarten.component.scss',
 })
@@ -29,7 +27,8 @@ export class BewertungskartenComponent implements OnInit {
 
   readonly packages = REVIEW_CARD_PACKAGES;
   readonly steps = REVIEW_CARD_STEPS;
-  readonly reasons = REVIEW_CARD_REASONS;
+  readonly reasons = REVIEW_CARD_REASONS.map((n, i) => ({ n, icon: ['pin', 'star', 'bolt'][i] }));
+  readonly priceFrom = Math.min(...REVIEW_CARD_PACKAGES.map((p) => p.price));
   readonly faqs = REVIEW_CARD_FAQS;
 
   /**
@@ -41,12 +40,12 @@ export class BewertungskartenComponent implements OnInit {
     const subject = this.i18n.t('rc.mail.subject');
     const chosen = pkgId ? `${this.i18n.t('rc.mail.package')}: ${this.i18n.t('rc.pkg.' + pkgId + '.name')}\n` : '';
     const body = `${chosen}${this.i18n.t('rc.mail.body')}`;
-    return `mailto:${ORDER_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    return `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
   whatsapp(pkgId?: string): string {
     const chosen = pkgId ? `${this.i18n.t('rc.pkg.' + pkgId + '.name')} — ` : '';
-    return `https://wa.me/${ORDER_WHATSAPP}?text=${encodeURIComponent(chosen + this.i18n.t('rc.mail.subject'))}`;
+    return whatsappUrl(chosen + this.i18n.t('rc.mail.subject'));
   }
 
   ngOnInit(): void {

@@ -2,9 +2,10 @@ import { Injectable, signal, inject, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
-import { TRANSLATIONS } from './translations';
+import { TRANSLATIONS, Entry } from './translations';
 import { PROJECT_CONTENT, ProjectTx } from './project-content';
 import { EXPERIENCE_CONTENT, ExperienceTx } from './experience-content';
+import { formatAmount } from '../data/company.data';
 
 export type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku';
 
@@ -42,6 +43,9 @@ export class I18nService {
 
   readonly lang = signal<Lang>(this.readLangFromUrl());
   readonly options = LANGS;
+
+  /** Seitentexte, die mit dem Lazy-Chunk ihrer Seite kommen (siehe register). */
+  private readonly pageTexts = new Map<string, Entry>();
 
   constructor() {
     if (this.isBrowser) {
@@ -83,10 +87,28 @@ export class I18nService {
     return `/${lang}${path.startsWith('/') ? '' : '/'}${path}`;
   }
 
+  /**
+   * Make a page's own text table available to `t()`. Pages call this in
+   * their constructor, so long texts ship with the page's lazy chunk instead
+   * of the initial bundle. Registering the same table twice is harmless.
+   */
+  register(table: Record<string, Entry>): void {
+    for (const [key, entry] of Object.entries(table)) this.pageTexts.set(key, entry);
+  }
+
   /** Translate a key. Falls back to German, then the key itself. */
   t(key: string): string {
     const l = this.lang();
-    return TRANSLATIONS[key]?.[l] ?? TRANSLATIONS[key]?.de ?? key;
+    const entry = TRANSLATIONS[key] ?? this.pageTexts.get(key);
+    return entry?.[l] ?? entry?.de ?? key;
+  }
+
+  /**
+   * Translate a key whose text carries a `{p}` price placeholder, formatted
+   * for the active language: `tp('price.from', 1290)` → „ab 1.290 €".
+   */
+  tp(key: string, amount: number): string {
+    return this.t(key).replace('{p}', formatAmount(amount, this.lang()));
   }
 
   /**
