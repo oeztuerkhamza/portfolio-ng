@@ -42,3 +42,32 @@ export const REVIEW_CARD_REASONS = [1, 2, 3] as const;
 
 /** FAQ-Einträge — Texte aus `rc.faq<N>.q` / `.a`. */
 export const REVIEW_CARD_FAQS = [1, 2, 3, 4, 5] as const;
+
+/**
+ * Produktformen — jede mit NFC-Chip und QR-Code, einzeln bestellbar.
+ * Texte aus `rc.form.<id>.name` / `.text`.
+ *
+ * TODO(hamza): Einzelpreise bestätigen (Vorschlag am Marktniveau).
+ */
+export interface ReviewCardForm {
+  id: 'karte' | 'aufsteller' | 'aufkleber' | 'anhaenger';
+  /** Einzelpreis in Euro. */
+  price: number;
+  image: string;
+  imageSmall: string;
+}
+
+export const REVIEW_CARD_FORMS: ReviewCardForm[] = [
+  { id: 'karte', price: 39, image: '/assets/images/products/review-card.webp', imageSmall: '/assets/images/products/review-card-800.webp' },
+  { id: 'aufsteller', price: 59, image: '/assets/images/products/stand.webp', imageSmall: '/assets/images/products/stand-800.webp' },
+  { id: 'aufkleber', price: 29, image: '/assets/images/products/sticker.webp', imageSmall: '/assets/images/products/sticker-800.webp' },
+  { id: 'anhaenger', price: 25, image: '/assets/images/products/keychain.webp', imageSmall: '/assets/images/products/keychain-800.webp' },
+];
+
+/**
+ * Beispiel-Designs für verschiedene Branchen. Bild unter
+ * `/assets/images/products/examples/<id>.webp`, Branche aus `rc.ex.<id>`.
+ * Die Namen auf den Karten („Café Muster" …) sind Platzhalter.
+ */
+export const REVIEW_CARD_EXAMPLES = ['cafe', 'salon', 'handwerk', 'praxis', 'fewo', 'restaurant'] as const;
+

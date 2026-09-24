@@ -43,6 +43,16 @@ export const CONTACT_CONTENT: Record<string, Entry> = {
   'contact.f.opt.cards': { de: 'Bewertungskarten', fr: 'Cartes d’avis', en: 'Review cards', tr: 'Değerlendirme kartları', ku: 'Kartên nirxandinê' },
   'contact.f.opt.web': { de: 'Website', fr: 'Site web', en: 'Website', tr: 'Web sitesi', ku: 'Malper' },
   'contact.f.opt.sh': { de: 'Smart Home', fr: 'Maison connectée', en: 'Smart home', tr: 'Akıllı ev', ku: 'Mala biaqil' },
+  'contact.f.opt.abo': { de: 'Digital-Abo', fr: 'Abonnement', en: 'Digital plan', tr: 'Dijital abonelik', ku: 'Abonetiya dîjîtal' },
+  'contact.f.plan.msg': {
+    de: 'Ich interessiere mich für das Digital-Abo „{plan}“ ({billing}).',
+    fr: 'L’abonnement « {plan} » ({billing}) m’intéresse.',
+    en: 'I’m interested in the “{plan}” plan ({billing}).',
+    tr: '“{plan}” dijital aboneliğiyle ({billing}) ilgileniyorum.',
+    ku: 'Ez bi abonetiya “{plan}” ({billing}) re eleqedar im.',
+  },
+  'contact.f.billing.monthly': { de: 'monatliche Zahlung', fr: 'paiement mensuel', en: 'monthly billing', tr: 'aylık ödeme', ku: 'dayîna mehane' },
+  'contact.f.billing.yearly': { de: 'jährliche Zahlung', fr: 'paiement annuel', en: 'yearly billing', tr: 'yıllık ödeme', ku: 'dayîna salane' },
   'contact.f.opt.other': { de: 'Etwas anderes', fr: 'Autre chose', en: 'Something else', tr: 'Başka bir konu', ku: 'Tiştekî din' },
   'contact.f.message': { de: 'Ihre Nachricht', fr: 'Votre message', en: 'Your message', tr: 'Mesajınız', ku: 'Peyama we' },
   'contact.f.message.ph': {

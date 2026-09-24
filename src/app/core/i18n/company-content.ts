@@ -11,6 +11,25 @@ import type { Entry } from './translations';
  */
 export const COMPANY_TRANSLATIONS: Record<string, Entry> = {
   'nav.smarthome': { de: 'Smart Home', fr: 'Maison connectée', en: 'Smart home', tr: 'Akıllı ev', ku: 'Mala biaqil' },
+  'nav.abo': { de: 'Abo & Preise', fr: 'Abonnements', en: 'Plans & pricing', tr: 'Abonelik', ku: 'Abonetî' },
+  'abo.banner.title': {
+    de: 'Lieber monatlich statt einmalig?',
+    fr: 'Plutôt au mois qu’en une fois ?',
+    en: 'Rather pay monthly than all at once?',
+    tr: 'Tek seferde değil, aylık mı ödemek istersiniz?',
+    ku: 'Hûn dixwazin mehane bidin, ne bi carekê?',
+  },
+  'abo.banner.text': {
+    de: 'Website, Bewertungskarten und laufende Pflege im Digital-Abo — ab {p} € im Monat, planbar und betreut.',
+    fr: 'Site web, cartes d’avis et suivi dans l’abonnement numérique — dès {p} € par mois, prévisible et accompagné.',
+    en: 'Website, review cards and ongoing care in one digital plan — from €{p} a month, predictable and looked after.',
+    tr: 'Web sitesi, değerlendirme kartları ve sürekli bakım dijital abonelikte — ayda {p} €’dan itibaren, planlı ve destekli.',
+    ku: 'Malper, kartên nirxandinê û lênêrîna domdar di abonetiya dîjîtal de — ji {p} € mehane ve, plansazkirî û bi piştgirî.',
+  },
+  'abo.plan.basis.name': { de: 'Basis', fr: 'Essentiel', en: 'Basic', tr: 'Temel', ku: 'Bingehîn' },
+  'abo.plan.business.name': { de: 'Business', fr: 'Business', en: 'Business', tr: 'Business', ku: 'Business' },
+  'abo.plan.premium.name': { de: 'Premium', fr: 'Premium', en: 'Premium', tr: 'Premium', ku: 'Premium' },
+  'abo.cta.view': { de: 'Abo-Modelle ansehen', fr: 'Voir les abonnements', en: 'See the plans', tr: 'Abonelik paketlerini gör', ku: 'Pakêtên abonetiyê bibîne' },
   'nav.references': { de: 'Referenzen', fr: 'Références', en: 'References', tr: 'Referanslar', ku: 'Referans' },
   'nav.cta': { de: 'Erstgespräch', fr: 'Premier échange', en: 'Free consultation', tr: 'Ücretsiz görüşme', ku: 'Hevdîtina belaş' },
   'nav.menu': { de: 'Menü', fr: 'Menu', en: 'Menu', tr: 'Menü', ku: 'Menû' },

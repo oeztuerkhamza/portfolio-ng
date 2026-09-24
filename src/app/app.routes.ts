@@ -42,6 +42,12 @@ const localeChildren: Routes = [
     data: { animation: 'SmartHome' },
   },
   {
+    path: 'abo',
+    loadComponent: () =>
+      import('./pages/abo/abo.component').then((m) => m.AboComponent),
+    data: { animation: 'Abo' },
+  },
+  {
     path: 'ueber-uns',
     loadComponent: () =>
       import('./pages/ueber-uns/ueber-uns.component').then(

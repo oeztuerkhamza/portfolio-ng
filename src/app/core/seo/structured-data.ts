@@ -108,6 +108,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
         offer('Shop, Buchung & Verleih', 'Online verkaufen, vermieten oder Termine vergeben — inklusive Bezahlung und Verwaltung.'),
         offer('Google-Bewertungskarten', 'NFC- und QR-Karten, eingerichtet auf das Google-Profil des Betriebs.'),
         offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.'),
+        offer('Digital-Abo', 'Bewertungskarten, Website und laufende Pflege zum festen Monatspreis.'),
       ],
     },
   };

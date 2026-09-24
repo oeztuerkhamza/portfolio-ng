@@ -31,7 +31,7 @@ function meta(path) {
   if (path === '/') return { priority: '1.0', freq: 'weekly' };
   const page = path.replace(/^\/(de|fr|en|tr|ku)(?=\/|$)/, '') || '/';
   if (page === '/') return { priority: '0.9', freq: 'weekly' };
-  if (['/leistungen', '/bewertungskarten', '/smart-home'].includes(page)) {
+  if (['/leistungen', '/bewertungskarten', '/smart-home', '/abo'].includes(page)) {
     return { priority: '0.9', freq: 'monthly' };
   }
   if (page === '/projects') return { priority: '0.7', freq: 'monthly' };

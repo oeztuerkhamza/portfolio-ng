@@ -1,2 +1,116 @@
 @import "../../../styles/variables";
 @import "../../../styles/product-page";
+
+// ── Produktformen ───────────────────────────────
+.form-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.25rem;
+}
+
+.form-name {
+  font-size: 1.3rem;
+  font-weight: 450;
+  margin-bottom: 0.45rem;
+}
+
+.form-foot {
+  margin-top: auto;
+  padding-top: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.form-price {
+  font-family: $font-display;
+  font-size: 1.45rem;
+  font-weight: 500;
+  color: $brand;
+  line-height: 1.1;
+
+  small {
+    display: block;
+    font-family: $font-body;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: $text-mute;
+  }
+}
+
+// Auf dem Handy eine Wischreihe statt vier bildschirmhoher Karten
+// untereinander; die angeschnittene nächste Karte zeigt, dass es weitergeht.
+@media (max-width: 639px) {
+  .forms-row {
+    --bleed: clamp(1.25rem, 5vw, 4rem); // = Seitenrand von .container
+    grid-auto-flow: column;
+    grid-auto-columns: 80%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--bleed);
+    margin-inline: calc(-1 * var(--bleed));
+    padding: 0.25rem var(--bleed) 0.75rem;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    > * {
+      scroll-snap-align: start;
+    }
+  }
+}
+
+// ── Beispiel-Designs ────────────────────────────
+.examples {
+  gap: 1.5rem 1.25rem;
+
+  @media (max-width: 639px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.1rem 0.75rem;
+
+    .media-frame {
+      border-radius: $radius-sm;
+      box-shadow: $shadow-sm;
+    }
+  }
+}
+
+.example-label {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  color: $text;
+  font-size: 0.95rem;
+
+  @media (max-width: 639px) {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+  }
+}
+
+.examples-note {
+  margin-top: 1.5rem;
+  font-size: 0.82rem;
+  color: $text-mute;
+}
+
+.abo {
+  margin-top: 2rem;
+}

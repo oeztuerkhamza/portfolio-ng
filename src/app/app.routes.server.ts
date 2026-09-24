@@ -12,6 +12,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/abo', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/projects', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   {

@@ -26,11 +26,12 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { HOME_CONTENT } from './home.content';
+import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],

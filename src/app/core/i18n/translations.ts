@@ -710,11 +710,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Deyne, temam',
   },
   'rc.step4.d': {
-    de: 'Ab da läuft sie ohne Sie: kein Konto, kein Abo, keine laufenden Kosten. Die Karte funktioniert, solange Ihr Google-Profil besteht.',
-    fr: 'Ensuite, elle fonctionne sans vous : pas de compte, pas d’abonnement, pas de frais récurrents. La carte marche tant que votre profil Google existe.',
-    en: 'From then on it runs without you: no account, no subscription, no running costs. The card works as long as your Google profile exists.',
-    tr: 'Sonrası sizden bağımsız: hesap yok, abonelik yok, aylık gider yok. Google profiliniz durdukça kart çalışır.',
-    ku: 'Ji wê şûnde bê we dixebite: ne hesab, ne abone, ne lêçûnên birêkûpêk. Kart heta ku profîla we ya Google hebe dixebite.',
+    de: 'Ab da läuft sie ohne Sie: kein Konto, kein Pflicht-Abo, keine laufenden Kosten. Die Karte funktioniert, solange Ihr Google-Profil besteht.',
+    fr: 'Ensuite, elle fonctionne sans vous : pas de compte, pas d’abonnement obligatoire, pas de frais récurrents. La carte marche tant que votre profil Google existe.',
+    en: 'From then on it runs without you: no account, no mandatory subscription, no running costs. The card works as long as your Google profile exists.',
+    tr: 'Sonrası sizden bağımsız: hesap yok, zorunlu abonelik yok, aylık gider yok. Google profiliniz durdukça kart çalışır.',
+    ku: 'Ji wê şûnde bê we dixebite: ne hesab, ne abonetiya mecbûrî, ne lêçûnên birêkûpêk. Kart heta ku profîla we ya Google hebe dixebite.',
   },
   'rc.pkg.label': {
     de: 'Pakete',
@@ -1004,11 +1004,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Abone an hesabek li cem we hewce ye?',
   },
   'rc.faq2.a': {
-    de: 'Nein. Sie zahlen einmal für die Karte. Der Chip zeigt direkt auf Ihre Google-Bewertungsseite, nicht auf einen Dienst von uns — es gibt also nichts, was wir abschalten könnten.',
-    fr: 'Non. Vous payez la carte une fois. La puce pointe directement vers votre page d’avis Google, pas vers un service à nous — il n’y a donc rien que nous puissions couper.',
-    en: 'No. You pay once for the card. The chip points straight at your Google review page, not at a service of ours — so there is nothing we could switch off.',
-    tr: 'Hayır. Kart için bir kez ödeme yaparsınız. Çip doğrudan Google değerlendirme sayfanıza yönlendirir, bizim bir hizmetimize değil — yani kapatabileceğimiz bir şey yok.',
-    ku: 'Na. Hûn carekê ji bo kartê didin. Çîp rasterast li rûpela nirxandinê ya we ya Google nîşan dide, ne li karûbarekî me — ango tiştek nîne ku em bikaribin bigirin.',
+    de: 'Nein. Sie zahlen einmal für die Karte. Der Chip zeigt direkt auf Ihre Google-Bewertungsseite, nicht auf einen Dienst von uns — es gibt also nichts, was wir abschalten könnten. Das Digital-Abo ist nur eine Option für alle, die lieber monatlich zahlen und Website und Pflege gleich dazunehmen.',
+    fr: 'Non. Vous payez la carte une fois. La puce pointe directement vers votre page d’avis Google, pas vers un service à nous — il n’y a donc rien que nous puissions couper. L’abonnement numérique n’est qu’une option pour ceux qui préfèrent payer au mois et y ajouter site web et suivi.',
+    en: 'No. You pay once for the card. The chip points straight at your Google review page, not at a service of ours — so there is nothing we could switch off. The digital plan is just an option for those who would rather pay monthly and add a website and ongoing care.',
+    tr: 'Hayır. Kart için bir kez ödeme yaparsınız. Çip doğrudan Google değerlendirme sayfanıza yönlendirir, bizim bir hizmetimize değil — yani kapatabileceğimiz bir şey yok. Dijital abonelik yalnızca aylık ödemeyi tercih edenler ve web sitesi ile bakımı da isteyenler için bir seçenektir.',
+    ku: 'Na. Hûn carekê ji bo kartê didin. Çîp rasterast li rûpela nirxandinê ya we ya Google nîşan dide, ne li karûbarekî me — ango tiştek nîne ku em bikaribin bigirin. Abonetiya dîjîtal tenê vebijarkek e ji bo kesên ku dixwazin mehane bidin û malper û lênêrînê jî lê zêde bikin.',
   },
   'rc.faq3.q': {
     de: 'Ist das erlaubt?',

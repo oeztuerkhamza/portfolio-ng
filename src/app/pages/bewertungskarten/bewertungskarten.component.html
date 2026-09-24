@@ -34,6 +34,69 @@
   </div>
 </header>
 
+<!-- Produktformen -->
+<section class="section section-white" id="formen">
+  <div class="container">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('rc.forms.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.forms.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('rc.forms.text') }}</p>
+    </header>
+    <div class="grid grid-4 forms-row">
+      @for (f of forms; track f.id) {
+        <article class="card form-card">
+          <img
+            [src]="f.imageSmall"
+            width="800"
+            height="600"
+            loading="lazy"
+            [alt]="i18n.t('rc.form.' + f.id + '.name')"
+          />
+          <div class="form-body">
+            <h3 class="form-name">{{ i18n.t('rc.form.' + f.id + '.name') }}</h3>
+            <p class="card-text">{{ i18n.t('rc.form.' + f.id + '.text') }}</p>
+            <div class="form-foot">
+              <p class="form-price">
+                {{ f.price }} €
+                <small>{{ i18n.t('rc.form.unit') }}</small>
+              </p>
+              <a [href]="mailtoForm(f.id)" class="btn btn-secondary">{{ i18n.t('rc.form.cta') }}</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Beispiel-Designs -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('rc.ex.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('rc.ex.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('rc.ex.text') }}</p>
+    </header>
+    <ul class="grid grid-3 examples">
+      @for (ex of examples; track ex) {
+        <li class="example">
+          <figure class="media-frame">
+            <img
+              [src]="'/assets/images/products/examples/' + ex + '.webp'"
+              width="800"
+              height="600"
+              loading="lazy"
+              [alt]="i18n.t('rc.ex.alt') + ' ' + i18n.t('rc.ex.' + ex)"
+            />
+          </figure>
+          <p class="example-label">{{ i18n.t('rc.ex.' + ex) }}</p>
+        </li>
+      }
+    </ul>
+    <p class="examples-note">{{ i18n.t('rc.ex.note') }}</p>
+  </div>
+</section>
+
 <!-- So funktioniert's -->
 <section class="section section-white">
   <div class="container">
@@ -100,6 +163,7 @@
     </div>
 
     <p class="price-note">{{ i18n.t('rc.price.note') }}</p>
+    <app-abo-banner class="abo" />
   </div>
 </section>
 

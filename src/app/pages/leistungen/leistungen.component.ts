@@ -8,6 +8,7 @@ import { TRANSLATIONS } from '../../core/i18n/translations';
 import { COMPANY, PRODUCTS, whatsappUrl } from '../../core/data/company.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { LEISTUNGEN_CONTENT } from './leistungen.content';
+import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
 
 interface ServiceDetail {
   icon: string;
@@ -29,7 +30,7 @@ interface Faq {
 @Component({
   selector: 'app-leistungen',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
   templateUrl: './leistungen.component.html',
   styleUrl: './leistungen.component.scss',
 })

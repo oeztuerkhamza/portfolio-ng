@@ -8,16 +8,20 @@ import { TRANSLATIONS } from '../../core/i18n/translations';
 import { COMPANY, whatsappUrl } from '../../core/data/company.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import {
+  REVIEW_CARD_EXAMPLES,
   REVIEW_CARD_FAQS,
+  REVIEW_CARD_FORMS,
   REVIEW_CARD_PACKAGES,
   REVIEW_CARD_REASONS,
   REVIEW_CARD_STEPS,
 } from '../../core/data/review-cards.data';
+import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { REVIEW_CARDS_CONTENT } from './bewertungskarten.content';
 
 @Component({
   selector: 'app-bewertungskarten',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
   templateUrl: './bewertungskarten.component.html',
   styleUrl: './bewertungskarten.component.scss',
 })
@@ -30,6 +34,12 @@ export class BewertungskartenComponent implements OnInit {
   readonly reasons = REVIEW_CARD_REASONS.map((n, i) => ({ n, icon: ['pin', 'star', 'bolt'][i] }));
   readonly priceFrom = Math.min(...REVIEW_CARD_PACKAGES.map((p) => p.price));
   readonly faqs = REVIEW_CARD_FAQS;
+  readonly forms = REVIEW_CARD_FORMS;
+  readonly examples = REVIEW_CARD_EXAMPLES;
+
+  constructor() {
+    this.i18n.register(REVIEW_CARDS_CONTENT);
+  }
 
   /**
    * Bestellanfrage per E-Mail. Betreff und Rumpf sind vorausgefüllt, damit
@@ -40,6 +50,13 @@ export class BewertungskartenComponent implements OnInit {
     const subject = this.i18n.t('rc.mail.subject');
     const chosen = pkgId ? `${this.i18n.t('rc.mail.package')}: ${this.i18n.t('rc.pkg.' + pkgId + '.name')}\n` : '';
     const body = `${chosen}${this.i18n.t('rc.mail.body')}`;
+    return `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  }
+
+  /** Anfrage für eine einzelne Produktform (Aufsteller, Anhänger …). */
+  mailtoForm(formId: string): string {
+    const subject = this.i18n.t('rc.mail.subject');
+    const body = `${this.i18n.t('rc.mail.package')}: ${this.i18n.t('rc.form.' + formId + '.name')}\n${this.i18n.t('rc.mail.body')}`;
     return `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   }
 
@@ -59,6 +76,8 @@ export class BewertungskartenComponent implements OnInit {
         'Google Bewertungen sammeln',
         'Google Bewertungskarte kaufen',
         'NFC Karte Google Rezension',
+        'NFC Schlüsselanhänger Google Bewertung',
+        'Google Bewertung Aufsteller',
         'mehr Google Bewertungen Freiburg',
       ],
     });
@@ -78,10 +97,19 @@ export class BewertungskartenComponent implements OnInit {
       name: TRANSLATIONS['rc.title.plain'].de,
       description: TRANSLATIONS['seo.rc.desc'].de,
       brand: { '@type': 'Brand', name: 'Breisgau Digital' },
-      offers: this.packages.map((p) => ({
+      offers: [
+        ...this.packages.map((p) => ({
+          name: TRANSLATIONS['rc.pkg.' + p.id + '.name'].de,
+          price: p.price,
+        })),
+        ...this.forms.map((f) => ({
+          name: REVIEW_CARDS_CONTENT['rc.form.' + f.id + '.name'].de,
+          price: f.price,
+        })),
+      ].map((o) => ({
         '@type': 'Offer',
-        name: TRANSLATIONS['rc.pkg.' + p.id + '.name'].de,
-        price: p.price.toFixed(2),
+        name: o.name,
+        price: o.price.toFixed(2),
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
         url: `${SeoService.ORIGIN}/de/bewertungskarten`,

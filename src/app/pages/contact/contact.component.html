@@ -91,7 +91,7 @@
 
       <div class="field">
         <label for="cf-message">{{ i18n.t('contact.f.message') }}</label>
-        <textarea id="cf-message" name="message" rows="5" [placeholder]="i18n.t('contact.f.message.ph')" (input)="message.set(value($event))"></textarea>
+        <textarea id="cf-message" name="message" rows="5" [placeholder]="i18n.t('contact.f.message.ph')" [defaultValue]="prefill()" (input)="message.set(value($event))"></textarea>
       </div>
 
       <div class="form-actions">

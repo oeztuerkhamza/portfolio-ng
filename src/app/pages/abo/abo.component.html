@@ -1,0 +1,151 @@
+<!-- Kopf -->
+<header class="page-hero">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('nav.abo') }}</span>
+    </nav>
+    <div class="sec-head sec-head-center abo-head">
+      <p class="section-label">{{ i18n.t('abo.label') }}</p>
+      <h1 class="section-title" [innerHTML]="i18n.t('abo.title')"></h1>
+      <p class="section-subtitle">{{ i18n.t('abo.intro') }}</p>
+
+      <div class="billing" role="radiogroup" [attr.aria-label]="i18n.t('abo.toggle.label')">
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="billing() === 'monthly'"
+          [class.on]="billing() === 'monthly'"
+          (click)="billing.set('monthly')"
+        >
+          {{ i18n.t('abo.toggle.monthly') }}
+        </button>
+        <button
+          type="button"
+          role="radio"
+          [attr.aria-checked]="billing() === 'yearly'"
+          [class.on]="billing() === 'yearly'"
+          (click)="billing.set('yearly')"
+        >
+          {{ i18n.t('abo.toggle.yearly') }}
+          <span class="save">{{ i18n.t('abo.toggle.save') }}</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Pakete -->
+<section class="section section-white plans" id="pakete">
+  <div class="container">
+    <div class="plan-grid">
+      @for (p of plans; track p.id) {
+        <article class="plan-card" [class.featured]="p.featured">
+          @if (p.featured) {
+            <span class="plan-badge">{{ i18n.t('abo.badge') }}</span>
+          }
+          <h2 class="plan-name">{{ i18n.t('abo.plan.' + p.id + '.name') }}</h2>
+          <p class="plan-for">{{ i18n.t('abo.plan.' + p.id + '.for') }}</p>
+
+          <p class="plan-price">
+            <span class="amount">{{ i18n.tp('abo.price', priceOf(p)) }}</span>
+            <span class="per">{{ i18n.t(billing() === 'yearly' ? 'abo.per.year' : 'abo.per.month') }}</span>
+          </p>
+          <ul class="plan-terms">
+            <li>{{ setupText(p) }}</li>
+            <li>{{ termText(p) }}</li>
+          </ul>
+
+          <ul class="check-list plan-points">
+            @for (i of pointList(p); track i) {
+              <li>{{ i18n.t('abo.plan.' + p.id + '.p' + i) }}</li>
+            }
+          </ul>
+
+          @if (checkoutUrl(p); as url) {
+            <a [href]="url" target="_blank" rel="noopener" class="btn btn-block btn-large" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
+              {{ i18n.t('abo.cta.subscribe') }}
+            </a>
+          } @else {
+            <a
+              [routerLink]="'/contact' | localize"
+              [queryParams]="{ thema: 'abo', paket: p.id, zahlung: billing() }"
+              fragment="anfrage"
+              class="btn btn-block btn-large"
+              [class.btn-primary]="p.featured"
+              [class.btn-secondary]="!p.featured"
+            >
+              {{ i18n.t('abo.cta.request') }}
+            </a>
+          }
+        </article>
+      }
+    </div>
+
+    <aside class="note plans-note">
+      <p class="note-label">{{ i18n.t('abo.note.label') }}</p>
+      <h2 class="note-title">{{ i18n.t('abo.note.title') }}</h2>
+      <p class="note-text">{{ i18n.t('abo.note.text') }}</p>
+    </aside>
+  </div>
+</section>
+
+<!-- Ablauf -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('abo.steps.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('abo.steps.title')"></h2>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('abo.step' + n + '.t') }}</h3>
+          <p>{{ i18n.t('abo.step' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section section-white">
+  <div class="container faq-layout">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('abo.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('abo.faq.title')"></h2>
+    </header>
+    <div class="faq-list">
+      @for (n of faqs; track n) {
+        <details class="faq-item">
+          <summary>{{ i18n.t('abo.faq' + n + '.q') }}</summary>
+          <p>{{ i18n.t('abo.faq' + n + '.a') }}</p>
+        </details>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('abo.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('abo.cta.text') }}</p>
+      </div>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" [queryParams]="{ thema: 'abo' }" fragment="anfrage" class="btn btn-light btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
+        </a>
+        <div class="cta-direct">
+          <a [href]="company.phoneHref" class="btn btn-outline-light"><app-icon name="phone" /> {{ i18n.t('cta.call') }}</a>
+          <a [href]="whatsapp" target="_blank" rel="noopener" class="btn btn-outline-light"><app-icon name="chat" /> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
