@@ -1,3 +1,4 @@
+import { TOWNS } from '../data/towns.data';
 import { SeoService } from './seo.service';
 
 const ORIGIN = SeoService.ORIGIN;
@@ -62,10 +63,18 @@ export function professionalServiceSchema(): Record<string, unknown> {
     description:
       'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites und Relaunch, Smart Home und Automatisierung, digitale Abläufe sowie Shop und Buchung.',
     founder: { '@id': `${ORIGIN}/#person` },
+    logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [
-      { '@type': 'City', name: 'Freiburg im Breisgau' },
-      { '@type': 'AdministrativeArea', name: 'Baden-Württemberg' },
-      { '@type': 'Country', name: 'Deutschland' },
+      ...TOWNS.map((t) => ({ '@type': 'City', name: t.name, url: `${ORIGIN}/de/webdesign/${t.slug}` })),
+      { '@type': 'AdministrativeArea', name: 'Landkreis Breisgau-Hochschwarzwald' },
+      { '@type': 'AdministrativeArea', name: 'Landkreis Emmendingen' },
+      { '@type': 'AdministrativeArea', name: 'Landkreis Lörrach' },
+      { '@type': 'AdministrativeArea', name: 'Ortenaukreis' },
+      {
+        '@type': 'GeoCircle',
+        geoMidpoint: { '@type': 'GeoCoordinates', latitude: 47.999, longitude: 7.842 },
+        geoRadius: 70000,
+      },
     ],
     address: {
       '@type': 'PostalAddress',
@@ -77,8 +86,8 @@ export function professionalServiceSchema(): Record<string, unknown> {
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: 47.9959,
-      longitude: 7.8,
+      latitude: 47.999,
+      longitude: 7.842,
     },
     telephone: '+49 155 66859378',
     email: 'hamza.oeztuerk@web.de',

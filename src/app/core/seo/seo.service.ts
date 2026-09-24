@@ -12,6 +12,8 @@ export interface SeoConfig {
   type?: 'website' | 'article' | 'profile';
   keywords?: string[];
   noIndex?: boolean;
+  /** Nur diese Sprachen existieren (z. B. Ortsseiten nur auf Deutsch). */
+  langs?: Lang[];
 }
 
 /**
@@ -42,6 +44,7 @@ export class SeoService {
       type = 'website',
       keywords,
       noIndex = false,
+      langs,
     } = config;
 
     const lang = this.i18n.lang();
@@ -70,7 +73,7 @@ export class SeoService {
     this.setName('twitter:image', imageUrl);
 
     this.setCanonical(url);
-    this.setHreflang(path, noIndex);
+    this.setHreflang(path, noIndex, langs);
     this.doc.documentElement.setAttribute('lang', lang);
   }
 
@@ -118,7 +121,7 @@ export class SeoService {
   }
 
   /** Full hreflang set: one per locale + x-default (German). */
-  private setHreflang(path: string, noIndex: boolean): void {
+  private setHreflang(path: string, noIndex: boolean, only?: Lang[]): void {
     this.doc.head
       .querySelectorAll('link[rel="alternate"][hreflang]')
       .forEach((el) => el.remove());
@@ -132,7 +135,7 @@ export class SeoService {
       this.doc.head.appendChild(link);
     };
 
-    for (const l of LANGS) add(l.code, this.localeUrl(l.code, path));
+    for (const l of LANGS) if (!only || only.includes(l.code)) add(l.code, this.localeUrl(l.code, path));
     add('x-default', this.localeUrl('de', path));
   }
 }

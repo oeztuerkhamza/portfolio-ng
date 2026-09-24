@@ -72,6 +72,11 @@ const localeChildren: Routes = [
     data: { animation: 'ProjectDetail' },
   },
   {
+    path: 'webdesign/:town',
+    loadComponent: () => import('./pages/town/town.component').then((m) => m.TownComponent),
+    data: { animation: 'Town' },
+  },
+  {
     path: 'bestellen',
     loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
     data: { animation: 'Shop' },

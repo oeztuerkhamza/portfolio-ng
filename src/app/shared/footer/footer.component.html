@@ -44,6 +44,13 @@
       </div>
     </div>
 
+    <nav class="towns" aria-label="Webdesign in der Region">
+      <span class="towns-label">Webdesign in der Region:</span>
+      @for (t of towns; track t.slug) {
+        <a [routerLink]="'/de/webdesign/' + t.slug">{{ t.short }}</a>
+      }
+    </nav>
+
     <hr class="rule" />
 
     <div class="imprint">

@@ -255,7 +255,13 @@
       <p class="town-head"><app-icon name="pin" /> {{ i18n.t('home.region.onsite') }}</p>
       <ul class="chips">
         @for (town of townsOnsite; track town) {
-          <li class="chip" [class.chip-brand]="$first" [class.chip-outline]="!$first">{{ town }}</li>
+          <li>
+            @if (townSlug(town); as slug) {
+              <a class="chip" [class.chip-brand]="$first" [class.chip-outline]="!$first" [routerLink]="'/de/webdesign/' + slug">{{ town }}</a>
+            } @else {
+              <span class="chip" [class.chip-brand]="$first" [class.chip-outline]="!$first">{{ town }}</span>
+            }
+          </li>
         }
       </ul>
       <p class="town-head"><app-icon name="video" /> {{ i18n.t('home.region.remote') }}</p>

@@ -1,6 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { PROJECTS } from './core/data/project.data';
 import { LANG_CODES } from './core/i18n/i18n.service';
+import { TOWNS } from './core/data/towns.data';
 
 const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
 
@@ -27,6 +28,12 @@ export const serverRoutes: ServerRoute[] = [
       ),
   },
   { path: ':locale/contact', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  // Ortsseiten gibt es nur auf Deutsch.
+  {
+    path: ':locale/webdesign/:town',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: async () => TOWNS.map((t) => ({ locale: 'de', town: t.slug })),
+  },
   { path: ':locale/bestellen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bestellen/danke', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

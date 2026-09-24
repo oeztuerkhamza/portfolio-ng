@@ -484,28 +484,28 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
 
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
-    de: 'Breisgau Digital — Websites, Google-Bewertungskarten & Smart Home in Freiburg',
+    de: 'Webdesign Freiburg & Google-Bewertungskarten | Breisgau Digital',
     fr: 'Breisgau Digital — sites web, cartes d’avis Google & maison connectée à Fribourg',
     en: 'Breisgau Digital — websites, Google review cards & smart home in Freiburg',
     tr: 'Breisgau Digital — Freiburg’da web siteleri, Google değerlendirme kartları ve akıllı ev',
     ku: 'Breisgau Digital — malper, kartên nirxandinê yên Google û mala biaqil li Freiburg',
   },
   'seo.home.desc': {
-    de: 'Digitalisierung für kleine Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites, die Kunden bringen, und Smart Home. Festpreis, persönlich vor Ort.',
+    de: 'Webdesign, Google-Bewertungskarten und Smart Home für kleine Betriebe in Freiburg und Südbaden – persönlich vor Ort, Festpreis oder Monatsabo.',
     fr: 'Numérisation des petites entreprises à Fribourg et dans le Bade-Wurtemberg : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et maison connectée. Prix fixe, sur place.',
     en: 'Digitalisation for small businesses in Freiburg and Baden-Württemberg: NFC review cards for more Google reviews, websites that bring in customers, and smart home. Fixed price, in person.',
     tr: 'Freiburg ve Baden-Württemberg’deki küçük işletmeler için dijitalleşme: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve akıllı ev. Sabit fiyat, yerinde hizmet.',
     ku: 'Dîjîtalkirin ji bo karsaziyên biçûk li Freiburg û Baden-Württemberg: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û mala biaqil. Bihayê sabît, li cih.',
   },
   'seo.leist.title': {
-    de: 'Leistungen — Website, Abläufe & Shop für KMU | Breisgau Digital',
+    de: 'Website erstellen lassen in Freiburg | Breisgau Digital',
     fr: 'Services — site, processus & boutique pour PME | Breisgau Digital',
     en: 'Services — website, workflows & shop for SMEs | Breisgau Digital',
     tr: 'Hizmetler — KOBİ’ler için web sitesi, süreçler & mağaza | Breisgau Digital',
     ku: 'Xizmet — malper, pêvajo & firotgeh ji bo KOBÎyan | Breisgau Digital',
   },
   'seo.leist.desc': {
-    de: 'Website und Relaunch, lokale Sichtbarkeit, digitale Abläufe, Shop und Buchung — Leistungen und Ablauf für kleine und mittlere Betriebe in Südbaden.',
+    de: 'Website erstellen lassen in Freiburg: Webdesign, Relaunch, lokale Sichtbarkeit bei Google, Shop und Buchung – für kleine Betriebe in Südbaden, zum Festpreis.',
     fr: 'Site et refonte, visibilité locale, processus numériques, boutique et réservation — prestations et déroulé pour les PME du sud du pays de Bade.',
     en: 'Website and relaunch, local visibility, digital workflows, shop and booking — services and process for small and medium businesses in southern Baden.',
     tr: 'Web sitesi ve yenileme, yerel görünürlük, dijital süreçler, mağaza ve rezervasyon — Güney Baden’deki KOBİ’ler için hizmetler ve süreç.',
@@ -570,7 +570,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Zimanên hatine teslîmkirin',
   },
   'seo.rc.title': {
-    de: 'Google-Bewertungskarten — NFC-Karten ab 39 € | Breisgau Digital',
+    de: 'NFC-Bewertungskarten für Google ab 39 € | Breisgau Digital',
     fr: 'Cartes d’avis Google — cartes NFC à partir de 39 € | Breisgau Digital',
     en: 'Google review cards — NFC cards from €39 | Breisgau Digital',
     tr: 'Google değerlendirme kartları — 39 €’dan NFC kartlar | Breisgau Digital',

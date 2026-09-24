@@ -8,6 +8,7 @@ import {
   inject,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TOWNS } from '../../core/data/towns.data';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { STATS } from '../../core/data/skills.data';
 import { PROJECTS, Project } from '../../core/data/project.data';
@@ -51,6 +52,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
   readonly townsOnsite = TOWNS_ONSITE;
+  /** Ortsseite zum Ortsnamen, z. B. „Breisach" → breisach. */
+  townSlug(name: string): string | undefined {
+    return TOWNS.find((t) => t.short === name || t.name === name)?.slug;
+  }
   readonly townsRemote = TOWNS_REMOTE;
   readonly websitePrice = WEBSITE_PRICE_FROM;
 
