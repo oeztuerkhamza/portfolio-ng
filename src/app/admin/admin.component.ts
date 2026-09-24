@@ -10,8 +10,9 @@ import { LinksTab } from './tabs/links.tab';
 import { PricesTab } from './tabs/prices.tab';
 import { OrdersTab } from './tabs/orders.tab';
 import { SettingsTab } from './tabs/settings.tab';
+import { InvoicesTab } from './tabs/invoices.tab';
 
-type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'links' | 'prices' | 'orders' | 'settings';
+type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'links' | 'prices' | 'orders' | 'settings';
 
 /**
  * Admin-Portal unter /admin. Läuft nur im Browser; der Server liefert
@@ -21,7 +22,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'links' | 
   selector: 'app-admin',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, LinksTab, PricesTab, OrdersTab, SettingsTab],
+  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, LinksTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab],
   styleUrl: './admin.component.scss',
   template: `
     <div class="adm">
@@ -112,6 +113,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'links' | 
             @case ('enquiries') { <adm-enquiries /> }
             @case ('customers') { <adm-customers /> }
             @case ('subscriptions') { <adm-subscriptions /> }
+            @case ('invoices') { <adm-invoices /> }
             @case ('links') { <adm-links /> }
             @case ('prices') { <adm-prices /> }
             @case ('orders') { <adm-orders /> }
@@ -131,6 +133,7 @@ export class AdminComponent implements OnInit {
     { id: 'enquiries', label: 'Talepler' },
     { id: 'customers', label: 'Müşteriler' },
     { id: 'subscriptions', label: 'Abonelikler' },
+    { id: 'invoices', label: 'Faturalar' },
     { id: 'links', label: 'NFC linkleri' },
     { id: 'prices', label: 'Fiyatlar' },
     { id: 'orders', label: 'Siparişler' },

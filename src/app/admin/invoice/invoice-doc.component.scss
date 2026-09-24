@@ -1,0 +1,241 @@
+@import "../../../styles/variables";
+
+// DIN-A4-Rechnung nach DIN 5008 (Form B). Alle Maße in mm, damit Vorschau und
+// Druck übereinstimmen. Läuft ohne Kapselung — alles hängt an .inv-sheet.
+
+$inv-blue: #1a5c9e;
+$inv-blue-2: #1f8fd8;
+$inv-orange: #f08a36;
+$inv-ink: #14202f;
+$inv-soft: #55657a;
+$inv-line: #d9e0e8;
+
+.inv-sheet {
+  position: relative;
+  box-sizing: border-box;
+  width: 210mm;
+  min-height: 297mm;
+  padding: 0 20mm 0 25mm;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: $inv-ink;
+  font-family: $font-body;
+  font-size: 9.6pt;
+  line-height: 1.45;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+
+  *, *::before, *::after { box-sizing: border-box; }
+  p { margin: 0 0 3mm; }
+
+  // Falz- und Lochmarken am linken Rand
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    left: 5mm;
+    width: 4mm;
+    border-top: 0.2mm solid #b7c2cf;
+  }
+  &::before { top: 105mm; }
+  &::after { top: 210mm; }
+
+  &.is-draft .inv-body::before,
+  &.is-void .inv-body::before {
+    content: "ENTWURF";
+    position: absolute;
+    top: 30mm;
+    left: 50%;
+    transform: translateX(-50%) rotate(-24deg);
+    font-family: $font-display;
+    font-size: 64pt;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: rgba(26, 92, 158, 0.07);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  &.is-void .inv-body::before { content: "STORNIERT"; color: rgba(180, 35, 24, 0.08); }
+}
+
+.inv-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3mm;
+  background: linear-gradient(90deg, $inv-blue-2, $inv-blue 50%, $inv-orange);
+}
+
+.inv-head {
+  height: 42mm;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-top: 3mm;
+}
+
+.inv-brand {
+  display: flex;
+  align-items: center;
+  gap: 4mm;
+  img { height: 24mm; width: auto; display: block; }
+  div { display: flex; flex-direction: column; }
+  strong {
+    font-family: $font-display;
+    font-weight: 500;
+    font-size: 19pt;
+    line-height: 1.05;
+    color: $inv-blue;
+  }
+  span { font-size: 8pt; color: $inv-soft; letter-spacing: 0.02em; margin-top: 1mm; }
+}
+
+// Anschriftfeld: 20 mm vom linken Rand, 45 mm von oben, 85 × 45 mm
+.inv-window {
+  position: absolute;
+  top: 45mm;
+  left: 20mm;
+  width: 85mm;
+  height: 45mm;
+  padding: 0 5mm;
+}
+.inv-return {
+  font-size: 7pt;
+  color: $inv-soft;
+  border-bottom: 0.2mm solid $inv-line;
+  padding: 3mm 0 0.8mm;
+  margin: 0 0 3mm !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.inv-address {
+  font-style: normal;
+  font-size: 10.5pt;
+  line-height: 1.4;
+  span { display: block; }
+}
+
+// Informationsblock rechts neben dem Anschriftfeld
+.inv-meta {
+  position: absolute;
+  top: 50mm;
+  left: 125mm;
+  width: 65mm;
+  margin: 0;
+  font-size: 8.8pt;
+  div { display: grid; grid-template-columns: 30mm 1fr; gap: 2mm; padding: 0.6mm 0; }
+  dt { color: $inv-soft; }
+  dd { margin: 0; font-weight: 500; }
+}
+
+.inv-body {
+  position: relative;
+  margin-top: 56mm; // 42 + 56 ≈ 98 mm: unter Anschrift- und Infoblock
+  flex: 1;
+}
+
+.inv-title {
+  font-family: $font-display;
+  font-weight: 500;
+  font-size: 18pt;
+  line-height: 1.2;
+  margin: 0 0 6mm;
+  color: $inv-ink;
+  span { font-family: $font-body; font-size: 11pt; font-weight: 500; color: $inv-blue; margin-left: 2mm; }
+}
+
+.inv-intro { white-space: pre-line; margin-bottom: 5mm !important; }
+
+.inv-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 9.2pt;
+  th {
+    text-align: left;
+    font-size: 7.6pt;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #fff;
+    background: $inv-blue;
+    padding: 2mm 2.2mm;
+  }
+  td { padding: 2.2mm; border-bottom: 0.2mm solid $inv-line; vertical-align: top; }
+  tbody tr:nth-child(even) td { background: #f6f8fb; }
+  tr { break-inside: avoid; }
+  .pos { width: 11mm; }
+  td.pos { color: $inv-soft; }
+  .desc { white-space: pre-line; }
+  .num { text-align: right; white-space: nowrap; }
+  .inv-empty { color: $inv-soft; text-align: center; padding: 6mm; }
+}
+
+.inv-sums {
+  margin: 3mm 0 0 auto;
+  width: 72mm;
+  div { display: flex; justify-content: space-between; padding: 1.2mm 2.2mm; }
+  .total {
+    margin-top: 1mm;
+    border-top: 0.5mm solid $inv-blue;
+    font-weight: 700;
+    font-size: 11pt;
+    color: $inv-blue;
+    background: rgba(26, 92, 158, 0.06);
+  }
+}
+
+.inv-tax-note { font-size: 8.4pt; color: $inv-soft; margin-top: 4mm !important; text-align: right; }
+
+.inv-pay {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8mm;
+  margin-top: 6mm;
+  break-inside: avoid;
+  > div { flex: 1; }
+}
+.inv-notes { white-space: pre-line; color: $inv-soft; }
+.inv-closing { margin-top: 6mm !important; span { display: inline-block; margin-top: 1mm; font-weight: 500; } }
+
+.inv-qr {
+  margin: 0;
+  flex: none;
+  width: 30mm;
+  text-align: center;
+  div { width: 26mm; height: 26mm; margin: 0 auto 1.5mm; svg { width: 100%; height: 100%; display: block; } }
+  figcaption { font-size: 6.8pt; color: $inv-soft; line-height: 1.3; }
+}
+
+.inv-foot {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 0.9fr 1.35fr;
+  gap: 4mm;
+  margin: 8mm 0 0;
+  padding: 3.5mm 0 10mm;
+  border-top: 0.3mm solid $inv-line;
+  font-size: 7pt;
+  line-height: 1.5;
+  color: $inv-soft;
+  break-inside: avoid;
+  span, strong { display: block; }
+  .nowrap { white-space: nowrap; }
+  strong { color: $inv-ink; font-weight: 600; }
+  .inv-missing { color: #b42318; font-weight: 600; }
+}
+
+// ── Druck ──────────────────────────────────────────────────
+// Beim Drucken hängt die Admin-Seite eine Kopie der Rechnung direkt an
+// <body> (.inv-print-host) und blendet alles andere aus.
+@media print {
+  @page { size: A4; margin: 0; }
+  html:has(body.inv-printing), body.inv-printing { background: #fff !important; margin: 0 !important; padding: 0 !important; min-height: 0 !important; }
+  body.inv-printing > *:not(.inv-print-host) { display: none !important; }
+  .inv-print-host { display: block !important; }
+  // Eine Spur kürzer als A4, damit Rundung keine leere zweite Seite erzeugt.
+  .inv-print-host .inv-sheet { box-shadow: none !important; zoom: 1 !important; min-height: 296mm; }
+  .inv-print-host .inv-missing { display: none !important; }
+}
+.inv-print-host { display: none; }

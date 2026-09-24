@@ -2,32 +2,15 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { requireAdmin } from './auth';
 import { config } from './config';
 import { db } from './db';
+import { h, sqlOr503, str, UUID } from './http';
+import { invoices } from './invoices';
 import { createCheckoutSession, verifyWebhook } from './stripe';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-type Handler = (req: Request, res: Response) => Promise<unknown>;
-/** Express 4 fängt keine Promise-Fehler — hier werden sie weitergereicht. */
-const h = (fn: Handler) => (req: Request, res: Response, next: NextFunction) => {
-  fn(req, res).catch(next);
-};
-
-const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const LANGS = ['de', 'fr', 'en', 'tr', 'ku'];
 const TOPICS = ['cards', 'web', 'sh', 'abo', 'other'];
 const PLANS = ['basis', 'business', 'premium'];
-
-function sqlOr503(res: Response) {
-  const sql = db();
-  if (!sql) res.status(503).json({ error: 'not_configured' });
-  return sql;
-}
-
-const str = (v: unknown, max: number): string | null => {
-  if (typeof v !== 'string') return null;
-  const s = v.trim();
-  return s ? s.slice(0, max) : null;
-};
 
 /** Nur erlaubte Spalten übernehmen; leere Texte werden zu NULL. */
 function pick(body: any, cols: string[]): Record<string, unknown> {
@@ -465,6 +448,9 @@ admin.put(
     res.json({ shop_enabled: value });
   }),
 );
+
+// Rechnungen
+admin.use('/invoices', invoices);
 
 /** Website neu bauen lassen, damit geänderte Preise online gehen. */
 admin.post(

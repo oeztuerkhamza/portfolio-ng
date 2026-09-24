@@ -233,3 +233,73 @@
   .adm-scans { text-align: left; }
   .adm-publish { flex-direction: column; align-items: stretch; }
 }
+
+// ── Rechnungen ───────────────────────────────────────────
+.adm-click { cursor: pointer; &:hover td { background: $surface; } }
+.adm-table .num { text-align: right; white-space: nowrap; }
+.adm-pill {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 999px;
+  padding: 0.2rem 0.6rem;
+  background: $brand-tint;
+  color: $brand;
+  &[data-s="entwurf"] { background: #eef1f5; color: $text-dim; }
+  &[data-s="bezahlt"] { background: #e6f5ec; color: #1c7a44; }
+  &[data-s="storniert"] { background: #f4f4f4; color: $text-mute; }
+  &[data-s="late"] { background: #fdecec; color: #9b1c1c; }
+}
+
+.adm-inv-layout {
+  display: grid;
+  gap: 1.25rem;
+  align-items: start;
+  @media (min-width: 1100px) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}
+.adm-inv-preview-col { @media (min-width: 1100px) { position: sticky; top: 8rem; } }
+.adm-inv-preview {
+  background: #e9edf2;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  padding: 0;
+  overflow: hidden;
+  > div { width: 210mm; }
+  .inv-sheet { box-shadow: 0 2px 14px rgba(14, 26, 43, 0.12); }
+}
+.adm-inv-preview-wide { max-width: 860px; }
+
+.adm-inv-items { display: grid; gap: 0.75rem; }
+.adm-inv-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0 0.6rem;
+  align-items: end;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px dashed $rule;
+  .desc { grid-column: 1 / -1; }
+  .adm-field { margin-bottom: 0.4rem; }
+  .adm-link { grid-column: 1 / -1; justify-self: start; }
+  @media (min-width: 700px) {
+    grid-template-columns: 90px 90px 120px auto;
+    .adm-link { grid-column: auto; justify-self: end; margin-bottom: 0.6rem; }
+  }
+}
+.adm-inv-add { margin-top: 0.9rem; select { max-width: 100%; } }
+.adm-inv-total { margin: 0.9rem 0 0; text-align: right; font-size: 1.05rem; strong { color: $brand; } }
+
+.adm-inv-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  > div:first-child { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+}
+.adm-inv-sum { font-family: $font-display; font-weight: 500; font-size: 1.5rem; color: $brand; }
+.adm-inv-paid {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  input { width: auto; padding: 0.4rem 0.5rem; }
+}

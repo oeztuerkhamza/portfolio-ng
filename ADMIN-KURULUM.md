@@ -10,6 +10,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Talepler** | İletişim formundan gelen her talep burada; durum, not, "müşteri oluştur". |
 | **Müşteriler** | Müşteri kartları: iletişim, adres, Google linki, notlar. |
 | **Abonelikler** | Paket, ücret, başlangıç, asgari süre sonu (60 gün kala uyarı), durum. |
+| **Faturalar** | Logolu Rechnung: taslak → kesinleştir (RE-2026-0001 …) → PDF → ödendi. GiroCode QR, Storno, kopyala. |
 | **NFC linkleri** | Kartlara yazılan kısa linkler (`/r/cafe-muster`). Hedefi istediğiniz an değiştirin, okutma sayısını görün, QR kodu SVG olarak indirin. |
 | **Fiyatlar** | Sitedeki tüm fiyatlar. Değiştirip **Siteyi güncelle**'ye basınca 2–4 dakikada sitede. |
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
@@ -23,6 +24,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 2. **SQL Editor** → **New query** → bu depodaki
    `supabase/migrations/20260924120000_admin_portal.sql` dosyasının tamamını yapıştırın → **Run**.
    Tablolar ve mevcut fiyatlar oluşur. Tablolara internetten doğrudan erişim kapalıdır; verilere sadece site sunucusu erişir.
+   Ardından aynı şekilde `supabase/migrations/20260924130000_invoices.sql` dosyasını da çalıştırın (faturalar).
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
 4. **Authentication → Users → Add user → Create new user**: kendi e-postanız ve şifreniz
@@ -64,7 +66,24 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 > Alan adı değişirse eski alan adının Vercel'de yeni adrese **yönlendirilmeye devam etmesi** gerekir;
 > yoksa eski adresle programlanmış kartlar çalışmaz.
 
-## 4. Online mağaza (hazır ama kapalı)
+## 4. Faturalar (Rechnungen)
+
+1. Supabase SQL Editor'da `supabase/migrations/20260924130000_invoices.sql` dosyasını bir kez çalıştırın.
+2. Panel → **Faturalar → Fatura bilgileri**: **Steuernummer** (Finanzamt Freiburg'un verdiği numara) ve
+   **IBAN** girin. Steuernummer olmadan fatura kesinleşmez (§ 14 UStG zorunlu bilgisi).
+3. **+ Yeni fatura** → müşteriyi seçin → kalemleri ekleyin (fiyat listesinden veya abonelikten tek tıkla)
+   → **Kesinleştir ve numara ver**.
+4. **PDF indir / Yazdır** → yazıcı olarak **“PDF olarak kaydet”** seçin. Dosya adı otomatik
+   `Rechnung RE-2026-0001 Müşteri.pdf` olur. **E-posta yaz** hazır bir e-posta açar; PDF'i ekleyin.
+5. Para gelince **Ödendi**. Hatalı faturayı silmek yasak (GoBD): **Storno** ile iptal faturası kesilir,
+   sonra **Kopyala → yeni taslak** ile doğrusu hazırlanır.
+
+- Numaralar yıl bazında boşluksuz ve sıralıdır. Taslaklar numara almaz, silinebilir.
+- Kleinunternehmer (§ 19 UStG) varsayılan açık: faturada KDV yoktur ve yasal not otomatik yazılır.
+  KDV'ye geçerseniz “Fatura bilgileri”nde kapatın; yeni faturalar %19 USt ile hesaplanır.
+- Faturalar 10 yıl saklanmalıdır. Veriler Supabase'te durur; PDF'leri ayrıca bir klasörde saklayın.
+
+## 5. Online mağaza (hazır ama kapalı)
 
 Mağaza tamamen kurulu, ancak iki kilitle kapalı: Stripe anahtarları olmadan ve panelde açılmadan çalışmaz.
 Açmadan önce yapılacaklar:
