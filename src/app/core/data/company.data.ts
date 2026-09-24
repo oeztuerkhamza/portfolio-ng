@@ -10,7 +10,7 @@ import { price } from './catalog';
  */
 export const COMPANY = {
   name: 'Breisgau Digital',
-  email: 'hamza.oeztuerk@web.de',
+  email: 'info@breisgau-digital.de',
   phoneDisplay: '+49 155 66859378',
   phoneHref: 'tel:+4915566859378',
   whatsapp: '4915566859378',

@@ -90,7 +90,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
       longitude: 7.842,
     },
     telephone: '+49 155 66859378',
-    email: 'hamza.oeztuerk@web.de',
+    email: 'info@breisgau-digital.de',
     sameAs: [
       'https://github.com/oeztuerkhamza',
       'https://www.linkedin.com/in/hamzaoeztuerk/',
