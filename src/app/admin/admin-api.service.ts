@@ -22,6 +22,8 @@ export class ApiError extends Error {
   constructor(
     readonly status: number,
     readonly code: string,
+    /** Zusatzangaben des Servers, z. B. { reason, email } bei 401. */
+    readonly detail: Record<string, unknown> = {},
   ) {
     super(code);
   }
@@ -177,8 +179,9 @@ export class AdminApi {
       body: body !== undefined ? JSON.stringify(body) : undefined,
     });
     if (res.status === 401) {
+      const detail = (await res.json().catch(() => ({}))) as Record<string, unknown>;
       this.clear();
-      throw new ApiError(401, 'unauthorized');
+      throw new ApiError(401, 'unauthorized', detail);
     }
     if (res.status === 204) return undefined as T;
     const data = await res.json().catch(() => ({}));
@@ -190,6 +193,16 @@ export class AdminApi {
 /** Fehlercodes des Servers in verständliche Sätze übersetzen. */
 export function errorText(e: unknown): string {
   const code = e instanceof ApiError ? e.code : '';
+  if (e instanceof ApiError && e.status === 401) {
+    const d = e.detail;
+    if (d['reason'] === 'not_admin')
+      return Number(d['listed'])
+        ? `Giriş yapılan adres (${d['email']}) Vercel'deki ADMIN_EMAILS listesinde yok. Yazımı kontrol edip Redeploy yapın.`
+        : `ADMIN_EMAILS Vercel'de boş görünüyor. Değeri (${d['email']}) girip Redeploy yapın.`;
+    if (String(d['reason'] ?? '').startsWith('token_rejected'))
+      return `Sunucu oturumu doğrulayamadı (${d['reason']}). SUPABASE_URL ve SUPABASE_PUBLISHABLE_KEY aynı Supabase projesine ait olmalı.`;
+    if (d['reason'] === 'supabase_not_configured') return 'SUPABASE_URL veya SUPABASE_PUBLISHABLE_KEY sunucuda eksik.';
+  }
   const map: Record<string, string> = {
     duplicate: 'Bu kayıt zaten var (ör. kısa link adı kullanılıyor).',
     invalid: 'Girilen değerlerden biri geçersiz.',

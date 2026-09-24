@@ -188,7 +188,7 @@ export class AdminComponent implements OnInit {
         await this.api.login(this.loginEmail(), this.password());
       }
     } catch (err) {
-      this.note(err instanceof Error && err.message === 'unauthorized' ? 'Bu e-posta ile yönetim paneline erişim yok.' : errorText(err), true);
+      this.note(errorText(err), true);
     } finally {
       this.busy.set(false);
     }
