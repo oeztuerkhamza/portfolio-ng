@@ -291,8 +291,12 @@ const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'A
             }
           </div>
         </div>
-        @if (c.sent_at) {
+        @if (mailing() === 'sending') {
+          <p class="adm-muted small">E-posta gönderiliyor … ({{ c.recipient_email }})</p>
+        } @else if (c.sent_at) {
           <p class="adm-muted small">{{ c.recipient_email }} adresine gönderildi: {{ dateTime(c.sent_at) }}</p>
+        } @else if (mailing() === 'no_email') {
+          <p class="adm-msg err">Alıcının e-posta adresi yok; fatura e-postayla gönderilmedi.</p>
         } @else if (c.recipient_email && c.status !== 'entwurf') {
           <p class="adm-muted small">“Müşteriye gönder” faturayı PDF olarak {{ c.recipient_email }} adresine yollar; bir kopyası size de gelir.</p>
         }
@@ -324,6 +328,8 @@ export class InvoicesTab implements OnInit, OnDestroy {
   readonly saved = signal(false);
   readonly zoom = signal(0.6);
   readonly paidAt = signal('');
+  /** Versandstatus der angezeigten Rechnung, damit nichts still scheitert. */
+  readonly mailing = signal<'' | 'sending' | 'no_email'>('');
 
   readonly statusText = INVOICE_STATUS;
   readonly money = money;
@@ -416,6 +422,7 @@ export class InvoicesTab implements OnInit, OnDestroy {
     if (inv) this.cur.set(structuredClone(inv));
     this.error.set('');
     this.saved.set(false);
+    this.mailing.set('');
     this.mode.set(mode);
     if (mode === 'edit' || mode === 'view') this.watchPreview();
     window.scrollTo({ top: 0 });
@@ -584,7 +591,7 @@ export class InvoicesTab implements OnInit, OnDestroy {
     const c = this.cur();
     const again = c.sent_at ? `\n\nBu fatura ${dateTime(c.sent_at)} tarihinde zaten gönderildi.` : '';
     if (!confirm(`${c.number} numaralı fatura ${c.recipient_email} adresine gönderilsin mi?${again}`)) return;
-    await this.run(() => this.deliver());
+    await this.deliverShown();
   }
 
   /**
@@ -594,19 +601,28 @@ export class InvoicesTab implements OnInit, OnDestroy {
    */
   private async autoSend() {
     const c = this.cur();
-    if (c.status === 'entwurf' || !c.recipient_email) return;
+    if (c.status === 'entwurf') return;
+    if (!c.recipient_email) return this.mailing.set('no_email');
+    this.mailing.set('sending');
     await new Promise<void>((resolve) => {
       afterNextRender(() => resolve(), { injector: this.injector });
       setTimeout(resolve, 1000); // falls kein Rendern mehr ansteht, ist die Seite ohnehin aktuell
     });
+    await this.deliverShown();
+  }
+
+  /** Versand mit sichtbarem „wird gesendet"; Fehler landen in der roten Meldung. */
+  private async deliverShown() {
+    this.mailing.set('sending');
     await this.run(() => this.deliver());
+    this.mailing.set('');
   }
 
   /** PDF aus der angezeigten Seite erzeugen und verschicken; der Server schickt eine Kopie ans eigene Postfach. */
   private async deliver() {
     const c = this.cur();
     const sheet = this.host.nativeElement.querySelector<HTMLElement>('.inv-sheet');
-    if (!sheet || !c.id) return;
+    if (!sheet || !c.id) throw Object.assign(new Error('no_sheet'), { code: 'no_sheet' });
     const pdf = await invoicePdf(sheet, this.docTitle(c));
     const r = await this.api.req<{ sent_at: string | null }>('POST', `/invoices/${c.id}/send`, { pdf });
     this.cur.set({ ...c, sent_at: r.sent_at ?? new Date().toISOString() });
@@ -686,6 +702,7 @@ export class InvoicesTab implements OnInit, OnDestroy {
       invalid_pdf: 'PDF oluşturulamadı. Sayfayı yenileyip tekrar deneyin.',
       not_final: 'Taslak gönderilemez; önce faturayı kesinleştirin.',
       missing_email: 'Alıcının e-posta adresi yok.',
+      no_sheet: 'Fatura sayfası bulunamadı. Sayfayı yenileyip “Müşteriye gönder”e basın.',
     };
     if (code === 'mail_failed' && e instanceof ApiError) {
       const d = e.detail;

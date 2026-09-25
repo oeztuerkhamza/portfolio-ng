@@ -4,7 +4,7 @@
  * gelegt. Die beiden Bibliotheken werden erst beim ersten Versand geladen.
  */
 export async function invoicePdf(sheet: HTMLElement, title: string): Promise<string> {
-  const [{ toJpeg }, { jsPDF }] = await Promise.all([import('html-to-image'), import('jspdf')]);
+  const [{ toSvg }, { jsPDF }] = await Promise.all([import('html-to-image'), import('jspdf')]);
 
   // Kopie außerhalb des Bildschirms: ohne den Zoom der Vorschau, in voller A4-Breite.
   const host = document.createElement('div');
@@ -16,7 +16,7 @@ export async function invoicePdf(sheet: HTMLElement, title: string): Promise<str
     await inlineSvgImages(sheet, copy);
     await document.fonts.ready;
     avoidPageBreaks(copy);
-    const img = await toJpeg(copy, { pixelRatio: 2, quality: 0.92, backgroundColor: '#ffffff' });
+    const img = await rasterize(copy, await toSvg(copy, { backgroundColor: '#ffffff' }));
     const pdf = new jsPDF({ unit: 'mm', format: 'a4', compress: true });
     pdf.setProperties({ title });
     // Längere Rechnungen laufen über mehrere Seiten: dasselbe Bild, jeweils eine A4-Höhe weiter oben.
@@ -30,6 +30,26 @@ export async function invoicePdf(sheet: HTMLElement, title: string): Promise<str
   } finally {
     host.remove();
   }
+}
+
+/**
+ * SVG-Abbild der Seite in doppelter Auflösung auf ein Canvas zeichnen. Nicht
+ * über `toJpeg`: dessen Bildladen wartet auf requestAnimationFrame, und das
+ * steht in einem Hintergrund-Tab still — wer nach dem Festschreiben in sein
+ * Postfach wechselte, hielt den Versand an, bis er zurückkam.
+ */
+async function rasterize(node: HTMLElement, svg: string): Promise<string> {
+  const image = new Image();
+  image.src = svg;
+  await image.decode();
+  const canvas = document.createElement('canvas');
+  canvas.width = node.offsetWidth * 2;
+  canvas.height = node.offsetHeight * 2;
+  const ctx = canvas.getContext('2d')!;
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.92);
 }
 
 /**
