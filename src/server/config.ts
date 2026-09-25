@@ -39,6 +39,21 @@ export const config = {
   get stripeWebhookSecret() {
     return env('STRIPE_WEBHOOK_SECRET');
   },
+  /** Postausgang für Rechnungen, z. B. mail.bikehausfreiburg.com (Mailcow). */
+  get smtpHost() {
+    return env('SMTP_HOST');
+  },
+  /** 465 = TLS von Anfang an, 587 = STARTTLS. */
+  get smtpPort() {
+    return Number(env('SMTP_PORT')) || 465;
+  },
+  /** Anmeldename des Postfachs, zugleich Absender: info@breisgau-digital.de */
+  get smtpUser() {
+    return env('SMTP_USER');
+  },
+  get smtpPass() {
+    return env('SMTP_PASS');
+  },
   /** Öffentliche Adresse der Website, z. B. https://breisgau-digital.de */
   get siteUrl() {
     return env('SITE_URL').replace(/\/+$/, '');

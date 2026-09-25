@@ -50,6 +50,10 @@ Vercel → proje **breisgau-digital** → **Settings → Environment Variables**
 | `ADMIN_EMAILS` | Panele girebilecek e-postalar, virgülle: `hamza.oeztuerk@web.de` |
 | `SITE_URL` | `https://breisgau-digital.de` |
 | `VERCEL_DEPLOY_HOOK_URL` | Vercel → Settings → Git → **Deploy Hooks** → ad: `fiyatlar`, branch: `main` → oluşan URL |
+| `SMTP_HOST` | Faturaları e-postayla göndermek için: `mail.bikehausfreiburg.com` (Mailcow) |
+| `SMTP_PORT` | `465` (boş bırakılırsa da 465) |
+| `SMTP_USER` | `info@breisgau-digital.de` — gönderen adres de budur |
+| `SMTP_PASS` | Bu posta kutusunun şifresi (IMAP'te kullandığınız) |
 
 Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/admin` açılır,
 4. adımdaki e-posta ve şifreyle giriş yapılır.
@@ -68,13 +72,16 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 
 ## 4. Faturalar (Rechnungen)
 
-1. Supabase SQL Editor'da `supabase/migrations/20260924130000_invoices.sql` dosyasını bir kez çalıştırın.
+1. Supabase SQL Editor'da `supabase/migrations/20260924130000_invoices.sql`, ardından
+   `supabase/migrations/20260925120000_invoice_sent.sql` dosyasını bir kez çalıştırın.
 2. Panel → **Faturalar → Fatura bilgileri**: **Steuernummer** (Finanzamt Freiburg'un verdiği numara) ve
    **IBAN** girin. Steuernummer olmadan fatura kesinleşmez (§ 14 UStG zorunlu bilgisi).
 3. **+ Yeni fatura** → müşteriyi seçin → kalemleri ekleyin (fiyat listesinden veya abonelikten tek tıkla)
    → **Kesinleştir ve numara ver**.
 4. **PDF indir / Yazdır** → yazıcı olarak **“PDF olarak kaydet”** seçin. Dosya adı otomatik
-   `Rechnung RE-2026-0001 Müşteri.pdf` olur. **E-posta yaz** hazır bir e-posta açar; PDF'i ekleyin.
+   `Rechnung RE-2026-0001 Müşteri.pdf` olur. **Müşteriye gönder** faturayı PDF olarak
+   `info@breisgau-digital.de` adresinden müşterinin e-postasına yollar; bir kopyası (BCC) size gelir,
+   gönderim tarihi faturada görünür. Bunun için 2. adımdaki `SMTP_*` değişkenleri gerekir.
 5. Para gelince **Ödendi**. Hatalı faturayı silmek yasak (GoBD): **Storno** ile iptal faturası kesilir,
    sonra **Kopyala → yeni taslak** ile doğrusu hazırlanır.
 

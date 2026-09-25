@@ -1,6 +1,7 @@
 import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
-import { AdminApi, errorText } from '../admin-api.service';
+import { AdminApi, ApiError, errorText } from '../admin-api.service';
 import { InvoiceDocComponent } from '../invoice/invoice-doc.component';
+import { invoicePdf } from '../invoice/invoice-pdf';
 import {
   EMPTY_PROFILE,
   INVOICE_STATUS,
@@ -12,6 +13,7 @@ import {
   money,
   totals,
 } from '../invoice/invoice.model';
+import { dateTime } from '../labels';
 import type { Customer } from './customers.tab';
 
 interface Price {
@@ -271,7 +273,9 @@ const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'A
           </div>
           <div class="adm-actions">
             <button class="btn btn-primary btn-small" (click)="print()">PDF indir / Yazdır</button>
-            @if (c.recipient_email) { <a class="btn btn-secondary btn-small" [href]="mailto()">E-posta yaz</a> }
+            @if (c.recipient_email && c.status !== 'entwurf') {
+              <button class="btn btn-secondary btn-small" [disabled]="busy()" (click)="send()">{{ c.sent_at ? 'Tekrar gönder' : 'Müşteriye gönder' }}</button>
+            }
             @if (c.kind === 'rechnung' && c.status === 'offen') {
               <label class="adm-inv-paid">
                 <input type="date" [value]="today" (input)="paidAt.set(val($event))" />
@@ -287,8 +291,10 @@ const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'A
             }
           </div>
         </div>
-        @if (c.recipient_email) {
-          <p class="adm-muted small">E-posta için: önce “PDF indir” ile dosyayı kaydedin (yazıcı olarak “PDF olarak kaydet”), sonra açılan e-postaya ekleyin.</p>
+        @if (c.sent_at) {
+          <p class="adm-muted small">{{ c.recipient_email }} adresine gönderildi: {{ dateTime(c.sent_at) }}</p>
+        } @else if (c.recipient_email && c.status !== 'entwurf') {
+          <p class="adm-muted small">“Müşteriye gönder” faturayı PDF olarak {{ c.recipient_email }} adresine yollar; bir kopyası size de gelir.</p>
         }
 
         <div class="adm-inv-preview adm-inv-preview-wide" #preview>
@@ -320,6 +326,7 @@ export class InvoicesTab implements OnInit, OnDestroy {
 
   readonly statusText = INVOICE_STATUS;
   readonly money = money;
+  readonly dateTime = dateTime;
   readonly year = new Date().getFullYear();
   readonly today = isoDay(new Date());
   readonly filters: { id: Filter; label: string }[] = [
@@ -564,16 +571,24 @@ export class InvoicesTab implements OnInit, OnDestroy {
     this.show('edit', copy);
   }
 
-  mailto(): string {
+  /** Rechnung als PDF an den Kunden mailen; der Server schickt eine Kopie ans eigene Postfach. */
+  async send() {
     const c = this.cur();
-    const p = c.sender ?? this.profile();
-    const subject = `${c.kind === 'storno' ? 'Stornorechnung' : 'Rechnung'} ${c.number} – ${p.company}`;
-    const body =
-      `Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie ${c.kind === 'storno' ? 'die Stornorechnung' : 'die Rechnung'} ${c.number} ` +
-      `über ${money(c.gross_total)}` +
-      (c.kind === 'rechnung' && c.status === 'offen' ? `, zahlbar bis zum ${this.d(c.due_date)}` : '') +
-      `.\n\nVielen Dank für Ihren Auftrag!\n\n${p.closing || 'Mit freundlichen Grüßen'}\n${p.owner || p.company}\n${p.company}\n${p.phone}`;
-    return `mailto:${c.recipient_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    const sheet = this.host.nativeElement.querySelector<HTMLElement>('.inv-sheet');
+    if (!sheet || !c.id) return;
+    const again = c.sent_at ? `\n\nBu fatura ${dateTime(c.sent_at)} tarihinde zaten gönderildi.` : '';
+    if (!confirm(`${c.number} numaralı fatura ${c.recipient_email} adresine gönderilsin mi?${again}`)) return;
+    await this.run(async () => {
+      const pdf = await invoicePdf(sheet, this.docTitle(c));
+      const r = await this.api.req<{ sent_at: string | null }>('POST', `/invoices/${c.id}/send`, { pdf });
+      this.cur.set({ ...c, sent_at: r.sent_at ?? new Date().toISOString() });
+    });
+  }
+
+  /** „Rechnung RE-2026-0001 Firma" — Dokumenttitel und Dateiname. */
+  private docTitle(c: Invoice): string {
+    const who = (c.recipient_business || c.recipient_name || '').replace(/[\\/:*?"<>|]+/g, '').trim();
+    return [c.kind === 'storno' ? 'Stornorechnung' : 'Rechnung', c.number ?? 'Entwurf', who].filter(Boolean).join(' ');
   }
 
   /**
@@ -590,8 +605,7 @@ export class InvoicesTab implements OnInit, OnDestroy {
     document.body.appendChild(wrap);
     document.body.classList.add('inv-printing');
     const title = document.title;
-    const who = (c.recipient_business || c.recipient_name || '').replace(/[\\/:*?"<>|]+/g, '').trim();
-    document.title = [c.kind === 'storno' ? 'Stornorechnung' : 'Rechnung', c.number ?? 'Entwurf', who].filter(Boolean).join(' ');
+    document.title = this.docTitle(c);
     const done = () => {
       window.removeEventListener('afterprint', done);
       wrap.remove();
@@ -638,7 +652,17 @@ export class InvoicesTab implements OnInit, OnDestroy {
       invalid_items: 'Kalemlerden birinde açıklama veya fiyat eksik/geçersiz.',
       invalid_iban: 'IBAN geçersiz görünüyor.',
       locked: 'Bu fatura kesinleşmiş; değiştirilemez veya silinemez.',
+      mail_not_configured: 'E-posta gönderimi kurulmamış: Vercel’de SMTP_HOST, SMTP_USER ve SMTP_PASS girilip Redeploy yapılmalı.',
+      invalid_pdf: 'PDF oluşturulamadı. Sayfayı yenileyip tekrar deneyin.',
+      not_final: 'Taslak gönderilemez; önce faturayı kesinleştirin.',
+      missing_email: 'Alıcının e-posta adresi yok.',
     };
+    if (code === 'mail_failed' && e instanceof ApiError) {
+      const d = e.detail;
+      return d['code'] === 'EAUTH'
+        ? 'Mail sunucusu girişi reddetti: Vercel’deki SMTP_USER / SMTP_PASS değerlerini kontrol edin.'
+        : `E-posta gönderilemedi (${d['code'] ?? d['smtp'] ?? 'bilinmeyen hata'}). SMTP_HOST ve SMTP_PORT ayarlarını kontrol edin.`;
+    }
     return map[code] ?? errorText(e);
   }
 

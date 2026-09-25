@@ -52,6 +52,8 @@ export interface Invoice {
   gross_total?: number | string;
   sender?: InvoiceProfile | null;
   paid_at?: string | null;
+  /** Zuletzt per E-Mail an den Kunden verschickt. */
+  sent_at?: string | null;
   created_at?: string;
 }
 

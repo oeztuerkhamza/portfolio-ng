@@ -108,6 +108,9 @@ api.post(
   }),
 );
 
+// Der Rechnungsversand trägt das PDF im Body: erst anmelden, dann bis 4 MB lesen.
+api.post('/admin/invoices/:id/send', requireAdmin, express.json({ limit: '4mb' }));
+
 api.use(express.json({ limit: '32kb' }));
 
 // ── Öffentlich: Anfrage speichern ──────────────────────────

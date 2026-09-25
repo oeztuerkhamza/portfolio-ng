@@ -1,4 +1,6 @@
 import express from 'express';
+import nodemailer from 'nodemailer';
+import { config } from './config';
 import { h, sqlOr503, str, UUID } from './http';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -290,5 +292,82 @@ invoices.post(
       return { status: 201, body: storno };
     });
     return res.status(result.status).json(result.body);
+  }),
+);
+
+// ── Versand per E-Mail ─────────────────────────────────────
+function mailer() {
+  if (!config.smtpHost || !config.smtpUser || !config.smtpPass) return null;
+  return nodemailer.createTransport({
+    host: config.smtpHost,
+    port: config.smtpPort,
+    secure: config.smtpPort === 465,
+    auth: { user: config.smtpUser, pass: config.smtpPass },
+    connectionTimeout: 10_000,
+    greetingTimeout: 10_000,
+    socketTimeout: 20_000,
+  });
+}
+
+const euro = (n: unknown) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(Number(n) || 0);
+
+/**
+ * Festgeschriebene Rechnung an den Kunden schicken. Das PDF erzeugt das
+ * Admin-Portal aus derselben Seite wie Vorschau und Druck; der Server hängt
+ * es nur an. Eine Kopie geht per BCC ans eigene Postfach, weil SMTP nichts
+ * in „Gesendet" ablegt.
+ */
+invoices.post(
+  '/:id/send',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const transport = mailer();
+    if (!transport) return res.status(503).json({ error: 'mail_not_configured' });
+    const pdf = typeof req.body?.pdf === 'string' ? Buffer.from(req.body.pdf, 'base64') : null;
+    if (!pdf || pdf.length < 1000 || pdf.length > 3_000_000 || pdf.subarray(0, 5).toString() !== '%PDF-')
+      return res.status(400).json({ error: 'invalid_pdf' });
+
+    const [inv] = await sql`
+      select *, to_char(issue_date + due_days, 'DD.MM.YYYY') as due_de
+      from invoices where id = ${req.params['id']}`;
+    if (!inv) return res.status(404).json({ error: 'not_found' });
+    if (inv['status'] === 'entwurf') return res.status(409).json({ error: 'not_final' });
+    const to = String(inv['recipient_email'] ?? '').trim();
+    if (!to) return res.status(400).json({ error: 'missing_email' });
+
+    const s = { ...(await profile(sql)), ...((inv['sender'] as Record<string, unknown>) ?? {}) } as Record<string, string>;
+    const storno = inv['kind'] === 'storno';
+    const what = storno ? 'Stornorechnung' : 'Rechnung';
+    const due = !storno && inv['status'] === 'offen' ? `, zahlbar bis zum ${inv['due_de']}` : '';
+    const text =
+      `Sehr geehrte Damen und Herren,\n\nanbei erhalten Sie ${storno ? 'die Stornorechnung' : 'die Rechnung'} ${inv['number']} ` +
+      `über ${euro(inv['gross_total'])}${due}.\n\nVielen Dank für Ihren Auftrag!\n\n` +
+      [s['closing'] || 'Mit freundlichen Grüßen', s['owner'] || s['company'], s['company'], s['phone'], s['web']].filter(Boolean).join('\n');
+    const from = { name: s['company'] || 'Breisgau Digital', address: config.smtpUser };
+
+    try {
+      await transport.sendMail({
+        from,
+        to,
+        bcc: config.smtpUser,
+        subject: `${what} ${inv['number']} – ${from.name}`,
+        text,
+        attachments: [{ filename: `${what}_${inv['number']}.pdf`, content: pdf, contentType: 'application/pdf' }],
+      });
+    } catch (err) {
+      console.error('[invoices] Versand', err);
+      const e = err as { code?: string; responseCode?: number };
+      return res.status(502).json({ error: 'mail_failed', code: e.code ?? null, smtp: e.responseCode ?? null });
+    }
+
+    // Die Mail ist raus — ein Fehler beim Vermerken (etwa Spalte noch nicht
+    // angelegt) darf das nicht als Fehlschlag melden.
+    const [row] = await sql`update invoices set sent_at = now() where id = ${inv['id']} returning sent_at`.catch((err) => {
+      console.error('[invoices] sent_at', err);
+      return [];
+    });
+    return res.json({ sent_at: row?.['sent_at'] ?? null });
   }),
 );
