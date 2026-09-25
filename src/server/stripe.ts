@@ -172,3 +172,84 @@ export async function checkStripe(): Promise<StripeStatus> {
   }
   return status;
 }
+
+export interface WebhookStatus {
+  /**
+   * `ok` — im Modus des Schlüssels gibt es einen aktiven Endpunkt auf unsere
+   * Adresse. `missing` — sicher keiner (Stripe hat geantwortet).
+   * `unknown` — Stripe war nicht erreichbar oder der Schlüssel darf die
+   * Endpunkte nicht lesen; daraus darf nichts geschlossen werden.
+   */
+  state: 'ok' | 'missing' | 'unknown';
+  /** Ereignisse aus WEBHOOK_EVENTS, die dem gefundenen Endpunkt fehlen. */
+  missingEvents: string[];
+  /** Kurzer Grund bei `unknown`. */
+  error: string | null;
+}
+
+/** Adressen vergleichbar machen: Groß/Kleinschreibung und Schlussstrich weg. */
+const sameUrl = (a: string, b: string) => a.trim().replace(/\/+$/, '').toLowerCase() === b.trim().replace(/\/+$/, '').toLowerCase();
+
+let cache: { key: string; until: number; value: WebhookStatus } | null = null;
+
+/**
+ * Prüft, ob im Modus des hinterlegten Schlüssels ein Webhook auf `url` zeigt.
+ *
+ * Der Sinn: ein Testmodus-Webhook und ein Echtbetrieb-Schlüssel sind eine
+ * stille Geldfalle — der Kunde zahlt, Stripe schickt das Ereignis mit einem
+ * anderen Geheimnis, die Signaturprüfung schlägt fehl und die Bestellung
+ * bleibt für immer „offen". `GET /v1/webhook_endpoints` liefert immer nur die
+ * Endpunkte des Modus, zu dem der Schlüssel gehört — genau die Auskunft, die
+ * wir brauchen.
+ *
+ * Bei `unknown` wird nichts blockiert: ein Aussetzer bei Stripe darf den Shop
+ * nicht schließen. Blockiert wird nur bei einem klaren `missing`.
+ */
+export async function webhookStatus(url: string, ttlMs = 10 * 60_000): Promise<WebhookStatus> {
+  const key = config.stripeSecretKey;
+  if (!key) return { state: 'unknown', missingEvents: [], error: 'STRIPE_SECRET_KEY fehlt' };
+
+  const cacheKey = `${keyMode(key) ?? '?'}|${url}`;
+  if (cache && cache.key === cacheKey && cache.until > Date.now()) return cache.value;
+
+  const value = await lookup(key, url);
+  // Ein `missing` nur kurz behalten, damit eine Korrektur schnell greift;
+  // `unknown` gar nicht, damit der nächste Aufruf es erneut versucht.
+  const keep = value.state === 'ok' ? ttlMs : value.state === 'missing' ? 60_000 : 0;
+  cache = keep ? { key: cacheKey, until: Date.now() + keep, value } : null;
+  return value;
+}
+
+async function lookup(key: string, url: string): Promise<WebhookStatus> {
+  try {
+    const res = await fetch(`${config.stripeApiBase}/v1/webhook_endpoints?limit=100`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (!res.ok) {
+      return { state: 'unknown', missingEvents: [], error: res.status === 403 ? 'Schlüssel darf die Webhooks nicht lesen (403)' : `Stripe antwortet mit ${res.status}` };
+    }
+    const data = (await res.json()) as { data?: { url?: string; status?: string; enabled_events?: string[] }[] };
+    const hits = (data.data ?? []).filter((e) => e.status !== 'disabled' && sameUrl(String(e.url ?? ''), url));
+    if (!hits.length) return { state: 'missing', missingEvents: [...WEBHOOK_EVENTS], error: null };
+
+    // Mehrere Endpunkte auf dieselbe Adresse: die Ereignisse zusammenzählen.
+    const covered = new Set(hits.flatMap((e) => e.enabled_events ?? []));
+    const missingEvents = covered.has('*') ? [] : WEBHOOK_EVENTS.filter((e) => !covered.has(e));
+    return { state: 'ok', missingEvents, error: null };
+  } catch {
+    return { state: 'unknown', missingEvents: [], error: 'Stripe nicht erreichbar' };
+  }
+}
+
+/** Ohne dieses Ereignis wird eine bezahlte Bestellung nie als bezahlt gebucht. */
+export const CRITICAL_EVENT = 'checkout.session.completed';
+
+/**
+ * Darf der Shop Geld annehmen? Nur ein klares „kein passender Webhook" oder
+ * ein Endpunkt ohne das entscheidende Ereignis hält die Bestellung auf.
+ */
+export function blocksCheckout(status: WebhookStatus): boolean {
+  if (status.state === 'missing') return true;
+  return status.state === 'ok' && status.missingEvents.includes(CRITICAL_EVENT);
+}

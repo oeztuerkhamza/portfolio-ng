@@ -13,6 +13,10 @@ interface StripeSetup {
   error: string | null;
   webhookUrl: string;
   webhookEvents: string[];
+  /** Gibt es im Modus des Schlüssels einen Webhook auf unsere Adresse? */
+  webhook: { state: 'ok' | 'missing' | 'unknown'; missingEvents: string[]; error: string | null };
+  /** true = der Shop nimmt gerade kein Geld an. */
+  checkoutBlocked: boolean;
 }
 
 @Component({
@@ -36,12 +40,32 @@ interface StripeSetup {
           <li [class.ok]="s.chargesEnabled === true">
             Stripe hesabı ödeme alabiliyor@if (s.chargesEnabled === false) { — Stripe'ta hesap doğrulamasını tamamlayın }
           </li>
+          <li [class.ok]="s.webhook.state === 'ok' && !s.webhook.missingEvents.length">
+            Webhook, anahtarın moduyla aynı yerde
+            @if (s.webhook.state === 'missing') { — <strong>yok</strong>: aşağıdaki adresi bu modda ekleyin }
+            @else if (s.webhook.state === 'unknown') { — kontrol edilemedi ({{ s.webhook.error }}) }
+            @else if (s.webhook.missingEvents.length) { — eksik olay: {{ s.webhook.missingEvents.join(', ') }} }
+          </li>
         </ul>
+
+        @if (s.checkoutBlocked) {
+          <p class="adm-msg err">
+            <strong>Mağaza şu an ödeme almıyor.</strong> Anahtarın modunda bizim adrese işaret eden bir webhook
+            bulunamadı, dolayısıyla ödeme geri bildirilemez: müşteri öder, sipariş sonsuza dek “offen” kalırdı.
+            Sunucu bu yüzden siparişi reddediyor (<code>webhook_missing</code>). Aşağıdaki adresi
+            <strong>{{ s.mode === 'live' ? 'canlı' : 'test' }}</strong> modda ekledikten ve
+            <code>STRIPE_WEBHOOK_SECRET</code>'ı güncelleyip yeniden dağıttıktan sonra kendiliğinden düzelir.
+          </p>
+        }
         @if (s.mode === 'test') {
           <p class="adm-msg">Test anahtarı kullanılıyor: siparişler işler, ama gerçek para tahsil edilmez.</p>
         }
         @if (s.mode === 'live') {
-          <p class="adm-msg">Canlı anahtar kullanılıyor: verilen siparişlerden gerçek ödeme alınır.</p>
+          <p class="adm-msg">
+            <strong>Canlı anahtar kullanılıyor:</strong> verilen siparişlerden gerçek ödeme alınır.
+            Test ve canlı modun webhook geheimnisi <em>ayrıdır</em> — mod değiştirdiyseniz
+            <code>STRIPE_WEBHOOK_SECRET</code>'ı da değiştirmeniz gerekir.
+          </p>
         }
         <p>
           Stripe → Developers → Webhooks → <strong>Add endpoint</strong> altına bu adresi ekleyin:<br />

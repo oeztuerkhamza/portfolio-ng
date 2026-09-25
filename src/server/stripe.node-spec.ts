@@ -5,11 +5,15 @@ import assert from 'node:assert/strict';
 import { afterEach, describe, test } from 'node:test';
 import {
   CANCELLED_EVENTS,
+  CRITICAL_EVENT,
   PAID_EVENTS,
   WEBHOOK_EVENTS,
+  blocksCheckout,
   checkStripe,
   createCheckoutSession,
   verifyWebhook,
+  webhookStatus,
+  type WebhookStatus,
 } from './stripe';
 
 /**
@@ -387,5 +391,188 @@ describe('checkStripe', () => {
     } finally {
       await stripe.close();
     }
+  });
+});
+
+// ── Passt der Webhook zum Schlüssel? ──────────────────────
+describe('webhookStatus', () => {
+  const HOOK = 'https://breisgau-digital.de/api/stripe/webhook';
+  /** Eigene Adresse je Test: der Zwischenspeicher wird nach ihr geordnet. */
+  let n = 0;
+  const url = () => `${HOOK}?t=${++n}`;
+  const endpoint = (over: Record<string, unknown> = {}) => ({
+    url: HOOK,
+    status: 'enabled',
+    enabled_events: [...WEBHOOK_EVENTS],
+    ...over,
+  });
+
+  test('fragt Stripe nicht ohne Schlüssel', async () => {
+    setEnv();
+    const status = await webhookStatus(url(), 0);
+    assert.equal(status.state, 'unknown');
+    assert.match(String(status.error), /STRIPE_SECRET_KEY/);
+  });
+
+  test('findet den passenden Endpunkt', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_test_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u })] } }));
+    try {
+      const status = await webhookStatus(u, 0);
+      assert.equal(status.state, 'ok');
+      assert.deepEqual(status.missingEvents, []);
+      assert.equal(stripe.calls[0].path, '/v1/webhook_endpoints?limit=100');
+      assert.equal(stripe.calls[0].auth, 'Bearer sk_test_abc');
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('vergleicht die Adresse ohne Rücksicht auf Schlussstrich und Schreibweise', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_test_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u.toUpperCase() + '/' })] } }));
+    try {
+      assert.equal((await webhookStatus(u, 0)).state, 'ok');
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('meldet „missing", wenn kein Endpunkt auf unsere Adresse zeigt', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: 'https://anderswo.example/hook' })] } }));
+    try {
+      const status = await webhookStatus(url(), 0);
+      assert.equal(status.state, 'missing');
+      assert.deepEqual(status.missingEvents, [...WEBHOOK_EVENTS]);
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('zählt einen abgeschalteten Endpunkt nicht', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u, status: 'disabled' })] } }));
+    try {
+      assert.equal((await webhookStatus(u, 0)).state, 'missing');
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('meldet „missing" bei leerer Liste — der typische Modus-Fehler', async () => {
+    // Echtbetrieb-Schlüssel, Webhook nur im Testmodus angelegt: Stripe
+    // antwortet dann mit einer leeren Liste.
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const stripe = await fakeStripe(() => ({ json: { data: [] } }));
+    try {
+      assert.equal((await webhookStatus(url(), 0)).state, 'missing');
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('nennt fehlende Ereignisse eines vorhandenen Endpunkts', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u, enabled_events: ['checkout.session.completed'] })] } }));
+    try {
+      const status = await webhookStatus(u, 0);
+      assert.equal(status.state, 'ok');
+      assert.deepEqual(status.missingEvents, WEBHOOK_EVENTS.filter((e) => e !== 'checkout.session.completed'));
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('nimmt „*" als alle Ereignisse', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u, enabled_events: ['*'] })] } }));
+    try {
+      assert.deepEqual((await webhookStatus(u, 0)).missingEvents, []);
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('zählt mehrere Endpunkte auf dieselbe Adresse zusammen', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({
+      json: {
+        data: [
+          endpoint({ url: u, enabled_events: ['checkout.session.completed', 'checkout.session.expired'] }),
+          endpoint({ url: u, enabled_events: ['checkout.session.async_payment_succeeded', 'checkout.session.async_payment_failed'] }),
+        ],
+      },
+    }));
+    try {
+      assert.deepEqual((await webhookStatus(u, 0)).missingEvents, []);
+    } finally {
+      await stripe.close();
+    }
+  });
+
+  test('bleibt bei 403 und 503 unentschieden, statt zu blockieren', async () => {
+    for (const [status, pattern] of [[403, /403/], [503, /503/]] as const) {
+      setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc' });
+      const stripe = await fakeStripe(() => ({ status, json: {} }));
+      try {
+        const res = await webhookStatus(url(), 0);
+        assert.equal(res.state, 'unknown', `HTTP ${status}`);
+        assert.match(String(res.error), pattern);
+      } finally {
+        await stripe.close();
+      }
+    }
+  });
+
+  test('bleibt unentschieden, wenn Stripe nicht erreichbar ist', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_live_abc', STRIPE_API_BASE: await deadAddress() });
+    assert.equal((await webhookStatus(url(), 0)).state, 'unknown');
+  });
+
+  test('fragt Stripe nicht bei jeder Bestellung erneut', async () => {
+    setEnv({ STRIPE_SECRET_KEY: 'sk_test_abc' });
+    const u = url();
+    const stripe = await fakeStripe(() => ({ json: { data: [endpoint({ url: u })] } }));
+    try {
+      assert.equal((await webhookStatus(u, 60_000)).state, 'ok');
+      assert.equal((await webhookStatus(u, 60_000)).state, 'ok');
+      assert.equal(stripe.calls.length, 1, 'zweiter Aufruf kommt aus dem Zwischenspeicher');
+    } finally {
+      await stripe.close();
+    }
+  });
+});
+
+describe('blocksCheckout', () => {
+  const status = (over: Partial<WebhookStatus>): WebhookStatus => ({ state: 'ok', missingEvents: [], error: null, ...over });
+
+  test('hält den Shop an, wenn sicher kein passender Webhook da ist', () => {
+    assert.equal(blocksCheckout(status({ state: 'missing', missingEvents: [...WEBHOOK_EVENTS] })), true);
+  });
+
+  test('hält den Shop an, wenn das entscheidende Ereignis fehlt', () => {
+    assert.equal(blocksCheckout(status({ missingEvents: [CRITICAL_EVENT] })), true);
+  });
+
+  test('lässt durch, wenn nur ein nachrangiges Ereignis fehlt', () => {
+    // Ohne „expired" bleibt eine abgelaufene Sitzung stehen — kein Grund,
+    // deswegen kein Geld anzunehmen.
+    assert.equal(blocksCheckout(status({ missingEvents: ['checkout.session.expired'] })), false);
+  });
+
+  test('lässt durch, wenn alles passt', () => {
+    assert.equal(blocksCheckout(status({})), false);
+  });
+
+  test('lässt durch, wenn Stripe nicht gefragt werden konnte', () => {
+    // Ein Aussetzer bei Stripe darf den Shop nicht schließen.
+    assert.equal(blocksCheckout(status({ state: 'unknown', error: 'Stripe nicht erreichbar' })), false);
   });
 });

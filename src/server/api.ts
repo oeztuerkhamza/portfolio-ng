@@ -5,7 +5,16 @@ import { db } from './db';
 import { h, sqlOr503, str, UUID } from './http';
 import { invoices } from './invoices';
 import { type OrderMailItem, mailer, orderConfirmation } from './mail';
-import { CANCELLED_EVENTS, PAID_EVENTS, WEBHOOK_EVENTS, checkStripe, createCheckoutSession, verifyWebhook } from './stripe';
+import {
+  CANCELLED_EVENTS,
+  PAID_EVENTS,
+  WEBHOOK_EVENTS,
+  blocksCheckout,
+  checkStripe,
+  createCheckoutSession,
+  verifyWebhook,
+  webhookStatus,
+} from './stripe';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -121,6 +130,12 @@ api.post(
     const secret = config.stripeWebhookSecret;
     const sig = String(req.headers['stripe-signature'] ?? '');
     if (!secret || !Buffer.isBuffer(req.body) || !verifyWebhook(req.body, sig, secret)) {
+      // Laut protokollieren: passt das Geheimnis nicht zum Modus des
+      // Schlüssels, bleiben bezahlte Bestellungen sonst stumm auf „offen".
+      console.error(
+        '[stripe] Webhook abgewiesen — Signatur passt nicht zu STRIPE_WEBHOOK_SECRET.',
+        secret ? 'Testmodus und Echtbetrieb haben verschiedene Geheimnisse.' : 'STRIPE_WEBHOOK_SECRET fehlt.',
+      );
       return res.status(400).json({ error: 'bad_signature' });
     }
     const event = JSON.parse(req.body.toString('utf8'));
@@ -203,6 +218,24 @@ api.post(
     if (!(await shopEnabled(sql))) return res.status(503).json({ error: 'shop_disabled' });
     if (limited('co:' + clientIp(req), 10, 10 * 60_000)) return res.status(429).json({ error: 'too_many' });
 
+    /**
+     * Ein Testmodus-Webhook und ein Echtbetrieb-Schlüssel (oder umgekehrt)
+     * sind eine stille Geldfalle: der Kunde zahlt, Stripe signiert das
+     * Ereignis mit einem anderen Geheimnis, die Prüfung schlägt fehl und die
+     * Bestellung bleibt für immer „offen". Dann lieber gar nichts annehmen.
+     * Ist Stripe nur nicht erreichbar, wird nicht blockiert.
+     */
+    const base = origin(req);
+    const hook = await webhookStatus(`${base}/api/stripe/webhook`);
+    if (blocksCheckout(hook)) {
+      console.error(
+        '[checkout] abgelehnt — kein passender Stripe-Webhook im Modus des Schlüssels:',
+        hook.state,
+        hook.missingEvents.join(',') || '(kein Endpunkt)',
+      );
+      return res.status(503).json({ error: 'webhook_missing' });
+    }
+
     const b = req.body ?? {};
     const lang = LANGS.includes(b.lang) ? b.lang : 'de';
     const wanted: { key: string; qty: number }[] = (Array.isArray(b.items) ? b.items : [])
@@ -232,7 +265,6 @@ api.post(
     const lines = items.map((i) => ({ name: i.label, unitAmountCents: Math.round(i.unit_price * 100), quantity: i.qty }));
     if (shipping > 0) lines.push({ name: 'Versand', unitAmountCents: Math.round(shipping * 100), quantity: 1 });
 
-    const base = origin(req);
     const session = await createCheckoutSession({
       lines,
       orderId,
@@ -308,10 +340,15 @@ admin.get('/me', (_req, res) => {
 admin.get(
   '/stripe',
   h(async (req, res) => {
+    const webhookUrl = `${origin(req)}/api/stripe/webhook`;
+    const [status, hook] = await Promise.all([checkStripe(), webhookStatus(webhookUrl)]);
     res.json({
-      ...(await checkStripe()),
-      webhookUrl: `${origin(req)}/api/stripe/webhook`,
+      ...status,
+      webhookUrl,
       webhookEvents: WEBHOOK_EVENTS,
+      webhook: hook,
+      /** true = der Shop nimmt gerade kein Geld an. */
+      checkoutBlocked: blocksCheckout(hook),
     });
   }),
 );
