@@ -430,41 +430,4 @@ Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit SQL Server
       note: 'Live-System — geöffnet im eingebetteten Browser',
     },
   },
-  {
-    slug: 'bewerbungs-manager',
-    title: 'Bewerbungs-Manager',
-    subtitle: 'KI-gestützte Bewerbungsautomatisierung',
-    category: 'Tool / Automation',
-    tags: ['Python', 'KI', 'Automation', 'PDF'],
-    image: '/assets/images/bewerbung.png',
-    githubUrl: 'https://github.com/oeztuerkhamza/bewerbungs-manager',
-    description:
-      'KI-gestützte Bewerbungsautomatisierung. Python-App für PDF-Generierung, Profilverwaltung und KI-gestützte Stellenanalyse.',
-    longDescription: `Der Bewerbungs-Manager ist ein intelligentes Bewerbungstool, das den gesamten Bewerbungsprozess automatisiert. Von der Stellenanalyse über die Anpassung des Lebenslaufs bis hin zur PDF-Generierung – alles wird KI-gestützt optimiert.
-
-Das System analysiert Stellenausschreibungen, extrahiert relevante Keywords und passt Bewerbungsunterlagen automatisch an. Machine-Learning-Modelle bewerten die Passgenauigkeit und generieren maßgeschneiderte Anschreiben.`,
-    features: [
-      'KI-gestützte Analyse von Stellenausschreibungen',
-      'Automatische Keyword-Extraktion und -Matching',
-      'PDF-Generierung für Lebenslauf und Anschreiben',
-      'Profilverwaltung mit mehreren Templates',
-      'Passgenauigkeits-Score für jede Stelle',
-      'Dashboard mit Bewerbungs-Tracking',
-    ],
-    techStack: [
-      { name: 'Python', icon: '🐍' },
-      { name: 'FastAPI', icon: '⚡' },
-      { name: 'OpenAI', icon: '🤖' },
-      { name: 'SQLite', icon: '🗃️' },
-      { name: 'React', icon: '⚛️' },
-    ],
-    screenshots: ['/assets/images/bewerbung.png'],
-    role: 'Solo Developer',
-    duration: '2025',
-    demo: {
-      type: 'image',
-      screens: ['/assets/images/bewerbung.png'],
-      note: 'Desktop-Tool — Screenshot',
-    },
-  },
 ];

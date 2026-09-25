@@ -27,6 +27,11 @@
       "source": "/:locale(de|fr|en|tr|ku)/projects/hochzeitseinladung",
       "destination": "/:locale/projects",
       "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/projects/bewerbungs-manager",
+      "destination": "/:locale/projects",
+      "permanent": true
     }
   ],
   "rewrites": [
