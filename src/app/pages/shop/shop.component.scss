@@ -82,6 +82,84 @@
 .sum-note { margin: 0; font-size: 0.8rem; color: $text-mute; }
 .sum-error { margin: 0; color: #9b1c1c; font-size: 0.9rem; }
 
+// ── Warenkorb ──────────────────────────────────────────────
+// Gewählte Zeilen im Katalog bekommen einen ruhigen Rahmen, damit man sie
+// zwischen den anderen wiederfindet.
+.shop-line.picked {
+  border-color: $rule-brand;
+  background: $brand-tint;
+}
+
+.shop-add {
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.cart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+
+  .shop-group { margin-bottom: 0.35rem; }
+}
+
+.cart-clear {
+  font: inherit;
+  font-size: 0.8rem;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: $text-dim;
+  text-decoration: underline;
+  cursor: pointer;
+  &:hover { color: $brand; }
+}
+
+.cart-empty { padding: 0.35rem 0 0.25rem; }
+
+.cart-items {
+  list-style: none;
+  margin: 0 0 0.35rem;
+  padding: 0;
+  display: grid;
+  gap: 0.5rem;
+
+  li {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: baseline;
+    gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid $rule-soft;
+    font-size: 0.9rem;
+  }
+  li:last-child { border-bottom: 0; padding-bottom: 0; }
+}
+
+.cart-qty { color: $text-dim; font-variant-numeric: tabular-nums; }
+
+.cart-label {
+  display: grid;
+  gap: 0.1rem;
+  em { font-style: normal; font-size: 0.75rem; color: $text-mute; }
+}
+
+.cart-sum { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.cart-remove {
+  background: none;
+  border: 0;
+  padding: 0.1rem;
+  line-height: 1;
+  color: $text-mute;
+  cursor: pointer;
+  &:hover { color: #9b1c1c; }
+  app-icon { display: block; width: 0.9rem; height: 0.9rem; }
+}
+
 // Pflichtangaben und Zustimmung direkt über dem Bestellknopf. Abgesetzt,
 // damit man sie vor dem Klick nicht überliest.
 .shop-legal {

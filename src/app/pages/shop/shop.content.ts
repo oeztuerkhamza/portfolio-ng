@@ -42,6 +42,18 @@ export const SHOP_CONTENT: Record<string, Entry> = {
     tr: 'Nihai fiyatlar. § 19 UStG kapsamında küçük işletme olarak KDV alınmaz.',
     ku: 'Bihayên dawî. Wek karsaziya piçûk li gorî § 19 UStG baca nirxê zêde nayê girtin.',
   },
+  'shop.cart': { de: 'Warenkorb', fr: 'Panier', en: 'Cart', tr: 'Sepet', ku: 'Selik' },
+  'shop.cart.add': { de: 'In den Warenkorb', fr: 'Ajouter au panier', en: 'Add to cart', tr: 'Sepete ekle', ku: 'Têxe selikê' },
+  'shop.cart.empty': {
+    de: 'Ihr Warenkorb ist noch leer. Wählen Sie links eine Karte oder ein Paket.',
+    fr: 'Votre panier est encore vide. Choisissez une carte ou une formule à gauche.',
+    en: 'Your cart is still empty. Pick a card or a bundle on the left.',
+    tr: 'Sepetiniz henüz boş. Soldan bir kart ya da paket seçin.',
+    ku: 'Selika we hîn vala ye. Ji milê çepê kartek an pakêtek hilbijêrin.',
+  },
+  'shop.cart.clear': { de: 'Leeren', fr: 'Vider', en: 'Clear', tr: 'Boşalt', ku: 'Vala bike' },
+  'shop.cart.remove': { de: 'Entfernen', fr: 'Retirer', en: 'Remove', tr: 'Çıkar', ku: 'Rake' },
+  'shop.cart.each': { de: 'je Stück', fr: 'l’unité', en: 'each', tr: 'adet', ku: 'her yek' },
   'shop.legal.consent': {
     de: 'Ich habe die AGB und die Widerrufsbelehrung gelesen und akzeptiere sie.',
     fr: 'J’ai lu et j’accepte les CGV et les informations sur le droit de rétractation.',

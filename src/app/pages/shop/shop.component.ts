@@ -1,25 +1,21 @@
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { SeoService } from '../../core/seo/seo.service';
+import { CartService, MAX_QTY, SHOP_PRODUCTS } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
-import { REVIEW_CARD_FORMS, REVIEW_CARD_PACKAGES } from '../../core/data/review-cards.data';
-import { price } from '../../core/data/catalog';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { REVIEW_CARDS_CONTENT } from '../bewertungskarten/bewertungskarten.content';
 import { SHOP_CONTENT } from './shop.content';
 
-interface Line {
-  key: string;
-  nameKey: string;
-  price: number;
-  image?: string;
-}
-
 /**
  * Online-Bestellung der Bewertungskarten. Bezahlt wird auf Stripe; die
  * Preise rechnet der Server selbst nach (Tabelle `prices`).
+ *
+ * Die Auswahl steht im Warenkorb (src/app/core/shop/cart.service.ts) und
+ * übersteht Neuladen und Seitenwechsel. Nach der Bezahlung leert die
+ * Dankeseite ihn.
  *
  * AGB, Widerrufsbelehrung und Versand- und Zahlungsbedingungen liegen unter
  * /agb, /widerruf und /versand und sind hier direkt über dem Bestellknopf
@@ -75,24 +71,54 @@ interface Line {
               <div class="shop-lines">
                 @for (group of groups; track group.title) {
                   <h2 class="shop-group">{{ i18n.t(group.title) }}</h2>
-                  @for (l of group.lines; track l.key) {
-                    <div class="card shop-line">
-                      @if (l.image) { <img [src]="l.image" width="120" height="90" alt="" loading="lazy" /> }
+                  @for (p of group.items; track p.key) {
+                    <div class="card shop-line" [class.picked]="cart.qtyOf(p.key) > 0">
+                      @if (p.image) { <img [src]="p.image" width="120" height="90" alt="" loading="lazy" /> }
                       <div class="shop-name">
-                        <strong>{{ i18n.t(l.nameKey) }}</strong>
-                        <span>{{ l.price }} €</span>
+                        <strong>{{ i18n.t(p.nameKey) }}</strong>
+                        <span>{{ p.unitPrice }} €</span>
                       </div>
-                      <div class="stepper">
-                        <button type="button" (click)="add(l.key, -1)" [attr.aria-label]="i18n.t('shop.minus')">−</button>
-                        <output>{{ qty()[l.key] || 0 }}</output>
-                        <button type="button" (click)="add(l.key, 1)" [attr.aria-label]="i18n.t('shop.plus')">+</button>
-                      </div>
+                      @if (cart.qtyOf(p.key) === 0) {
+                        <button type="button" class="btn btn-secondary shop-add" (click)="cart.add(p.key, 1)">
+                          <app-icon name="bag" /> {{ i18n.t('shop.cart.add') }}
+                        </button>
+                      } @else {
+                        <div class="stepper">
+                          <button type="button" (click)="cart.add(p.key, -1)" [attr.aria-label]="i18n.t('shop.minus')">−</button>
+                          <output [attr.aria-label]="i18n.t(p.nameKey)">{{ cart.qtyOf(p.key) }}</output>
+                          <button type="button" (click)="cart.add(p.key, 1)" [disabled]="cart.qtyOf(p.key) >= maxQty" [attr.aria-label]="i18n.t('shop.plus')">+</button>
+                        </div>
+                      }
                     </div>
                   }
                 }
               </div>
 
               <aside class="card shop-sum">
+                <div class="cart-head">
+                  <h2 class="shop-group">{{ i18n.t('shop.cart') }}</h2>
+                  @if (!cart.empty()) {
+                    <button type="button" class="cart-clear" (click)="cart.clear()">{{ i18n.t('shop.cart.clear') }}</button>
+                  }
+                </div>
+
+                @if (cart.empty()) {
+                  <p class="sum-note cart-empty">{{ i18n.t('shop.cart.empty') }}</p>
+                } @else {
+                  <ul class="cart-items">
+                    @for (l of cart.lines(); track l.key) {
+                      <li>
+                        <span class="cart-qty">{{ l.qty }} ×</span>
+                        <span class="cart-label">{{ i18n.t(l.nameKey) }}<em>{{ l.unitPrice }} € {{ i18n.t('shop.cart.each') }}</em></span>
+                        <span class="cart-sum">{{ l.sum }} €</span>
+                        <button type="button" class="cart-remove" (click)="cart.remove(l.key)" [attr.aria-label]="i18n.t('shop.cart.remove') + ': ' + i18n.t(l.nameKey)">
+                          <app-icon name="close" />
+                        </button>
+                      </li>
+                    }
+                  </ul>
+                }
+
                 <h2 class="shop-group">{{ i18n.t('shop.details') }}</h2>
                 <div class="field">
                   <label for="s-business">{{ i18n.t('shop.business') }}</label>
@@ -102,8 +128,9 @@ interface Line {
                   <label for="s-google">{{ i18n.t('shop.google') }}</label>
                   <input id="s-google" name="google" type="url" maxlength="500" placeholder="https://" />
                 </div>
-                <p class="sum-row"><span>{{ i18n.t('shop.shipping') }}</span><span>{{ shipping ? shipping + ' €' : i18n.t('shop.shipping.free') }}</span></p>
-                <p class="sum-total"><span>{{ i18n.t('shop.total') }}</span><strong>{{ total() }} €</strong></p>
+
+                <p class="sum-row"><span>{{ i18n.t('shop.shipping') }}</span><span>{{ cart.shipping ? cart.shipping + ' €' : i18n.t('shop.shipping.free') }}</span></p>
+                <p class="sum-total"><span>{{ i18n.t('shop.total') }}</span><strong>{{ cart.total() }} €</strong></p>
                 <p class="sum-note">{{ i18n.t('shop.vat') }}</p>
                 <p class="sum-note">{{ i18n.t('shop.legal.delivery') }}</p>
 
@@ -124,7 +151,7 @@ interface Line {
                 </div>
 
                 @if (error()) { <p class="sum-error" role="alert">{{ error() }}</p> }
-                <button class="btn btn-primary btn-block btn-large" [disabled]="busy()">{{ i18n.t('shop.submit') }}</button>
+                <button class="btn btn-primary btn-block btn-large" [disabled]="busy() || cart.empty()">{{ i18n.t('shop.submit') }}</button>
                 <p class="sum-note">{{ i18n.t('shop.pay') }}</p>
               </aside>
             </form>
@@ -137,28 +164,19 @@ interface Line {
 export class ShopComponent implements OnInit {
   readonly i18n = inject(I18nService);
   readonly shop = inject(ShopStatus);
+  readonly cart = inject(CartService);
   private readonly seo = inject(SeoService);
   readonly thanks = inject(ActivatedRoute).snapshot.data['thanks'] === true;
+  readonly maxQty = MAX_QTY;
 
-  readonly groups: { title: string; lines: Line[] }[] = [
-    {
-      title: 'shop.forms',
-      lines: REVIEW_CARD_FORMS.map((f) => ({ key: `form.${f.id}`, nameKey: `rc.form.${f.id}.name`, price: f.price, image: f.imageSmall })),
-    },
-    {
-      title: 'shop.packages',
-      lines: REVIEW_CARD_PACKAGES.map((p) => ({ key: `pkg.${p.id}`, nameKey: `rc.pkg.${p.id}.name`, price: p.price })),
-    },
+  /** Katalog, gruppiert wie auf der Seite: erst einzeln, dann Pakete. */
+  readonly groups = [
+    { title: 'shop.forms' as const, items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.forms') },
+    { title: 'shop.packages' as const, items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.packages') },
   ];
-  readonly shipping = price('shop.shipping');
-  readonly qty = signal<Record<string, number>>({});
+
   readonly busy = signal(false);
   readonly error = signal('');
-  readonly total = computed(() => {
-    const all = this.groups.flatMap((g) => g.lines);
-    const sum = all.reduce((s, l) => s + (this.qty()[l.key] ?? 0) * l.price, 0);
-    return sum ? sum + this.shipping : 0;
-  });
 
   constructor() {
     this.i18n.register(REVIEW_CARDS_CONTENT);
@@ -172,24 +190,20 @@ export class ShopComponent implements OnInit {
       path: this.thanks ? '/bestellen/danke' : '/bestellen',
       noIndex: true,
     });
-    if (!this.thanks) this.shop.check();
-  }
-
-  add(key: string, delta: number) {
-    this.qty.update((q) => ({ ...q, [key]: Math.max(0, Math.min(20, (q[key] ?? 0) + delta)) }));
-    this.error.set('');
+    // Bezahlt ist bezahlt: der Korb darf nach der Rückkehr nicht noch voll sein.
+    if (this.thanks) this.cart.clear();
+    else this.shop.check();
   }
 
   async order(e: Event) {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
-    const items = Object.entries(this.qty())
-      .filter(([, n]) => n > 0)
-      .map(([key, n]) => ({ key, qty: n }));
+    const items = this.cart.payload();
     if (!items.length) return this.error.set(this.i18n.t('shop.empty'));
     if (!form.reportValidity()) return;
 
     this.busy.set(true);
+    this.error.set('');
     try {
       const res = await fetch('/api/checkout', {
         method: 'POST',

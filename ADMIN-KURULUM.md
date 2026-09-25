@@ -115,6 +115,11 @@ Açmadan önce yapılacaklar:
 
 Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiyat kullanılmaz.
 
+Sepet müşterinin tarayıcısında durur (`localStorage`): sayfayı yenilemek ya da başka sayfaya
+gitmek seçimi silmez, dolu sepet navbar'da rozetle görünür. Sepette yalnızca ürün anahtarı ve
+adet tutulur — fiyat tutulmaz, o yüzden sepetten tutar oynatılamaz. Ödeme dönüşünde
+"Danke" sayfası sepeti boşaltır.
+
 ## Teknik notlar
 
 - API: `src/server/` (Express, `src/server.ts` içine bağlı). Panel: `src/app/admin/`.

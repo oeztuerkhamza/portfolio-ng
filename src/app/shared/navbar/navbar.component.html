@@ -17,6 +17,19 @@
     </ul>
 
     <div class="nav-actions">
+      <!-- Korb nur zeigen, wenn etwas drin ist: bei geschlossenem Shop bleibt
+           er leer und die Leiste ruhig. -->
+      @if (cart.count() > 0) {
+        <a
+          [routerLink]="'/bestellen' | localize"
+          class="nav-cart"
+          [attr.aria-label]="i18n.t('nav.cart') + ': ' + cart.count()"
+          (click)="closeMobile()"
+        >
+          <app-icon name="bag" />
+          <span class="nav-cart-count" aria-hidden="true">{{ cart.count() }}</span>
+        </a>
+      }
       <div class="nav-lang"><app-lang-switcher /></div>
       <a [routerLink]="'/contact' | localize" class="btn btn-primary nav-cta">
         {{ i18n.t('nav.cta') }}

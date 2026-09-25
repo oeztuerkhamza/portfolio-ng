@@ -272,3 +272,36 @@ $bp-nav: 1180px;
     }
   }
 }
+
+// Warenkorb in der Leiste — erscheint erst, wenn etwas drin ist.
+.nav-cart {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 999px;
+  color: $brand;
+  flex: 0 0 auto;
+
+  &:hover { background: $brand-tint; }
+  app-icon { width: 1.15rem; height: 1.15rem; display: block; }
+}
+
+.nav-cart-count {
+  position: absolute;
+  top: 1px;
+  right: 0;
+  min-width: 1.05rem;
+  height: 1.05rem;
+  padding: 0 0.2rem;
+  border-radius: 999px;
+  background: $brand;
+  color: #fff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1.05rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
