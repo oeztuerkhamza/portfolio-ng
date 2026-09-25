@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnDestroy, OnInit, computed, inject, signal, viewChild } from '@angular/core';
+import { Component, ElementRef, Injector, OnDestroy, OnInit, afterNextRender, computed, inject, signal, viewChild } from '@angular/core';
 import { AdminApi, ApiError, errorText } from '../admin-api.service';
 import { InvoiceDocComponent } from '../invoice/invoice-doc.component';
 import { invoicePdf } from '../invoice/invoice-pdf';
@@ -173,7 +173,7 @@ const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'A
                 <label class="adm-field">Adres<input [value]="c.recipient_street ?? ''" (input)="set('recipient_street', val($event))" /></label>
                 <label class="adm-field">PLZ ve şehir<input [value]="c.recipient_city ?? ''" (input)="set('recipient_city', val($event))" /></label>
               </div>
-              <label class="adm-field">E-posta (gönderim için)<input type="email" [value]="c.recipient_email ?? ''" (input)="set('recipient_email', val($event))" /></label>
+              <label class="adm-field">E-posta (kesinleşince fatura buraya otomatik gönderilir)<input type="email" [value]="c.recipient_email ?? ''" (input)="set('recipient_email', val($event))" /></label>
             </section>
 
             <section class="adm-card">
@@ -307,6 +307,7 @@ const MONTHS = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'A
 export class InvoicesTab implements OnInit, OnDestroy {
   private readonly api = inject(AdminApi);
   private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly injector = inject(Injector);
   private readonly previewEl = viewChild<ElementRef<HTMLElement>>('preview');
   private observer?: ResizeObserver;
 
@@ -514,12 +515,14 @@ export class InvoicesTab implements OnInit, OnDestroy {
     const c = this.cur();
     if (!c.recipient_name.trim()) return this.error.set('Alıcının adını girin.');
     if (!c.items.some((i) => i.description.trim())) return this.error.set('En az bir kalem ekleyin.');
-    if (!confirm(`Fatura kesinleştirilsin mi?\n\nToplam: ${money(this.sum().gross)}\n\nNumara verildikten sonra fatura değiştirilemez.`)) return;
-    await this.run(async () => {
+    const mail = c.recipient_email ? `\n\nKesinleşince ${c.recipient_email} adresine e-postayla gönderilir.` : '';
+    if (!confirm(`Fatura kesinleştirilsin mi?\n\nToplam: ${money(this.sum().gross)}\n\nNumara verildikten sonra fatura değiştirilemez.${mail}`)) return;
+    const done = await this.run(async () => {
       const saved = await this.persist();
       const fin = await this.api.req<Invoice>('POST', `/invoices/${saved.id}/finalize`);
       this.show('view', fin);
     });
+    if (done) await this.autoSend();
   }
 
   async removeDraft() {
@@ -546,11 +549,13 @@ export class InvoicesTab implements OnInit, OnDestroy {
 
   async cancel() {
     const c = this.cur();
-    if (!confirm(`${c.number} için Stornorechnung (iptal faturası) oluşturulsun mu?\n\nOrijinal fatura “iptal” olarak işaretlenir. Bu geri alınamaz.`)) return;
-    await this.run(async () => {
+    const mail = c.recipient_email ? `\n\nİptal faturası ${c.recipient_email} adresine e-postayla gönderilir.` : '';
+    if (!confirm(`${c.number} için Stornorechnung (iptal faturası) oluşturulsun mu?\n\nOrijinal fatura “iptal” olarak işaretlenir. Bu geri alınamaz.${mail}`)) return;
+    const done = await this.run(async () => {
       const storno = await this.api.req<Invoice>('POST', `/invoices/${c.id}/cancel`);
       this.show('view', storno);
     });
+    if (done) await this.autoSend();
   }
 
   duplicate() {
@@ -571,18 +576,37 @@ export class InvoicesTab implements OnInit, OnDestroy {
     this.show('edit', copy);
   }
 
-  /** Rechnung als PDF an den Kunden mailen; der Server schickt eine Kopie ans eigene Postfach. */
+  /** Button „Müşteriye gönder" / „Tekrar gönder". */
   async send() {
+    const c = this.cur();
+    const again = c.sent_at ? `\n\nBu fatura ${dateTime(c.sent_at)} tarihinde zaten gönderildi.` : '';
+    if (!confirm(`${c.number} numaralı fatura ${c.recipient_email} adresine gönderilsin mi?${again}`)) return;
+    await this.run(() => this.deliver());
+  }
+
+  /**
+   * Nach dem Festschreiben und nach einer Stornorechnung geht das Dokument
+   * ohne weiteren Klick an den Kunden — sofern eine Adresse hinterlegt ist.
+   * Erst nach dem Rendern, damit das PDF die neue Seite zeigt.
+   */
+  private async autoSend() {
+    const c = this.cur();
+    if (c.status === 'entwurf' || !c.recipient_email) return;
+    await new Promise<void>((resolve) => {
+      afterNextRender(() => resolve(), { injector: this.injector });
+      setTimeout(resolve, 1000); // falls kein Rendern mehr ansteht, ist die Seite ohnehin aktuell
+    });
+    await this.run(() => this.deliver());
+  }
+
+  /** PDF aus der angezeigten Seite erzeugen und verschicken; der Server schickt eine Kopie ans eigene Postfach. */
+  private async deliver() {
     const c = this.cur();
     const sheet = this.host.nativeElement.querySelector<HTMLElement>('.inv-sheet');
     if (!sheet || !c.id) return;
-    const again = c.sent_at ? `\n\nBu fatura ${dateTime(c.sent_at)} tarihinde zaten gönderildi.` : '';
-    if (!confirm(`${c.number} numaralı fatura ${c.recipient_email} adresine gönderilsin mi?${again}`)) return;
-    await this.run(async () => {
-      const pdf = await invoicePdf(sheet, this.docTitle(c));
-      const r = await this.api.req<{ sent_at: string | null }>('POST', `/invoices/${c.id}/send`, { pdf });
-      this.cur.set({ ...c, sent_at: r.sent_at ?? new Date().toISOString() });
-    });
+    const pdf = await invoicePdf(sheet, this.docTitle(c));
+    const r = await this.api.req<{ sent_at: string | null }>('POST', `/invoices/${c.id}/send`, { pdf });
+    this.cur.set({ ...c, sent_at: r.sent_at ?? new Date().toISOString() });
   }
 
   /** „Rechnung RE-2026-0001 Firma" — Dokumenttitel und Dateiname. */
@@ -631,13 +655,16 @@ export class InvoicesTab implements OnInit, OnDestroy {
   }
 
   // ── Hilfen ─────────────────────────────────────────────
-  private async run(fn: () => Promise<void>) {
+  /** Führt eine Aktion mit Ladeanzeige aus; `true`, wenn sie ohne Fehler durchlief. */
+  private async run(fn: () => Promise<void>): Promise<boolean> {
     this.busy.set(true);
     this.error.set('');
     try {
       await fn();
+      return true;
     } catch (e) {
       this.error.set(this.err(e));
+      return false;
     } finally {
       this.busy.set(false);
     }

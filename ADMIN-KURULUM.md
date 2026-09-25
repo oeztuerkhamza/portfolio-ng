@@ -79,9 +79,10 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 3. **+ Yeni fatura** → müşteriyi seçin → kalemleri ekleyin (fiyat listesinden veya abonelikten tek tıkla)
    → **Kesinleştir ve numara ver**.
 4. **PDF indir / Yazdır** → yazıcı olarak **“PDF olarak kaydet”** seçin. Dosya adı otomatik
-   `Rechnung RE-2026-0001 Müşteri.pdf` olur. **Müşteriye gönder** faturayı PDF olarak
-   `info@breisgau-digital.de` adresinden müşterinin e-postasına yollar; bir kopyası (BCC) size gelir,
-   gönderim tarihi faturada görünür. Bunun için 2. adımdaki `SMTP_*` değişkenleri gerekir.
+   `Rechnung RE-2026-0001 Müşteri.pdf` olur. Alıcının e-postası girilmişse fatura **kesinleşince
+   otomatik** PDF olarak `info@breisgau-digital.de` adresinden müşteriye gider; **Storno** ile kesilen
+   iptal faturası da öyle. Bir kopyası (BCC) size gelir, gönderim tarihi faturada görünür;
+   **Tekrar gönder** ile yeniden yollanır. Bunun için 2. adımdaki `SMTP_*` değişkenleri gerekir.
 5. Para gelince **Ödendi**. Hatalı faturayı silmek yasak (GoBD): **Storno** ile iptal faturası kesilir,
    sonra **Kopyala → yeni taslak** ile doğrusu hazırlanır.
 
