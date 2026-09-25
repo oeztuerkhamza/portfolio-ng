@@ -472,5 +472,11 @@ api.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
   // Eindeutigkeit (z. B. Kurzlink schon vergeben) und Prüfregeln verständlich melden.
   if (code === '23505') return res.status(409).json({ error: 'duplicate' });
   if (code === '23514' || code === '22P02' || code === '23503') return res.status(400).json({ error: 'invalid' });
-  return res.status(500).json({ error: 'server_error' });
+  // Tabelle fehlt: eine SQL-Datei aus supabase/migrations wurde nicht ausgeführt.
+  if (code === '42P01') {
+    const table = /relation "(?:public\.)?([^"]+)" does not exist/.exec(String((err as Error)?.message))?.[1];
+    return res.status(503).json({ error: 'missing_table', table: table ?? null });
+  }
+  // Nur der Fehlercode, keine Meldung — reicht zur Diagnose und verrät nichts.
+  return res.status(500).json({ error: 'server_error', code: typeof code === 'string' ? code : null });
 });

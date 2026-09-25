@@ -185,7 +185,7 @@ export class AdminApi {
     }
     if (res.status === 204) return undefined as T;
     const data = await res.json().catch(() => ({}));
-    if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? 'error');
+    if (!res.ok) throw new ApiError(res.status, (data as { error?: string }).error ?? 'error', data as Record<string, unknown>);
     return data as T;
   }
 }
@@ -203,6 +203,10 @@ export function errorText(e: unknown): string {
       return `Sunucu oturumu doğrulayamadı (${d['reason']}). SUPABASE_URL ve SUPABASE_PUBLISHABLE_KEY aynı Supabase projesine ait olmalı.`;
     if (d['reason'] === 'supabase_not_configured') return 'SUPABASE_URL veya SUPABASE_PUBLISHABLE_KEY sunucuda eksik.';
   }
+  if (e instanceof ApiError && code === 'missing_table')
+    return `Veritabanında “${e.detail['table'] ?? '?'}” tablosu yok. Supabase SQL Editor'da supabase/migrations klasöründeki ilgili SQL dosyasını çalıştırın.`;
+  if (e instanceof ApiError && code === 'server_error' && e.detail['code'])
+    return `Sunucu hatası (kod ${e.detail['code']}). Lütfen tekrar deneyin.`;
   const map: Record<string, string> = {
     duplicate: 'Bu kayıt zaten var (ör. kısa link adı kullanılıyor).',
     invalid: 'Girilen değerlerden biri geçersiz.',
