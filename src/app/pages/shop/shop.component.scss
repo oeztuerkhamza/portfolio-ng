@@ -82,6 +82,46 @@
 .sum-note { margin: 0; font-size: 0.8rem; color: $text-mute; }
 .sum-error { margin: 0; color: #9b1c1c; font-size: 0.9rem; }
 
+// Pflichtangaben und Zustimmung direkt über dem Bestellknopf. Abgesetzt,
+// damit man sie vor dem Klick nicht überliest.
+.shop-legal {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid $rule;
+  border-radius: $radius-sm;
+  background: $surface;
+}
+
+.shop-legal-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1rem;
+  margin: 0;
+  font-size: 0.8rem;
+
+  a { color: $brand; text-decoration: underline; }
+}
+
+.shop-consent {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.6rem;
+  align-items: start;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  cursor: pointer;
+
+  input {
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.1rem;
+    accent-color: $brand;
+  }
+}
+
+.shop-legal .langnote { font-size: 0.75rem; }
+
 @media (max-width: 480px) {
   .shop-line {
     grid-template-columns: 1fr auto;

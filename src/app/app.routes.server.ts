@@ -38,5 +38,8 @@ export const serverRoutes: ServerRoute[] = [
   { path: ':locale/bestellen/danke', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/datenschutz', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/agb', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/widerruf', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/versand', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: '**', renderMode: RenderMode.Server },
 ];

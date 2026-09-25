@@ -115,6 +115,22 @@ const localeChildren: Routes = [
       ),
     data: { animation: 'Datenschutz' },
   },
+  // Pflichtseiten des Shops. Nur auf Deutsch, wie Impressum und Datenschutz.
+  {
+    path: 'agb',
+    loadComponent: () => import('./pages/legal/agb.component').then((m) => m.AgbComponent),
+    data: { animation: 'Agb' },
+  },
+  {
+    path: 'widerruf',
+    loadComponent: () => import('./pages/legal/widerruf.component').then((m) => m.WiderrufComponent),
+    data: { animation: 'Widerruf' },
+  },
+  {
+    path: 'versand',
+    loadComponent: () => import('./pages/legal/versand.component').then((m) => m.VersandComponent),
+    data: { animation: 'Versand' },
+  },
 ];
 
 export const routes: Routes = [

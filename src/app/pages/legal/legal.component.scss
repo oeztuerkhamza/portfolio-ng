@@ -22,3 +22,16 @@
   border-radius: $radius-sm;
   background: $surface;
 }
+
+// Muster-Widerrufsformular: abgesetzt vom Fließtext, damit man es als
+// Vordruck erkennt und ausdrucken kann.
+.prose .legal-form {
+  margin: 1rem 0 1.5rem;
+  padding: 1.25rem;
+  border: 1px solid $rule;
+  border-radius: $radius-sm;
+  background: $surface;
+
+  p { margin: 0 0 0.85rem; }
+  p:last-child { margin-bottom: 0; }
+}

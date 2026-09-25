@@ -21,8 +21,9 @@ interface Line {
  * Online-Bestellung der Bewertungskarten. Bezahlt wird auf Stripe; die
  * Preise rechnet der Server selbst nach (Tabelle `prices`).
  *
- * Vor dem Einschalten im Admin-Portal müssen AGB, Widerrufsbelehrung und
- * Versandbedingungen als Seiten vorliegen und hier verlinkt werden.
+ * AGB, Widerrufsbelehrung und Versand- und Zahlungsbedingungen liegen unter
+ * /agb, /widerruf und /versand und sind hier direkt über dem Bestellknopf
+ * verlinkt; die Zustimmung ist Pflichtfeld (§ 312j BGB).
  */
 @Component({
   selector: 'app-shop',
@@ -104,6 +105,24 @@ interface Line {
                 <p class="sum-row"><span>{{ i18n.t('shop.shipping') }}</span><span>{{ shipping ? shipping + ' €' : i18n.t('shop.shipping.free') }}</span></p>
                 <p class="sum-total"><span>{{ i18n.t('shop.total') }}</span><strong>{{ total() }} €</strong></p>
                 <p class="sum-note">{{ i18n.t('shop.vat') }}</p>
+                <p class="sum-note">{{ i18n.t('shop.legal.delivery') }}</p>
+
+                <div class="shop-legal">
+                  <p class="sum-note">{{ i18n.t('shop.legal.custom') }}</p>
+                  <p class="shop-legal-links">
+                    <a [routerLink]="'/agb' | localize" target="_blank" rel="noopener">{{ i18n.t('nav.agb') }}</a>
+                    <a [routerLink]="'/widerruf' | localize" target="_blank" rel="noopener">{{ i18n.t('nav.widerruf') }}</a>
+                    <a [routerLink]="'/versand' | localize" target="_blank" rel="noopener">{{ i18n.t('nav.versand') }}</a>
+                  </p>
+                  <label class="shop-consent">
+                    <input type="checkbox" name="consent" required />
+                    <span>{{ i18n.t('shop.legal.consent') }}</span>
+                  </label>
+                  @if (i18n.lang() !== 'de') {
+                    <p class="sum-note langnote">{{ i18n.t('shop.legal.langnote') }}</p>
+                  }
+                </div>
+
                 @if (error()) { <p class="sum-error" role="alert">{{ error() }}</p> }
                 <button class="btn btn-primary btn-block btn-large" [disabled]="busy()">{{ i18n.t('shop.submit') }}</button>
                 <p class="sum-note">{{ i18n.t('shop.pay') }}</p>

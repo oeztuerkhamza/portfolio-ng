@@ -68,7 +68,8 @@ interface StripeSetup {
       @if (!api.config()?.ready?.stripe) {
         <p class="adm-msg">
           Açmak için yukarıdaki Stripe anahtarları tamam olmalı.
-          Ayrıca açmadan önce: AGB, Widerrufsbelehrung ve Versandbedingungen hazır olmalı.
+          Hukuki sayfalar (<code>/agb</code>, <code>/widerruf</code>, <code>/versand</code>) hazır —
+          açmadan önce bir hukukçuya okutmanız önerilir.
         </p>
       }
       <label class="adm-toggle big">

@@ -1,0 +1,91 @@
+<header class="page-hero legal-hero">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">Versand &amp; Zahlung</span>
+    </nav>
+    <p class="section-label">Rechtliches</p>
+    <h1 class="section-title">Versand- und Zahlungsbedingungen</h1>
+    <p class="section-subtitle">Lieferzeiten, Versandkosten und Zahlungsarten</p>
+  </div>
+</header>
+
+<section class="section section-white">
+  <div class="container">
+    <div class="prose">
+      <h2>Liefergebiet</h2>
+      <p>
+        Geliefert wird ausschließlich innerhalb Deutschlands. Eine Lieferung in das Ausland ist
+        über den Shop nicht möglich; bei Bedarf schreiben Sie mir gern eine
+        <a [routerLink]="'/contact' | localize">Nachricht</a>.
+      </p>
+
+      <h2>Versandkosten</h2>
+      <p>
+        Der Versand innerhalb Deutschlands ist im Preis enthalten. Fallen im Einzelfall
+        Versandkosten an, werden sie im Shop in der Bestellübersicht ausgewiesen, bevor Sie die
+        Bestellung abschließen. Es entstehen keine Kosten, die Ihnen nicht vorher angezeigt
+        wurden.
+      </p>
+
+      <h2>Lieferzeit</h2>
+      <p>
+        Die Bewertungskarten werden für Sie gestaltet und bedruckt. Der Ablauf ist deshalb
+        zweistufig:
+      </p>
+      <ol>
+        <li>
+          Nach Ihrer Bestellung erhalten Sie den <strong>Entwurf per E-Mail zur Freigabe</strong>.
+          In der Regel melde ich mich dafür innerhalb eines Werktags.
+        </li>
+        <li>
+          Nach Ihrer Freigabe beträgt die Lieferzeit <strong>5 bis 10 Werktage</strong>
+          — sie umfasst Produktion, Einrichtung und Versand.
+        </li>
+      </ol>
+      <p>
+        Werktage sind Montag bis Freitag mit Ausnahme gesetzlicher Feiertage in
+        Baden-Württemberg. Verzögert sich die Lieferung aus Gründen, die ich nicht zu vertreten
+        habe, informiere ich Sie unverzüglich und nenne den neuen Liefertermin.
+      </p>
+
+      <h2>Zahlungsarten</h2>
+      <p>
+        Die Zahlung erfolgt vorab über den Zahlungsdienstleister Stripe Payments Europe, Ltd.
+        Welche Verfahren Ihnen zur Verfügung stehen — etwa Kredit- und Debitkarte, PayPal,
+        Klarna oder SEPA-Lastschrift — zeigt Ihnen der Bezahlvorgang an. Es fallen keine
+        zusätzlichen Gebühren für die Wahl eines Zahlungsmittels an.
+      </p>
+      <p>
+        Ihre Zahlungs-, Karten- und Adressdaten geben Sie unmittelbar bei Stripe ein. Diese
+        Daten werden von mir nicht erhoben und nicht gespeichert; ich erhalte nur die
+        Information, ob die Zahlung erfolgreich war, sowie die zur Lieferung und Rechnung
+        erforderlichen Angaben. Näheres steht in der
+        <a [routerLink]="'/datenschutz' | localize">Datenschutzerklärung</a>.
+      </p>
+      <p>
+        Bei Zahlungsarten mit verzögerter Bestätigung — etwa Klarna oder SEPA-Lastschrift —
+        gilt die Bestellung erst als bezahlt, wenn Stripe den Zahlungseingang bestätigt hat.
+        Die Frist für die Freigabe des Entwurfs beginnt erst danach.
+      </p>
+
+      <h2>Preise und Umsatzsteuer</h2>
+      <p>
+        Alle Preise sind Endpreise. Gemäß § 19 UStG (Kleinunternehmerregelung) wird keine
+        Umsatzsteuer berechnet und folglich nicht in Rechnungen ausgewiesen.
+      </p>
+
+      <h2>Stornierung und Widerruf</h2>
+      <p>
+        Solange Sie den Entwurf noch nicht freigegeben haben, können Sie die Bestellung
+        jederzeit kostenlos stornieren; bereits geleistete Zahlungen erhalten Sie vollständig
+        zurück. Welche Rechte Ihnen darüber hinaus zustehen, steht in der
+        <a [routerLink]="'/widerruf' | localize">Widerrufsbelehrung</a>; es gelten außerdem die
+        <a [routerLink]="'/agb' | localize">Allgemeinen Geschäftsbedingungen</a>.
+      </p>
+
+      <p class="legal-hint">Stand dieser Bedingungen: September 2026.</p>
+    </div>
+  </div>
+</section>

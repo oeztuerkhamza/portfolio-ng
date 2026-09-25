@@ -18,6 +18,9 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   'nav.contact': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },
   'nav.impressum': { de: 'Impressum', fr: 'Mentions légales', en: 'Imprint', tr: 'Künye', ku: 'Impressum' },
   'nav.datenschutz': { de: 'Datenschutz', fr: 'Confidentialité', en: 'Privacy', tr: 'Gizlilik', ku: 'Nepenî' },
+  'nav.agb': { de: 'AGB', fr: 'CGV', en: 'Terms', tr: 'Satış koşulları', ku: 'Mercên firotanê' },
+  'nav.widerruf': { de: 'Widerruf', fr: 'Rétractation', en: 'Withdrawal', tr: 'Cayma hakkı', ku: 'Mafê vekişînê' },
+  'nav.versand': { de: 'Versand & Zahlung', fr: 'Livraison & paiement', en: 'Shipping & payment', tr: 'Kargo ve ödeme', ku: 'Şandin û dayîn' },
 
   // ---- Common actions ------------------------------------------------------
   'cta.contact': {

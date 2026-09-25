@@ -96,9 +96,10 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 Mağaza tamamen kurulu, ancak iki kilitle kapalı: Stripe anahtarları olmadan ve panelde açılmadan çalışmaz.
 Açmadan önce yapılacaklar:
 
-1. **Hukuki sayfalar**: AGB, Widerrufsbelehrung (+ Muster-Widerrufsformular), Versand- und
-   Zahlungsbedingungen. Sayfalar hazır olunca sipariş sayfasına link eklenmeli
-   (`src/app/pages/shop/shop.component.ts`).
+1. **Hukuki sayfalar**: hazır — `/agb`, `/widerruf` (Muster-Widerrufsformular dahil) ve
+   `/versand`. Sipariş sayfasında ödeme butonunun hemen üstünde linkli ve onay kutusu zorunlu.
+   Footer'da her sayfadan erişilebilir. Metinler Almanca (Impressum/Datenschutz gibi).
+   **Açmadan önce bir hukukçuya okutun** — özellikle cayma hakkı istisnasını ve teslim süresini.
 2. **Stripe hesabı** (<https://stripe.com>): işletme bilgileri, banka hesabı, ödeme yöntemleri
    (kart, PayPal, Klarna…).
 3. Stripe → Developers → **Webhooks → Add endpoint**:
