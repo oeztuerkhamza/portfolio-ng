@@ -17,6 +17,16 @@ function form(params: Params): string {
   return body.toString();
 }
 
+/**
+ * Die Ereignisse, die der Webhook auswertet — dieselbe Liste gehört im
+ * Stripe-Dashboard an den Endpunkt (Admin-Portal zeigt sie an).
+ * Klarna, PayPal und SEPA bestätigen erst später: darum die beiden
+ * „async"-Ereignisse, sonst bliebe die Bestellung für immer „offen".
+ */
+export const PAID_EVENTS = ['checkout.session.completed', 'checkout.session.async_payment_succeeded'];
+export const CANCELLED_EVENTS = ['checkout.session.expired', 'checkout.session.async_payment_failed'];
+export const WEBHOOK_EVENTS = [...PAID_EVENTS, ...CANCELLED_EVENTS];
+
 export interface CheckoutLine {
   name: string;
   unitAmountCents: number;
@@ -89,4 +99,76 @@ export function verifyWebhook(raw: Buffer, header: string, secret: string, toler
     const b = Buffer.from(sig, 'hex');
     return b.length === a.length && timingSafeEqual(a, b);
   });
+}
+
+export interface StripeStatus {
+  /** Beide Werte gesetzt — erst dann lässt sich der Shop einschalten. */
+  ready: boolean;
+  keyPresent: boolean;
+  webhookSecretPresent: boolean;
+  /** Testmodus oder Echtbetrieb, erkannt am Präfix des Schlüssels. */
+  mode: 'test' | 'live' | null;
+  /** Nimmt das Stripe-Konto schon Zahlungen an (Onboarding abgeschlossen)? */
+  chargesEnabled: boolean | null;
+  /** Name des Kontos, damit man sieht, welches Konto hinterlegt ist. */
+  account: string | null;
+  /** Kurzer Grund, wenn der Schlüssel nicht funktioniert (null = alles gut). */
+  error: string | null;
+}
+
+/** Test- und Echtschlüssel unterscheiden sich im Präfix: sk_test_… / sk_live_… */
+function keyMode(key: string): 'test' | 'live' | null {
+  if (key.includes('_test_')) return 'test';
+  if (key.includes('_live_')) return 'live';
+  return null;
+}
+
+/**
+ * Selbstprüfung beim Einrichten: funktioniert der hinterlegte Schlüssel
+ * überhaupt, und ist das Konto schon freigeschaltet? Gibt nie den Schlüssel
+ * und nie den Wortlaut einer Stripe-Fehlermeldung weiter, nur einen kurzen
+ * Grund.
+ */
+export async function checkStripe(): Promise<StripeStatus> {
+  const key = config.stripeSecretKey;
+  const status: StripeStatus = {
+    ready: !!(key && config.stripeWebhookSecret),
+    keyPresent: !!key,
+    webhookSecretPresent: !!config.stripeWebhookSecret,
+    mode: key ? keyMode(key) : null,
+    chargesEnabled: null,
+    account: null,
+    error: key ? null : 'STRIPE_SECRET_KEY fehlt',
+  };
+  if (!key) return status;
+
+  try {
+    const res = await fetch(`${config.stripeApiBase}/v1/account`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(8000),
+    });
+    if (res.status === 401) {
+      status.error = 'STRIPE_SECRET_KEY ungültig';
+      return status;
+    }
+    // Ein eingeschränkter Schlüssel (rk_…) darf das Konto oft nicht lesen.
+    if (res.status === 403) {
+      status.error = 'Schlüssel darf das Konto nicht lesen (403)';
+      return status;
+    }
+    if (!res.ok) {
+      status.error = `Stripe antwortet mit ${res.status}`;
+      return status;
+    }
+    const data = (await res.json()) as {
+      charges_enabled?: boolean;
+      settings?: { dashboard?: { display_name?: string } };
+      business_profile?: { name?: string };
+    };
+    status.chargesEnabled = data.charges_enabled === true;
+    status.account = data.settings?.dashboard?.display_name || data.business_profile?.name || null;
+  } catch {
+    status.error = 'Stripe nicht erreichbar';
+  }
+  return status;
 }

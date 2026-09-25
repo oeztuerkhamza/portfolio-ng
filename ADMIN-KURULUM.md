@@ -104,10 +104,13 @@ Açmadan önce yapılacaklar:
 3. Stripe → Developers → **Webhooks → Add endpoint**:
    - URL: `https://breisgau-digital.de/api/stripe/webhook`
    - Olaylar: `checkout.session.completed`, `checkout.session.async_payment_succeeded`,
-     `checkout.session.expired`
+     `checkout.session.expired`, `checkout.session.async_payment_failed`
+   - Bu adres ve tam olay listesi panelde de yazılı: **Ayarlar → Stripe ödemesi**.
 4. Vercel'e ekleyin: `STRIPE_SECRET_KEY` (`sk_live_…`), `STRIPE_WEBHOOK_SECRET` (`whsec_…`) → Redeploy.
-5. Önce test anahtarlarıyla (`sk_test_…`) bir deneme siparişi verin.
-6. Panel → **Ayarlar → Online mağaza** açın. "Bewertungskarten" sayfasında **Online bestellen** butonu görünür.
+5. Panel → **Ayarlar → Stripe ödemesi**: anahtarın gerçekten çalıştığını, test mi canlı mı
+   olduğunu ve hesabın ödeme alabildiğini burada görürsünüz.
+6. Önce test anahtarlarıyla (`sk_test_…`) bir deneme siparişi verin.
+7. Panel → **Ayarlar → Online mağaza** açın. "Bewertungskarten" sayfasında **Online bestellen** butonu görünür.
 
 Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiyat kullanılmaz.
 

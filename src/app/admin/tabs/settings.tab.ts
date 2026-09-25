@@ -2,6 +2,19 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { AdminApi, errorText } from '../admin-api.service';
 import { PublishBox } from './publish.box';
 
+/** Antwort von GET /api/admin/stripe — siehe src/server/stripe.ts. */
+interface StripeSetup {
+  ready: boolean;
+  keyPresent: boolean;
+  webhookSecretPresent: boolean;
+  mode: 'test' | 'live' | null;
+  chargesEnabled: boolean | null;
+  account: string | null;
+  error: string | null;
+  webhookUrl: string;
+  webhookEvents: string[];
+}
+
 @Component({
   selector: 'adm-settings',
   standalone: true,
@@ -11,6 +24,42 @@ import { PublishBox } from './publish.box';
     @if (error()) { <p class="adm-msg err">{{ error() }}</p> }
 
     <section class="adm-card">
+      <h3>Stripe ödemesi</h3>
+      @if (stripe(); as s) {
+        <ul class="adm-checks">
+          <li [class.ok]="s.keyPresent && !s.error">
+            <code>STRIPE_SECRET_KEY</code>@if (s.error) { — {{ s.error }} } @else if (s.account) { — {{ s.account }} }
+          </li>
+          <li [class.ok]="s.webhookSecretPresent">
+            <code>STRIPE_WEBHOOK_SECRET</code>@if (!s.webhookSecretPresent) { — eksik }
+          </li>
+          <li [class.ok]="s.chargesEnabled === true">
+            Stripe hesabı ödeme alabiliyor@if (s.chargesEnabled === false) { — Stripe'ta hesap doğrulamasını tamamlayın }
+          </li>
+        </ul>
+        @if (s.mode === 'test') {
+          <p class="adm-msg">Test anahtarı kullanılıyor: siparişler işler, ama gerçek para tahsil edilmez.</p>
+        }
+        @if (s.mode === 'live') {
+          <p class="adm-msg">Canlı anahtar kullanılıyor: verilen siparişlerden gerçek ödeme alınır.</p>
+        }
+        <p>
+          Stripe → Developers → Webhooks → <strong>Add endpoint</strong> altına bu adresi ekleyin:<br />
+          <code>{{ s.webhookUrl }}</code>
+        </p>
+        <p>Seçilecek olaylar:</p>
+        <ul class="adm-list">
+          @for (ev of s.webhookEvents; track ev) { <li><code>{{ ev }}</code></li> }
+        </ul>
+        <p>Değişiklikler Vercel'de kaydedildikten sonra yeniden dağıtım (redeploy) gerekir.</p>
+      } @else if (stripeError()) {
+        <p class="adm-msg err">{{ stripeError() }}</p>
+      } @else {
+        <p class="adm-msg">Kontrol ediliyor…</p>
+      }
+    </section>
+
+    <section class="adm-card">
       <h3>Online mağaza</h3>
       <p>
         Açıkken “Bewertungskarten” sayfasında <strong>Online bestellen</strong> butonu görünür ve müşteriler kartları
@@ -18,8 +67,8 @@ import { PublishBox } from './publish.box';
       </p>
       @if (!api.config()?.ready?.stripe) {
         <p class="adm-msg">
-          Açmak için önce Vercel'e <code>STRIPE_SECRET_KEY</code> ve <code>STRIPE_WEBHOOK_SECRET</code> eklenmeli.
-          Açmadan önce: AGB, Widerrufsbelehrung ve Versandbedingungen hazır olmalı.
+          Açmak için yukarıdaki Stripe anahtarları tamam olmalı.
+          Ayrıca açmadan önce: AGB, Widerrufsbelehrung ve Versandbedingungen hazır olmalı.
         </p>
       }
       <label class="adm-toggle big">
@@ -36,6 +85,8 @@ export class SettingsTab implements OnInit {
   readonly shop = signal(false);
   readonly busy = signal(false);
   readonly error = signal('');
+  readonly stripe = signal<StripeSetup | null>(null);
+  readonly stripeError = signal('');
 
   async ngOnInit() {
     try {
@@ -43,6 +94,12 @@ export class SettingsTab implements OnInit {
       this.shop.set(s['shop_enabled'] === true);
     } catch (e) {
       this.error.set(errorText(e));
+    }
+    // Eigener Aufruf: eine fehlende Stripe-Auskunft darf die Ayarlar nicht sperren.
+    try {
+      this.stripe.set(await this.api.req<StripeSetup>('GET', '/stripe'));
+    } catch (e) {
+      this.stripeError.set(errorText(e));
     }
   }
 

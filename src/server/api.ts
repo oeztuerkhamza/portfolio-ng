@@ -4,7 +4,7 @@ import { config } from './config';
 import { db } from './db';
 import { h, sqlOr503, str, UUID } from './http';
 import { invoices } from './invoices';
-import { createCheckoutSession, verifyWebhook } from './stripe';
+import { CANCELLED_EVENTS, PAID_EVENTS, WEBHOOK_EVENTS, checkStripe, createCheckoutSession, verifyWebhook } from './stripe';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -86,7 +86,7 @@ api.post(
     const event = JSON.parse(req.body.toString('utf8'));
     const sql = sqlOr503(res);
     if (!sql) return;
-    if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
+    if (PAID_EVENTS.includes(event.type)) {
       const s = event.data.object;
       const paid = s.payment_status === 'paid';
       const shipping = s.collected_information?.shipping_details ?? s.shipping_details ?? null;
@@ -101,7 +101,7 @@ api.post(
           amount_total = ${(s.amount_total ?? 0) / 100}
         where stripe_session_id = ${s.id}`;
     }
-    if (event.type === 'checkout.session.expired') {
+    if (CANCELLED_EVENTS.includes(event.type)) {
       await sql`update orders set status = 'storniert' where stripe_session_id = ${event.data.object.id} and status = 'offen'`;
     }
     return res.json({ received: true });
@@ -251,6 +251,23 @@ admin.use((_req, res, next) => {
 admin.get('/me', (_req, res) => {
   res.json({ email: res.locals['adminEmail'] });
 });
+
+/**
+ * Stripe-Einrichtung prüfen: funktioniert der Schlüssel, läuft das Konto im
+ * Test- oder Echtbetrieb, und welche Adresse samt Ereignissen gehört im
+ * Stripe-Dashboard an den Webhook. Absichtlich hinter der Anmeldung, damit
+ * die Stripe-API nicht von außen angestoßen werden kann.
+ */
+admin.get(
+  '/stripe',
+  h(async (req, res) => {
+    res.json({
+      ...(await checkStripe()),
+      webhookUrl: `${origin(req)}/api/stripe/webhook`,
+      webhookEvents: WEBHOOK_EVENTS,
+    });
+  }),
+);
 
 admin.get(
   '/stats',
