@@ -8,7 +8,7 @@ export interface AdminConfig {
   dbError?: string | null;
   /** Die API selbst hat nicht geantwortet (z. B. Funktion abgestürzt). */
   apiError?: string;
-  ready: { db: boolean; auth: boolean; stripe: boolean; deployHook: boolean };
+  ready: { db: boolean; auth: boolean; stripe: boolean; deployHook: boolean; mail?: boolean };
 }
 
 interface Session {

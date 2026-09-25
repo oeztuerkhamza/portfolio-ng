@@ -235,6 +235,7 @@ api.get(
         auth: !!(config.supabaseUrl && config.supabaseAnonKey && config.adminEmails.length),
         stripe: !!(config.stripeSecretKey && config.stripeWebhookSecret),
         deployHook: !!config.deployHookUrl,
+        mail: !!(config.smtpHost && config.smtpUser && config.smtpPass),
       },
     });
   }),

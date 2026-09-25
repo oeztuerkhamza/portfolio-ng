@@ -32,6 +32,7 @@ interface Stats {
           <li [class.ok]="c.ready.db">Veritabanı (Supabase)</li>
           <li [class.ok]="c.ready.auth">Giriş (Supabase Auth + ADMIN_EMAILS)</li>
           <li [class.ok]="c.ready.deployHook">Fiyatları yayınlama (Vercel Deploy Hook)</li>
+          <li [class.ok]="c.ready.mail">Faturayı e-postayla gönderme (SMTP_HOST, SMTP_USER, SMTP_PASS)</li>
           <li [class.ok]="c.ready.stripe">Online ödeme (Stripe) — isteğe bağlı</li>
         </ul>
       </div>
