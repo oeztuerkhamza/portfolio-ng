@@ -121,3 +121,5 @@ Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiy
 - Fiyatlar derleme sırasında `scripts/fetch-catalog.mjs` ile veritabanından
   `src/app/core/data/catalog.json` dosyasına yazılır. Veritabanı yoksa dosyadaki değerler kullanılır.
 - Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr`.
+- Otomatik testler: `npm run test:all` (Angular tarafı Karma ile, `src/server/`
+  Node test runner ile). Ayrıntılar README'de.

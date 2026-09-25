@@ -1,0 +1,10 @@
+/* Typprüfung für die Server-Tests (src/server/*.node-spec.ts). Läuft in
+   Node, nicht im Browser — daher "node" statt "jasmine" als Typen. */
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./out-tsc/server-spec-types",
+    "types": ["node"]
+  },
+  "include": ["src/server/**/*.ts"]
+}

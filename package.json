@@ -9,6 +9,9 @@
     "catalog": "node scripts/fetch-catalog.mjs",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
+    "test:server": "tsc --noEmit -p tsconfig.server-spec.json && node scripts/test-server.mjs",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadlessNoSandbox",
+    "test:all": "npm run test:server && npm run test:ci",
     "sitemap": "node scripts/generate-sitemap.mjs",
     "serve:ssr": "node dist/breisgau-digital/server/server.mjs"
   },

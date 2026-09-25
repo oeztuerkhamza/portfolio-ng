@@ -36,23 +36,33 @@ ng build
 
 This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
 
-## Running unit tests
+## Tests
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
+The project has two runtimes, so it has two test commands:
 
 ```bash
-ng e2e
+npm test          # Angular side: Karma + Jasmine, watches files
+npm run test:ci   # the same, once, in headless Chrome (containers, CI)
+npm run test:server   # the Node API in src/server/
+npm run test:all      # both, one after the other
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**Angular** specs live next to their component as `*.spec.ts` and run in a
+real browser through Karma. `npm test` opens Chrome and watches; `test:ci`
+uses the `ChromeHeadlessNoSandbox` launcher from `karma.conf.js`, which also
+works as root inside a container.
+
+**The server API** (`src/server/`) is Node code — `node:crypto`,
+`process.env`, `fetch` — and does not run in a browser, so it is tested with
+the Node test runner instead. Those specs are named `*.node-spec.ts` so Karma
+leaves them alone. Node cannot load them directly, because imports across the
+project are written without a file extension; `scripts/test-server.mjs`
+therefore bundles each spec with esbuild first, exactly as `api/index.js` is
+built, and typechecks them against `tsconfig.server-spec.json`.
+
+The Stripe specs never reach the network: a local HTTP server stands in for
+Stripe so the error paths — invalid key, 403, 503, unreachable, unparseable
+answer — run for real.
 
 ## Additional Resources
 
