@@ -193,6 +193,37 @@ invoices.delete(
   }),
 );
 
+/**
+ * Rechnung ohne verknüpften Kunden: den Kunden aus der Empfängeranschrift
+ * finden — per E-Mail, sonst per Name und Firma — oder neu anlegen. Bei einem
+ * Treffer werden nur leere Felder ergänzt, nichts überschrieben.
+ */
+async function customerFor(tx: Sql, inv: Record<string, any>, number: string): Promise<string> {
+  const text = (v: unknown) => String(v ?? '').trim() || null;
+  const c = {
+    name: String(inv['recipient_name']).trim(),
+    business: text(inv['recipient_business']),
+    email: text(inv['recipient_email']),
+    street: text(inv['recipient_street']),
+    city: text(inv['recipient_city']),
+  };
+  const [hit] = c.email
+    ? await tx`select id from customers where lower(email) = lower(${c.email}) order by created_at limit 1`
+    : await tx`
+        select id from customers
+        where lower(name) = lower(${c.name}) and lower(coalesce(business, '')) = lower(${c.business ?? ''})
+        order by created_at limit 1`;
+  if (hit) {
+    await tx`
+      update customers set business = coalesce(business, ${c.business}), email = coalesce(email, ${c.email}),
+        street = coalesce(street, ${c.street}), city = coalesce(city, ${c.city})
+      where id = ${hit['id']}`;
+    return hit['id'];
+  }
+  const [row] = await tx`insert into customers ${tx({ ...c, notes: `Fatura ${number} ile oluşturuldu.` })} returning id`;
+  return row['id'];
+}
+
 /** Entwurf festschreiben: Nummer vergeben, Absender einfrieren. */
 invoices.post(
   '/:id/finalize',
@@ -212,8 +243,10 @@ invoices.post(
       if (!(inv['items'] as unknown[]).length) return { status: 400, body: { error: 'missing_items' } };
       const year = Number(inv['issue_year']);
       const number = await nextNumber(tx as unknown as Sql, 'RE', year);
+      const customer = inv['customer_id'] ?? (await customerFor(tx as unknown as Sql, inv, number));
       const [row] = await tx`
-        update invoices set number = ${number}, status = 'offen', finalized_at = now(), sender = ${tx.json(sender as any)}
+        update invoices set number = ${number}, status = 'offen', finalized_at = now(), sender = ${tx.json(sender as any)},
+          customer_id = ${customer}
         where id = ${inv['id']}
         returning *, (issue_date + due_days)::date as due_date`;
       return { status: 200, body: row };

@@ -522,7 +522,10 @@ export class InvoicesTab implements OnInit, OnDestroy {
       const fin = await this.api.req<Invoice>('POST', `/invoices/${saved.id}/finalize`);
       this.show('view', fin);
     });
-    if (done) await this.autoSend();
+    if (!done) return;
+    // Beim Festschreiben legt der Server fehlende Kunden an — Auswahlliste auffrischen.
+    if (!c.customer_id) this.api.req<Customer[]>('GET', '/customers').then((k) => this.customers.set(k)).catch(() => undefined);
+    await this.autoSend();
   }
 
   async removeDraft() {
