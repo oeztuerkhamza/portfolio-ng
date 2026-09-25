@@ -64,6 +64,21 @@ The Stripe specs never reach the network: a local HTTP server stands in for
 Stripe so the error paths — invalid key, 403, 503, unreachable, unparseable
 answer — run for real.
 
+`webhook.node-spec.ts` goes one step further and drives the real webhook
+route against a real Postgres and a small stand-in SMTP server, so the paid
+path is checked end to end: the order is booked, exactly one confirmation
+e-mail goes out, and a repeat delivery of the same Stripe event sends no
+second one. It needs a database, so it skips itself unless you point it at
+one:
+
+```bash
+TEST_DATABASE_URL=postgres://user:pass@127.0.0.1:5432/db npm run test:server
+```
+
+The database needs the `orders` and `settings` tables from
+`supabase/migrations/`. Without the variable the block is reported as skipped
+and the rest of the suite still runs.
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.

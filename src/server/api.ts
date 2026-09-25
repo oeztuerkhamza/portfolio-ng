@@ -4,6 +4,7 @@ import { config } from './config';
 import { db } from './db';
 import { h, sqlOr503, str, UUID } from './http';
 import { invoices } from './invoices';
+import { type OrderMailItem, mailer, orderConfirmation } from './mail';
 import { CANCELLED_EVENTS, PAID_EVENTS, WEBHOOK_EVENTS, checkStripe, createCheckoutSession, verifyWebhook } from './stripe';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -71,6 +72,45 @@ export async function nfcRedirect(req: Request, res: Response) {
   }
 }
 
+/**
+ * Bestellbestätigung an den Kunden, Kopie ans eigene Postfach. Wird nur beim
+ * Übergang auf „bezahlt" aufgerufen, also genau einmal je Bestellung.
+ *
+ * Ein Fehler beim Verschicken darf den Webhook nicht scheitern lassen: Stripe
+ * würde das Ereignis sonst endlos erneut zustellen, obwohl die Bestellung
+ * längst bezahlt ist. Darum wird er nur protokolliert.
+ */
+async function confirmOrder(
+  sql: NonNullable<ReturnType<typeof db>>,
+  order: Record<string, unknown>,
+  base: string,
+): Promise<void> {
+  const to = String(order['customer_email'] ?? '').trim();
+  const transport = mailer();
+  if (!to || !transport) return;
+  try {
+    const [row] = await sql`select value from settings where key = 'invoice_profile'`;
+    const sender = ((row?.['value'] as Record<string, string>) ?? {}) as Record<string, string>;
+    const { subject, text } = orderConfirmation({
+      orderId: String(order['id']),
+      customerName: (order['customer_name'] as string | null) ?? null,
+      items: ((order['items'] as OrderMailItem[]) ?? []).filter((i) => i && i.label),
+      amountTotal: Number(order['amount_total']) || 0,
+      siteUrl: base,
+      sender,
+    });
+    await transport.sendMail({
+      from: { name: sender['company'] || 'Breisgau Digital', address: config.smtpUser },
+      to,
+      bcc: config.smtpUser,
+      subject,
+      text,
+    });
+  } catch (err) {
+    console.error('[shop] Bestellbestätigung', err);
+  }
+}
+
 export const api = express.Router();
 
 // Stripe braucht den unveränderten Rohtext für die Signaturprüfung.
@@ -88,18 +128,25 @@ api.post(
     if (!sql) return;
     if (PAID_EVENTS.includes(event.type)) {
       const s = event.data.object;
-      const paid = s.payment_status === 'paid';
       const shipping = s.collected_information?.shipping_details ?? s.shipping_details ?? null;
       await sql`
         update orders set
-          status = case when ${paid} then 'bezahlt' else status end,
-          paid_at = case when ${paid} then now() else paid_at end,
           customer_email = ${s.customer_details?.email ?? null},
           customer_name = ${s.customer_details?.name ?? null},
           phone = ${s.customer_details?.phone ?? null},
           shipping = ${shipping ? sql.json(shipping) : null},
           amount_total = ${(s.amount_total ?? 0) / 100}
         where stripe_session_id = ${s.id}`;
+
+      // Auf „bezahlt" nur beim ersten Mal: Stripe stellt dasselbe Ereignis
+      // notfalls mehrfach zu, und die Bestätigung darf nur einmal raus.
+      if (s.payment_status === 'paid') {
+        const [order] = await sql`
+          update orders set status = 'bezahlt', paid_at = now()
+          where stripe_session_id = ${s.id} and status = 'offen'
+          returning id, items, amount_total, customer_email, customer_name`;
+        if (order) await confirmOrder(sql, order, origin(req));
+      }
     }
     if (CANCELLED_EVENTS.includes(event.type)) {
       await sql`update orders set status = 'storniert' where stripe_session_id = ${event.data.object.id} and status = 'offen'`;

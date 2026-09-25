@@ -123,3 +123,8 @@ Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiy
 - Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr`.
 - Otomatik testler: `npm run test:all` (Angular tarafı Karma ile, `src/server/`
   Node test runner ile). Ayrıntılar README'de.
+- Sipariş onay e-postası sunucudan gider (`src/server/mail.ts`), Stripe'ın makbuz
+  ayarına bağlı değil. Ödeme onaylandığında müşteriye bir kez yollanır — pozisyonlar,
+  tutar, § 19 UStG notu, sonraki adım ve AGB/Widerruf/Versand linkleriyle; bu, aynı
+  zamanda § 312f BGB'nin istediği metin halinde onaydır. Kopyası SMTP_USER'a BCC gider.
+  SMTP ayarlı değilse sipariş yine kaydedilir, yalnızca e-posta çıkmaz.

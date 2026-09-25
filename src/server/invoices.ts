@@ -1,7 +1,7 @@
 import express from 'express';
-import nodemailer from 'nodemailer';
 import { config } from './config';
 import { h, sqlOr503, str, UUID } from './http';
+import { euro, mailer } from './mail';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -328,21 +328,7 @@ invoices.post(
   }),
 );
 
-// ── Versand per E-Mail ─────────────────────────────────────
-function mailer() {
-  if (!config.smtpHost || !config.smtpUser || !config.smtpPass) return null;
-  return nodemailer.createTransport({
-    host: config.smtpHost,
-    port: config.smtpPort,
-    secure: config.smtpPort === 465,
-    auth: { user: config.smtpUser, pass: config.smtpPass },
-    connectionTimeout: 10_000,
-    greetingTimeout: 10_000,
-    socketTimeout: 20_000,
-  });
-}
-
-const euro = (n: unknown) => new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(Number(n) || 0);
+// ── Versand per E-Mail (Postausgang: src/server/mail.ts) ───
 
 /**
  * Festgeschriebene Rechnung an den Kunden schicken. Das PDF erzeugt das
