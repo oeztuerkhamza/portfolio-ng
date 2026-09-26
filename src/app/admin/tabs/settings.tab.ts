@@ -19,6 +19,14 @@ interface StripeSetup {
   checkoutBlocked: boolean;
 }
 
+/** Antwort von GET/PUT /api/admin/maintenance. */
+interface MaintenanceView {
+  on: boolean;
+  since: string | null;
+  message: string | null;
+  bypassUrl: string | null;
+}
+
 @Component({
   selector: 'adm-settings',
   standalone: true,
@@ -102,6 +110,60 @@ interface StripeSetup {
       </label>
     </section>
 
+    <section class="adm-card">
+      <h3>Bakım modu</h3>
+      <p>
+        Açıkken siteyi açan ziyaretçi, sayfaların yerine kısa bir
+        <strong>“hemen döneceğiz”</strong> sayfası görür. Ziyaretçinin dilinde gösterilir.
+      </p>
+
+      <ul class="adm-checks">
+        <li class="ok">Yönetim paneli (<code>/admin</code>) açık kalır — bakımı buradan kapatabilmeniz için.</li>
+        <li class="ok">Stripe bildirimleri (<code>/api/…</code>) gelmeye devam eder. Kapansaydı, ödeme yapan
+          müşterinin siparişi sonsuza dek “ödeme bekleniyor” kalırdı.</li>
+        <li class="ok">Müşterilerin <strong>NFC kartları</strong> (<code>/k/…</code>, <code>/r/…</code>) çalışmaya
+          devam eder. Onlar satılmış ürün, masalarında duruyor.</li>
+      </ul>
+
+      <label class="adm-field">Ziyaretçiye ek bir satır (isteğe bağlı)
+        <input
+          [value]="message()"
+          (input)="message.set(val($event))"
+          maxlength="200"
+          placeholder="ör. 14:00'ten sonra tekrar açık olacağız" />
+      </label>
+
+      <div class="adm-actions">
+        <button class="btn btn-secondary btn-small" [disabled]="busyM()" (click)="saveMessage()">Metni kaydet</button>
+        @if (messageSaved()) { <span class="adm-msg ok">Kaydedildi ✓</span> }
+      </div>
+
+      <label class="adm-toggle big">
+        <input type="checkbox" [checked]="maintenance()" [disabled]="busyM()" (change)="toggleMaintenance($event)" />
+        Bakım modu {{ maintenance() ? 'AÇIK' : 'kapalı' }}
+      </label>
+
+      @if (maintenance()) {
+        <p class="adm-msg err">
+          <strong>Site şu an ziyaretçilere kapalı.</strong>@if (since()) { {{ since() }} tarihinden beri. }
+          Sunucu <code>503</code> yanıtı veriyor; Google bunu “geçici” olarak anlar ve sonra tekrar gelir.
+          <strong>Uzun süre açık bırakmayın</strong> — günler sürerse arama sonuçlarındaki yeriniz düşer.
+        </p>
+        @if (bypassUrl()) {
+          <p>
+            Kendiniz siteyi görmek için bu adresi kullanın — bu tarayıcıda bakım modunu 12 saat atlar:
+          </p>
+          <div class="adm-shortlink">
+            <code>{{ bypassUrl() }}</code>
+            <button class="adm-link" (click)="copyBypass()">{{ copied() ? 'Kopyalandı ✓' : 'Kopyala' }}</button>
+            <a class="adm-link" [href]="bypassUrl()" target="_blank" rel="noopener">Aç</a>
+          </div>
+          <p class="adm-muted small">Bu adresi paylaşmayın: aldığı kişi bakım modundaki siteyi görür.</p>
+        }
+      }
+
+    </section>
+
     <adm-publish />
   `,
 })
@@ -112,6 +174,15 @@ export class SettingsTab implements OnInit {
   readonly error = signal('');
   readonly stripe = signal<StripeSetup | null>(null);
   readonly stripeError = signal('');
+
+  // ── Wartungsmodus ─────────────────────────────────────────
+  readonly maintenance = signal(false);
+  readonly message = signal('');
+  readonly since = signal('');
+  readonly bypassUrl = signal('');
+  readonly busyM = signal(false);
+  readonly copied = signal(false);
+  readonly messageSaved = signal(false);
 
   async ngOnInit() {
     try {
@@ -125,6 +196,70 @@ export class SettingsTab implements OnInit {
       this.stripe.set(await this.api.req<StripeSetup>('GET', '/stripe'));
     } catch (e) {
       this.stripeError.set(errorText(e));
+    }
+    try {
+      this.applyMaintenance(await this.api.req<MaintenanceView>('GET', '/maintenance'));
+    } catch {
+      /* Der Schalter bleibt aus; der Rest der Seite arbeitet weiter. */
+    }
+  }
+
+  val(e: Event) {
+    return (e.target as HTMLInputElement).value;
+  }
+
+  private applyMaintenance(m: MaintenanceView) {
+    this.maintenance.set(m.on === true);
+    this.message.set(m.message ?? '');
+    this.bypassUrl.set(m.bypassUrl ?? '');
+    this.since.set(m.since ? new Date(m.since).toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short' }) : '');
+  }
+
+  private async putMaintenance(on: boolean) {
+    this.busyM.set(true);
+    this.messageSaved.set(false);
+    try {
+      this.applyMaintenance(
+        await this.api.req<MaintenanceView>('PUT', '/maintenance', { on, message: this.message().trim() }),
+      );
+      this.error.set('');
+      return true;
+    } catch (e) {
+      this.error.set(errorText(e));
+      return false;
+    } finally {
+      this.busyM.set(false);
+    }
+  }
+
+  async toggleMaintenance(e: Event) {
+    const box = e.target as HTMLInputElement;
+    const value = box.checked;
+    if (
+      value &&
+      !confirm(
+        'Bakım modu açılsın mı?\n\nSiteyi açan ziyaretçiler sayfaların yerine bakım sayfasını görecek. ' +
+          'Yönetim paneli, Stripe bildirimleri ve müşterilerin NFC kartları çalışmaya devam eder.',
+      )
+    ) {
+      box.checked = false;
+      return;
+    }
+    if (!(await this.putMaintenance(value))) box.checked = !value;
+  }
+
+  /** Nur den Text ändern, ohne den Schalter anzufassen. */
+  async saveMessage() {
+    if (await this.putMaintenance(this.maintenance())) this.messageSaved.set(true);
+  }
+
+  async copyBypass() {
+    try {
+      await navigator.clipboard.writeText(this.bypassUrl());
+      this.copied.set(true);
+      setTimeout(() => this.copied.set(false), 2000);
+    } catch {
+      /* Zwischenablage verweigert — die Adresse steht daneben zum Markieren. */
     }
   }
 

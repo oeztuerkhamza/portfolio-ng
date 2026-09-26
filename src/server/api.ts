@@ -31,6 +31,7 @@ import {
   REVIEW_MAX_AGE_DAYS,
   fetchReviews,
 } from './reviews';
+import { type MaintenanceState, newToken, parseMaintenance, sha256Hex } from './maintenance';
 import { type OrderMailItem, leadNotification, mailer, orderConfirmation } from './mail';
 import {
   CANCELLED_EVENTS,
@@ -722,6 +723,36 @@ api.get(
   }),
 );
 
+/**
+ * Auskunft für `middleware.ts`: ist die Website in Wartung?
+ *
+ * Wird vor **jeder** Seite abgefragt, darum zwei Dinge:
+ *
+ *   * Die Antwort darf am Rand zwischengespeichert werden (`s-maxage`) —
+ *     sonst hinge jede Seite an einer Datenbankabfrage.
+ *   * Ohne Datenbank lautet die Antwort `off`. Die Website bleibt offen,
+ *     wenn die Datenbank schweigt; alles andere wäre ein Ausfall, den wir
+ *     selbst herbeigeführt haben.
+ *
+ * Das Klartext-Kennwort verlässt den Server nie; nach außen geht nur sein
+ * Hashwert, und den vergleicht die Middleware.
+ */
+api.get(
+  '/maintenance',
+  h(async (_req, res) => {
+    res.set('Cache-Control', 'public, s-maxage=20, stale-while-revalidate=60');
+    const sql = db();
+    if (!sql) return res.json({ on: false, message: null, bypass: null });
+    const [row] = await sql`select value from settings where key = 'maintenance'`;
+    const state = parseMaintenance(row?.['value']);
+    return res.json({
+      on: state.on,
+      message: state.message,
+      bypass: state.token ? await sha256Hex(state.token) : null,
+    });
+  }),
+);
+
 api.post(
   '/checkout',
   h(async (req, res) => {
@@ -1252,6 +1283,62 @@ admin.put(
       insert into settings (key, value) values ('shop_enabled', ${sql.json(value)})
       on conflict (key) do update set value = excluded.value`;
     res.json({ shop_enabled: value });
+  }),
+);
+
+/**
+ * Wartungsmodus im Portal. Gibt zusätzlich die Adresse zurück, mit der der
+ * Inhaber seine Seite trotz Wartung ansehen kann — ohne die wäre der
+ * Schalter eine Falle: man schaltet ein und sieht die eigene Arbeit nicht.
+ */
+async function maintenanceState(sql: NonNullable<ReturnType<typeof db>>): Promise<MaintenanceState> {
+  const [row] = await sql`select value from settings where key = 'maintenance'`;
+  return parseMaintenance(row?.['value']);
+}
+
+admin.get(
+  '/maintenance',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const state = await maintenanceState(sql);
+    return res.json({ ...state, bypassUrl: bypassUrl(state.token) });
+  }),
+);
+
+/** Die Adresse, die die Wartung für diesen Browser zwölf Stunden aufhebt. */
+function bypassUrl(token: string | null): string | null {
+  if (!token) return null;
+  const base = config.siteUrl || 'https://breisgau-digital.de';
+  return `${base}/de/?wartung=${encodeURIComponent(token)}`;
+}
+
+admin.put(
+  '/maintenance',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const on = req.body?.on === true;
+    const message = str(req.body?.message, 200);
+    const before = await maintenanceState(sql);
+
+    /**
+     * Das Kennwort wird einmal erzeugt und bleibt dann. Es bei jedem
+     * Einschalten neu zu würfeln hieße, dass ein gespeicherter Verweis beim
+     * nächsten Mal nicht mehr stimmt.
+     */
+    const next: MaintenanceState = {
+      on,
+      since: on ? (before.on && before.since ? before.since : new Date().toISOString()) : null,
+      message: message ?? null,
+      token: before.token ?? newToken(),
+    };
+
+    await sql`
+      insert into settings (key, value) values ('maintenance', ${sql.json(next as never)})
+      on conflict (key) do update set value = excluded.value, updated_at = now()`;
+    console.log('[wartung]', on ? 'eingeschaltet' : 'ausgeschaltet');
+    return res.json({ ...next, bypassUrl: bypassUrl(next.token) });
   }),
 );
 

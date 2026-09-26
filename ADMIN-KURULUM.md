@@ -16,7 +16,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Google yorumları** | Google'daki yorumlarınız sitede döner. Place ID'yi girip “Şimdi al”a basın; sonra günde bir kez kendi yenilenir. İstemediğiniz yorumu gizleyebilirsiniz. |
 | **Fiyatlar** | Sitedeki tüm fiyatlar. Değiştirip **Siteyi güncelle**'ye basınca 2–4 dakikada sitede. |
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
-| **Ayarlar** | Online mağazayı açma / kapama. Varsayılan: **kapalı**. |
+| **Ayarlar** | Online mağazayı açma / kapama (varsayılan: **kapalı**) ve **bakım modu**. |
 
 ## 1. Supabase projesi (≈ 10 dk)
 
@@ -32,7 +32,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri) ve
    `20260926150000_card_leads_consent.sql` (onay metninin kaydı) ve
    `20260926160000_reviews.sql` (Google yorumları) ve
-   `20260926170000_touch_search_path.sql` (bir güvenlik sertleştirmesi).
+   `20260926170000_touch_search_path.sql` (bir güvenlik sertleştirmesi) ve
+   `20260926180000_maintenance.sql` (bakım modu).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
@@ -235,11 +236,43 @@ Nasıl çalıştığı ve neden böyle:
 - Bir hata olursa panelde son denemenin altında yazar (ör. “403 — anahtar bu API'yi
   kullanamıyor”). Anahtarın kendisi hiçbir yerde görünmez.
 
+## 8. Bakım modu
+
+Panel → **Ayarlar → Bakım modu**. Açtığınızda siteyi açan ziyaretçi, sayfaların yerine kısa bir
+“hemen döneceğiz” sayfası görür — ziyaretçinin dilinde. İsterseniz bir satır da ekleyebilirsiniz
+(“Saat 14:00'ten sonra tekrar açığız”).
+
+**Bakım modunda bile çalışmaya devam edenler** — bunlar bilerek açık bırakıldı:
+
+| Açık kalan | Neden |
+|---|---|
+| `/admin` | Bakımı buradan kapatacaksınız. Kapansaydı kendinizi kilitlerdiniz. |
+| `/api/…` | Stripe ödeme bildirimi buradan geliyor. Kapansaydı müşteri öder, siparişi sonsuza dek “ödeme bekleniyor” kalırdı. |
+| `/k/…`, `/r/…` | Müşterilerin **NFC kartları**. Onlar satılmış ürün, masalarında duruyor — bizim bakımımız yüzünden çalışmamaları olmaz. |
+| Dosyalar, `sitemap.xml`, `robots.txt` | Bakım sayfasının kendisi ve arama motorları için. |
+
+**Kendiniz siteyi görmek için:** bakım açıkken panelde bir adres çıkar
+(`…/de/?wartung=…`). O adresi bir kez açtığınızda tarayıcınıza 12 saatlik bir çerez konur ve
+siteyi normal görürsünüz. **Bu adresi paylaşmayın** — alan kişi de görür.
+
+**Uzun süre açık bırakmayın.** Sunucu `503` yanıtı veriyor; bu doğru olan, çünkü Google bunu
+“geçici” diye anlar ve sonra tekrar gelir (200 verip bakım sayfası göstermek siteyi indeksten
+düşürebilirdi). Ama günler sürerse arama sonuçlarındaki yeriniz yine düşer. Bakım modu saatler
+için, günler için değil.
+
+**Nasıl çalıştığı:** site sayfaları derleme sırasında hazırlanıp Vercel'in ağından dağıtılıyor,
+yani bizim Express sunucumuza hiç uğramıyor. Bu yüzden anahtar `middleware.ts` dosyasında okunuyor
+— Vercel onu her istekten önce çalıştırıyor. Anahtar okunamazsa (veritabanı susarsa, zaman aşımı
+olursa) **site açık kalır**: kendi kurduğumuz bir arıza, gizlemeye çalıştığı arızadan kötü olurdu.
+
 ## Teknik notlar
 
 - API: `src/server/` (Express, `src/server.ts` içine bağlı). Panel: `src/app/admin/`.
 - Fiyatlar derleme sırasında `scripts/fetch-catalog.mjs` ile veritabanından
   `src/app/core/data/catalog.json` dosyasına yazılır. Veritabanı yoksa dosyadaki değerler kullanılır.
+- Bakım modu: `middleware.ts` (kök dizin) + `src/server/maintenance.ts`. Vercel'in Routing
+  Middleware'i Next.js dışı projelerde de çalışıyor; `@vercel/functions` paketinden `next()`
+  ile istek devam ettiriliyor. Mantık `src/server/maintenance.ts` içinde ve testli.
 - Google yorumları aynı şekilde: `scripts/fetch-reviews.mjs` → `src/app/core/data/reviews.json`.
   Veritabanı yoksa depodaki dosya olduğu gibi kalır, derleme yine tamamlanır.
 - Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr`.
