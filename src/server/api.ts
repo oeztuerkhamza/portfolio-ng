@@ -1,4 +1,4 @@
-import { randomUUID } from 'node:crypto';
+import { randomUUID, timingSafeEqual } from 'node:crypto';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { requireAdmin } from './auth';
 import { config } from './config';
@@ -315,6 +315,13 @@ export async function cardLead(req: Request, res: Response) {
       values (${String(card['id'])}, ${lead.name}, ${lead.email}, ${lead.phone},
               ${lead.company}, ${lead.message}, ${deviceOf(req)})`;
 
+    // Bei der Gelegenheit ausräumen, was zu alt ist. Das ist der Weg, auf dem
+    // die Frist aus der Datenschutzerklärung auch ohne eingerichteten
+    // Tageslauf eingehalten wird.
+    void purgeLeads(sql)
+      .then((n) => n && console.log('[k.kontakt] alte Kontakte gelöscht:', n))
+      .catch((err) => console.error('[k.kontakt] Aufräumen', err));
+
     // Gespeichert ist gespeichert: die Benachrichtigung darf den Gast nicht
     // aufhalten und auch nicht scheitern lassen, was schon in der Datenbank
     // steht. Darum ohne await und mit eigenem Fang.
@@ -360,6 +367,49 @@ async function notifyLead(
     subject,
     text,
   });
+}
+
+/**
+ * Wie lange ein hinterlassener Kontakt höchstens liegen bleibt.
+ *
+ * Die Zahl steht auch in der Datenschutzerklärung (/datenschutz, Abschnitt zu
+ * den NFC-Karten). Wer sie hier ändert, ändert eine Zusage an den Gast — dann
+ * muss der Text mit.
+ */
+export const LEAD_RETENTION_MONTHS = 12;
+
+/**
+ * Alte Kontakte löschen. Zwei Wege führen hierher, damit die Zusage auch
+ * dann stimmt, wenn einer ausfällt:
+ *
+ *   * bei jedem neuen Eintrag (kostet eine Anweisung auf einem seltenen Weg),
+ *   * einmal am Tag über /api/cron/cleanup, für den Fall, dass gar keine
+ *     neuen Kontakte mehr kommen.
+ *
+ * Gibt zurück, wie viele Zeilen gegangen sind — nie, welche.
+ */
+/**
+ * Darf dieser Aufruf aufräumen?
+ *
+ * Ohne gesetztes Geheimnis nie — eine offene Löschstrecke im Netz wäre
+ * schlimmer als ein ausgefallener Lauf. Verglichen wird in konstanter Zeit:
+ * ein zeichenweiser Vergleich verrät über die Laufzeit, wie weit jemand
+ * richtig geraten hat.
+ */
+export function cronAuthorized(header: unknown, secret: string): boolean {
+  if (!secret) return false;
+  const sent = Buffer.from(typeof header === 'string' ? header : '');
+  const want = Buffer.from(`Bearer ${secret}`);
+  // timingSafeEqual wirft bei verschiedenen Längen, darum vorher prüfen.
+  return sent.length === want.length && timingSafeEqual(sent, want);
+}
+
+export async function purgeLeads(sql: NonNullable<ReturnType<typeof db>>): Promise<number> {
+  const gone = await sql`
+    delete from card_leads
+    where created_at < now() - ${`${LEAD_RETENTION_MONTHS} months`}::interval
+    returning id`;
+  return gone.length;
 }
 
 export const api = express.Router();
@@ -450,6 +500,32 @@ api.post(
       insert into enquiries (name, business, reach, message, topics, plan, billing, lang)
       values (${name}, ${str(b.business, 200)}, ${reach}, ${str(b.message, 5000)}, ${topics}, ${plan}, ${billing}, ${lang})`;
     return res.status(201).json({ ok: true });
+  }),
+);
+
+// ── Aufräumen (Vercel Cron, einmal am Tag) ─────────────────
+/**
+ * Löscht Kontakte, die älter sind als die Frist in der
+ * Datenschutzerklärung. Vercel ruft die Strecke nach dem Eintrag in
+ * vercel.json auf und schickt dabei `Authorization: Bearer $CRON_SECRET`.
+ *
+ * Ohne gesetztes Geheimnis nimmt die Strecke niemanden an: eine offene
+ * Löschstrecke im Netz wäre schlimmer als ein ausgefallener Lauf — und
+ * aufgeräumt wird ohnehin auch bei jedem neuen Eintrag.
+ */
+api.get(
+  '/cron/cleanup',
+  h(async (req, res) => {
+    if (!config.cronSecret) return res.status(503).json({ error: 'not_configured' });
+    if (!cronAuthorized(req.headers['authorization'], config.cronSecret)) {
+      return res.status(401).json({ error: 'unauthorized' });
+    }
+
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const removed = await purgeLeads(sql);
+    console.log('[cron] alte Kontakte gelöscht:', removed);
+    return res.json({ removed, retentionMonths: LEAD_RETENTION_MONTHS });
   }),
 );
 

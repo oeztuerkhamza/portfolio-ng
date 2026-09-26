@@ -135,6 +135,10 @@ import { PRODUCT_CONTENT } from './produkt.content';
             </ul>
 
             <p class="pd-small">{{ i18n.t('shop.vat') }}</p>
+            <!-- PAngV § 6: es muss dastehen, ob zum Preis noch Versand kommt. Der
+                 Wert kommt aus dem Katalog, damit die Angabe nicht falsch wird,
+                 wenn im Portal Versandkosten eingetragen werden. -->
+            <p class="pd-small">{{ cart.shipping ? i18n.t('shop.shipping') + ': ' + cart.shipping + ' €' : i18n.t('shop.shipping.free') }}</p>
             <p class="pd-small">{{ i18n.t('shop.legal.delivery') }}</p>
             <p class="pd-small">{{ i18n.t('shop.legal.custom') }}</p>
           </aside>

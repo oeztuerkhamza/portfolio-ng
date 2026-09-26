@@ -54,6 +54,7 @@ Vercel → proje **breisgau-digital** → **Settings → Environment Variables**
 | `SUPABASE_PUBLISHABLE_KEY` | Project Settings → API Keys → **Publishable key** (`sb_publishable_…`). Eski projelerde `SUPABASE_ANON_KEY` adıyla `anon` key de olur. |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yalnızca NFC kartlarının görsellerini Supabase deposuna yüklemek için gerekir (`SUPABASE_SECRET_KEY` adı da kabul edilir). Supabase entegrasyonu bunu Vercel'e kendisi ekler. Bu anahtar satır güvenliğini aşar: **sadece sunucuda kullanılır, tarayıcıya hiç gitmez.** Kart görseli yüklemeyecekseniz eklemeniz gerekmez. |
 | `ADMIN_EMAILS` | Panele girebilecek e-postalar, virgülle: `hamza.oeztuerk@web.de` |
+| `CRON_SECRET` | Kendi uydurduğunuz uzun rastgele bir metin (ör. `openssl rand -hex 32`). Vercel her gün `/api/cron/cleanup` adresini bununla çağırır ve **12 aydan eski ziyaretçi bilgileri silinir** — Datenschutzerklärung'da yazan söz budur. Girilmezse o adres kimseyi kabul etmez (açık bir silme ucu bırakmaktansa çalışmasın); temizlik o durumda da her yeni bilgi geldiğinde yapılır. |
 | `SITE_URL` | `https://breisgau-digital.de` |
 | `VERCEL_DEPLOY_HOOK_URL` | Vercel → Settings → Git → **Deploy Hooks** → ad: `fiyatlar`, branch: `main` → oluşan URL |
 | `SMTP_HOST` | Faturaları e-postayla göndermek için: `mail.bikehausfreiburg.com` (Mailcow) |
@@ -94,8 +95,16 @@ durur: dışarıya hiçbir şey gitmez, abonelik yok, sayfa müşterinin elimizd
    ziyaretçi kartı tek dokunuşla rehberine ekler (vCard). Hiçbiri yoksa buton görünmez.
 8. **Ziyaretçi bilgi formu** (isteğe bağlı, varsayılan kapalı): kartı okutan kişi kendi adını,
    e-postasını, telefonunu bırakabilir. Gelenler aynı sekmede **Bırakılan bilgiler** listesinde
-   durur; "İlgilenildi" ile işaretlenir, silinebilir. Dışarıya gitmez, reklam için kullanılmaz —
-   Datenschutzerklärung'da böyle yazılı, o yüzden öyle kalsın.
+   durur; "İlgilenildi" ile işaretlenir, silinebilir, **CSV indir** ile dışa aktarılır. Yeni bir
+   bilgi gelince size e-posta gider; "Yanıtla" doğrudan ziyaretçiye gider.
+
+   Hukuki tarafı koda bağlı, keyfî değil:
+   - Kartın altındaki kısa metin, bilgilerin **kartın sahibine** gittiğini söyler (Art. 13 DSGVO
+     bilgilendirme yükümlülüğü). Metni değiştiren bir zorunlu beyanı değiştirir.
+   - IP adresi **kaydedilmez**.
+   - **12 aydan eski kayıtlar otomatik silinir** (`LEAD_RETENTION_MONTHS`, src/server/api.ts).
+     Bu süre Datenschutzerklärung'da da yazılı; birini değiştiren ötekini de değiştirmeli — test
+     bunu kontrol ediyor.
 9. **Aktif** kapalıyken sayfa görünmez, adres ana sayfaya döner. Yeni kart hazır olana kadar
    kapalı tutabilirsiniz.
 10. **QR (SVG)** ile kartın baskısı için QR kodunu indirin; **Kopyala** adresi verir.
@@ -137,6 +146,16 @@ Açmadan önce yapılacaklar:
    `/versand`. Sipariş sayfasında ödeme butonunun hemen üstünde linkli ve onay kutusu zorunlu.
    Footer'da her sayfadan erişilebilir. Metinler Almanca (Impressum/Datenschutz gibi).
    **Açmadan önce bir hukukçuya okutun** — özellikle cayma hakkı istisnasını ve teslim süresini.
+
+   Hukukçuya ayrıca şu iki soruyu götürün:
+   - **Ziyaretçi bilgi formu — sorumlu kim?** Kart müşterinin, sayfa ve veritabanı bizim. Metin
+     bizi *Verantwortlicher* (sorumlu), müşteriyi *Empfänger* (alıcı) sayıyor. Hukukçu tersini
+     söylerse — yani biz müşterinin *Auftragsverarbeiter*'i (veri işleyeni) isek — her kart
+     müşterisiyle **AVV (Art. 28 DSGVO)** imzalanması gerekir. Bu, formu açan ilk müşteriden
+     önce netleşmeli.
+   - **Hukuki dayanak**: metin Art. 6 Abs. 1 lit. b + f diyor (iletişim talebi). Hukukçu
+     *Einwilligung* (lit. a) isterse, onayın kanıtlanabilir olması gerekir (Art. 7) — o zaman
+     forma bir onay kutusu eklenir; söylerseniz eklerim.
 2. **Stripe hesabı** (<https://stripe.com>): işletme bilgileri, banka hesabı, ödeme yöntemleri
    (kart, PayPal, Klarna…).
 3. Stripe → Developers → **Webhooks → Add endpoint**:

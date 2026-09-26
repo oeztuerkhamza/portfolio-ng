@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { draftCards } from './api';
+import { LEAD_RETENTION_MONTHS, cronAuthorized, draftCards, purgeLeads } from './api';
 
 /**
  * Aus einer bezahlten Bestellung werden Kartenentwürfe.
@@ -25,12 +25,15 @@ interface Query {
  * `reserve` nimmt Kurznamen vorweg — damit lässt sich ein Zusammenstoß
  * erzwingen, ohne auf den Zufall zu warten.
  */
-function fakeSql(opts: { reserve?: (slug: string) => boolean } = {}) {
+function fakeSql(opts: { reserve?: (slug: string) => boolean; deleted?: number } = {}) {
   const queries: Query[] = [];
   const slugs: string[] = [];
   const sql = ((strings: TemplateStringsArray, ...params: unknown[]) => {
     const text = strings.join('?');
     queries.push({ text, params });
+    if (/delete from card_leads/.test(text)) {
+      return Promise.resolve(Array.from({ length: opts.deleted ?? 0 }, (_, n) => ({ id: `lead-${n}` })));
+    }
     if (/insert into cards/.test(text)) {
       const slug = String(params[0]);
       if (slugs.includes(slug) || opts.reserve?.(slug)) return Promise.resolve([]);
@@ -207,5 +210,71 @@ describe('draftCards', () => {
     const db = fakeSql();
     const made = await draftCards(db.sql, order([null, {}, { key: null }, { key: 'card.business', qty: 1 }]));
     assert.equal(made, 1);
+  });
+});
+
+/**
+ * Die Aufbewahrungsfrist aus der Datenschutzerklärung — als Code, nicht als
+ * Versprechen. Steht dort „automatisch spätestens zwölf Monate", dann muss
+ * hier auch etwas löschen.
+ */
+describe('purgeLeads', () => {
+  test('löscht genau, was älter ist als die zugesagte Frist', async () => {
+    const db = fakeSql();
+    await purgeLeads(db.sql);
+    const q = db.queries.find((x) => /delete from card_leads/.test(x.text));
+    assert.ok(q, 'es wird überhaupt gelöscht');
+    assert.match(q!.text, /created_at < now\(\) - \?::interval/);
+    assert.equal(q!.params[0], `${LEAD_RETENTION_MONTHS} months`);
+  });
+
+  test('nennt die Frist, die auch in der Datenschutzerklärung steht', () => {
+    // Wer die Zahl ändert, ändert eine Zusage an den Gast — dann muss der
+    // Text unter /datenschutz mit.
+    assert.equal(LEAD_RETENTION_MONTHS, 12);
+  });
+
+  test('meldet, wie viele Zeilen gegangen sind', async () => {
+    const db = fakeSql({ deleted: 3 });
+    assert.equal(await purgeLeads(db.sql), 3);
+  });
+
+  test('meldet null, wenn nichts zu alt war', async () => {
+    const db = fakeSql({ deleted: 0 });
+    assert.equal(await purgeLeads(db.sql), 0);
+  });
+});
+
+/**
+ * Die Strecke, die der Tageslauf aufruft, löscht Daten. Wer sie erreicht,
+ * muss das Geheimnis kennen.
+ */
+describe('cronAuthorized', () => {
+  test('lässt den richtigen Kopf durch', () => {
+    assert.equal(cronAuthorized('Bearer geheim', 'geheim'), true);
+  });
+
+  test('weist ohne Geheimnis jeden ab — auch mit passendem Kopf', () => {
+    // Ist CRON_SECRET nicht gesetzt, darf die Strecke niemandem gehören.
+    assert.equal(cronAuthorized('Bearer ', ''), false);
+    assert.equal(cronAuthorized('Bearer undefined', ''), false);
+    assert.equal(cronAuthorized('', ''), false);
+  });
+
+  test('weist falsche, fehlende und halbe Angaben ab', () => {
+    for (const header of ['', 'Bearer falsch', 'geheim', 'Basic geheim', 'Bearer geheim ', ' Bearer geheim', 'Bearer geheimer', 'Bearer gehei']) {
+      assert.equal(cronAuthorized(header, 'geheim'), false, `durchgelassen: „${header}"`);
+    }
+  });
+
+  test('kommt mit einem fehlenden oder falsch getippten Kopf zurecht', () => {
+    for (const header of [undefined, null, 42, ['Bearer geheim'], {}]) {
+      assert.equal(cronAuthorized(header, 'geheim'), false);
+    }
+  });
+
+  test('achtet auf Groß- und Kleinschreibung', () => {
+    assert.equal(cronAuthorized('bearer geheim', 'geheim'), false);
+    assert.equal(cronAuthorized('Bearer GEHEIM', 'geheim'), false);
   });
 });

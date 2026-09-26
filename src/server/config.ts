@@ -71,4 +71,13 @@ export const config = {
   get siteUrl() {
     return env('SITE_URL').replace(/\/+$/, '');
   },
+  /**
+   * Geheimnis für den täglichen Aufräumlauf (/api/cron/cleanup). Vercel
+   * schickt es als `Authorization: Bearer …`, wenn es als Umgebungsvariable
+   * gesetzt ist. Fehlt es, nimmt der Lauf niemanden an — lieber gar nicht
+   * aufräumen als eine offene Strecke ins Netz stellen.
+   */
+  get cronSecret() {
+    return env('CRON_SECRET');
+  },
 };

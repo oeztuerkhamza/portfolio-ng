@@ -621,10 +621,33 @@ describe('Kontaktbogen', () => {
     assert.match(html, /name="website" tabindex="-1"/);
   });
 
-  test('sagt, was mit den Angaben passiert, und verlinkt den Datenschutz', () => {
+  test('nennt den Empfänger der Angaben — das ist eine Pflichtangabe', () => {
+    // Art. 13 DSGVO: der Gast muss wissen, wer seine Daten bekommt. „Nur an
+    // uns" wäre falsch: gedacht sind sie für den Inhaber der Karte.
     const html = card({ leads: true });
-    assert.match(html, /nicht weitergegeben/);
+    assert.match(html, /Inhaber dieser Karte/);
+    assert.match(html, /Keine Werbung/);
     assert.match(html, /href="\/de\/datenschutz"/);
+  });
+
+  test('verlinkt den Datenschutz in der Sprache der Karte', () => {
+    const tr = renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'tr', data: { company: 'K', phone: '0761123456', leads: true } },
+      '',
+      null,
+    );
+    assert.match(tr, /href="\/tr\/datenschutz"/);
+    assert.match(tr, /bu kartın sahibine/);
+  });
+
+  test('nennt den Empfänger in jeder Sprache', () => {
+    // Ein Hinweis, der in einer Sprache fehlt, ist in dieser Sprache keine
+    // Information — und damit keine erfüllte Pflicht.
+    for (const lang of CARD_LANGS) {
+      const note = label(lang, 'leadNote');
+      assert.ok(note.length > 40, `${lang}: Hinweis zu knapp für eine Pflichtangabe`);
+      assert.equal(/nur an uns|only to us|nous sont destinées uniquement/i.test(note), false, `${lang}: nennt den Empfänger falsch`);
+    }
   });
 
   test('zeigt nach dem Absenden eine Bestätigung statt des Bogens', () => {

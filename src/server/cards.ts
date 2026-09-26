@@ -83,6 +83,11 @@ export type LabelKey = (typeof LABEL_KEYS)[number];
 /**
  * `{n}` wird durch den Namen ersetzt — die Wortstellung gehört der Sprache:
  * im Türkischen steht „für" hinter dem Namen, im Deutschen davor.
+ *
+ * `leadNote` ist kein Marketingtext, sondern die Kurzinformation nach Art. 13
+ * DSGVO: sie muss sagen, wer die Angaben bekommt (der Inhaber der Karte) und
+ * wozu. Der Verweis daneben führt auf die ausführliche Erklärung. Wer den
+ * Wortlaut ändert, ändert eine Pflichtangabe.
  */
 const LABELS: Record<CardLang, Record<LabelKey, string>> = {
   de: {
@@ -92,7 +97,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadOpen: 'Ihre Daten dalassen', leadHint: 'Wir melden uns bei Ihnen.',
     leadName: 'Name', leadEmail: 'E-Mail', leadPhone: 'Telefon', leadCompany: 'Firma',
     leadMessage: 'Nachricht', leadSend: 'Absenden',
-    leadNote: 'Ihre Angaben gehen nur an uns und werden nicht weitergegeben.',
+    leadNote: 'Ihre Angaben gehen an den Inhaber dieser Karte, damit er sich bei Ihnen melden kann. Keine Werbung, keine Weitergabe an Dritte.',
     leadThanks: 'Danke — wir melden uns bei Ihnen.',
     leadNeed: 'Bitte Name und E-Mail oder Telefon angeben.',
     privacy: 'Datenschutz',
@@ -104,7 +109,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadOpen: 'Laisser vos coordonnées', leadHint: 'Nous vous recontactons.',
     leadName: 'Nom', leadEmail: 'E-mail', leadPhone: 'Téléphone', leadCompany: 'Société',
     leadMessage: 'Message', leadSend: 'Envoyer',
-    leadNote: 'Vos données nous sont destinées uniquement et ne sont pas transmises.',
+    leadNote: 'Vos coordonnées vont au titulaire de cette carte, afin qu’il puisse vous recontacter. Aucune publicité, aucune transmission à des tiers.',
     leadThanks: 'Merci — nous vous recontactons.',
     leadNeed: 'Merci d’indiquer un nom et un e-mail ou un téléphone.',
     privacy: 'Confidentialité',
@@ -116,7 +121,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadOpen: 'Leave your details', leadHint: 'We will get back to you.',
     leadName: 'Name', leadEmail: 'Email', leadPhone: 'Phone', leadCompany: 'Company',
     leadMessage: 'Message', leadSend: 'Send',
-    leadNote: 'Your details come to us only and are not passed on.',
+    leadNote: 'Your details go to the holder of this card so they can get back to you. No advertising, no passing on to third parties.',
     leadThanks: 'Thank you — we will get back to you.',
     leadNeed: 'Please give a name and an email or phone number.',
     privacy: 'Privacy',
@@ -128,7 +133,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadOpen: 'Bilgilerinizi bırakın', leadHint: 'Size geri döneriz.',
     leadName: 'Ad', leadEmail: 'E-posta', leadPhone: 'Telefon', leadCompany: 'Firma',
     leadMessage: 'Mesaj', leadSend: 'Gönder',
-    leadNote: 'Bilgileriniz yalnızca bize gelir, üçüncü kişilerle paylaşılmaz.',
+    leadNote: 'Bilgileriniz, size dönebilmesi için bu kartın sahibine gider. Reklam yok, üçüncü kişilerle paylaşım yok.',
     leadThanks: 'Teşekkürler — size geri döneceğiz.',
     leadNeed: 'Lütfen ad ve e-posta ya da telefon yazın.',
     privacy: 'Gizlilik',
@@ -140,7 +145,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadOpen: 'Agahiyên xwe bihêlin', leadHint: 'Em ê bi we re têkilî daynin.',
     leadName: 'Nav', leadEmail: 'E-name', leadPhone: 'Telefon', leadCompany: 'Şirket',
     leadMessage: 'Peyam', leadSend: 'Bişîne',
-    leadNote: 'Agahiyên we tenê ji me re tên û nayên dayîn kesî din.',
+    leadNote: 'Agahiyên we ji xwediyê vê kartê re diçin, ku ew bikaribe bi we re têkilî daynin. Ne reklam, ne dayîna kesên sêyem.',
     leadThanks: 'Spas — em ê bi we re têkilî daynin.',
     leadNeed: 'Ji kerema xwe nav û e-name an telefonê binivîsin.',
     privacy: 'Parastina daneyan',
@@ -649,7 +654,7 @@ ${field('company', 'leadCompany', 'text', 'maxlength="200" autocomplete="organiz
 <label><span>${t('leadMessage')}</span><textarea name="message" rows="3" maxlength="2000"></textarea></label>
 <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" />
 <button type="submit">${t('leadSend')}</button>
-<p class="lead-note">${t('leadNote')} <a href="/de/datenschutz" rel="noopener">${t('privacy')}</a></p>
+<p class="lead-note">${t('leadNote')} <a href="/${lang}/datenschutz" rel="noopener">${t('privacy')}</a></p>
 </form>
 </details>`;
 }

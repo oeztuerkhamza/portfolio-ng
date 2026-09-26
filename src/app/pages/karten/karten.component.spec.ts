@@ -166,4 +166,17 @@ describe('KartenComponent', () => {
     mount('');
     expect(text('.kt-price')).toContain(String(business.price));
   });
+
+  /** Dieselben Pflichtangaben wie auf den anderen Produktseiten. */
+  describe('Pflichtangaben', () => {
+    beforeEach(() => mount('digitale-visitenkarte'));
+
+    it('nennt § 19 UStG, Versand, Lieferzeit und die Widerrufs-Ausnahme', () => {
+      const side = text('.kt-side');
+      expect(side).toContain('19 UStG');
+      expect(side).toMatch(/inklusive|Versand: /);
+      expect(side).toMatch(/Lieferzeit/);
+      expect(side).toContain('312g');
+    });
+  });
 });

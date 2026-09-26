@@ -203,4 +203,31 @@ describe('ProduktComponent', () => {
       expect(long).not.toContain('pd.');
     }
   });
+
+  /**
+   * Pflichtangaben nach PAngV und Fernabsatzrecht. Sie stehen nicht zur
+   * Gestaltung frei: fehlt eine, ist die Seite ein Wettbewerbsverstoß.
+   */
+  describe('Pflichtangaben', () => {
+    beforeEach(() => mount('karte'));
+
+    it('sagt, dass keine Umsatzsteuer ausgewiesen wird (§ 19 UStG)', () => {
+      expect(text('.pd-side')).toContain('19 UStG');
+    });
+
+    it('sagt, ob zum Preis noch Versandkosten kommen (PAngV § 6)', () => {
+      // Bei 0 € Versand muss dastehen, dass er enthalten ist — sonst müsste
+      // der Betrag dastehen.
+      const side = text('.pd-side');
+      expect(side).toMatch(/inklusive|Versand: /);
+    });
+
+    it('nennt die Lieferzeit', () => {
+      expect(text('.pd-side')).toMatch(/Lieferzeit/);
+    });
+
+    it('nennt die Ausnahme vom Widerrufsrecht bei personalisierter Ware', () => {
+      expect(text('.pd-side')).toContain('312g');
+    });
+  });
 });
