@@ -330,3 +330,10 @@
   display: flex; align-items: center; gap: 0.5rem;
   input { flex: 1 1 auto; min-width: 0; }
 }
+
+// Dateiauswahl unter einem Adressfeld (adm-cards).
+.adm-upload {
+  display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem;
+  input[type='file'] { font: inherit; font-size: 0.78rem; color: $text-dim; max-width: 100%; }
+  em { font-style: normal; font-size: 0.78rem; color: $brand; }
+}

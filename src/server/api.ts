@@ -4,6 +4,7 @@ import { config } from './config';
 import { db } from './db';
 import { CARD_KINDS, CARD_THEMES, type CardKind, type CardTheme, cardData, renderCard } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
+import { ALLOWED_TYPES, uploadImage } from './storage';
 import { invoices } from './invoices';
 import { type OrderMailItem, mailer, orderConfirmation } from './mail';
 import {
@@ -617,6 +618,26 @@ admin.patch(
       where id = ${req.params['id']}
       returning *`;
     return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+  }),
+);
+
+/**
+ * Bild für eine Karte in den eigenen Supabase-Speicher legen. Der Körper
+ * sind rohe Bytes — darum ein eigener Parser; der JSON-Parser lässt fremde
+ * Arten ohnehin durch. Zurück kommt nur die öffentliche Adresse.
+ */
+admin.post(
+  '/cards/upload',
+  express.raw({ type: ALLOWED_TYPES, limit: '6mb' }),
+  h(async (req, res) => {
+    const bytes = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    const result = await uploadImage(bytes, req.headers['content-type']);
+    if (!result.ok) {
+      console.error('[upload]', result.error, result.detail ?? '');
+      const status = result.error === 'storage_not_configured' ? 503 : result.error === 'upload_failed' ? 502 : 400;
+      return res.status(status).json({ error: result.error });
+    }
+    return res.status(201).json({ url: result.url, path: result.path });
   }),
 );
 

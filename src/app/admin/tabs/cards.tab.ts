@@ -116,9 +116,17 @@ interface Card {
           <div class="adm-grid2">
             <label class="adm-field">Portre fotoğrafı (yuvarlak gösterilir)
               <input type="url" placeholder="https://…" [value]="f('avatarUrl')" (input)="setF('avatarUrl', val($event))" />
+              <span class="adm-upload">
+                <input type="file" [accept]="accept" [disabled]="!!uploading()" (change)="upload('avatarUrl', $event)" />
+                @if (uploading() === 'avatarUrl') { <em>yükleniyor…</em> }
+              </span>
             </label>
             <label class="adm-field">Logo (enine gösterilir)
               <input type="url" placeholder="https://…" [value]="f('logoUrl')" (input)="setF('logoUrl', val($event))" />
+              <span class="adm-upload">
+                <input type="file" [accept]="accept" [disabled]="!!uploading()" (change)="upload('logoUrl', $event)" />
+                @if (uploading() === 'logoUrl') { <em>yükleniyor…</em> }
+              </span>
             </label>
           </div>
           <div class="adm-grid2">
@@ -171,6 +179,10 @@ interface Card {
                 <input type="url" placeholder="https://…" [value]="p" (input)="setPhoto($index, val($event))" />
                 <button type="button" class="adm-link danger" (click)="removePhoto($index)">Sil</button>
               </span>
+              <span class="adm-upload">
+                <input type="file" [accept]="accept" [disabled]="!!uploading()" (change)="uploadPhoto($index, $event)" />
+                @if (uploading() === 'photo-' + $index) { <em>yükleniyor…</em> }
+              </span>
             </label>
           }
           @if (photos().length < maxPhotos) {
@@ -187,8 +199,9 @@ interface Card {
         }
 
         <p class="adm-muted small">
-          Fotoğraf ve logolar <strong>https</strong> adresi olmalı; başka türlüsü kaydedilmez. En iyisi kendi Supabase
-          deponuza yükleyip adresini buraya yapıştırmak — böylece dosyalar da sizin sunucunuzda kalır.
+          <strong>Dosya seç</strong> ile yüklediğiniz görsel doğrudan kendi Supabase deponuza gider ve adresi yukarıdaki
+          alana yazılır — dosyalar sizin sunucunuzda kalır. Elinizde hazır bir <strong>https</strong> adresi varsa onu
+          yapıştırmanız da yeter. PNG, JPEG, WebP, GIF, AVIF; en çok 5 MB. SVG kabul edilmez (içinde kod taşıyabilir).
         </p>
 
         @if (busy()) { <p class="adm-msg">Kaydediliyor…</p> }
@@ -253,6 +266,10 @@ export class CardsTab implements OnInit {
   readonly netKeys = Object.keys(NETWORKS);
   readonly maxLinks = 8;
   readonly maxPhotos = 8;
+  /** Muss zu ALLOWED_TYPES in src/server/storage.ts passen. */
+  readonly accept = 'image/png,image/jpeg,image/webp,image/gif,image/avif';
+  /** Welches Feld gerade hochlädt — sperrt die anderen Knöpfe. */
+  readonly uploading = signal('');
 
   // ── Formular ──────────────────────────────────────────────
   readonly kind = signal<Kind>('business');
@@ -309,6 +326,55 @@ export class CardsTab implements OnInit {
   }
   removeLink(i: number) {
     this.links.update((rows) => rows.filter((_, n) => n !== i));
+  }
+
+  /**
+   * Bild in den eigenen Speicher legen und die zurückgegebene Adresse in das
+   * Feld schreiben. Die Datei geht rohe Bytes an den Server; den Namen
+   * vergibt dort der Server, nicht der Browser.
+   */
+  private async send(file: File): Promise<string> {
+    const r = await this.api.upload<{ url: string }>('/cards/upload', file);
+    return r.url;
+  }
+
+  private static file(e: Event): File | null {
+    return (e.target as HTMLInputElement).files?.[0] ?? null;
+  }
+
+  private static clearInput(e: Event) {
+    // Zurücksetzen, damit dieselbe Datei erneut gewählt werden kann.
+    (e.target as HTMLInputElement).value = '';
+  }
+
+  async upload(key: string, e: Event) {
+    const file = CardsTab.file(e);
+    if (!file) return;
+    this.uploading.set(key);
+    try {
+      this.setF(key, await this.send(file));
+      this.error.set('');
+    } catch (err) {
+      this.error.set(errorText(err));
+    } finally {
+      this.uploading.set('');
+      CardsTab.clearInput(e);
+    }
+  }
+
+  async uploadPhoto(i: number, e: Event) {
+    const file = CardsTab.file(e);
+    if (!file) return;
+    this.uploading.set(`photo-${i}`);
+    try {
+      this.setPhoto(i, await this.send(file));
+      this.error.set('');
+    } catch (err) {
+      this.error.set(errorText(err));
+    } finally {
+      this.uploading.set('');
+      CardsTab.clearInput(e);
+    }
   }
 
   addPhoto() {

@@ -170,6 +170,26 @@ export class AdminApi {
     return this.session()!.access_token;
   }
 
+  /**
+   * Rohe Bytes an /api/admin<path> schicken — für den Bild-Upload. Der
+   * Datei-Typ steht im Content-Type; einen Namen schickt der Browser nicht,
+   * den vergibt der Server.
+   */
+  async upload<T = unknown>(path: string, file: File): Promise<T> {
+    const token = await this.freshToken();
+    const res = await fetch(`/api/admin${path}`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': file.type },
+      body: file,
+    });
+    if (!res.ok) {
+      const detail = (await res.json().catch(() => ({}))) as Record<string, unknown>;
+      if (res.status === 401) this.clear();
+      throw new ApiError(res.status, String(detail['error'] ?? 'upload_failed'), detail);
+    }
+    return (await res.json()) as T;
+  }
+
   /** Aufruf von /api/admin<path>. */
   async req<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
     const token = await this.freshToken();

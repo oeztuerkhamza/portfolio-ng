@@ -18,6 +18,19 @@ export const config = {
   get supabaseAnonKey() {
     return env('SUPABASE_PUBLISHABLE_KEY') || env('SUPABASE_ANON_KEY');
   },
+  /**
+   * Supabase-Dienstschlüssel — nur für den Datei-Upload in den Speicher
+   * (src/server/storage.ts). Er umgeht die Zeilensperren, verlässt darum
+   * niemals den Server und wird nie an den Browser gegeben. Die
+   * Supabase-Integration legt ihn selbst in Vercel ab.
+   */
+  get supabaseServiceKey() {
+    return env('SUPABASE_SERVICE_ROLE_KEY') || env('SUPABASE_SECRET_KEY');
+  },
+  /** Eimer im Supabase-Speicher für Karten-Bilder; öffentlich lesbar. */
+  get storageBucket() {
+    return env('SUPABASE_STORAGE_BUCKET') || 'cards';
+  },
   /** Kommagetrennte E-Mail-Adressen, die das Admin-Portal nutzen dürfen. */
   get adminEmails(): string[] {
     return env('ADMIN_EMAILS')

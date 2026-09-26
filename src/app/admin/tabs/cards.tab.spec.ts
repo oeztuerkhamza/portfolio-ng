@@ -29,6 +29,8 @@ interface CardPayload {
 
 describe('CardsTab', () => {
   let sent: { method: string; path: string; body?: unknown }[];
+  let uploads: { path: string; type: string; size: number }[];
+  let uploadFails: boolean;
   let tab: CardsTab;
 
   class ApiStub {
@@ -36,10 +38,31 @@ describe('CardsTab', () => {
       sent.push({ method, path, body });
       return (path === '/cards' && method === 'GET' ? [] : {}) as T;
     }
+    async upload<T>(path: string, file: File): Promise<T> {
+      uploads.push({ path, type: file.type, size: file.size });
+      if (uploadFails) throw new Error('upload_failed');
+      return { url: `https://x.supabase.co/storage/v1/object/public/cards/2026/${uploads.length}.png` } as T;
+    }
+  }
+
+  /** Dateiauswahl nachstellen: `files` ist normalerweise nicht setzbar. */
+  function pick(type = 'image/png'): Event {
+    const file = new File([new Uint8Array([1, 2, 3, 4])], 'egal.png', { type });
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [file], writable: true });
+    return { target: input } as unknown as Event;
+  }
+
+  function emptyPick(): Event {
+    const input = document.createElement('input');
+    Object.defineProperty(input, 'files', { value: [], writable: true });
+    return { target: input } as unknown as Event;
   }
 
   beforeEach(() => {
     sent = [];
+    uploads = [];
+    uploadFails = false;
     TestBed.resetTestingModule();
     TestBed.configureTestingModule({
       imports: [CardsTab],
@@ -173,6 +196,40 @@ describe('CardsTab', () => {
       tab.label.set('Neue Beschreibung');
       tab.suggestSlug();
       expect(tab.slug()).toBe('');
+    });
+  });
+
+  describe('Bild yükleme', () => {
+    it('yüklenen görselin adresini alana yazar', async () => {
+      await tab.upload('avatarUrl', pick());
+      expect(uploads.length).toBe(1);
+      expect(uploads[0].path).toBe('/cards/upload');
+      expect(uploads[0].type).toBe('image/png');
+      expect(tab.f('avatarUrl')).toContain('/storage/v1/object/public/cards/');
+      expect(tab.uploading()).toBe('', 'bitince kilit açılır');
+    });
+
+    it('galeride doğru satıra yazar', async () => {
+      tab.addPhoto();
+      tab.addPhoto();
+      await tab.uploadPhoto(1, pick());
+      expect(tab.photos()[0]).toBe('', 'ilk satır dokunulmaz');
+      expect(tab.photos()[1]).toContain('/public/cards/');
+    });
+
+    it('dosya seçilmediyse hiçbir şey yapmaz', async () => {
+      await tab.upload('logoUrl', emptyPick());
+      expect(uploads.length).toBe(0);
+      expect(tab.f('logoUrl')).toBe('');
+    });
+
+    it('hata olursa alanı bozmaz ve hatayı gösterir', async () => {
+      tab.setF('logoUrl', 'https://eski.example/logo.png');
+      uploadFails = true;
+      await tab.upload('logoUrl', pick());
+      expect(tab.f('logoUrl')).toBe('https://eski.example/logo.png', 'eski adres korunur');
+      expect(tab.error()).not.toBe('');
+      expect(tab.uploading()).toBe('', 'hata sonrası da kilit açılır');
     });
   });
 
