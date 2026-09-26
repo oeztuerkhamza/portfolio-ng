@@ -35,8 +35,6 @@ export const SHOP_CONTENT: Record<string, Entry> = {
     tr: 'Kendi alan adımızda kendi sayfası olan kart — üçüncü firma yok, abonelik yok. Siparişten sonra içeriği sizinle kuruyoruz: logo, iletişim bilgileri ve linkler; hediye kartında fotoğraflar ve bir şarkı.',
     ku: 'Kartek bi rûpela xwe li ser navê me — ne pêşkêşkarê biyanî, ne abone. Piştî siparîşê em naverokê bi we re saz dikin: logo, agahiyên pêwendiyê û girêdan; ji bo karta diyariyê wêne û stranek.',
   },
-  'shop.card.business': { de: 'Digitale Visitenkarte (NFC)', fr: 'Carte de visite numérique (NFC)', en: 'Digital business card (NFC)', tr: 'Dijital kartvizit (NFC)', ku: 'Karta karsaziyê ya dîjîtal (NFC)' },
-  'shop.card.gift': { de: 'Geschenkkarte (NFC)', fr: 'Carte cadeau (NFC)', en: 'Gift card (NFC)', tr: 'Hediye kartı (NFC)', ku: 'Karta diyariyê (NFC)' },
   'shop.minus': { de: 'Weniger', fr: 'Moins', en: 'Fewer', tr: 'Azalt', ku: 'Kêmtir' },
   'shop.plus': { de: 'Mehr', fr: 'Plus', en: 'More', tr: 'Artır', ku: 'Zêdetir' },
   'shop.details': { de: 'Für die Einrichtung', fr: 'Pour la configuration', en: 'For the setup', tr: 'Kurulum için', ku: 'Ji bo sazkirinê' },

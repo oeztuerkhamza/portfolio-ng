@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { afterEach, describe, test } from 'node:test';
-import { euro, mailer, orderConfirmation, type OrderMailData } from './mail';
+import { type LeadMailData, euro, leadNotification, mailer, orderConfirmation, type OrderMailData } from './mail';
 
 /**
  * Tests des Postausgangs und der Bestellbestätigung.
@@ -127,5 +127,76 @@ describe('orderConfirmation', () => {
   test('kommt mit einer leeren Positionsliste aus', () => {
     const { text } = orderConfirmation({ ...base, items: [], amountTotal: 0 });
     assert.match(text, /Gesamt: 0,00/);
+  });
+});
+
+/**
+ * Die Nachricht an uns, wenn ein Gast seine Daten auf einer Karte dalässt.
+ *
+ * Sie muss im Postfach allein schon reichen: wer war es, von welcher Karte,
+ * und wie erreicht man ihn. Wer erst eine Mail öffnen und dann das Portal
+ * durchsuchen muss, meldet sich zu spät.
+ */
+describe('leadNotification', () => {
+  const lead = (over: Partial<LeadMailData> = {}): LeadMailData => ({
+    cardTitle: 'Café Krone',
+    cardSlug: 'cafe-krone',
+    lang: 'de',
+    name: 'Ayşe Yıldız',
+    email: 'ayse@example.de',
+    phone: null,
+    company: null,
+    message: null,
+    siteUrl: 'https://breisgau-digital.de',
+    ...over,
+  });
+
+  test('nennt im Betreff Karte, Name und Rückweg', () => {
+    const { subject } = leadNotification(lead({ phone: '0761 123' }));
+    assert.match(subject, /Café Krone/);
+    assert.match(subject, /Ayşe Yıldız/);
+    assert.match(subject, /ayse@example\.de/);
+    assert.match(subject, /0761 123/);
+  });
+
+  test('kommt im Betreff auch ohne Rückweg zurecht', () => {
+    // Kann nicht vorkommen (leadFields verlangt einen), aber ein leeres
+    // Klammerpaar im Betreff wäre hässlich.
+    const { subject } = leadNotification(lead({ email: null, phone: null }));
+    assert.equal(/\(\)/.test(subject), false);
+    assert.match(subject, /Ayşe Yıldız$/);
+  });
+
+  test('führt jede ausgefüllte Angabe auf', () => {
+    const { text } = leadNotification(lead({ phone: '0761 123', company: 'Yıldız GmbH', message: 'Rufen Sie mich an.' }));
+    assert.match(text, /Name:\s+Ayşe Yıldız/);
+    assert.match(text, /Firma:\s+Yıldız GmbH/);
+    assert.match(text, /E-Mail:\s+ayse@example\.de/);
+    assert.match(text, /Telefon:\s+0761 123/);
+    assert.match(text, /Nachricht:\nRufen Sie mich an\./);
+  });
+
+  test('lässt leere Angaben weg, statt Leerzeilen zu schreiben', () => {
+    const { text } = leadNotification(lead());
+    assert.equal(/Firma:/.test(text), false);
+    assert.equal(/Telefon:/.test(text), false);
+    assert.equal(/Nachricht:/.test(text), false);
+    assert.equal(/null|undefined/.test(text), false);
+  });
+
+  test('verlinkt die Karte und das Portal', () => {
+    const { text } = leadNotification(lead());
+    assert.match(text, /https:\/\/breisgau-digital\.de\/k\/cafe-krone/);
+    assert.match(text, /https:\/\/breisgau-digital\.de\/admin/);
+  });
+
+  test('doppelt den Schrägstrich der Adresse nicht', () => {
+    const { text } = leadNotification(lead({ siteUrl: 'https://breisgau-digital.de/' }));
+    assert.equal(/de\/\/k\//.test(text), false);
+    assert.match(text, /de\/k\/cafe-krone/);
+  });
+
+  test('sagt, dass Antworten an den Gast geht', () => {
+    assert.match(leadNotification(lead()).text, /antworten geht direkt an den Gast/i);
   });
 });

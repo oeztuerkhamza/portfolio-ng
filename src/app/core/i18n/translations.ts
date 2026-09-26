@@ -18,6 +18,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   'nav.contact': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },
   'nav.impressum': { de: 'Impressum', fr: 'Mentions légales', en: 'Imprint', tr: 'Künye', ku: 'Impressum' },
   'nav.datenschutz': { de: 'Datenschutz', fr: 'Confidentialité', en: 'Privacy', tr: 'Gizlilik', ku: 'Nepenî' },
+  // Die Namen der zwei eigenen Karten stehen im Fuß jeder Seite und in der
+  // Navigation — darum global und nicht in der Tabelle des Shops.
+  'shop.card.business': { de: 'Digitale Visitenkarte (NFC)', fr: 'Carte de visite numérique (NFC)', en: 'Digital business card (NFC)', tr: 'Dijital kartvizit (NFC)', ku: 'Karta karsaziyê ya dîjîtal (NFC)' },
+  'shop.card.gift': { de: 'Geschenkkarte (NFC)', fr: 'Carte cadeau (NFC)', en: 'Gift card (NFC)', tr: 'Hediye kartı (NFC)', ku: 'Karta diyariyê (NFC)' },
+  'nav.nfc': { de: 'Digitale Karten', fr: 'Cartes numériques', en: 'Digital cards', tr: 'Dijital kartlar', ku: 'Kartên dîjîtal' },
   'nav.cart': { de: 'Warenkorb', fr: 'Panier', en: 'Cart', tr: 'Sepet', ku: 'Selik' },
   'nav.agb': { de: 'AGB', fr: 'CGV', en: 'Terms', tr: 'Satış koşulları', ku: 'Mercên firotanê' },
   'nav.widerruf': { de: 'Widerruf', fr: 'Rétractation', en: 'Withdrawal', tr: 'Cayma hakkı', ku: 'Mafê vekişînê' },

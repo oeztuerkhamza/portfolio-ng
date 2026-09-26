@@ -23,6 +23,8 @@ export const serverRoutes: ServerRoute[] = [
     getPrerenderParams: async () =>
       LANG_CODES.flatMap((locale) => REVIEW_CARD_PRODUCTS.map((p) => ({ locale, produkt: p.slug }))),
   },
+  { path: ':locale/digitale-visitenkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/geschenkkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/abo', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

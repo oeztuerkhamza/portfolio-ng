@@ -29,6 +29,7 @@ export class NavbarComponent {
   readonly navLinks = [
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/bewertungskarten', key: 'nav.cards' },
+    { path: '/digitale-visitenkarte', key: 'nav.nfc' },
     { path: '/smart-home', key: 'nav.smarthome' },
     { path: '/abo', key: 'nav.abo' },
     { path: '/projects', key: 'nav.references' },

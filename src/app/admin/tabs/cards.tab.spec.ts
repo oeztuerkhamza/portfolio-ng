@@ -462,4 +462,80 @@ describe('CardsTab', () => {
       expect(tab.openLeads()).toBe(0);
     });
   });
+
+  describe('CSV-Ausgabe der Kontakte', () => {
+    const lead = (over: Record<string, unknown> = {}) => ({
+      id: 'l1', created_at: '2026-09-26T10:00:00Z', card_id: 'id-1', card_slug: 'cafe-krone',
+      card_label: null, name: 'Ayşe Yıldız', email: 'a@b.de', phone: null, company: null,
+      message: null, device: 'ios', handled: false, ...over,
+    });
+
+    /**
+     * Die Datei abfangen, statt sie herunterzuladen.
+     *
+     * `bytes` und nicht nur `text`, weil `Blob.text()` ein führendes BOM
+     * nach Norm wieder entfernt — genau das, worauf es bei Excel ankommt,
+     * wäre damit unsichtbar.
+     */
+    async function file(leads: Record<string, unknown>[]): Promise<{ text: string; bytes: Uint8Array; name: string }> {
+      loaded = { cards: [], leads };
+      await tab.ngOnInit();
+      let blob: Blob | null = null;
+      const make = spyOn(URL, 'createObjectURL').and.callFake((b: Blob | MediaSource) => {
+        blob = b as Blob;
+        return 'blob:test';
+      });
+      spyOn(URL, 'revokeObjectURL');
+      let name = '';
+      spyOn(HTMLAnchorElement.prototype, 'click').and.callFake(function (this: HTMLAnchorElement) {
+        name = this.download;
+      });
+      tab.exportLeads();
+      expect(make).toHaveBeenCalled();
+      const b = blob!;
+      return { text: await b.text(), bytes: new Uint8Array(await b.arrayBuffer()), name };
+    }
+
+    const csv = async (leads: Record<string, unknown>[]) => (await file(leads)).text;
+
+    it('schreibt Kopfzeile und je Kontakt eine Zeile', async () => {
+      const out = await csv([lead({ id: 'a' }), lead({ id: 'b', name: 'Hans' })]);
+      const lines = out.split('\r\n');
+      expect(lines.length).toBe(3);
+      expect(lines[0]).toContain('Ad');
+      expect(lines[1]).toContain('Ayşe Yıldız');
+      expect(lines[2]).toContain('Hans');
+    });
+
+    it('beginnt mit dem BOM, damit Excel türkische Zeichen richtig zeigt', async () => {
+      const { bytes } = await file([lead()]);
+      expect([bytes[0], bytes[1], bytes[2]]).toEqual([0xef, 0xbb, 0xbf]);
+    });
+
+    it('bietet die Datei mit Datum im Namen an', async () => {
+      const { name } = await file([lead()]);
+      expect(name).toMatch(/^kart-bilgileri-\d{4}-\d{2}-\d{2}\.csv$/);
+    });
+
+    it('trennt mit Semikolon — Excel liest hier das Komma als Dezimalzeichen', async () => {
+      expect(await csv([lead()])).toContain('"Ayşe Yıldız";');
+    });
+
+    it('bricht nicht, wenn eine Angabe ein Anführungszeichen enthält', async () => {
+      const out = await csv([lead({ company: 'Cafe "Krone"' })]);
+      expect(out).toContain('"Cafe ""Krone"""');
+    });
+
+    it('lässt Excel aus einem Feld keine Formel machen', async () => {
+      // =1+1 in einer Zelle würde Excel rechnen; @ und + sind genauso gefährlich.
+      const out = await csv([lead({ message: '=1+1' }), lead({ id: 'c', name: '+49 Anruf' })]);
+      expect(out).toContain('"\'=1+1"');
+      expect(out).toContain('"\'+49 Anruf"');
+    });
+
+    it('schreibt leere Felder leer, nicht als „null"', async () => {
+      const out = await csv([lead({ phone: null, company: null, message: null })]);
+      expect(out).not.toContain('null');
+    });
+  });
 });

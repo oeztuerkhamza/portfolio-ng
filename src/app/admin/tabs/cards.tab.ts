@@ -269,7 +269,7 @@ interface Lead {
             <span class="adm-muted"> · {{ c.kind === 'business' ? 'Profil' : 'Özel gün' }}</span>
             <span class="adm-muted"> · {{ c.lang.toUpperCase() }}</span>
             @if (c.customer_name) { <span class="adm-muted"> · {{ c.customer_name }}</span> }
-            @if (c.order_id) { <span class="adm-badge">Siparişten</span> }
+            @if (c.order_id) { <span class="adm-badge">Sipariş {{ short(c.order_id) }}</span> }
             @if (c.leads_open) { <span class="adm-badge open">{{ c.leads_open }} yeni bilgi</span> }
             <div class="adm-shortlink">
               <code>{{ origin }}/k/{{ c.slug }}</code>
@@ -298,6 +298,7 @@ interface Lead {
       <h3 class="adm-sub lead-head">
         Bırakılan bilgiler
         <span class="adm-muted small">({{ openLeads() }} yeni / {{ leadList().length }})</span>
+        <button type="button" class="adm-link" (click)="exportLeads()">CSV indir</button>
       </h3>
       @for (l of leadList(); track l.id) {
         <article class="adm-card adm-item" [class.dim]="l.handled">
@@ -623,6 +624,42 @@ export class CardsTab implements OnInit {
     } catch (err) {
       this.error.set(errorText(err));
     }
+  }
+
+  /** Erste acht Zeichen einer UUID — so steht die Nummer auch auf der Bestellung. */
+  short(id: string) {
+    return id.slice(0, 8);
+  }
+
+  /**
+   * Kontakte als CSV herunterladen — zum Weiterarbeiten in Excel oder für
+   * das eigene Adressbuch. Gebaut wird die Datei im Browser aus dem, was
+   * schon geladen ist; der Server braucht dafür keine eigene Strecke.
+   *
+   * Semikolon als Trenner, weil Excel auf deutschen und türkischen Systemen
+   * das Komma als Dezimalzeichen liest. BOM davor, sonst zeigt Excel „Ayşe"
+   * als „AyÅŸe".
+   */
+  exportLeads() {
+    const head = ['Tarih', 'Ad', 'Firma', 'E-posta', 'Telefon', 'Mesaj', 'Kart', 'Cihaz', 'İlgilenildi'];
+    // Ein Feld, das mit = + - @ beginnt, liest Excel als Formel. Ein
+    // vorangestelltes Hochkomma macht daraus wieder Text.
+    const cell = (v: unknown) => {
+      const s = String(v ?? '').replace(/"/g, '""');
+      return `"${/^[=+\-@]/.test(s) ? "'" + s : s}"`;
+    };
+    const rows = this.leadList().map((l) =>
+      [l.created_at, l.name, l.company, l.email, l.phone, l.message, '/k/' + l.card_slug, l.device, l.handled ? 'evet' : 'hayır']
+        .map(cell)
+        .join(';'),
+    );
+    const csv = '\ufeff' + [head.map(cell).join(';'), ...rows].join('\r\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `kart-bilgileri-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   async markLead(l: Lead, handled: boolean) {

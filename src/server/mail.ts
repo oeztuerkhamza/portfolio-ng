@@ -46,6 +46,59 @@ export interface OrderMailData {
   sender: Record<string, string>;
 }
 
+/** Ein Kontakt, den ein Gast auf einer Karte hinterlassen hat. */
+export interface LeadMailData {
+  /** Firmen- oder Personenname auf der Karte — welche Karte war es. */
+  cardTitle: string;
+  cardSlug: string;
+  lang: string;
+  name: string;
+  email?: string | null;
+  phone?: string | null;
+  company?: string | null;
+  message?: string | null;
+  /** Öffentliche Adresse, für die Verweise auf Karte und Portal. */
+  siteUrl: string;
+}
+
+/**
+ * Nachricht an uns, wenn jemand seine Daten auf einer Karte dalässt.
+ *
+ * Ohne sie erfährt niemand davon, bis das Portal das nächste Mal geöffnet
+ * wird — ein Interessent, der Tage wartet, ist keiner mehr. Darum steht alles
+ * Nötige schon im Betreff und in den ersten Zeilen: wer, von welcher Karte,
+ * und wie man ihn erreicht.
+ *
+ * `reply-to` setzt der Aufrufer auf die Adresse des Gastes, damit ein
+ * Antworten-Klick genügt.
+ *
+ * Reine Funktion ohne Netz und Datenbank — so ist sie testbar.
+ */
+export function leadNotification(d: LeadMailData): { subject: string; text: string } {
+  const site = d.siteUrl.replace(/\/+$/, '');
+  const reach = [d.email, d.phone].filter(Boolean).join(' · ');
+
+  const text = [
+    `${d.name} hat Daten auf Ihrer Karte „${d.cardTitle}" hinterlassen.`,
+    '',
+    `Name:     ${d.name}`,
+    ...(d.company ? [`Firma:    ${d.company}`] : []),
+    ...(d.email ? [`E-Mail:   ${d.email}`] : []),
+    ...(d.phone ? [`Telefon:  ${d.phone}`] : []),
+    ...(d.message ? ['', 'Nachricht:', d.message] : []),
+    '',
+    `Karte:    ${site}/k/${d.cardSlug}`,
+    `Portal:   ${site}/admin (Reiter „NFC kartları")`,
+    '',
+    'Auf diese E-Mail antworten geht direkt an den Gast, falls er eine',
+    'Adresse hinterlassen hat. Im Portal können Sie den Eintrag abhaken,',
+    'sobald Sie sich gemeldet haben.',
+  ].join('\n');
+
+  // Der Betreff muss im Postfach allein schon reichen: Name und Rückweg.
+  return { subject: `Neuer Kontakt über „${d.cardTitle}": ${d.name}${reach ? ` (${reach})` : ''}`, text };
+}
+
 /**
  * Text der Bestellbestätigung. Sie ist zugleich die Bestätigung des
  * Vertrages in Textform (§ 312f BGB): darum stehen Bestellnummer, Positionen,

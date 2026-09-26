@@ -40,6 +40,19 @@ const localeChildren: Routes = [
     loadComponent: () => import('./pages/produkt/produkt.component').then((m) => m.ProduktComponent),
     data: { animation: 'Produkt' },
   },
+  // Die eigenen NFC-Karten. Zwei Adressen, eine Komponente: welche Karte
+  // gemeint ist, sagt `data.slug`. Die Adressen sind die Suchbegriffe und
+  // dürfen sich nicht mehr ändern.
+  {
+    path: 'digitale-visitenkarte',
+    loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
+    data: { animation: 'Karten', slug: 'digitale-visitenkarte' },
+  },
+  {
+    path: 'geschenkkarte',
+    loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
+    data: { animation: 'Karten', slug: 'geschenkkarte' },
+  },
   {
     path: 'smart-home',
     loadComponent: () =>

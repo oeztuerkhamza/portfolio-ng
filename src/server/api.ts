@@ -22,7 +22,7 @@ import {
 import { h, sqlOr503, str, UUID } from './http';
 import { ALLOWED_TYPES, uploadImage } from './storage';
 import { invoices } from './invoices';
-import { type OrderMailItem, mailer, orderConfirmation } from './mail';
+import { type OrderMailItem, leadNotification, mailer, orderConfirmation } from './mail';
 import {
   CANCELLED_EVENTS,
   PAID_EVENTS,
@@ -304,20 +304,62 @@ export async function cardLead(req: Request, res: Response) {
   if (lead === 'need') return res.redirect(303, leadRedirect(slug, 'need'));
 
   try {
-    const [card] = await sql`select id, data from cards where slug = ${slug} and active and kind = 'business'`;
+    const [card] = await sql`select id, lang, data from cards where slug = ${slug} and active and kind = 'business'`;
     if (!card) return res.redirect(302, '/');
+    const data = card['data'] as BusinessCardData | null;
     // Nur Karten, auf denen der Bogen ausdrücklich eingeschaltet ist.
-    if ((card['data'] as BusinessCardData | null)?.leads !== true) return res.redirect(303, drop);
+    if (data?.leads !== true) return res.redirect(303, drop);
 
     await sql`
       insert into card_leads (card_id, name, email, phone, company, message, device)
       values (${String(card['id'])}, ${lead.name}, ${lead.email}, ${lead.phone},
               ${lead.company}, ${lead.message}, ${deviceOf(req)})`;
+
+    // Gespeichert ist gespeichert: die Benachrichtigung darf den Gast nicht
+    // aufhalten und auch nicht scheitern lassen, was schon in der Datenbank
+    // steht. Darum ohne await und mit eigenem Fang.
+    void notifyLead(lead, {
+      slug,
+      title: data.company,
+      lang: String(card['lang'] ?? 'de'),
+      base: origin(req),
+    }).catch((err) => console.error('[k.kontakt] Benachrichtigung', err));
+
     return res.redirect(303, leadRedirect(slug, 'ok'));
   } catch (err) {
     console.error('[k.kontakt]', err);
     return res.redirect(303, drop);
   }
+}
+
+/**
+ * Uns melden, dass jemand seine Daten dagelassen hat. `reply-to` ist die
+ * Adresse des Gastes: ein Klick auf Antworten geht an ihn, nicht an uns.
+ */
+async function notifyLead(
+  lead: Exclude<ReturnType<typeof leadFields>, 'trap' | 'need'>,
+  card: { slug: string; title: string; lang: string; base: string },
+): Promise<void> {
+  const transport = mailer();
+  if (!transport) return;
+  const { subject, text } = leadNotification({
+    cardTitle: card.title,
+    cardSlug: card.slug,
+    lang: card.lang,
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone,
+    company: lead.company,
+    message: lead.message,
+    siteUrl: card.base,
+  });
+  await transport.sendMail({
+    from: { name: 'Breisgau Digital', address: config.smtpUser },
+    to: config.smtpUser,
+    ...(lead.email ? { replyTo: lead.email } : {}),
+    subject,
+    text,
+  });
 }
 
 export const api = express.Router();
