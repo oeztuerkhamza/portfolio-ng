@@ -12,6 +12,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Abonelikler** | Paket, ücret, başlangıç, asgari süre sonu (60 gün kala uyarı), durum. |
 | **Faturalar** | Logolu Rechnung: taslak → kesinleştir (RE-2026-0001 …) → PDF → ödendi. GiroCode QR, Storno, kopyala. |
 | **NFC linkleri** | Kartlara yazılan kısa linkler (`/r/cafe-muster`). Hedefi istediğiniz an değiştirin, okutma sayısını görün, QR kodu SVG olarak indirin. |
+| **NFC kartları** | Kendi alan adımızda kart sayfaları (`/k/cafe-krone`): firma kartı ya da özel gün kartı. Kart dili, tema, logo/fotoğraf yükleme, ziyaretçi bilgi formu, okutma sayısı, QR. |
 | **Fiyatlar** | Sitedeki tüm fiyatlar. Değiştirip **Siteyi güncelle**'ye basınca 2–4 dakikada sitede. |
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
 | **Ayarlar** | Online mağazayı açma / kapama. Varsayılan: **kapalı**. |
@@ -24,7 +25,11 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 2. **SQL Editor** → **New query** → bu depodaki
    `supabase/migrations/20260924120000_admin_portal.sql` dosyasının tamamını yapıştırın → **Run**.
    Tablolar ve mevcut fiyatlar oluşur. Tablolara internetten doğrudan erişim kapalıdır; verilere sadece site sunucusu erişir.
-   Ardından aynı şekilde `supabase/migrations/20260924130000_invoices.sql` dosyasını da çalıştırın (faturalar).
+   Ardından aynı şekilde sıradaki dosyaları da çalıştırın:
+   `20260924130000_invoices.sql` (faturalar), `20260925120000_invoice_sent.sql`,
+   `20260926120000_cards.sql` (kart sayfaları) ve
+   `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri).
+   Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
 4. **Authentication → Users → Add user → Create new user**: kendi e-postanız ve şifreniz
@@ -71,10 +76,41 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
 > Alan adı değişirse eski alan adının Vercel'de yeni adrese **yönlendirilmeye devam etmesi** gerekir;
 > yoksa eski adresle programlanmış kartlar çalışmaz.
 
-## 4. Faturalar (Rechnungen)
+## 4. Kart sayfaları (`/k/…`)
 
-1. Supabase SQL Editor'da `supabase/migrations/20260924130000_invoices.sql`, ardından
-   `supabase/migrations/20260925120000_invoice_sent.sql` dosyasını bir kez çalıştırın.
+Kısa link (`/r/…`) müşteriyi başka bir adrese gönderir. Kart sayfası ise **bizim alan adımızda**
+durur: dışarıya hiçbir şey gitmez, abonelik yok, sayfa müşterinin elimizdeki kartıyla yaşar.
+
+1. Panel → **NFC kartları → + Yeni kart**.
+2. **Tür**: *Profil* (kişi/firma kartviziti) ya da *Özel gün* (fotoğraf + müzik).
+3. **Kısa ad** kartın adresi olur: `https://breisgau-digital.de/k/cafe-krone`. Kaydedildikten
+   sonra **değişmez** — kart çoktan programlanmış olabilir.
+4. **Kart dili**: sayfadaki yazılar (Telefon, E-posta, Adres, "Rehbere kaydet"…) bu dilde çıkar.
+   Sitenin diliyle ilgisi yok: kart müşterinin misafirinin elinde, yazı onun dilinde olmalı.
+5. **Tema**: açık, koyu, sıcak.
+6. Logo ve fotoğrafları **dosya seçerek** yükleyin — Supabase deposuna gider, adresi kendisi
+   yazılır. Elle `https://…` adresi de girebilirsiniz. SVG kabul edilmez (içinde kod olabilir).
+7. Profil kartında **Rehbere kaydet** butonu kendiliğinden çıkar: telefon/e-posta/adres varsa
+   ziyaretçi kartı tek dokunuşla rehberine ekler (vCard). Hiçbiri yoksa buton görünmez.
+8. **Ziyaretçi bilgi formu** (isteğe bağlı, varsayılan kapalı): kartı okutan kişi kendi adını,
+   e-postasını, telefonunu bırakabilir. Gelenler aynı sekmede **Bırakılan bilgiler** listesinde
+   durur; "İlgilenildi" ile işaretlenir, silinebilir. Dışarıya gitmez, reklam için kullanılmaz —
+   Datenschutzerklärung'da böyle yazılı, o yüzden öyle kalsın.
+9. **Aktif** kapalıyken sayfa görünmez, adres ana sayfaya döner. Yeni kart hazır olana kadar
+   kapalı tutabilirsiniz.
+10. **QR (SVG)** ile kartın baskısı için QR kodunu indirin; **Kopyala** adresi verir.
+
+### Kartı mağazadan sipariş alınca
+
+Müşteri mağazadan **Digitale Visitenkarte** ya da **Geschenkkarte** sipariş edip ödeyince, panelde
+o siparişe bağlı **kapalı bir kart taslağı** kendiliğinden oluşur ("Siparişten" etiketiyle) —
+sipariş adedi kadar. Firma adı hem etikete hem karta yazılır. Onay maili müşteriden içerikleri
+(logo, telefon, linkler; hediye kartında fotoğraf ve şarkı) ister. İçeriği girip **Aktif**
+yapmanız yeter.
+
+## 5. Faturalar (Rechnungen)
+
+1. Gereken SQL dosyaları 1. adımda çalıştırıldıysa fatura tabloları hazırdır.
 2. Panel → **Faturalar → Fatura bilgileri**: **Steuernummer** (Finanzamt Freiburg'un verdiği numara) ve
    **IBAN** girin. Steuernummer olmadan fatura kesinleşmez (§ 14 UStG zorunlu bilgisi).
 3. **+ Yeni fatura** → müşteriyi seçin → kalemleri ekleyin (fiyat listesinden veya abonelikten tek tıkla)
@@ -92,7 +128,7 @@ Kaydettikten sonra **Deployments → en üstteki → Redeploy**. Ardından `/adm
   KDV'ye geçerseniz “Fatura bilgileri”nde kapatın; yeni faturalar %19 USt ile hesaplanır.
 - Faturalar 10 yıl saklanmalıdır. Veriler Supabase'te durur; PDF'leri ayrıca bir klasörde saklayın.
 
-## 5. Online mağaza (hazır ama kapalı)
+## 6. Online mağaza (hazır ama kapalı)
 
 Mağaza tamamen kurulu, ancak iki kilitle kapalı: Stripe anahtarları olmadan ve panelde açılmadan çalışmaz.
 Açmadan önce yapılacaklar:
@@ -112,7 +148,13 @@ Açmadan önce yapılacaklar:
 5. Panel → **Ayarlar → Stripe ödemesi**: anahtarın gerçekten çalıştığını, test mi canlı mı
    olduğunu ve hesabın ödeme alabildiğini burada görürsünüz.
 6. Önce test anahtarlarıyla (`sk_test_…`) bir deneme siparişi verin.
-7. Panel → **Ayarlar → Online mağaza** açın. "Bewertungskarten" sayfasında **Online bestellen** butonu görünür.
+7. Panel → **Ayarlar → Online mağaza** açın. "Bewertungskarten" sayfasında ve her ürün
+   sayfasında **In den Warenkorb** butonları görünür. Mağaza kapalıysa aynı yerlerde e-posta ile
+   talep butonu kalır — fiyat gösterip satın alma yolu bırakmamaktan iyidir.
+
+Mağazada üç grup var: tek tek ürünler, paketler ve **eigene NFC-Karten** (kendi kart
+sayfalarımız). Kart fiyatlarını **Fiyatlar** sekmesinde `card.business` / `card.gift`
+satırlarından değiştirebilirsiniz.
 
 Fiyatlar her zaman sunucuda veritabanından hesaplanır; tarayıcıdan gelen fiyat kullanılmaz.
 

@@ -1,5 +1,6 @@
 import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { CUSTOM_CARDS } from '../data/cards.data';
 import { price } from '../data/catalog';
 import { REVIEW_CARD_FORMS, REVIEW_CARD_PACKAGES } from '../data/review-cards.data';
 
@@ -23,7 +24,7 @@ export interface ShopProduct {
   unitPrice: number;
   image?: string;
   /** Überschrift der Gruppe in der Liste. */
-  group: 'shop.forms' | 'shop.packages';
+  group: 'shop.forms' | 'shop.packages' | 'shop.cards';
 }
 
 /** Alles, was der Shop verkauft — dieselbe Reihenfolge wie auf der Seite. */
@@ -33,6 +34,9 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
   ),
   ...REVIEW_CARD_PACKAGES.map(
     (p): ShopProduct => ({ key: `pkg.${p.id}`, nameKey: `rc.pkg.${p.id}.name`, unitPrice: p.price, group: 'shop.packages' }),
+  ),
+  ...CUSTOM_CARDS.map(
+    (c): ShopProduct => ({ key: `card.${c.id}`, nameKey: `shop.card.${c.id}`, unitPrice: c.price, image: c.imageSmall, group: 'shop.cards' }),
   ),
 ];
 

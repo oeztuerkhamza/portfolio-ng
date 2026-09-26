@@ -71,6 +71,9 @@ import { SHOP_CONTENT } from './shop.content';
               <div class="shop-lines">
                 @for (group of groups; track group.title) {
                   <h2 class="shop-group">{{ i18n.t(group.title) }}</h2>
+                  @if (group.note) {
+                    <p class="shop-group-note">{{ i18n.t(group.note) }}</p>
+                  }
                   @for (p of group.items; track p.key) {
                     <div class="card shop-line" [class.picked]="cart.qtyOf(p.key) > 0">
                       @if (p.image) { <img [src]="p.image" width="120" height="90" alt="" loading="lazy" /> }
@@ -169,10 +172,15 @@ export class ShopComponent implements OnInit {
   readonly thanks = inject(ActivatedRoute).snapshot.data['thanks'] === true;
   readonly maxQty = MAX_QTY;
 
-  /** Katalog, gruppiert wie auf der Seite: erst einzeln, dann Pakete. */
+  /**
+   * Katalog, gruppiert wie auf der Seite: erst einzeln, dann Pakete, dann die
+   * eigenen Karten. Die brauchen einen Hinweis — anders als eine
+   * Bewertungskarte entsteht ihr Inhalt erst nach der Bestellung.
+   */
   readonly groups = [
-    { title: 'shop.forms' as const, items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.forms') },
-    { title: 'shop.packages' as const, items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.packages') },
+    { title: 'shop.forms' as const, note: '', items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.forms') },
+    { title: 'shop.packages' as const, note: '', items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.packages') },
+    { title: 'shop.cards' as const, note: 'shop.cards.note', items: SHOP_PRODUCTS.filter((p) => p.group === 'shop.cards') },
   ];
 
   readonly busy = signal(false);

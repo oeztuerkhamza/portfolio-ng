@@ -1,5 +1,5 @@
 import express from 'express';
-import { api, cardPage, cardVcard, nfcRedirect } from './api';
+import { api, cardLead, cardPage, cardVcard, leadBody, nfcRedirect } from './api';
 
 /**
  * Einstieg für die Vercel-Funktion (api/index.js). Vercel liefert die Seiten
@@ -17,5 +17,6 @@ app.use('/api', api);
 app.get('/r/:slug', nfcRedirect);
 app.get('/k/:slug', cardPage);
 app.get('/k/:slug/kontakt.vcf', cardVcard);
+app.post('/k/:slug/kontakt', leadBody, cardLead);
 
 export default app;

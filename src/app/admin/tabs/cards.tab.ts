@@ -26,6 +26,16 @@ const THEMES: { id: Theme; label: string }[] = [
 
 type Kind = 'business' | 'gift';
 type Theme = 'brand' | 'dark' | 'warm';
+type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku';
+
+/** Muss zu CARD_LANGS in src/server/cards.ts passen. */
+const LANGS: { id: Lang; label: string }[] = [
+  { id: 'de', label: 'Almanca' },
+  { id: 'fr', label: 'Fransızca' },
+  { id: 'en', label: 'İngilizce' },
+  { id: 'tr', label: 'Türkçe' },
+  { id: 'ku', label: 'Kürtçe' },
+];
 
 interface LinkRow {
   net: string;
@@ -38,14 +48,35 @@ interface Card {
   slug: string;
   kind: Kind;
   theme: Theme;
+  lang: Lang;
   label: string | null;
   customer_id: string | null;
   customer_name: string | null;
+  /** Gesetzt, wenn die Karte aus einer bezahlten Bestellung entstanden ist. */
+  order_id: string | null;
   data: Record<string, unknown>;
   active: boolean;
   scans_total: number;
   scans_30d: number;
   last_scan: string | null;
+  leads_total: number;
+  leads_open: number;
+}
+
+/** Ein Kontakt, den ein Gast auf einer Karte hinterlassen hat. */
+interface Lead {
+  id: string;
+  created_at: string;
+  card_id: string;
+  card_slug: string;
+  card_label: string | null;
+  name: string;
+  email: string | null;
+  phone: string | null;
+  company: string | null;
+  message: string | null;
+  device: string | null;
+  handled: boolean;
 }
 
 /**
@@ -91,10 +122,15 @@ interface Card {
         </div>
         <p class="adm-muted small">Adres: <strong>{{ origin }}/k/{{ slug() || '…' }}</strong> — küçük harf, rakam ve tire. Kaydedildikten sonra değiştirilemez.</p>
 
-        <div class="adm-grid2">
+        <div class="adm-grid3">
           <label class="adm-field">Tema
             <select [value]="theme()" (change)="setTheme(val($event))">
               @for (t of themes; track t.id) { <option [value]="t.id">{{ t.label }}</option> }
+            </select>
+          </label>
+          <label class="adm-field">Kart dili
+            <select [value]="lang()" (change)="setLang(val($event))">
+              @for (l of langs; track l.id) { <option [value]="l.id">{{ l.label }}</option> }
             </select>
           </label>
           <label class="adm-field">Müşteri
@@ -159,6 +195,16 @@ interface Card {
           @if (links().length < maxLinks) {
             <button type="button" class="btn btn-secondary btn-small" (click)="addLink()">+ Bağlantı ekle</button>
           }
+
+          <h4 class="adm-sub">Ziyaretçi bilgi formu</h4>
+          <label class="adm-toggle">
+            <input type="checkbox" [checked]="leads()" (change)="leads.set(checked($event))" />
+            Kartı okutan kişi kendi bilgilerini bırakabilsin
+          </label>
+          <p class="adm-muted small">
+            Kartın altında küçük bir form çıkar: ad, e-posta, telefon, firma, mesaj. Gelen bilgiler aşağıdaki
+            “Bırakılan bilgiler” listesinde durur, dışarıya gitmez. Kapalıysa form hiç görünmez.
+          </p>
         } @else {
           <h4 class="adm-sub">Özel gün</h4>
           <label class="adm-field">Başlık * (ör. “Alles Liebe zum Geburtstag!”)
@@ -221,7 +267,10 @@ interface Card {
           <div>
             <strong>{{ c.label || title(c) }}</strong>
             <span class="adm-muted"> · {{ c.kind === 'business' ? 'Profil' : 'Özel gün' }}</span>
+            <span class="adm-muted"> · {{ c.lang.toUpperCase() }}</span>
             @if (c.customer_name) { <span class="adm-muted"> · {{ c.customer_name }}</span> }
+            @if (c.order_id) { <span class="adm-badge">Siparişten</span> }
+            @if (c.leads_open) { <span class="adm-badge open">{{ c.leads_open }} yeni bilgi</span> }
             <div class="adm-shortlink">
               <code>{{ origin }}/k/{{ c.slug }}</code>
               <button class="adm-link" (click)="copy(c)">{{ copied() === c.id ? 'Kopyalandı ✓' : 'Kopyala' }}</button>
@@ -243,6 +292,39 @@ interface Card {
     } @empty {
       <p class="adm-muted">Henüz kart yok.</p>
     }
+
+    <!-- Bırakılan bilgiler: kartı okutan kişilerin kendi verdiği bilgiler -->
+    @if (leadList().length) {
+      <h3 class="adm-sub lead-head">
+        Bırakılan bilgiler
+        <span class="adm-muted small">({{ openLeads() }} yeni / {{ leadList().length }})</span>
+      </h3>
+      @for (l of leadList(); track l.id) {
+        <article class="adm-card adm-item" [class.dim]="l.handled">
+          <div class="adm-item-head">
+            <div>
+              <strong>{{ l.name }}</strong>
+              @if (l.company) { <span class="adm-muted"> · {{ l.company }}</span> }
+              <div class="adm-shortlink">
+                @if (l.email) { <a class="adm-link" [href]="'mailto:' + l.email">{{ l.email }}</a> }
+                @if (l.phone) { <a class="adm-link" [href]="'tel:' + l.phone">{{ l.phone }}</a> }
+                <code>/k/{{ l.card_slug }}</code>
+              </div>
+              @if (l.message) { <p class="adm-lead-msg">{{ l.message }}</p> }
+            </div>
+            <div class="adm-scans">
+              <small>{{ dateTime(l.created_at) }}@if (l.device) { · {{ l.device }} }</small>
+            </div>
+          </div>
+          <div class="adm-actions">
+            <label class="adm-toggle">
+              <input type="checkbox" [checked]="l.handled" (change)="markLead(l, checked($event))" /> İlgilenildi
+            </label>
+            <button class="adm-link danger" (click)="removeLead(l)">Sil</button>
+          </div>
+        </article>
+      }
+    }
   `,
 })
 export class CardsTab implements OnInit {
@@ -262,6 +344,7 @@ export class CardsTab implements OnInit {
     { id: 'gift', label: 'Özel gün (fotoğraf + müzik)' },
   ];
   readonly themes = THEMES;
+  readonly langs = LANGS;
   readonly networks = NETWORKS;
   readonly netKeys = Object.keys(NETWORKS);
   readonly maxLinks = 8;
@@ -276,7 +359,11 @@ export class CardsTab implements OnInit {
   readonly slug = signal('');
   readonly label = signal('');
   readonly theme = signal<Theme>('brand');
+  readonly lang = signal<Lang>('de');
+  readonly leads = signal(false);
   readonly customerId = signal('');
+  readonly leadList = signal<Lead[]>([]);
+  readonly openLeads = computed(() => this.leadList().filter((l) => !l.handled).length);
   readonly fields = signal<Record<string, string>>({});
   readonly links = signal<LinkRow[]>([]);
   readonly photos = signal<string[]>([]);
@@ -287,7 +374,14 @@ export class CardsTab implements OnInit {
 
   private async load() {
     try {
-      this.items.set(await this.api.req<Card[]>('GET', '/cards'));
+      // Karten und Kontakte zusammen: die Zahl am Kärtchen und die Liste
+      // unten dürfen nicht auseinanderlaufen.
+      const [cards, leads] = await Promise.all([
+        this.api.req<Card[]>('GET', '/cards'),
+        this.api.req<Lead[]>('GET', '/leads'),
+      ]);
+      this.items.set(cards);
+      this.leadList.set(leads);
     } catch (e) {
       this.error.set(errorText(e));
     }
@@ -309,6 +403,11 @@ export class CardsTab implements OnInit {
   setTheme(value: string) {
     const hit = THEMES.find((t) => t.id === value);
     if (hit) this.theme.set(hit.id);
+  }
+
+  setLang(value: string) {
+    const hit = LANGS.find((l) => l.id === value);
+    if (hit) this.lang.set(hit.id);
   }
 
   f(key: string) {
@@ -408,6 +507,8 @@ export class CardsTab implements OnInit {
     this.slug.set('');
     this.label.set('');
     this.theme.set('brand');
+    this.lang.set('de');
+    this.leads.set(false);
     this.customerId.set('');
     this.fields.set({});
     this.links.set([]);
@@ -428,6 +529,8 @@ export class CardsTab implements OnInit {
     this.slug.set(c.slug);
     this.label.set(c.label ?? '');
     this.theme.set(c.theme);
+    this.lang.set(c.lang ?? 'de');
+    this.leads.set(c.data?.['leads'] === true);
     this.customerId.set(c.customer_id ?? '');
 
     const d = (c.data ?? {}) as Record<string, unknown>;
@@ -467,6 +570,7 @@ export class CardsTab implements OnInit {
             links: this.links()
               .filter((l) => l.url.trim())
               .map((l) => ({ url: l.url.trim(), label: l.label.trim(), ...(l.net ? { net: l.net } : {}) })),
+            ...(this.leads() ? { leads: true } : {}),
           }
         : {
             ...keep(['headline', 'to', 'from', 'message', 'songUrl', 'songLabel']),
@@ -479,6 +583,7 @@ export class CardsTab implements OnInit {
       customer_id: this.customerId() || null,
       kind: this.kind(),
       theme: this.theme(),
+      lang: this.lang(),
       data,
     };
   }
@@ -514,6 +619,26 @@ export class CardsTab implements OnInit {
     if (!confirm(`“${c.slug}” silinsin mi? Bu kartla programlanmış kartlar artık ana sayfaya gider.`)) return;
     try {
       await this.api.req('DELETE', `/cards/${c.id}`);
+      await this.load();
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+  }
+
+  async markLead(l: Lead, handled: boolean) {
+    try {
+      await this.api.req('PATCH', `/leads/${l.id}`, { handled });
+      this.error.set('');
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.load();
+  }
+
+  async removeLead(l: Lead) {
+    if (!confirm(`“${l.name}” bilgileri silinsin mi?`)) return;
+    try {
+      await this.api.req('DELETE', `/leads/${l.id}`);
       await this.load();
     } catch (err) {
       this.error.set(errorText(err));

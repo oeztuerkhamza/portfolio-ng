@@ -18,6 +18,149 @@ export const CARD_THEMES = ['brand', 'dark', 'warm'] as const;
 export type CardTheme = (typeof CARD_THEMES)[number];
 
 /**
+ * Sprache der Karte. Sie hat nichts mit der Sprache der Website zu tun: eine
+ * Karte liegt beim Gast in der Hand, und der spricht die Sprache des Kunden,
+ * nicht die des Shops. Bisher stand auf jeder Karte „Telefon" — auch auf der
+ * eines Betriebs, dessen Gäste Französisch sprechen.
+ */
+export const CARD_LANGS = ['de', 'fr', 'en', 'tr', 'ku'] as const;
+export type CardLang = (typeof CARD_LANGS)[number];
+
+/** Rückmeldung zum Kontaktbogen, aus der Adresse gelesen. */
+export type CardNotice = 'thanks' | 'need' | null;
+
+/**
+ * Die zwei Hälften des Kontaktbogens: hierher leitet der Server nach dem
+ * Absenden (POST-Redirect-GET), und daraus liest die Kartenseite die
+ * Rückmeldung wieder heraus. Beides steht bewusst nebeneinander — solange es
+ * in zwei Dateien lag, konnte das eine sich ändern und das andere nicht.
+ *
+ *   'ok'   — angenommen, Bestätigung zeigen
+ *   'need' — Angabe fehlte, Bogen offen lassen und sagen, was fehlt
+ *   'drop' — stillschweigend verworfen (Bot, zu viele Versuche, Karte ohne
+ *            Bogen): dieselbe Adresse wie ein gewöhnlicher Aufruf
+ */
+export const leadRedirect = (slug: string, outcome: 'ok' | 'need' | 'drop'): string =>
+  `/k/${slug}` + (outcome === 'ok' ? '?danke=1' : outcome === 'need' ? '?fehler=1' : '');
+
+/** Umgekehrter Weg: die Rückmeldung aus den Parametern der Adresse. */
+export const cardNotice = (query: Record<string, unknown> | undefined): CardNotice =>
+  query?.['danke'] ? 'thanks' : query?.['fehler'] ? 'need' : null;
+
+/**
+ * Alles, was auf einer Karte steht und nicht vom Kunden kommt.
+ *
+ * Die Liste ist der Vertrag: `LABELS` ist als `Record<CardLang, Record<
+ * LabelKey, string>>` getippt, und damit weigert sich der Übersetzer, eine
+ * Sprache mit einer fehlenden Beschriftung anzunehmen. Ein Test könnte das
+ * nicht so gut — er würde eine fehlende türkische Zeile nicht sehen, weil
+ * zur Laufzeit stillschweigend die deutsche einspringt.
+ */
+export const LABEL_KEYS = [
+  'phone',
+  'email',
+  'web',
+  'address',
+  'save',
+  'listen',
+  'to',
+  'from',
+  'leadOpen',
+  'leadHint',
+  'leadName',
+  'leadEmail',
+  'leadPhone',
+  'leadCompany',
+  'leadMessage',
+  'leadSend',
+  'leadNote',
+  'leadThanks',
+  'leadNeed',
+  'privacy',
+] as const;
+export type LabelKey = (typeof LABEL_KEYS)[number];
+
+/**
+ * `{n}` wird durch den Namen ersetzt — die Wortstellung gehört der Sprache:
+ * im Türkischen steht „für" hinter dem Namen, im Deutschen davor.
+ */
+const LABELS: Record<CardLang, Record<LabelKey, string>> = {
+  de: {
+    phone: 'Telefon', email: 'E-Mail', web: 'Web', address: 'Adresse',
+    save: 'Zu Kontakten hinzufügen', listen: 'Lied anhören',
+    to: 'Für {n}', from: 'von {n}',
+    leadOpen: 'Ihre Daten dalassen', leadHint: 'Wir melden uns bei Ihnen.',
+    leadName: 'Name', leadEmail: 'E-Mail', leadPhone: 'Telefon', leadCompany: 'Firma',
+    leadMessage: 'Nachricht', leadSend: 'Absenden',
+    leadNote: 'Ihre Angaben gehen nur an uns und werden nicht weitergegeben.',
+    leadThanks: 'Danke — wir melden uns bei Ihnen.',
+    leadNeed: 'Bitte Name und E-Mail oder Telefon angeben.',
+    privacy: 'Datenschutz',
+  },
+  fr: {
+    phone: 'Téléphone', email: 'E-mail', web: 'Site', address: 'Adresse',
+    save: 'Ajouter aux contacts', listen: 'Écouter la chanson',
+    to: 'Pour {n}', from: 'de {n}',
+    leadOpen: 'Laisser vos coordonnées', leadHint: 'Nous vous recontactons.',
+    leadName: 'Nom', leadEmail: 'E-mail', leadPhone: 'Téléphone', leadCompany: 'Société',
+    leadMessage: 'Message', leadSend: 'Envoyer',
+    leadNote: 'Vos données nous sont destinées uniquement et ne sont pas transmises.',
+    leadThanks: 'Merci — nous vous recontactons.',
+    leadNeed: 'Merci d’indiquer un nom et un e-mail ou un téléphone.',
+    privacy: 'Confidentialité',
+  },
+  en: {
+    phone: 'Phone', email: 'Email', web: 'Web', address: 'Address',
+    save: 'Save to contacts', listen: 'Listen to the song',
+    to: 'For {n}', from: 'from {n}',
+    leadOpen: 'Leave your details', leadHint: 'We will get back to you.',
+    leadName: 'Name', leadEmail: 'Email', leadPhone: 'Phone', leadCompany: 'Company',
+    leadMessage: 'Message', leadSend: 'Send',
+    leadNote: 'Your details come to us only and are not passed on.',
+    leadThanks: 'Thank you — we will get back to you.',
+    leadNeed: 'Please give a name and an email or phone number.',
+    privacy: 'Privacy',
+  },
+  tr: {
+    phone: 'Telefon', email: 'E-posta', web: 'Web', address: 'Adres',
+    save: 'Rehbere kaydet', listen: 'Şarkıyı dinle',
+    to: '{n} için', from: '{n} tarafından',
+    leadOpen: 'Bilgilerinizi bırakın', leadHint: 'Size geri döneriz.',
+    leadName: 'Ad', leadEmail: 'E-posta', leadPhone: 'Telefon', leadCompany: 'Firma',
+    leadMessage: 'Mesaj', leadSend: 'Gönder',
+    leadNote: 'Bilgileriniz yalnızca bize gelir, üçüncü kişilerle paylaşılmaz.',
+    leadThanks: 'Teşekkürler — size geri döneceğiz.',
+    leadNeed: 'Lütfen ad ve e-posta ya da telefon yazın.',
+    privacy: 'Gizlilik',
+  },
+  ku: {
+    phone: 'Telefon', email: 'E-name', web: 'Malper', address: 'Navnîşan',
+    save: 'Têxe nav pêwendiyan', listen: 'Li stranê guhdarî bike',
+    to: 'Ji bo {n}', from: 'ji {n}',
+    leadOpen: 'Agahiyên xwe bihêlin', leadHint: 'Em ê bi we re têkilî daynin.',
+    leadName: 'Nav', leadEmail: 'E-name', leadPhone: 'Telefon', leadCompany: 'Şirket',
+    leadMessage: 'Peyam', leadSend: 'Bişîne',
+    leadNote: 'Agahiyên we tenê ji me re tên û nayên dayîn kesî din.',
+    leadThanks: 'Spas — em ê bi we re têkilî daynin.',
+    leadNeed: 'Ji kerema xwe nav û e-name an telefonê binivîsin.',
+    privacy: 'Parastina daneyan',
+  },
+};
+
+/**
+ * Beschriftung in der Sprache der Karte. Eine Sprache, die es nicht gibt,
+ * fällt auf Deutsch zurück — `lang` kommt aus der Datenbank und kann dort
+ * älter sein als dieser Code.
+ */
+export const label = (lang: CardLang, key: LabelKey, name?: string): string => {
+  const table = LABELS[lang] ?? LABELS.de;
+  // Der Schlüssel ist getippt; der Rückfall fängt nur einen Aufruf ohne
+  // Übersetzer ab (gebündeltes JavaScript) und darf nie leer liefern.
+  const value = table[key] ?? LABELS.de[key] ?? key;
+  return name === undefined ? value : value.replace('{n}', name);
+};
+
+/**
  * Bekannte Netzwerke. Steht `net` an einem Link, wird er als Konto dieses
  * Netzwerks gezeichnet (eigene Beschriftung); sonst als gewöhnlicher Knopf.
  */
@@ -54,6 +197,12 @@ export interface BusinessCardData {
   web?: string;
   address?: string;
   links?: CardLink[];
+  /**
+   * Kontaktbogen anzeigen: der Gast kann seine eigenen Daten dalassen. Muss
+   * je Karte ausdrücklich eingeschaltet werden — wir sammeln keine Daten,
+   * weil es technisch geht, sondern weil der Kunde es will.
+   */
+  leads?: boolean;
 }
 
 export interface GiftCardData {
@@ -71,6 +220,8 @@ export interface Card {
   slug: string;
   kind: CardKind;
   theme: CardTheme;
+  /** Sprache der Beschriftungen. Fehlt sie, gilt Deutsch. */
+  lang?: CardLang;
   data: BusinessCardData | GiftCardData;
 }
 
@@ -161,6 +312,7 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
     const address = text(b['address'], 200);
     if (address) out.address = address;
     if (links.length) out.links = links;
+    if (b['leads'] === true) out.leads = true;
     return out;
   }
 
@@ -183,6 +335,81 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
   const songLabel = text(b['songLabel'], 120);
   if (songLabel) out.songLabel = songLabel;
   return out;
+}
+
+/**
+ * Kurzname für eine Karte aus dem Namen des Betriebs.
+ *
+ * Buchstabe für Buchstabe dasselbe wie im Portal (suggestSlug in
+ * src/app/admin/tabs/cards.tab.ts) — sonst heißt die Karte des „Café Grün"
+ * einmal `cafe-gruen` und einmal `caf-grn`. Reihenfolge ist wichtig:
+ *
+ *   1. deutsche Umlaute ausschreiben (ü → ue, nicht u),
+ *   2. türkische Buchstaben ersetzen (ı → i, ş → s …),
+ *   3. was dann noch Akzente trägt, auf den Grundbuchstaben bringen
+ *      (é → e) — erst hier, sonst wäre aus ü schon u geworden.
+ *
+ * Der Anhang hält den Namen eindeutig: zwei Kunden dürfen „Krone" heißen,
+ * zwei Karten nicht denselben Kurznamen tragen. Das Ergebnis passt immer auf
+ * die Prüfung der Datenbank (3–50 Zeichen, Anfang und Ende alphanumerisch).
+ */
+export function cardSlug(label: unknown, suffix: string): string {
+  const base = String(label ?? '')
+    .toLowerCase()
+    .replace(/ä/g, 'ae')
+    .replace(/ö/g, 'oe')
+    .replace(/ü/g, 'ue')
+    .replace(/ß/g, 'ss')
+    .replace(/ı/g, 'i')
+    .replace(/ş/g, 's')
+    .replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 40)
+    .replace(/-+$/g, '');
+  const tail = String(suffix).toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 8) || '1';
+  return `${base || 'karte'}-${tail}`;
+}
+
+/** Was ein Gast auf einer Karte hinterlassen hat, geprüft und gekürzt. */
+export interface LeadInput {
+  name: string;
+  email: string | null;
+  phone: string | null;
+  company: string | null;
+  message: string | null;
+}
+
+/**
+ * Den abgeschickten Kontaktbogen prüfen.
+ *
+ *   'trap' — das versteckte Feld war gefüllt: ein Bot. Wird stillschweigend
+ *            verworfen, damit er nicht lernt, woran es lag.
+ *   'need' — Name fehlt, oder es gibt keinen Rückweg (weder E-Mail noch
+ *            Telefon). Ein Name ohne Rückweg nützt niemandem.
+ *
+ * Gekürzt wird hier, nicht in der Datenbank: eine abgewiesene Zeile wäre für
+ * den Gast ein Fehler, obwohl er nur zu viel geschrieben hat.
+ */
+export function leadFields(input: unknown): LeadInput | 'trap' | 'need' {
+  const b = (input ?? {}) as Record<string, unknown>;
+  const cut = (value: unknown, max: number): string | null => {
+    if (typeof value !== 'string') return null;
+    const s = value.trim();
+    return s ? s.slice(0, max) : null;
+  };
+
+  if (cut(b['website'], 200)) return 'trap';
+
+  const name = cut(b['name'], 120);
+  const email = mailAddress(b['email']);
+  const phone = cut(b['phone'], 40);
+  if (!name || (!email && !phone)) return 'need';
+
+  return { name, email, phone, company: cut(b['company'], 200), message: cut(b['message'], 2000) };
 }
 
 // ── Darstellung ────────────────────────────────────────────
@@ -300,6 +527,27 @@ h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 .btn{display:block;text-align:center;padding:14px 18px;border-radius:999px;background:${t.accent};color:${t.onAccent};
   text-decoration:none;font-weight:600;margin:0 0 10px}
 .btn.ghost{background:transparent;color:${t.accent};border:1px solid ${t.accent}}
+.thanks{margin:18px 0 0;padding:14px 16px;border-radius:14px;background:${t.accent};color:${t.onAccent};text-align:center;font-weight:600}
+.lead{margin:6px 0 0;border-top:1px solid rgba(147,161,179,.28);padding-top:14px}
+.lead summary{cursor:pointer;font-weight:600;color:${t.accent};list-style:none;padding:6px 0}
+.lead summary::-webkit-details-marker{display:none}
+.lead summary::after{content:" +";font-weight:400}
+.lead[open] summary::after{content:" −"}
+.lead-hint{margin:2px 0 12px;color:${t.dim};font-size:.9rem}
+.lead-need{margin:2px 0 12px;padding:10px 12px;border-radius:12px;border:1px solid ${t.accent};color:${t.ink};font-size:.9rem}
+.lead label{display:block;margin:0 0 10px}
+.lead label span{display:block;font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:${t.dim};margin:0 0 4px}
+.lead input,.lead textarea{width:100%;font:inherit;color:${t.ink};background:${t.bg};border:1px solid rgba(147,161,179,.5);
+  border-radius:12px;padding:11px 12px;-webkit-appearance:none}
+.lead textarea{resize:vertical}
+.lead input:focus-visible,.lead textarea:focus-visible,.lead button:focus-visible,.lead summary:focus-visible{outline:2px solid ${t.accent};outline-offset:2px}
+.lead button{width:100%;font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:999px;padding:14px 18px;
+  background:${t.accent};color:${t.onAccent}}
+.lead-note{margin:10px 0 0;color:${t.dim};font-size:.75rem;line-height:1.5}
+/* Ohne eigene Farbe nimmt der Verweis das Browserblau — auf dem warmen
+   Thema zu schwach für 0,75rem Schrift (unter 4,5:1). */
+.lead-note a{color:${t.dim}}
+.trap{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
 .foot{margin:22px 0 0;text-align:center;font-size:.72rem;color:${t.dim}}
 .foot a{color:${t.dim}}
 @media(prefers-reduced-motion:no-preference){.card{animation:in .28s ease-out}@keyframes in{from{opacity:0;transform:translateY(6px)}}}
@@ -308,17 +556,20 @@ h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 const row = (label: string, value: string, href?: string | null) =>
   `<li>${href ? `<a href="${esc(href)}">` : '<span>'}<b>${esc(label)}</b>${esc(value)}${href ? '</a>' : '</span>'}</li>`;
 
-function businessBody(d: BusinessCardData, slug: string): string {
+function businessBody(d: BusinessCardData, slug: string, lang: CardLang, notice: CardNotice): string {
+  const t = (key: LabelKey, name?: string) => label(lang, key, name);
   const rows: string[] = [];
   if (d.phone) {
     const tel = telHref(d.phone);
-    rows.push(row('Telefon', d.phone, tel ? `tel:${tel}` : null));
+    rows.push(row(t('phone'), d.phone, tel ? `tel:${tel}` : null));
   }
   const mail = mailAddress(d.email);
-  if (mail) rows.push(row('E-Mail', mail, `mailto:${mail}`));
+  if (mail) rows.push(row(t('email'), mail, `mailto:${mail}`));
   const web = httpsUrl(d.web);
-  if (web) rows.push(row('Web', web.replace(/^https:\/\//, ''), web));
-  if (d.address) rows.push(row('Adresse', d.address));
+  if (web) rows.push(row(t('web'), web.replace(/^https:\/\//, ''), web));
+  // Die Adresse führt auf die Karte — am Handy landet man damit direkt in der
+  // Navigation. Der Dienst bekommt nur die Adresse, keine Kennung von uns.
+  if (d.address) rows.push(row(t('address'), d.address, `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d.address)}`));
 
   const logo = httpsUrl(d.logoUrl);
   const links = (d.links ?? [])
@@ -333,7 +584,7 @@ function businessBody(d: BusinessCardData, slug: string): string {
    * aus dem Klick auf dem Rechner einen Download; das Handy öffnet die Datei
    * direkt in den Kontakten.
    */
-  const save = vcard(d) ? `<a class="btn" href="/k/${esc(slug)}/kontakt.vcf" download>Zu Kontakten hinzufügen</a>` : '';
+  const save = vcard(d) ? `<a class="btn" href="/k/${esc(slug)}/kontakt.vcf" download>${esc(t('save'))}</a>` : '';
 
   return [
     logo ? `<img class="logo" src="${esc(logo)}" alt="" />` : '',
@@ -343,11 +594,13 @@ function businessBody(d: BusinessCardData, slug: string): string {
     rows.length ? `<ul class="rows">${rows.join('')}</ul>` : '',
     save,
     links.map((l) => `<a class="btn ghost" href="${esc(l.url)}" rel="noopener">${esc(l.label)}</a>`).join(''),
+    d.leads ? leadForm(slug, lang, notice) : '',
   ].join('');
 }
 
-function giftBody(d: GiftCardData): string {
-  const who = [d.to ? `Für ${d.to}` : '', d.from ? `von ${d.from}` : ''].filter(Boolean).join(' · ');
+function giftBody(d: GiftCardData, lang: CardLang): string {
+  const t = (key: LabelKey, name?: string) => label(lang, key, name);
+  const who = [d.to ? t('to', d.to) : '', d.from ? t('from', d.from) : ''].filter(Boolean).join(' · ');
   const photos = (d.photos ?? []).map((u) => httpsUrl(u)).filter((u): u is string => u !== null);
   const song = httpsUrl(d.songUrl);
   const gallery = photos.length
@@ -358,32 +611,92 @@ function giftBody(d: GiftCardData): string {
     `<h1>${esc(d.headline)}</h1>`,
     who ? `<p class="who">${esc(who)}</p>` : '',
     d.message ? `<p class="msg">${esc(d.message)}</p>` : '',
-    song ? `<a class="btn" href="${esc(song)}" rel="noopener">${esc(d.songLabel || 'Lied anhören')}</a>` : '',
+    song ? `<a class="btn" href="${esc(song)}" rel="noopener">${esc(d.songLabel || t('listen'))}</a>` : '',
   ].join('');
 }
 
 /**
+ * Kontaktbogen — ohne eine Zeile JavaScript.
+ *
+ * `<details>` klappt von sich aus auf, das Formular schickt einen
+ * gewöhnlichen POST. Danach leitet der Server auf dieselbe Seite zurück
+ * (POST-Redirect-GET), damit ein Neuladen nicht ein zweites Mal abschickt.
+ *
+ * Das Feld `website` ist eine Falle: es steht aus dem Bild geschoben in der
+ * Seite, ein Mensch sieht es nicht, ein Formular-Bot füllt es aus. Ist es
+ * gefüllt, nimmt der Server den Eintrag nicht an.
+ */
+function leadForm(slug: string, lang: CardLang, notice: CardNotice): string {
+  const t = (key: LabelKey) => esc(label(lang, key));
+  if (notice === 'thanks') return `<p class="thanks" role="status">${t('leadThanks')}</p>`;
+
+  const field = (name: string, key: LabelKey, type: string, extra: string) =>
+    `<label><span>${t(key)}</span><input type="${type}" name="${name}" ${extra} /></label>`;
+
+  // Fehlte eine Angabe, bleibt der Bogen offen — sonst müsste der Gast ihn
+  // erst wieder aufklappen, um zu sehen, was schiefging.
+  const need = notice === 'need';
+
+  return `<details class="lead"${need ? ' open' : ''}>
+<summary>${t('leadOpen')}</summary>
+<form method="post" action="/k/${esc(slug)}/kontakt">
+${need ? `<p class="lead-need" role="alert">${t('leadNeed')}</p>` : ''}
+<p class="lead-hint">${t('leadHint')}</p>
+${field('name', 'leadName', 'text', 'required maxlength="120" autocomplete="name"')}
+${field('email', 'leadEmail', 'email', 'maxlength="200" autocomplete="email"')}
+${field('phone', 'leadPhone', 'tel', 'maxlength="40" autocomplete="tel"')}
+${field('company', 'leadCompany', 'text', 'maxlength="200" autocomplete="organization"')}
+<label><span>${t('leadMessage')}</span><textarea name="message" rows="3" maxlength="2000"></textarea></label>
+<input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" />
+<button type="submit">${t('leadSend')}</button>
+<p class="lead-note">${t('leadNote')} <a href="/de/datenschutz" rel="noopener">${t('privacy')}</a></p>
+</form>
+</details>`;
+}
+
+/** Bild für die Vorschau in Messengern — nur, was der Kunde selbst hinterlegt hat. */
+const previewImage = (d: BusinessCardData & GiftCardData): string | null =>
+  httpsUrl(d.logoUrl) ?? httpsUrl(d.avatarUrl) ?? httpsUrl((d.photos ?? [])[0]);
+
+/**
  * Die ganze Seite einer Karte. `base` ist die öffentliche Adresse der
  * Website — sie steht klein im Fuß, damit man sieht, wer die Seite zeigt.
+ *
+ * `notice` ist die Rückmeldung zum Kontaktbogen: `thanks` nach dem Absenden,
+ * `need`, wenn eine Angabe fehlte. Beides kommt nach dem Weiterleiten aus der
+ * Adresse — die Seite wird also ein zweites Mal gezeichnet.
+ *
+ * Die og:-Angaben sind für Messenger, nicht für Suchmaschinen: wer die
+ * Adresse seiner Karte per WhatsApp schickt, soll Name und Bild in der
+ * Vorschau sehen. `noindex` bleibt davon unberührt.
  */
-export function renderCard(card: Card, base = config.siteUrl || ''): string {
+export function renderCard(card: Card, base = config.siteUrl || '', notice: CardNotice = null): string {
   const t = THEMES[card.theme] ?? THEMES.brand;
+  const lang: CardLang = CARD_LANGS.includes(card.lang as CardLang) ? (card.lang as CardLang) : 'de';
   const business = card.kind === 'business';
   const d = card.data as BusinessCardData & GiftCardData;
   const title = business ? d.company : d.headline;
+  const subtitle = business ? d.tagline : [d.to, d.from].filter(Boolean).join(' · ');
   const site = base.replace(/\/+$/, '');
+  const image = previewImage(d);
 
   return `<!doctype html>
-<html lang="de"><head>
+<html lang="${lang}"><head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
 <meta name="referrer" content="no-referrer" />
 <title>${esc(title)}</title>
+<meta property="og:type" content="profile" />
+<meta property="og:title" content="${esc(title)}" />${
+    subtitle ? `\n<meta property="og:description" content="${esc(subtitle)}" />` : ''
+  }${site ? `\n<meta property="og:url" content="${esc(`${site}/k/${card.slug}`)}" />` : ''}${
+    image ? `\n<meta property="og:image" content="${esc(image)}" />\n<meta name="twitter:card" content="summary" />` : ''
+  }
 <style>${styles(t)}</style>
 </head><body>
 <main class="card">
-${business ? businessBody(d, card.slug) : giftBody(d)}
+${business ? businessBody(d, card.slug, lang, notice) : giftBody(d, lang)}
 <p class="foot">${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>
 </body></html>`;

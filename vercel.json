@@ -50,6 +50,10 @@
     {
       "source": "/k/:slug/kontakt.vcf",
       "destination": "/api"
+    },
+    {
+      "source": "/k/:slug/kontakt",
+      "destination": "/api"
     }
   ]
 }

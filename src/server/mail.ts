@@ -26,6 +26,13 @@ export interface OrderMailItem {
   label: string;
   qty: number;
   unit_price: number;
+  /**
+   * Katalogschlüssel der Position. Daran hängt, wie es weitergeht: eine
+   * Bewertungskarte richten wir auf das Google-Profil ein, eine eigene
+   * NFC-Karte braucht zuerst Inhalte vom Kunden. Ältere Bestellungen haben
+   * den Schlüssel nicht — die gelten als Bewertungskarten, wie bisher.
+   */
+  key?: string;
 }
 
 export interface OrderMailData {
@@ -55,6 +62,44 @@ export function orderConfirmation(d: OrderMailData): { subject: string; text: st
 
   const lines = d.items.map((i) => `  ${i.qty} × ${i.label} — ${euro(i.qty * i.unit_price)}`);
 
+  // Zwei Produktwelten, zwei nächste Schritte. Wer beides bestellt, bekommt
+  // beides zu lesen; wer eine alte Bestellung hat (ohne `key`), den Absatz
+  // zu den Bewertungskarten.
+  const isCard = (i: OrderMailItem) => (i.key ?? '').startsWith('card.');
+  const cards = d.items.filter(isCard);
+  const next: string[] = [];
+
+  if (d.items.some((i) => !isCard(i))) {
+    next.push(
+      'Wir richten Ihre Karten auf Ihr Google-Profil ein und schicken Ihnen den',
+      'Entwurf per E-Mail zur Freigabe.',
+    );
+  }
+  if (cards.length) {
+    if (next.length) next.push('');
+    next.push(
+      'Für Ihre NFC-Karte brauchen wir noch die Inhalte. Antworten Sie einfach auf',
+      'diese E-Mail mit:',
+    );
+    if (cards.some((i) => i.key === 'card.business')) {
+      next.push(
+        '  • Logo oder Foto, Firmen- oder Personenname',
+        '  • Telefon, E-Mail, Adresse und Website',
+        '  • die Links, die auf der Karte stehen sollen (Instagram, WhatsApp …)',
+      );
+    }
+    if (cards.some((i) => i.key === 'card.gift')) {
+      next.push(
+        '  • Überschrift, für wen und von wem',
+        '  • Ihre Fotos und, wenn Sie mögen, der Link zu einem Lied',
+      );
+    }
+    next.push(
+      'Wir bauen daraus die Seite Ihrer Karte, schicken Ihnen die Adresse zur',
+      'Freigabe und programmieren danach den Chip.',
+    );
+  }
+
   const text = [
     name ? `Guten Tag ${name},` : 'Guten Tag,',
     '',
@@ -67,12 +112,13 @@ export function orderConfirmation(d: OrderMailData): { subject: string; text: st
     '',
     'Als Kleinunternehmer nach § 19 UStG wird keine Umsatzsteuer berechnet.',
     '',
-    'Wie es weitergeht: Wir richten Ihre Karten auf Ihr Google-Profil ein und',
-    'schicken Ihnen den Entwurf per E-Mail zur Freigabe. Bis zu Ihrer Freigabe',
-    'können Sie die Bestellung kostenlos stornieren. Mit der Freigabe beginnt die',
-    'Herstellung; ab dann besteht für die auf Sie zugeschnittenen Karten kein',
-    'Widerrufsrecht (§ 312g Abs. 2 Nr. 1 BGB). Die Lieferzeit beträgt danach 5 bis',
-    '10 Werktage.',
+    'Wie es weitergeht:',
+    ...next,
+    '',
+    'Bis zu Ihrer Freigabe können Sie die Bestellung kostenlos stornieren. Mit der',
+    'Freigabe beginnt die Herstellung; ab dann besteht für die auf Sie',
+    'zugeschnittenen Karten kein Widerrufsrecht (§ 312g Abs. 2 Nr. 1 BGB). Die',
+    'Lieferzeit beträgt danach 5 bis 10 Werktage.',
     '',
     'Unsere Bedingungen zum Nachlesen:',
     `  AGB: ${site}/de/agb`,

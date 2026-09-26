@@ -1,14 +1,21 @@
+import { randomUUID } from 'node:crypto';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import { requireAdmin } from './auth';
 import { config } from './config';
 import { db } from './db';
 import {
   CARD_KINDS,
+  CARD_LANGS,
   CARD_THEMES,
   type BusinessCardData,
   type CardKind,
+  type CardLang,
   type CardTheme,
   cardData,
+  cardNotice,
+  cardSlug,
+  leadFields,
+  leadRedirect,
   renderCard,
   vcard,
 } from './cards';
@@ -137,6 +144,61 @@ async function confirmOrder(
 }
 
 /**
+ * Nach der Bezahlung: für jede bestellte NFC-Karte einen Entwurf anlegen.
+ *
+ * So entsteht aus einer Bestellung Arbeit im Portal statt einer Notiz im
+ * Postfach: die Karte steht da, ist der Bestellung zugeordnet und wartet auf
+ * ihren Inhalt. `active = false` — bis wir sie gefüllt und freigegeben haben,
+ * zeigt /k/<name> sie nicht.
+ *
+ * Läuft im Ablauf des Webhooks und darf ihn nicht scheitern lassen: Stripe
+ * würde das Ereignis sonst endlos erneut zustellen, obwohl längst bezahlt
+ * ist. Darum wird ein Fehler nur protokolliert.
+ *
+ * Mehrfach kann es nicht laufen: aufgerufen wird es nur beim Übergang auf
+ * „bezahlt", und den macht genau eine Abfrage genau einmal.
+ */
+export async function draftCards(sql: NonNullable<ReturnType<typeof db>>, order: Record<string, unknown>): Promise<number> {
+  const items = (order['items'] as { key?: string; qty?: number }[] | null) ?? [];
+  const label = str(order['business_name'], 200);
+  let made = 0;
+
+  for (const item of items) {
+    const kind = CARD_KINDS.find((k) => `card.${k}` === item?.key);
+    if (!kind) continue;
+    const qty = Math.min(Math.max(Math.floor(Number(item?.qty) || 0), 0), 20);
+
+    for (let n = 0; n < qty; n++) {
+      // Der Inhalt läuft durch dieselbe Prüfung wie im Portal, damit im Feld
+      // `data` nie etwas steht, das die Karte nicht kennt.
+      const draft =
+        cardData(kind, kind === 'business' ? { company: label || 'Neue Karte' } : { headline: 'Alles Gute!' }) ?? {};
+      // Die Sprache der Bestellung ist geprüft (LANGS im Checkout) — geprüft
+      // wird sie hier trotzdem: eine Zeile, die die Spaltenprüfung verletzt,
+      // würde eine bezahlte Karte verschlucken.
+      const lang = CARD_LANGS.includes(order['lang'] as CardLang) ? (order['lang'] as CardLang) : 'de';
+
+      // Zwei Karten dürfen nicht denselben Kurznamen haben. Bei einem
+      // Zusammenstoß hilft ein neuer Anhang, darum ein paar Versuche.
+      for (let tries = 0; tries < 5; tries++) {
+        const slug = cardSlug(label, randomUUID().slice(0, 6));
+        const [row] = await sql`
+          insert into cards (slug, kind, theme, lang, data, label, order_id, active)
+          values (${slug}, ${kind}, 'brand', ${lang}, ${sql.json(draft as any)},
+                  ${label}, ${String(order['id'])}, false)
+          on conflict (slug) do nothing
+          returning id`;
+        if (row) {
+          made++;
+          break;
+        }
+      }
+    }
+  }
+  return made;
+}
+
+/**
  * Seite einer NFC-Karte: /k/<slug>. Zählt die Okutma in derselben Abfrage,
  * wie /r/<slug> es für die Kurzlinks tut. Unbekannt oder abgeschaltet →
  * zurück auf die Startseite, damit eine alte Karte nie ins Leere zeigt.
@@ -149,11 +211,15 @@ export async function cardPage(req: Request, res: Response) {
   const sql = db();
   if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
 
+  // Rückmeldung des Kontaktbogens: sie steht in der Adresse, weil nach dem
+  // Absenden weitergeleitet wird (POST-Redirect-GET).
+  const notice = cardNotice(req.query as Record<string, unknown>);
+
   try {
     const [row] = await sql`
-      with c as (select id, slug, kind, theme, data from cards where slug = ${slug} and active),
+      with c as (select id, slug, kind, theme, lang, data from cards where slug = ${slug} and active),
            s as (insert into scans (card_id, device) select id, ${deviceOf(req)} from c)
-      select slug, kind, theme, data from c`;
+      select slug, kind, theme, lang, data from c`;
     if (!row) return res.redirect(302, '/');
     return res.type('html').send(
       renderCard(
@@ -161,9 +227,11 @@ export async function cardPage(req: Request, res: Response) {
           slug: String(row['slug']),
           kind: row['kind'] as CardKind,
           theme: row['theme'] as CardTheme,
+          lang: row['lang'] as CardLang,
           data: row['data'] as never,
         },
         origin(req),
+        notice,
       ),
     );
   } catch (err) {
@@ -199,6 +267,56 @@ export async function cardVcard(req: Request, res: Response) {
   } catch (err) {
     console.error('[k.vcf]', err);
     return res.redirect(302, '/');
+  }
+}
+
+/**
+ * Rumpf des Kontaktbogens. Die Karte schickt ein gewöhnliches Formular, kein
+ * JSON — darum ein eigener Parser, und ein enges Limit: mehr als ein paar
+ * Zeilen Text nimmt der Bogen nicht.
+ */
+export const leadBody = express.urlencoded({ extended: false, limit: '16kb' });
+
+/**
+ * Ein Gast lässt seine Daten auf einer Firmenkarte: POST /k/<slug>/kontakt.
+ *
+ * Danach wird immer weitergeleitet (303), damit ein Neuladen den Eintrag
+ * nicht ein zweites Mal schickt. Was schiefgeht, steht in der Adresse, nicht
+ * in einer Fehlerseite — die Karte soll nie kaputt aussehen.
+ *
+ * Gespeichert wird nur, was im Bogen steht, und die grobe Gerätegattung.
+ * Keine IP-Adresse: was nicht gespeichert wird, muss auch nicht geschützt
+ * werden.
+ */
+export async function cardLead(req: Request, res: Response) {
+  res.set('Cache-Control', 'no-store');
+  res.set('Referrer-Policy', 'no-referrer');
+  const slug = String(req.params['slug'] ?? '').toLowerCase();
+  const sql = db();
+  if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
+  const drop = leadRedirect(slug, 'drop');
+
+  // Ein Bot bekommt dieselbe Antwort wie ein Mensch — er soll nicht lernen,
+  // woran es lag.
+  const lead = leadFields(req.body);
+  if (lead === 'trap') return res.redirect(303, drop);
+  if (limited('lead:' + clientIp(req), 5, 10 * 60_000)) return res.redirect(303, drop);
+  if (lead === 'need') return res.redirect(303, leadRedirect(slug, 'need'));
+
+  try {
+    const [card] = await sql`select id, data from cards where slug = ${slug} and active and kind = 'business'`;
+    if (!card) return res.redirect(302, '/');
+    // Nur Karten, auf denen der Bogen ausdrücklich eingeschaltet ist.
+    if ((card['data'] as BusinessCardData | null)?.leads !== true) return res.redirect(303, drop);
+
+    await sql`
+      insert into card_leads (card_id, name, email, phone, company, message, device)
+      values (${String(card['id'])}, ${lead.name}, ${lead.email}, ${lead.phone},
+              ${lead.company}, ${lead.message}, ${deviceOf(req)})`;
+    return res.redirect(303, leadRedirect(slug, 'ok'));
+  } catch (err) {
+    console.error('[k.kontakt]', err);
+    return res.redirect(303, drop);
   }
 }
 
@@ -241,8 +359,19 @@ api.post(
         const [order] = await sql`
           update orders set status = 'bezahlt', paid_at = now()
           where stripe_session_id = ${s.id} and status = 'offen'
-          returning id, items, amount_total, customer_email, customer_name`;
-        if (order) await confirmOrder(sql, order, origin(req));
+          returning id, items, amount_total, customer_email, customer_name, business_name, lang`;
+        if (order) {
+          // Erst die Entwürfe, dann die Mail: die Mail verspricht dem Kunden,
+          // dass wir seine Karte einrichten — dann soll sie auch schon im
+          // Portal liegen.
+          try {
+            const made = await draftCards(sql, order);
+            if (made) console.log('[shop] Kartenentwürfe angelegt:', made);
+          } catch (err) {
+            console.error('[shop] Kartenentwürfe', err);
+          }
+          await confirmOrder(sql, order, origin(req));
+        }
       }
     }
     if (CANCELLED_EVENTS.includes(event.type)) {
@@ -581,6 +710,28 @@ admin.get(
 );
 crud('redirects', 'redirects', ['slug', 'target_url', 'label', 'customer_id', 'active'], { create: true, remove: true });
 
+/**
+ * Kontakte, die Gäste auf Karten hinterlassen haben. Neueste zuerst, mit dem
+ * Kurznamen der Karte — sonst weiß man nicht, welche Karte jemand in der Hand
+ * hatte.
+ */
+admin.get(
+  '/leads',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    res.json(await sql`
+      select l.*, k.slug as card_slug, k.label as card_label
+      from card_leads l
+      join cards k on k.id = l.card_id
+      order by l.created_at desc
+      limit 300`);
+  }),
+);
+crud('leads', 'card_leads', ['handled'], { remove: true });
+
+
+
 // NFC-Karten mit eigener Seite (/k/<slug>)
 admin.get(
   '/cards',
@@ -589,25 +740,29 @@ admin.get(
     if (!sql) return;
     res.json(await sql`
       select k.*, c.name as customer_name,
-        count(s.id)::int as scans_total,
-        (count(s.id) filter (where s.scanned_at > now() - interval '30 days'))::int as scans_30d,
-        max(s.scanned_at) as last_scan
+        count(distinct s.id)::int as scans_total,
+        (count(distinct s.id) filter (where s.scanned_at > now() - interval '30 days'))::int as scans_30d,
+        max(s.scanned_at) as last_scan,
+        count(distinct l.id)::int as leads_total,
+        (count(distinct l.id) filter (where not l.handled))::int as leads_open
       from cards k
       left join scans s on s.card_id = k.id
+      left join card_leads l on l.card_id = k.id
       left join customers c on c.id = k.customer_id
       group by k.id, c.name
       order by k.created_at desc`);
   }),
 );
 
-/** Art, Thema und Inhalt zusammen prüfen — der Inhalt hängt an der Art. */
-function cardFields(body: any): { kind: CardKind; theme: CardTheme; data: unknown } | null {
+/** Art, Thema, Sprache und Inhalt zusammen prüfen — der Inhalt hängt an der Art. */
+function cardFields(body: any): { kind: CardKind; theme: CardTheme; lang: CardLang; data: unknown } | null {
   const kind = CARD_KINDS.find((k) => k === body?.kind);
   if (!kind) return null;
   const data = cardData(kind, body?.data);
   if (!data) return null;
   const theme = (CARD_THEMES as readonly string[]).includes(body?.theme) ? (body.theme as CardTheme) : 'brand';
-  return { kind, theme, data };
+  const lang = (CARD_LANGS as readonly string[]).includes(body?.lang) ? (body.lang as CardLang) : 'de';
+  return { kind, theme, lang, data };
 }
 
 admin.post(
@@ -621,8 +776,8 @@ admin.post(
     if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(slug)) return res.status(400).json({ error: 'invalid_slug' });
     try {
       const [row] = await sql`
-        insert into cards (slug, kind, theme, data, label, customer_id)
-        values (${slug}, ${fields.kind}, ${fields.theme}, ${sql.json(fields.data as any)},
+        insert into cards (slug, kind, theme, lang, data, label, customer_id)
+        values (${slug}, ${fields.kind}, ${fields.theme}, ${fields.lang}, ${sql.json(fields.data as any)},
                 ${str(req.body?.label, 200)}, ${req.body?.customer_id || null})
         returning *`;
       return res.status(201).json(row);
@@ -651,7 +806,7 @@ admin.patch(
     const fields = cardFields(b);
     if (!fields) return res.status(400).json({ error: 'invalid_card' });
     const [row] = await sql`
-      update cards set kind = ${fields.kind}, theme = ${fields.theme}, data = ${sql.json(fields.data as any)},
+      update cards set kind = ${fields.kind}, theme = ${fields.theme}, lang = ${fields.lang}, data = ${sql.json(fields.data as any)},
         label = ${str(b.label, 200)}, customer_id = ${b.customer_id || null},
         active = ${typeof b.active === 'boolean' ? b.active : true}
       where id = ${req.params['id']}

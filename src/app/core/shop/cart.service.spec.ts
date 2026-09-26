@@ -190,4 +190,46 @@ describe('CartService', () => {
       expect(spy).toHaveBeenCalled();
     });
   });
+
+  /**
+   * Die eigenen NFC-Karten sind seit dieser Änderung im Shop bestellbar. Der
+   * Schlüssel `card.<art>` ist nicht beliebig: der Server liest daraus nach
+   * der Bezahlung, welche Art Kartenentwurf er anlegen muss.
+   */
+  describe('Eigene NFC-Karten im Katalog', () => {
+    const cards = () => SHOP_PRODUCTS.filter((p) => p.group === 'shop.cards');
+
+    it('stehen als eigene Gruppe im Katalog', () => {
+      expect(cards().length).toBe(2);
+      expect(cards().map((p) => p.key)).toEqual(['card.business', 'card.gift']);
+    });
+
+    it('heißen genau `card.<art>` — daran hängt der Kartenentwurf', () => {
+      for (const p of cards()) {
+        expect(p.key).toMatch(/^card\.(business|gift)$/);
+      }
+    });
+
+    it('lassen sich in den Korb legen und richtig rechnen', () => {
+      const card = cards()[0];
+      cart.add(card.key, 2);
+      expect(cart.qtyOf(card.key)).toBe(2);
+      expect(cart.subtotal()).toBe(2 * card.unitPrice);
+      expect(cart.payload()).toEqual([{ key: card.key, qty: 2 }]);
+    });
+
+    it('haben einen Preis aus dem Katalog, keinen erfundenen', () => {
+      for (const p of cards()) {
+        expect(p.unitPrice).toBeGreaterThan(0);
+        expect(Number.isFinite(p.unitPrice)).toBeTrue();
+      }
+    });
+
+    it('lassen sich mit Bewertungskarten zusammen bestellen', () => {
+      cart.add('form.karte', 1);
+      cart.add('card.business', 1);
+      expect(cart.count()).toBe(2);
+      expect(cart.payload().map((i) => i.key).sort()).toEqual(['card.business', 'form.karte']);
+    });
+  });
 });

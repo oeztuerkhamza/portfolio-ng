@@ -219,6 +219,12 @@
   small { color: $text-mute; min-width: 48px; }
 }
 .adm-badge { font-style: normal; font-size: 0.7rem; background: #fff1e3; color: #9a4a00; border-radius: 999px; padding: 0.1rem 0.45rem; margin-left: 0.3rem; }
+// Offene Kontakte: ein Hinweis, der wartet — darum blau statt orange.
+.adm-badge.open { background: #e6effa; color: #12376a; }
+
+// Bırakılan bilgiler
+.lead-head { margin-top: 2rem; }
+.adm-lead-msg { margin: 0.4rem 0 0; white-space: pre-line; font-size: 0.92rem; max-width: 70ch; }
 
 .adm-publish {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
