@@ -40,3 +40,9 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Persönliche Unterlagen, die im Projektordner liegen dürfen, aber nicht ins
+# Repository gehören. Dieses Repository ist öffentlich; ein Businesskonzept
+# mit Angaben zu Krankenversicherung, Miete und Lebenshaltung hat darin
+# nichts zu suchen — und aus der Git-Historie wäre es nicht mehr zu entfernen.
+/Businesskonzept-*
