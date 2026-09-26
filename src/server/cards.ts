@@ -190,6 +190,87 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
 // nur beim Speichern. Stünde durch einen alten Datensatz oder einen Eingriff
 // an der Datenbank eine `javascript:`-Adresse im Feld, käme sie sonst bis in
 // ein href.
+/**
+ * Text für eine vCard-Zeile entschärfen: Backslash, Semikolon und Komma
+ * trennen dort Felder, ein Zeilenumbruch beendet die Eigenschaft. Ohne das
+ * hier könnte ein Firmenname eine weitere Eigenschaft in die Datei schreiben.
+ * Reihenfolge ist wichtig: erst der Backslash, sonst würde das `\n` am Ende
+ * gleich wieder verdoppelt.
+ */
+const vEsc = (value: string): string =>
+  String(value)
+    .replace(/\\/g, '\\\\')
+    .replace(/([;,])/g, '\\$1')
+    .replace(/\r\n|[\r\n]/g, '\\n');
+
+/**
+ * Zeilen auf 75 Oktett falten, wie RFC 2426 es verlangt — die Fortsetzung
+ * beginnt mit einem Leerzeichen. Gezählt werden Bytes, geschnitten wird an
+ * Zeichengrenzen, sonst zerfällt ein Umlaut in zwei halbe Bytes und das
+ * Adressbuch zeigt Kauderwelsch.
+ */
+function fold(line: string): string {
+  const out: string[] = [];
+  let cur = '';
+  let bytes = 0;
+  for (const ch of line) {
+    const n = Buffer.byteLength(ch);
+    if (bytes + n > 75) {
+      out.push(cur);
+      cur = ' ';
+      bytes = 1;
+    }
+    cur += ch;
+    bytes += n;
+  }
+  out.push(cur);
+  return out.join('\r\n');
+}
+
+/**
+ * Die Karte als vCard 3.0 — das ist das Format, das iPhone, Android und
+ * Outlook ohne Nachfragen in die Kontakte übernehmen. 4.0 kann Android bis
+ * heute nicht zuverlässig lesen.
+ *
+ * Geprüft wird hier noch einmal alles, genau wie beim Zeichnen der Seite:
+ * Was in der Datenbank steht, kann aus einer älteren Version stammen oder von
+ * Hand geändert worden sein.
+ *
+ * Gibt null zurück, wenn es nichts zu speichern gibt — ein Knopf, der nur
+ * einen Namen in die Kontakte legt, hilft niemandem.
+ */
+export function vcard(d: BusinessCardData): string | null {
+  const tel = d.phone ? telHref(d.phone) : null;
+  const mail = mailAddress(d.email);
+  const web = httpsUrl(d.web);
+  const address = text(d.address, 300);
+  if (!tel && !mail && !web && !address) return null;
+
+  const company = text(d.company, 120) ?? '';
+  const lines = ['BEGIN:VCARD', 'VERSION:3.0'];
+  lines.push(`FN:${vEsc(company)}`);
+  // N ist in vCard 3.0 Pflicht. Wir führen einen Betrieb, keine Person —
+  // darum alle fünf Namensteile leer.
+  lines.push('N:;;;;');
+  lines.push(`ORG:${vEsc(company)}`);
+  if (d.tagline) lines.push(`NOTE:${vEsc(text(d.tagline, 200) ?? '')}`);
+  if (tel) lines.push(`TEL;TYPE=WORK,VOICE:${vEsc(tel)}`);
+  if (mail) lines.push(`EMAIL;TYPE=INTERNET,WORK:${vEsc(mail)}`);
+  if (web) lines.push(`URL:${vEsc(web)}`);
+  // Unsere Adresse ist ein Freitextfeld; in der vCard steht sie deshalb
+  // komplett im Straßenfeld statt zerlegt auf Straße/Ort/PLZ.
+  if (address) lines.push(`ADR;TYPE=WORK:;;${vEsc(address)};;;;`);
+  for (const l of d.links ?? []) {
+    const url = httpsUrl(l?.url);
+    if (url) lines.push(`URL:${vEsc(url)}`);
+  }
+  const photo = httpsUrl(d.avatarUrl) ?? httpsUrl(d.logoUrl);
+  if (photo) lines.push(`PHOTO;VALUE=URI:${vEsc(photo)}`);
+  lines.push('END:VCARD');
+
+  return lines.map(fold).join('\r\n') + '\r\n';
+}
+
 const THEMES: Record<CardTheme, { bg: string; panel: string; ink: string; dim: string; accent: string; onAccent: string }> = {
   brand: { bg: '#f6f8fb', panel: '#ffffff', ink: '#0e1a2b', dim: '#5d6d85', accent: '#1a4b8c', onAccent: '#ffffff' },
   dark: { bg: '#0e1a2b', panel: '#16273d', ink: '#f2f5f9', dim: '#93a1b3', accent: '#5b93d6', onAccent: '#0e1a2b' },
@@ -227,7 +308,7 @@ h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 const row = (label: string, value: string, href?: string | null) =>
   `<li>${href ? `<a href="${esc(href)}">` : '<span>'}<b>${esc(label)}</b>${esc(value)}${href ? '</a>' : '</span>'}</li>`;
 
-function businessBody(d: BusinessCardData): string {
+function businessBody(d: BusinessCardData, slug: string): string {
   const rows: string[] = [];
   if (d.phone) {
     const tel = telHref(d.phone);
@@ -246,12 +327,21 @@ function businessBody(d: BusinessCardData): string {
 
   const avatar = httpsUrl(d.avatarUrl);
 
+  /**
+   * Der Knopf erscheint nur, wenn es etwas zu speichern gibt — sonst legt er
+   * einen Kontakt ohne Telefon und ohne Mail ins Adressbuch. `download` macht
+   * aus dem Klick auf dem Rechner einen Download; das Handy öffnet die Datei
+   * direkt in den Kontakten.
+   */
+  const save = vcard(d) ? `<a class="btn" href="/k/${esc(slug)}/kontakt.vcf" download>Zu Kontakten hinzufügen</a>` : '';
+
   return [
     logo ? `<img class="logo" src="${esc(logo)}" alt="" />` : '',
     avatar ? `<img class="avatar" src="${esc(avatar)}" alt="" />` : '',
     `<h1>${esc(d.company)}</h1>`,
     d.tagline ? `<p class="tagline">${esc(d.tagline)}</p>` : '',
     rows.length ? `<ul class="rows">${rows.join('')}</ul>` : '',
+    save,
     links.map((l) => `<a class="btn ghost" href="${esc(l.url)}" rel="noopener">${esc(l.label)}</a>`).join(''),
   ].join('');
 }
@@ -293,7 +383,7 @@ export function renderCard(card: Card, base = config.siteUrl || ''): string {
 <style>${styles(t)}</style>
 </head><body>
 <main class="card">
-${business ? businessBody(d) : giftBody(d)}
+${business ? businessBody(d, card.slug) : giftBody(d)}
 <p class="foot">${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>
 </body></html>`;

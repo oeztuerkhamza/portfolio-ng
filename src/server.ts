@@ -4,7 +4,7 @@ import express from 'express';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import bootstrap from './main.server';
-import { api, cardPage, nfcRedirect } from './server/api';
+import { api, cardPage, cardVcard, nfcRedirect } from './server/api';
 
 const serverDistFolder = dirname(fileURLToPath(import.meta.url));
 const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -23,6 +23,7 @@ app.disable('x-powered-by');
 app.use('/api', api);
 app.get('/r/:slug', nfcRedirect);
 app.get('/k/:slug', cardPage);
+app.get('/k/:slug/kontakt.vcf', cardVcard);
 
 /**
  * Serve static files from /browser

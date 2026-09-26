@@ -2,7 +2,16 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { requireAdmin } from './auth';
 import { config } from './config';
 import { db } from './db';
-import { CARD_KINDS, CARD_THEMES, type CardKind, type CardTheme, cardData, renderCard } from './cards';
+import {
+  CARD_KINDS,
+  CARD_THEMES,
+  type BusinessCardData,
+  type CardKind,
+  type CardTheme,
+  cardData,
+  renderCard,
+  vcard,
+} from './cards';
 import { h, sqlOr503, str, UUID } from './http';
 import { ALLOWED_TYPES, uploadImage } from './storage';
 import { invoices } from './invoices';
@@ -159,6 +168,36 @@ export async function cardPage(req: Request, res: Response) {
     );
   } catch (err) {
     console.error('[k]', err);
+    return res.redirect(302, '/');
+  }
+}
+
+/**
+ * Dieselbe Karte als Kontaktdatei: /k/<slug>/kontakt.vcf. Das Handy legt sie
+ * direkt in die Kontakte, der Rechner lädt sie herunter.
+ *
+ * Hier wird nichts gezählt: die Okutma steht längst in der Statistik — der
+ * Knopf sitzt auf der Seite, die sie gerade erzeugt hat. Und nur Firmenkarten
+ * haben Kontaktdaten; eine Geburtstagskarte gehört in kein Adressbuch.
+ */
+export async function cardVcard(req: Request, res: Response) {
+  res.set('Cache-Control', 'no-store');
+  res.set('Referrer-Policy', 'no-referrer');
+  res.set('X-Content-Type-Options', 'nosniff');
+  const slug = String(req.params['slug'] ?? '').toLowerCase();
+  const sql = db();
+  if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
+
+  try {
+    const [row] = await sql`select data from cards where slug = ${slug} and active and kind = 'business'`;
+    if (!row) return res.redirect(302, '/');
+    const body = vcard(row['data'] as BusinessCardData);
+    // Karte ohne Telefon, Mail, Web und Adresse: zurück auf die Karte.
+    if (!body) return res.redirect(302, `/k/${slug}`);
+    res.set('Content-Disposition', `attachment; filename="${slug}.vcf"`);
+    return res.type('text/vcard; charset=utf-8').send(body);
+  } catch (err) {
+    console.error('[k.vcf]', err);
     return res.redirect(302, '/');
   }
 }

@@ -46,6 +46,10 @@
     {
       "source": "/k/:slug",
       "destination": "/api"
+    },
+    {
+      "source": "/k/:slug/kontakt.vcf",
+      "destination": "/api"
     }
   ]
 }

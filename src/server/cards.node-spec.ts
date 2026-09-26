@@ -12,6 +12,7 @@ import {
   mailAddress,
   renderCard,
   telHref,
+  vcard,
 } from './cards';
 
 /**
@@ -344,5 +345,125 @@ describe('renderCard', () => {
   test('setzt den Titel aus dem Inhalt', () => {
     assert.match(business({ company: 'Krone' }), /<title>Krone<\/title>/);
     assert.match(renderCard({ slug: 's', kind: 'gift', theme: 'brand', data: { headline: 'Hoch soll sie leben' } }), /<title>Hoch soll sie leben<\/title>/);
+  });
+});
+
+/**
+ * Die Kontaktdatei hinter dem Knopf „Zu Kontakten hinzufügen". In einer vCard
+ * trennen Semikolon und Komma die Felder und ein Zeilenumbruch beendet die
+ * Eigenschaft — steht so etwas unmaskiert in einem Firmennamen, schreibt der
+ * Kunde sich seine eigenen Einträge ins Adressbuch des Besuchers.
+ */
+describe('vcard', () => {
+  const vc = (over: Partial<BusinessCardData> = {}) => vcard({ company: 'Café Krone', phone: '+49 761 123456', ...over });
+
+  test('baut eine vollständige vCard 3.0', () => {
+    const out = vc({ email: 'hallo@krone.de', web: 'https://krone.de', address: 'Hauptstr. 1, 79098 Freiburg' })!;
+    assert.match(out, /^BEGIN:VCARD\r\nVERSION:3\.0\r\n/);
+    assert.match(out, /\r\nEND:VCARD\r\n$/);
+    assert.match(out, /\r\nFN:Café Krone\r\n/);
+    assert.match(out, /\r\nORG:Café Krone\r\n/);
+    // N ist in 3.0 Pflicht, auch wenn wir keine Person führen.
+    assert.match(out, /\r\nN:;;;;\r\n/);
+    assert.match(out, /\r\nTEL;TYPE=WORK,VOICE:\+49761123456\r\n/);
+    assert.match(out, /\r\nEMAIL;TYPE=INTERNET,WORK:hallo@krone\.de\r\n/);
+    assert.match(out, /\r\nURL:https:\/\/krone\.de\r\n/);
+  });
+
+  test('trennt Zeilen mit CRLF, wie es der Standard verlangt', () => {
+    const out = vc()!;
+    assert.equal(/[^\r]\n/.test(out), false, 'jedes \\n muss ein \\r vor sich haben');
+  });
+
+  test('maskiert Semikolon, Komma und Backslash im Text', () => {
+    const out = vc({ company: 'Meier; Sohn, GmbH \\ Co' })!;
+    assert.match(out, /\r\nFN:Meier\\; Sohn\\, GmbH \\\\ Co\r\n/);
+  });
+
+  test('lässt keine zweite Eigenschaft in ein Feld schmuggeln', () => {
+    const out = vc({ company: 'Krone\r\nTEL:666', tagline: 'gut\nEMAIL:b\u00f6se@x.de' })!;
+    // Der Umbruch wird zu \n im Wert — keine eigene Zeile daraus.
+    assert.equal(/\r\nTEL:666/.test(out), false);
+    assert.equal(/\r\nEMAIL:böse@x\.de/.test(out), false);
+    assert.match(out, /\r\nFN:Krone\\nTEL:666\r\n/);
+    assert.match(out, /NOTE:gut\\nEMAIL:böse@x\.de/);
+  });
+
+  test('faltet lange Zeilen auf 75 Oktett mit führendem Leerzeichen', () => {
+    const long = 'https://krone.de/' + 'a'.repeat(120);
+    const out = vcard({ company: 'K', web: long })!;
+    for (const line of out.split('\r\n')) assert.ok(Buffer.byteLength(line) <= 75, `zu lang: ${line}`);
+    // Zusammengeklebt muss die Adresse wieder vollständig sein.
+    assert.match(out.replace(/\r\n /g, ''), new RegExp(`URL:${long.replace(/[.*+?^$()|[\]\\]/g, '\\$&')}`));
+  });
+
+  test('zerschneidet beim Falten kein Zeichen', () => {
+    // Umlaut = 2 Bytes, Emoji = 4 Bytes und in JS zwei Zeichen. Wer nach
+    // Bytes schneidet, zerlegt hier ein Zeichen in Hälften; wer nach Zeichen
+    // schneidet, wird zu lang. Beides fällt unten auf.
+    const name = 'Bäckerei 🥨 Löwen '.repeat(6).trim();
+    const out = vcard({ company: name, phone: '0761123456' })!;
+    assert.ok(Buffer.byteLength(`FN:${name}`) > 75, 'Testname muss lang genug zum Falten sein');
+    for (const line of out.split('\r\n')) assert.ok(Buffer.byteLength(line) <= 75, `zu lang: ${Buffer.byteLength(line)}`);
+    // Entfalten (CRLF + Leerzeichen weg) muss den Namen Zeichen für Zeichen
+    // zurückgeben — und kein ersetztes Zeichen enthalten.
+    assert.match(out.replace(/\r\n /g, ''), new RegExp(`\r\nFN:${name}\r\n`));
+    assert.equal(out.includes('\ufffd'), false);
+  });
+
+  test('nimmt nur https-Adressen auf', () => {
+    const out = vcard({
+      company: 'K',
+      phone: '0761123456',
+      web: 'javascript:alert(1)',
+      links: [{ label: 'X', url: 'http://unsicher.de' }, { label: 'I', url: 'https://instagram.com/k' }],
+      avatarUrl: 'data:image/png;base64,AAA',
+    })!;
+    assert.equal(/javascript:/i.test(out), false);
+    assert.equal(/http:\/\/unsicher/.test(out), false);
+    assert.equal(/data:image/.test(out), false);
+    assert.match(out, /\r\nURL:https:\/\/instagram\.com\/k\r\n/);
+  });
+
+  test('schreibt die Adresse ins Straßenfeld', () => {
+    const out = vc({ address: 'Hauptstr. 1, 79098 Freiburg' })!;
+    assert.match(out, /\r\nADR;TYPE=WORK:;;Hauptstr\. 1\\, 79098 Freiburg;;;;\r\n/);
+  });
+
+  test('nimmt das Portrait, sonst das Logo als Bild', () => {
+    assert.match(vc({ avatarUrl: 'https://x.de/p.jpg', logoUrl: 'https://x.de/l.png' })!, /PHOTO;VALUE=URI:https:\/\/x\.de\/p\.jpg/);
+    assert.match(vc({ logoUrl: 'https://x.de/l.png' })!, /PHOTO;VALUE=URI:https:\/\/x\.de\/l\.png/);
+  });
+
+  test('gibt null zurück, wenn es nichts zu speichern gibt', () => {
+    // Nur ein Name: ein Kontakt ohne Telefon und Mail nützt niemandem.
+    assert.equal(vcard({ company: 'Café Krone' }), null);
+    assert.equal(vcard({ company: 'Café Krone', tagline: 'Kuchen' }), null);
+    // Unbrauchbare Nummer zählt nicht als Kontaktdatum.
+    assert.equal(vcard({ company: 'K', phone: 'ruf mal an' }), null);
+    // Eine Adresse allein genügt schon.
+    assert.notEqual(vcard({ company: 'K', address: 'Hauptstr. 1' }), null);
+  });
+});
+
+/**
+ * Der Knopf auf der Seite selbst — er darf nur erscheinen, wenn die
+ * Kontaktdatei auch etwas enthält.
+ */
+describe('Kontaktknopf auf der Karte', () => {
+  test('verlinkt die Kontaktdatei der eigenen Karte', () => {
+    const html = renderCard({ slug: 'cafe-krone', kind: 'business', theme: 'brand', data: { company: 'Café Krone', phone: '0761123456' } });
+    assert.match(html, /href="\/k\/cafe-krone\/kontakt\.vcf" download/);
+    assert.match(html, /Zu Kontakten hinzufügen/);
+  });
+
+  test('bleibt weg, wenn die Karte keine Kontaktdaten hat', () => {
+    const html = renderCard({ slug: 'nur-name', kind: 'business', theme: 'brand', data: { company: 'Café Krone' } });
+    assert.equal(/kontakt\.vcf/.test(html), false);
+  });
+
+  test('steht nicht auf einer Geschenkkarte', () => {
+    const html = renderCard({ slug: 'gb', kind: 'gift', theme: 'warm', data: { headline: 'Alles Gute' } });
+    assert.equal(/kontakt\.vcf/.test(html), false);
   });
 });
