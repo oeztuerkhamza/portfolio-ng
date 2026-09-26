@@ -2,6 +2,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { requireAdmin } from './auth';
 import { config } from './config';
 import { db } from './db';
+import { CARD_KINDS, CARD_THEMES, type CardKind, type CardTheme, cardData, renderCard } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
 import { invoices } from './invoices';
 import { type OrderMailItem, mailer, orderConfirmation } from './mail';
@@ -44,6 +45,12 @@ function limited(key: string, max: number, windowMs: number): boolean {
   return list.length > max;
 }
 
+/** Nur die grobe Gattung, nie die IP — siehe Datenschutzerklärung. */
+const deviceOf = (req: Request): 'ios' | 'android' | 'other' => {
+  const ua = String(req.headers['user-agent'] ?? '');
+  return /iphone|ipad|ipod/i.test(ua) ? 'ios' : /android/i.test(ua) ? 'android' : 'other';
+};
+
 const clientIp = (req: Request) =>
   String(req.headers['x-forwarded-for'] ?? req.socket.remoteAddress ?? '').split(',')[0].trim();
 
@@ -67,8 +74,7 @@ export async function nfcRedirect(req: Request, res: Response) {
   const sql = db();
   if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
 
-  const ua = String(req.headers['user-agent'] ?? '');
-  const device = /iphone|ipad|ipod/i.test(ua) ? 'ios' : /android/i.test(ua) ? 'android' : 'other';
+  const device = deviceOf(req);
   try {
     const [row] = await sql`
       with r as (select id, target_url from redirects where slug = ${slug} and active),
@@ -117,6 +123,42 @@ async function confirmOrder(
     });
   } catch (err) {
     console.error('[shop] Bestellbestätigung', err);
+  }
+}
+
+/**
+ * Seite einer NFC-Karte: /k/<slug>. Zählt die Okutma in derselben Abfrage,
+ * wie /r/<slug> es für die Kurzlinks tut. Unbekannt oder abgeschaltet →
+ * zurück auf die Startseite, damit eine alte Karte nie ins Leere zeigt.
+ */
+export async function cardPage(req: Request, res: Response) {
+  res.set('Cache-Control', 'no-store');
+  res.set('Referrer-Policy', 'no-referrer');
+  res.set('X-Content-Type-Options', 'nosniff');
+  const slug = String(req.params['slug'] ?? '').toLowerCase();
+  const sql = db();
+  if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
+
+  try {
+    const [row] = await sql`
+      with c as (select id, slug, kind, theme, data from cards where slug = ${slug} and active),
+           s as (insert into scans (card_id, device) select id, ${deviceOf(req)} from c)
+      select slug, kind, theme, data from c`;
+    if (!row) return res.redirect(302, '/');
+    return res.type('html').send(
+      renderCard(
+        {
+          slug: String(row['slug']),
+          kind: row['kind'] as CardKind,
+          theme: row['theme'] as CardTheme,
+          data: row['data'] as never,
+        },
+        origin(req),
+      ),
+    );
+  } catch (err) {
+    console.error('[k]', err);
+    return res.redirect(302, '/');
   }
 }
 
@@ -498,6 +540,96 @@ admin.get(
   }),
 );
 crud('redirects', 'redirects', ['slug', 'target_url', 'label', 'customer_id', 'active'], { create: true, remove: true });
+
+// NFC-Karten mit eigener Seite (/k/<slug>)
+admin.get(
+  '/cards',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    res.json(await sql`
+      select k.*, c.name as customer_name,
+        count(s.id)::int as scans_total,
+        (count(s.id) filter (where s.scanned_at > now() - interval '30 days'))::int as scans_30d,
+        max(s.scanned_at) as last_scan
+      from cards k
+      left join scans s on s.card_id = k.id
+      left join customers c on c.id = k.customer_id
+      group by k.id, c.name
+      order by k.created_at desc`);
+  }),
+);
+
+/** Art, Thema und Inhalt zusammen prüfen — der Inhalt hängt an der Art. */
+function cardFields(body: any): { kind: CardKind; theme: CardTheme; data: unknown } | null {
+  const kind = CARD_KINDS.find((k) => k === body?.kind);
+  if (!kind) return null;
+  const data = cardData(kind, body?.data);
+  if (!data) return null;
+  const theme = (CARD_THEMES as readonly string[]).includes(body?.theme) ? (body.theme as CardTheme) : 'brand';
+  return { kind, theme, data };
+}
+
+admin.post(
+  '/cards',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const fields = cardFields(req.body);
+    if (!fields) return res.status(400).json({ error: 'invalid_card' });
+    const slug = String(req.body?.slug ?? '').toLowerCase().trim();
+    if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(slug)) return res.status(400).json({ error: 'invalid_slug' });
+    try {
+      const [row] = await sql`
+        insert into cards (slug, kind, theme, data, label, customer_id)
+        values (${slug}, ${fields.kind}, ${fields.theme}, ${sql.json(fields.data as any)},
+                ${str(req.body?.label, 200)}, ${req.body?.customer_id || null})
+        returning *`;
+      return res.status(201).json(row);
+    } catch (err) {
+      // Doppelter Kurzname: verständlich melden, nicht als 500.
+      if ((err as { code?: string }).code === '23505') return res.status(409).json({ error: 'slug_taken' });
+      throw err;
+    }
+  }),
+);
+
+admin.patch(
+  '/cards/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const b = req.body ?? {};
+
+    // Nur den Schalter umlegen: ohne Inhalt prüfen zu müssen.
+    if (Object.keys(b).length === 1 && typeof b.active === 'boolean') {
+      const [row] = await sql`update cards set active = ${b.active} where id = ${req.params['id']} returning *`;
+      return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+    }
+
+    const fields = cardFields(b);
+    if (!fields) return res.status(400).json({ error: 'invalid_card' });
+    const [row] = await sql`
+      update cards set kind = ${fields.kind}, theme = ${fields.theme}, data = ${sql.json(fields.data as any)},
+        label = ${str(b.label, 200)}, customer_id = ${b.customer_id || null},
+        active = ${typeof b.active === 'boolean' ? b.active : true}
+      where id = ${req.params['id']}
+      returning *`;
+    return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+  }),
+);
+
+admin.delete(
+  '/cards/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    await sql`delete from cards where id = ${req.params['id']}`;
+    return res.status(204).end();
+  }),
+);
 
 // Preise
 admin.get(
