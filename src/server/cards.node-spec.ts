@@ -742,15 +742,17 @@ describe('Karte im Alltag', () => {
  * unaufgefordert Daten in die Datenbank kommen. Darum hier eng geprüft.
  */
 describe('leadFields', () => {
-  const ok = (over: Record<string, unknown> = {}) => leadFields({ name: 'Ayşe Yıldız', email: 'a@b.de', ...over });
+  /** Ein Bogen, wie ihn der Browser schickt: mit gesetztem Häkchen. */
+  const full = (over: Record<string, unknown> = {}) => ({ name: 'Ayşe Yıldız', email: 'a@b.de', consent: 'ja', ...over });
+  const ok = (over: Record<string, unknown> = {}) => leadFields(full(over));
 
   test('nimmt einen vollständigen Bogen an', () => {
-    const lead = leadFields({ name: ' Ayşe ', email: 'a@b.de', phone: '0761 1', company: ' Krone ', message: ' Hallo ' });
+    const lead = leadFields(full({ name: ' Ayşe ', phone: '0761 1', company: ' Krone ', message: ' Hallo ' }));
     assert.deepEqual(lead, { name: 'Ayşe', email: 'a@b.de', phone: '0761 1', company: 'Krone', message: 'Hallo' });
   });
 
   test('verwirft stillschweigend, was in die Falle getreten ist', () => {
-    assert.equal(leadFields({ name: 'Bot', email: 'b@o.de', website: 'http://spam.example' }), 'trap');
+    assert.equal(leadFields(full({ name: 'Bot', website: 'http://spam.example' })), 'trap');
     // Leer gelassen ist in Ordnung — so kommt ein Mensch durch.
     assert.notEqual(ok({ website: '' }), 'trap');
     assert.notEqual(ok({ website: '   ' }), 'trap');
@@ -763,27 +765,27 @@ describe('leadFields', () => {
   });
 
   test('verlangt einen Namen', () => {
-    assert.equal(leadFields({ email: 'a@b.de' }), 'need');
-    assert.equal(leadFields({ name: '   ', email: 'a@b.de' }), 'need');
+    assert.equal(leadFields(full({ name: undefined })), 'need');
+    assert.equal(leadFields(full({ name: '   ' })), 'need');
   });
 
   test('verlangt einen Rückweg — E-Mail oder Telefon', () => {
-    assert.equal(leadFields({ name: 'Ayşe' }), 'need');
-    assert.equal(leadFields({ name: 'Ayşe', message: 'Rufen Sie mich an' }), 'need');
-    assert.notEqual(leadFields({ name: 'Ayşe', phone: '0761 1' }), 'need');
-    assert.notEqual(leadFields({ name: 'Ayşe', email: 'a@b.de' }), 'need');
+    assert.equal(leadFields(full({ email: undefined })), 'need');
+    assert.equal(leadFields(full({ email: undefined, message: 'Rufen Sie mich an' })), 'need');
+    assert.notEqual(leadFields(full({ email: undefined, phone: '0761 1' })), 'need');
+    assert.notEqual(leadFields(full()), 'need');
   });
 
   test('lässt eine unbrauchbare E-Mail nicht als Rückweg gelten', () => {
-    assert.equal(leadFields({ name: 'Ayşe', email: 'kein-at-zeichen' }), 'need');
-    const lead = leadFields({ name: 'Ayşe', email: 'kein-at-zeichen', phone: '0761 1' });
+    assert.equal(leadFields(full({ email: 'kein-at-zeichen' })), 'need');
+    const lead = leadFields(full({ email: 'kein-at-zeichen', phone: '0761 1' }));
     assert.notEqual(lead, 'need');
     // Der Unsinn darf nicht als E-Mail in die Datenbank.
     assert.equal((lead as { email: string | null }).email, null);
   });
 
   test('kürzt zu lange Angaben, statt sie abzuweisen', () => {
-    const lead = leadFields({ name: 'A'.repeat(500), email: 'a@b.de', message: 'M'.repeat(5000), company: 'C'.repeat(500) }) as {
+    const lead = leadFields(full({ name: 'A'.repeat(500), message: 'M'.repeat(5000), company: 'C'.repeat(500) })) as {
       name: string;
       message: string;
       company: string;
@@ -794,7 +796,7 @@ describe('leadFields', () => {
   });
 
   test('macht aus leeren Feldern null, nicht leere Zeichenketten', () => {
-    const lead = leadFields({ name: 'Ayşe', phone: '0761 1', email: '', company: '  ', message: '' }) as unknown as Record<string, unknown>;
+    const lead = leadFields(full({ phone: '0761 1', email: '', company: '  ', message: '' })) as unknown as Record<string, unknown>;
     assert.equal(lead['email'], null);
     assert.equal(lead['company'], null);
     assert.equal(lead['message'], null);
@@ -803,15 +805,96 @@ describe('leadFields', () => {
   test('nimmt nur Zeichenketten — kein untergeschobenes Objekt', () => {
     // Ein Formular kann dasselbe Feld zweimal schicken; dann kommt ein Array
     // an. Das darf nicht als Wert in die Datenbank.
-    assert.equal(leadFields({ name: ['a', 'b'], email: 'a@b.de' }), 'need');
-    const lead = leadFields({ name: 'Ayşe', phone: '0761 1', message: { $ne: null } }) as unknown as Record<string, unknown>;
+    assert.equal(leadFields(full({ name: ['a', 'b'] })), 'need');
+    const lead = leadFields(full({ phone: '0761 1', message: { $ne: null } })) as unknown as Record<string, unknown>;
     assert.equal(lead['message'], null);
   });
 
   test('kommt mit gar keinem Rumpf aus', () => {
-    assert.equal(leadFields(undefined), 'need');
-    assert.equal(leadFields(null), 'need');
-    assert.equal(leadFields('kein Objekt'), 'need');
+    // Ohne Rumpf fehlt zuerst die Einwilligung — und ohne die wird sowieso
+    // nichts gespeichert, egal was sonst fehlt.
+    assert.equal(leadFields(undefined), 'consent');
+    assert.equal(leadFields(null), 'consent');
+    assert.equal(leadFields('kein Objekt'), 'consent');
+  });
+});
+
+/**
+ * Die Einwilligung. Seit sie die Rechtsgrundlage ist (Art. 6 Abs. 1 lit. a
+ * DSGVO), hängt daran, ob wir überhaupt speichern dürfen — und Art. 7 Abs. 1
+ * verlangt, dass wir sie nachweisen können.
+ */
+describe('Einwilligung im Kontaktbogen', () => {
+  const full = (over: Record<string, unknown> = {}) => ({ name: 'Ayşe', email: 'a@b.de', consent: 'ja', ...over });
+
+  test('nimmt ohne Häkchen nichts an', () => {
+    // Der Browser schickt ein nicht gesetztes Häkchen gar nicht mit.
+    assert.equal(leadFields(full({ consent: undefined })), 'consent');
+    assert.equal(leadFields(full({ consent: '' })), 'consent');
+    assert.equal(leadFields(full({ consent: '   ' })), 'consent');
+    assert.equal(leadFields(full({ consent: false })), 'consent');
+  });
+
+  test('prüft die Einwilligung auch dann, wenn schon Angaben fehlen', () => {
+    // Sonst käme ein Bogen ohne Häkchen und ohne Namen als „need" zurück und
+    // der Gast würde die Einwilligung nie zu sehen bekommen.
+    assert.equal(leadFields({ consent: undefined }), 'consent');
+  });
+
+  test('lässt der Bot-Falle den Vortritt', () => {
+    // Ein Bot soll nicht erfahren, dass es am Häkchen lag.
+    assert.equal(leadFields({ website: 'spam', consent: 'ja' }), 'trap');
+  });
+
+  test('steht im Formular, unausgefüllt und als Pflichtfeld', () => {
+    const html = renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'de', data: { company: 'K', phone: '0761123456', leads: true } },
+      '',
+      null,
+    );
+    assert.match(html, /<input type="checkbox" name="consent" value="ja" required \/>/);
+    // Ein vorgesetztes Häkchen wäre keine Einwilligung (Art. 4 Nr. 11 DSGVO).
+    assert.equal(/name="consent"[^>]*checked/.test(html), false, 'darf nicht vorausgewählt sein');
+    assert.match(html, /Ich bin damit einverstanden/);
+  });
+
+  test('setzt die Feldbeschriftungs-Gestaltung für den Häkchen-Text zurück', () => {
+    // Ohne diesen Zurücksetzer gewinnt „.lead label span" und macht aus dem
+    // Einwilligungssatz Großbuchstaben mit Sperrung — unlesbar für einen
+    // Satz. Aufgefallen ist das erst auf dem Bild, nicht im Test.
+    const html = renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'de', data: { company: 'K', phone: '0761123456', leads: true } },
+      '',
+      null,
+    );
+    assert.match(html, /\.lead \.lead-ok span\{[^}]*text-transform:none/);
+    assert.match(html, /\.lead \.lead-ok\{[^}]*display:flex/);
+  });
+
+  test('sagt es, wenn das Häkchen fehlte, und lässt den Bogen offen', () => {
+    const html = renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'de', data: { company: 'K', phone: '0761123456', leads: true } },
+      '',
+      'consent',
+    );
+    assert.match(html, /<details class="lead" open>/);
+    assert.match(html, /class="lead-need" role="alert"/);
+    assert.match(html, /ohne Ihre Einwilligung/);
+  });
+
+  test('führt über eine eigene Adresse zurück', () => {
+    assert.equal(leadRedirect('krone', 'consent'), '/k/krone?zustimmung=1');
+    assert.equal(cardNotice({ zustimmung: '1' }), 'consent');
+  });
+
+  test('nennt den Satz, dem zugestimmt wird, in jeder Sprache', () => {
+    // Genau dieser Satz wird zur Zeile gespeichert (Art. 7 Abs. 1). Fehlt er
+    // in einer Sprache, wäre die Einwilligung dort nicht informiert.
+    for (const lang of CARD_LANGS) {
+      const sentence = label(lang, 'leadConsent');
+      assert.ok(sentence.length > 60, `${lang}: zu knapp für eine informierte Einwilligung`);
+      assert.ok(label(lang, 'leadConsentNeed').length > 20, `${lang}: Fehlermeldung fehlt`);
+    }
   });
 });
 

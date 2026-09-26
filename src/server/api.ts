@@ -11,8 +11,10 @@ import {
   type CardKind,
   type CardLang,
   type CardTheme,
+  type LeadInput,
   cardData,
   cardNotice,
+  label,
   cardSlug,
   leadFields,
   leadRedirect,
@@ -301,6 +303,7 @@ export async function cardLead(req: Request, res: Response) {
   const lead = leadFields(req.body);
   if (lead === 'trap') return res.redirect(303, drop);
   if (limited('lead:' + clientIp(req), 5, 10 * 60_000)) return res.redirect(303, drop);
+  if (lead === 'consent') return res.redirect(303, leadRedirect(slug, 'consent'));
   if (lead === 'need') return res.redirect(303, leadRedirect(slug, 'need'));
 
   try {
@@ -310,10 +313,20 @@ export async function cardLead(req: Request, res: Response) {
     // Nur Karten, auf denen der Bogen ausdrücklich eingeschaltet ist.
     if (data?.leads !== true) return res.redirect(303, drop);
 
+    /**
+     * Art. 7 Abs. 1 DSGVO: die Einwilligung muss nachweisbar sein. Also wird
+     * nicht ein „ja" gespeichert, sondern der genaue Satz, dem zugestimmt
+     * wurde — und zwar der vom Server, nicht der aus dem Browser: sonst
+     * könnte man behaupten, einem anderen Satz zugestimmt zu haben. Der
+     * Zeitpunkt ist `created_at`.
+     */
+    const lang = CARD_LANGS.includes(card['lang'] as CardLang) ? (card['lang'] as CardLang) : 'de';
+    const consent = label(lang, 'leadConsent');
+
     await sql`
-      insert into card_leads (card_id, name, email, phone, company, message, device)
+      insert into card_leads (card_id, name, email, phone, company, message, device, consent)
       values (${String(card['id'])}, ${lead.name}, ${lead.email}, ${lead.phone},
-              ${lead.company}, ${lead.message}, ${deviceOf(req)})`;
+              ${lead.company}, ${lead.message}, ${deviceOf(req)}, ${consent})`;
 
     // Bei der Gelegenheit ausräumen, was zu alt ist. Das ist der Weg, auf dem
     // die Frist aus der Datenschutzerklärung auch ohne eingerichteten
@@ -328,7 +341,7 @@ export async function cardLead(req: Request, res: Response) {
     void notifyLead(lead, {
       slug,
       title: data.company,
-      lang: String(card['lang'] ?? 'de'),
+      lang,
       base: origin(req),
     }).catch((err) => console.error('[k.kontakt] Benachrichtigung', err));
 
@@ -344,7 +357,7 @@ export async function cardLead(req: Request, res: Response) {
  * Adresse des Gastes: ein Klick auf Antworten geht an ihn, nicht an uns.
  */
 async function notifyLead(
-  lead: Exclude<ReturnType<typeof leadFields>, 'trap' | 'need'>,
+  lead: LeadInput,
   card: { slug: string; title: string; lang: string; base: string },
 ): Promise<void> {
   const transport = mailer();

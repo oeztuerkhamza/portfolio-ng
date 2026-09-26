@@ -412,6 +412,7 @@ describe('CardsTab', () => {
       message: null,
       device: 'ios',
       handled: false,
+      consent: 'Ich bin damit einverstanden …',
       ...over,
     });
 
@@ -467,7 +468,7 @@ describe('CardsTab', () => {
     const lead = (over: Record<string, unknown> = {}) => ({
       id: 'l1', created_at: '2026-09-26T10:00:00Z', card_id: 'id-1', card_slug: 'cafe-krone',
       card_label: null, name: 'Ayşe Yıldız', email: 'a@b.de', phone: null, company: null,
-      message: null, device: 'ios', handled: false, ...over,
+      message: null, device: 'ios', handled: false, consent: 'Ich bin damit einverstanden …', ...over,
     });
 
     /**
@@ -536,6 +537,38 @@ describe('CardsTab', () => {
     it('schreibt leere Felder leer, nicht als „null"', async () => {
       const out = await csv([lead({ phone: null, company: null, message: null })]);
       expect(out).not.toContain('null');
+    });
+  });
+
+  describe('Nachweis der Einwilligung', () => {
+    const lead = (over: Record<string, unknown> = {}) => ({
+      id: 'l1', created_at: '2026-09-26T10:00:00Z', card_id: 'id-1', card_slug: 'cafe-krone',
+      card_label: null, name: 'Ayşe', email: 'a@b.de', phone: null, company: null, message: null,
+      device: 'ios', handled: false, consent: 'Ich bin damit einverstanden, dass meine Angaben …', ...over,
+    });
+
+    it('nimmt den Wortlaut in die CSV auf — er ist der Nachweis', async () => {
+      loaded = { cards: [], leads: [lead()] };
+      await tab.ngOnInit();
+      let blob: Blob | null = null;
+      spyOn(URL, 'createObjectURL').and.callFake((b: Blob | MediaSource) => { blob = b as Blob; return 'blob:test'; });
+      spyOn(URL, 'revokeObjectURL');
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      tab.exportLeads();
+      const text = await blob!.text();
+      expect(text).toContain('Onay metni');
+      expect(text).toContain('Ich bin damit einverstanden, dass meine Angaben …');
+    });
+
+    it('kommt mit einer alten Zeile ohne Wortlaut aus', async () => {
+      loaded = { cards: [], leads: [lead({ consent: null })] };
+      await tab.ngOnInit();
+      let blob: Blob | null = null;
+      spyOn(URL, 'createObjectURL').and.callFake((b: Blob | MediaSource) => { blob = b as Blob; return 'blob:test'; });
+      spyOn(URL, 'revokeObjectURL');
+      spyOn(HTMLAnchorElement.prototype, 'click');
+      expect(() => tab.exportLeads()).not.toThrow();
+      expect(await blob!.text()).not.toContain('null');
     });
   });
 });

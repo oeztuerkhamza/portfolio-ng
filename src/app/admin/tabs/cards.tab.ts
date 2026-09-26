@@ -77,6 +77,13 @@ interface Lead {
   message: string | null;
   device: string | null;
   handled: boolean;
+  /**
+   * Wortlaut der Einwilligung, dem der Gast zugestimmt hat. Zeitpunkt ist
+   * `created_at`. Zusammen sind sie der Nachweis nach Art. 7 Abs. 1 DSGVO —
+   * darum stehen sie auch in der CSV. Zeilen von vor der Häkchen-Pflicht
+   * haben keinen.
+   */
+  consent: string | null;
 }
 
 /**
@@ -312,6 +319,11 @@ interface Lead {
                 <code>/k/{{ l.card_slug }}</code>
               </div>
               @if (l.message) { <p class="adm-lead-msg">{{ l.message }}</p> }
+              @if (l.consent) {
+                <p class="adm-muted small">✓ Onay verdi: „{{ l.consent }}"</p>
+              } @else {
+                <p class="adm-muted small">Onay metni kayıtlı değil (häkchen-zorunluluğundan önceki kayıt)</p>
+              }
             </div>
             <div class="adm-scans">
               <small>{{ dateTime(l.created_at) }}@if (l.device) { · {{ l.device }} }</small>
@@ -641,7 +653,7 @@ export class CardsTab implements OnInit {
    * als „AyÅŸe".
    */
   exportLeads() {
-    const head = ['Tarih', 'Ad', 'Firma', 'E-posta', 'Telefon', 'Mesaj', 'Kart', 'Cihaz', 'İlgilenildi'];
+    const head = ['Tarih', 'Ad', 'Firma', 'E-posta', 'Telefon', 'Mesaj', 'Kart', 'Cihaz', 'İlgilenildi', 'Onay metni'];
     // Ein Feld, das mit = + - @ beginnt, liest Excel als Formel. Ein
     // vorangestelltes Hochkomma macht daraus wieder Text.
     const cell = (v: unknown) => {
@@ -649,7 +661,7 @@ export class CardsTab implements OnInit {
       return `"${/^[=+\-@]/.test(s) ? "'" + s : s}"`;
     };
     const rows = this.leadList().map((l) =>
-      [l.created_at, l.name, l.company, l.email, l.phone, l.message, '/k/' + l.card_slug, l.device, l.handled ? 'evet' : 'hayır']
+      [l.created_at, l.name, l.company, l.email, l.phone, l.message, '/k/' + l.card_slug, l.device, l.handled ? 'evet' : 'hayır', l.consent]
         .map(cell)
         .join(';'),
     );

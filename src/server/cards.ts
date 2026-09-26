@@ -27,7 +27,7 @@ export const CARD_LANGS = ['de', 'fr', 'en', 'tr', 'ku'] as const;
 export type CardLang = (typeof CARD_LANGS)[number];
 
 /** Rückmeldung zum Kontaktbogen, aus der Adresse gelesen. */
-export type CardNotice = 'thanks' | 'need' | null;
+export type CardNotice = 'thanks' | 'need' | 'consent' | null;
 
 /**
  * Die zwei Hälften des Kontaktbogens: hierher leitet der Server nach dem
@@ -35,17 +35,19 @@ export type CardNotice = 'thanks' | 'need' | null;
  * Rückmeldung wieder heraus. Beides steht bewusst nebeneinander — solange es
  * in zwei Dateien lag, konnte das eine sich ändern und das andere nicht.
  *
- *   'ok'   — angenommen, Bestätigung zeigen
- *   'need' — Angabe fehlte, Bogen offen lassen und sagen, was fehlt
- *   'drop' — stillschweigend verworfen (Bot, zu viele Versuche, Karte ohne
- *            Bogen): dieselbe Adresse wie ein gewöhnlicher Aufruf
+ *   'ok'      — angenommen, Bestätigung zeigen
+ *   'need'    — Angabe fehlte, Bogen offen lassen und sagen, was fehlt
+ *   'consent' — das Häkchen fehlte; ohne Einwilligung nehmen wir nichts an
+ *   'drop'    — stillschweigend verworfen (Bot, zu viele Versuche, Karte ohne
+ *               Bogen): dieselbe Adresse wie ein gewöhnlicher Aufruf
  */
-export const leadRedirect = (slug: string, outcome: 'ok' | 'need' | 'drop'): string =>
-  `/k/${slug}` + (outcome === 'ok' ? '?danke=1' : outcome === 'need' ? '?fehler=1' : '');
+export const leadRedirect = (slug: string, outcome: 'ok' | 'need' | 'consent' | 'drop'): string =>
+  `/k/${slug}` +
+  (outcome === 'ok' ? '?danke=1' : outcome === 'need' ? '?fehler=1' : outcome === 'consent' ? '?zustimmung=1' : '');
 
 /** Umgekehrter Weg: die Rückmeldung aus den Parametern der Adresse. */
 export const cardNotice = (query: Record<string, unknown> | undefined): CardNotice =>
-  query?.['danke'] ? 'thanks' : query?.['fehler'] ? 'need' : null;
+  query?.['danke'] ? 'thanks' : query?.['fehler'] ? 'need' : query?.['zustimmung'] ? 'consent' : null;
 
 /**
  * Alles, was auf einer Karte steht und nicht vom Kunden kommt.
@@ -76,6 +78,8 @@ export const LABEL_KEYS = [
   'leadNote',
   'leadThanks',
   'leadNeed',
+  'leadConsent',
+  'leadConsentNeed',
   'privacy',
 ] as const;
 export type LabelKey = (typeof LABEL_KEYS)[number];
@@ -100,6 +104,8 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNote: 'Ihre Angaben gehen an den Inhaber dieser Karte, damit er sich bei Ihnen melden kann. Keine Werbung, keine Weitergabe an Dritte.',
     leadThanks: 'Danke — wir melden uns bei Ihnen.',
     leadNeed: 'Bitte Name und E-Mail oder Telefon angeben.',
+    leadConsent: 'Ich bin damit einverstanden, dass meine Angaben gespeichert und an den Inhaber dieser Karte weitergegeben werden, damit er sich bei mir melden kann.',
+    leadConsentNeed: 'Bitte stimmen Sie der Speicherung zu — ohne Ihre Einwilligung dürfen wir die Angaben nicht annehmen.',
     privacy: 'Datenschutz',
   },
   fr: {
@@ -112,6 +118,8 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNote: 'Vos coordonnées vont au titulaire de cette carte, afin qu’il puisse vous recontacter. Aucune publicité, aucune transmission à des tiers.',
     leadThanks: 'Merci — nous vous recontactons.',
     leadNeed: 'Merci d’indiquer un nom et un e-mail ou un téléphone.',
+    leadConsent: 'J’accepte que mes coordonnées soient enregistrées et transmises au titulaire de cette carte afin qu’il puisse me recontacter.',
+    leadConsentNeed: 'Merci de donner votre accord — sans votre consentement, nous ne pouvons pas enregistrer ces données.',
     privacy: 'Confidentialité',
   },
   en: {
@@ -124,6 +132,8 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNote: 'Your details go to the holder of this card so they can get back to you. No advertising, no passing on to third parties.',
     leadThanks: 'Thank you — we will get back to you.',
     leadNeed: 'Please give a name and an email or phone number.',
+    leadConsent: 'I agree that my details may be stored and passed to the holder of this card so that they can get back to me.',
+    leadConsentNeed: 'Please agree to the storage — without your consent we may not accept the details.',
     privacy: 'Privacy',
   },
   tr: {
@@ -136,6 +146,8 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNote: 'Bilgileriniz, size dönebilmesi için bu kartın sahibine gider. Reklam yok, üçüncü kişilerle paylaşım yok.',
     leadThanks: 'Teşekkürler — size geri döneceğiz.',
     leadNeed: 'Lütfen ad ve e-posta ya da telefon yazın.',
+    leadConsent: 'Bilgilerimin saklanmasını ve bana dönebilmesi için bu kartın sahibine iletilmesini kabul ediyorum.',
+    leadConsentNeed: 'Lütfen saklanmasını onaylayın — onayınız olmadan bilgileri alamayız.',
     privacy: 'Gizlilik',
   },
   ku: {
@@ -148,6 +160,8 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNote: 'Agahiyên we ji xwediyê vê kartê re diçin, ku ew bikaribe bi we re têkilî daynin. Ne reklam, ne dayîna kesên sêyem.',
     leadThanks: 'Spas — em ê bi we re têkilî daynin.',
     leadNeed: 'Ji kerema xwe nav û e-name an telefonê binivîsin.',
+    leadConsent: 'Ez razî me ku agahiyên min werin tomarkirin û ji xwediyê vê kartê re werin dayîn, ku ew bikaribe bi min re têkilî daynin.',
+    leadConsentNeed: 'Ji kerema xwe razîbûna xwe bidin — bêyî razîbûna we em nikarin agahiyan bigirin.',
     privacy: 'Parastina daneyan',
   },
 };
@@ -391,15 +405,19 @@ export interface LeadInput {
 /**
  * Den abgeschickten Kontaktbogen prüfen.
  *
- *   'trap' — das versteckte Feld war gefüllt: ein Bot. Wird stillschweigend
- *            verworfen, damit er nicht lernt, woran es lag.
- *   'need' — Name fehlt, oder es gibt keinen Rückweg (weder E-Mail noch
- *            Telefon). Ein Name ohne Rückweg nützt niemandem.
+ *   'trap'    — das versteckte Feld war gefüllt: ein Bot. Wird stillschweigend
+ *               verworfen, damit er nicht lernt, woran es lag.
+ *   'consent' — das Häkchen fehlt. Geprüft wird es hier und nicht nur im
+ *               Browser: `required` im Formular hält niemanden auf, der das
+ *               Formular umgeht, und ohne Einwilligung dürfen wir nichts
+ *               speichern (Art. 6 Abs. 1 lit. a DSGVO).
+ *   'need'    — Name fehlt, oder es gibt keinen Rückweg (weder E-Mail noch
+ *               Telefon). Ein Name ohne Rückweg nützt niemandem.
  *
  * Gekürzt wird hier, nicht in der Datenbank: eine abgewiesene Zeile wäre für
  * den Gast ein Fehler, obwohl er nur zu viel geschrieben hat.
  */
-export function leadFields(input: unknown): LeadInput | 'trap' | 'need' {
+export function leadFields(input: unknown): LeadInput | 'trap' | 'consent' | 'need' {
   const b = (input ?? {}) as Record<string, unknown>;
   const cut = (value: unknown, max: number): string | null => {
     if (typeof value !== 'string') return null;
@@ -408,6 +426,8 @@ export function leadFields(input: unknown): LeadInput | 'trap' | 'need' {
   };
 
   if (cut(b['website'], 200)) return 'trap';
+  // Ein nicht gesetztes Häkchen schickt der Browser gar nicht mit.
+  if (!cut(b['consent'], 20)) return 'consent';
 
   const name = cut(b['name'], 120);
   const email = mailAddress(b['email']);
@@ -548,6 +568,12 @@ h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 .lead input:focus-visible,.lead textarea:focus-visible,.lead button:focus-visible,.lead summary:focus-visible{outline:2px solid ${t.accent};outline-offset:2px}
 .lead button{width:100%;font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:999px;padding:14px 18px;
   background:${t.accent};color:${t.onAccent}}
+/* Zwei Klassen, weil ".lead label" (Klasse + Typ) sonst gewinnt und aus dem
+   Haekchen-Text eine Feldbeschriftung in Grossbuchstaben macht. */
+.lead .lead-ok{display:flex;gap:10px;align-items:flex-start;margin:4px 0 14px}
+.lead .lead-ok input{flex:0 0 auto;width:20px;height:20px;margin:1px 0 0;accent-color:${t.accent}}
+.lead .lead-ok span{display:inline;margin:0;font-size:.8rem;font-weight:400;line-height:1.45;
+  letter-spacing:normal;text-transform:none;color:${t.ink}}
 .lead-note{margin:10px 0 0;color:${t.dim};font-size:.75rem;line-height:1.5}
 /* Ohne eigene Farbe nimmt der Verweis das Browserblau — auf dem warmen
    Thema zu schwach für 0,75rem Schrift (unter 4,5:1). */
@@ -638,14 +664,17 @@ function leadForm(slug: string, lang: CardLang, notice: CardNotice): string {
   const field = (name: string, key: LabelKey, type: string, extra: string) =>
     `<label><span>${t(key)}</span><input type="${type}" name="${name}" ${extra} /></label>`;
 
-  // Fehlte eine Angabe, bleibt der Bogen offen — sonst müsste der Gast ihn
-  // erst wieder aufklappen, um zu sehen, was schiefging.
+  // Fehlte eine Angabe oder das Häkchen, bleibt der Bogen offen — sonst
+  // müsste der Gast ihn erst wieder aufklappen, um zu sehen, was schiefging.
   const need = notice === 'need';
+  const missingConsent = notice === 'consent';
+  const open = need || missingConsent;
 
-  return `<details class="lead"${need ? ' open' : ''}>
+  return `<details class="lead"${open ? ' open' : ''}>
 <summary>${t('leadOpen')}</summary>
 <form method="post" action="/k/${esc(slug)}/kontakt">
 ${need ? `<p class="lead-need" role="alert">${t('leadNeed')}</p>` : ''}
+${missingConsent ? `<p class="lead-need" role="alert">${t('leadConsentNeed')}</p>` : ''}
 <p class="lead-hint">${t('leadHint')}</p>
 ${field('name', 'leadName', 'text', 'required maxlength="120" autocomplete="name"')}
 ${field('email', 'leadEmail', 'email', 'maxlength="200" autocomplete="email"')}
@@ -653,6 +682,7 @@ ${field('phone', 'leadPhone', 'tel', 'maxlength="40" autocomplete="tel"')}
 ${field('company', 'leadCompany', 'text', 'maxlength="200" autocomplete="organization"')}
 <label><span>${t('leadMessage')}</span><textarea name="message" rows="3" maxlength="2000"></textarea></label>
 <input class="trap" type="text" name="website" tabindex="-1" autocomplete="off" />
+<label class="lead-ok"><input type="checkbox" name="consent" value="ja" required /><span>${t('leadConsent')}</span></label>
 <button type="submit">${t('leadSend')}</button>
 <p class="lead-note">${t('leadNote')} <a href="/${lang}/datenschutz" rel="noopener">${t('privacy')}</a></p>
 </form>

@@ -28,7 +28,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    Ardından aynı şekilde sıradaki dosyaları da çalıştırın:
    `20260924130000_invoices.sql` (faturalar), `20260925120000_invoice_sent.sql`,
    `20260926120000_cards.sql` (kart sayfaları) ve
-   `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri).
+   `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri) ve
+   `20260926150000_card_leads_consent.sql` (onay metninin kaydı).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
@@ -99,6 +100,12 @@ durur: dışarıya hiçbir şey gitmez, abonelik yok, sayfa müşterinin elimizd
    bilgi gelince size e-posta gider; "Yanıtla" doğrudan ziyaretçiye gider.
 
    Hukuki tarafı koda bağlı, keyfî değil:
+   - Formda **onay kutusu** var ve işaretlenmeden gönderilemez. Sunucu da ayrıca kontrol eder:
+     onay olmadan hiçbir şey kaydedilmez (tarayıcıdaki `required` formu atlayan birini durdurmaz).
+   - Kutu **önceden işaretli değil** — önceden işaretli bir onay, onay sayılmaz (Art. 4 Nr. 11).
+   - Onayın **kanıtı** kaydediliyor: "evet" değil, ziyaretçinin onayladığı **tam cümle**, kartın
+     dilinde, sunucudan (tarayıcıdan gelen metne güvenilmez). Zamanı `created_at`. Panelde her
+     kaydın altında görünür ve CSV'ye de girer (Art. 7 Abs. 1 DSGVO).
    - Kartın altındaki kısa metin, bilgilerin **kartın sahibine** gittiğini söyler (Art. 13 DSGVO
      bilgilendirme yükümlülüğü). Metni değiştiren bir zorunlu beyanı değiştirir.
    - IP adresi **kaydedilmez**.
@@ -153,9 +160,10 @@ Açmadan önce yapılacaklar:
      söylerse — yani biz müşterinin *Auftragsverarbeiter*'i (veri işleyeni) isek — her kart
      müşterisiyle **AVV (Art. 28 DSGVO)** imzalanması gerekir. Bu, formu açan ilk müşteriden
      önce netleşmeli.
-   - **Hukuki dayanak**: metin Art. 6 Abs. 1 lit. b + f diyor (iletişim talebi). Hukukçu
-     *Einwilligung* (lit. a) isterse, onayın kanıtlanabilir olması gerekir (Art. 7) — o zaman
-     forma bir onay kutusu eklenir; söylerseniz eklerim.
+   - **Hukuki dayanak**: *Einwilligung* (Art. 6 Abs. 1 lit. a) olarak kuruldu — onay kutusu,
+     sunucu tarafı zorunluluk ve Art. 7 Abs. 1 için onaylanan cümlenin kaydı dahil. Hukukçu
+     bunun yerine lit. b/f'yi (iletişim talebi) daha uygun görürse metin değişir, kod aynı
+     kalabilir — onay kutusu her hâlükârda zarar vermez.
 2. **Stripe hesabı** (<https://stripe.com>): işletme bilgileri, banka hesabı, ödeme yöntemleri
    (kart, PayPal, Klarna…).
 3. Stripe → Developers → **Webhooks → Add endpoint**:
