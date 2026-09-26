@@ -81,6 +81,7 @@ export const LABEL_KEYS = [
   'leadConsent',
   'leadConsentNeed',
   'privacy',
+  'preview',
 ] as const;
 export type LabelKey = (typeof LABEL_KEYS)[number];
 
@@ -106,6 +107,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNeed: 'Bitte Name und E-Mail oder Telefon angeben.',
     leadConsent: 'Ich bin damit einverstanden, dass meine Angaben gespeichert und an den Inhaber dieser Karte weitergegeben werden, damit er sich bei mir melden kann.',
     leadConsentNeed: 'Bitte stimmen Sie der Speicherung zu — ohne Ihre Einwilligung dürfen wir die Angaben nicht annehmen.',
+    preview: 'Vorschau — diese Karte ist noch nicht veröffentlicht. Nur wer diesen Link hat, sieht sie.',
     privacy: 'Datenschutz',
   },
   fr: {
@@ -120,6 +122,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNeed: 'Merci d’indiquer un nom et un e-mail ou un téléphone.',
     leadConsent: 'J’accepte que mes coordonnées soient enregistrées et transmises au titulaire de cette carte afin qu’il puisse me recontacter.',
     leadConsentNeed: 'Merci de donner votre accord — sans votre consentement, nous ne pouvons pas enregistrer ces données.',
+    preview: 'Aperçu — cette carte n’est pas encore publiée. Seules les personnes ayant ce lien la voient.',
     privacy: 'Confidentialité',
   },
   en: {
@@ -134,6 +137,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNeed: 'Please give a name and an email or phone number.',
     leadConsent: 'I agree that my details may be stored and passed to the holder of this card so that they can get back to me.',
     leadConsentNeed: 'Please agree to the storage — without your consent we may not accept the details.',
+    preview: 'Preview — this card is not published yet. Only someone with this link can see it.',
     privacy: 'Privacy',
   },
   tr: {
@@ -148,6 +152,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNeed: 'Lütfen ad ve e-posta ya da telefon yazın.',
     leadConsent: 'Bilgilerimin saklanmasını ve bana dönebilmesi için bu kartın sahibine iletilmesini kabul ediyorum.',
     leadConsentNeed: 'Lütfen saklanmasını onaylayın — onayınız olmadan bilgileri alamayız.',
+    preview: 'Önizleme — bu kart henüz yayında değil. Yalnızca bu linke sahip olan görebilir.',
     privacy: 'Gizlilik',
   },
   ku: {
@@ -162,6 +167,7 @@ const LABELS: Record<CardLang, Record<LabelKey, string>> = {
     leadNeed: 'Ji kerema xwe nav û e-name an telefonê binivîsin.',
     leadConsent: 'Ez razî me ku agahiyên min werin tomarkirin û ji xwediyê vê kartê re werin dayîn, ku ew bikaribe bi min re têkilî daynin.',
     leadConsentNeed: 'Ji kerema xwe razîbûna xwe bidin — bêyî razîbûna we em nikarin agahiyan bigirin.',
+    preview: 'Pêşdîtin — ev kart hêj nehatiye weşandin. Tenê yê ku ev girêdan pê re heye dibîne.',
     privacy: 'Parastina daneyan',
   },
 };
@@ -241,6 +247,12 @@ export interface Card {
   theme: CardTheme;
   /** Sprache der Beschriftungen. Fehlt sie, gilt Deutsch. */
   lang?: CardLang;
+  /**
+   * Noch nicht veröffentlicht: die Seite wird nur gezeigt, weil jemand den
+   * Vorschau-Link hat. Dann steht ein Hinweis darüber, damit niemand sie für
+   * die fertige Karte hält.
+   */
+  preview?: boolean;
   data: BusinessCardData | GiftCardData;
 }
 
@@ -437,6 +449,25 @@ export function leadFields(input: unknown): LeadInput | 'trap' | 'consent' | 'ne
   return { name, email, phone, company: cut(b['company'], 200), message: cut(b['message'], 2000) };
 }
 
+/**
+ * Darf diese Karte gezeigt werden?
+ *
+ * Eine freigegebene Karte immer. Eine noch nicht freigegebene nur dem, der
+ * den Vorschau-Link hat — und der Schlüssel darin ist die id der Karte, ein
+ * Zufalls-UUID. Aus dem Kurznamen ist er nicht zu erraten.
+ *
+ * Verglichen wird ohne Rücksicht auf Groß- und Kleinschreibung, weil ein
+ * UUID in Adressen mitunter groß geschrieben wird; ein leerer Schlüssel
+ * zählt nie.
+ */
+export function cardVisible(active: unknown, token: string | null, id: unknown): boolean {
+  if (active === true) return true;
+  // Ein Ausdruck, keine zwei Wächter: zwei sich überdeckende Prüfungen
+  // („kein Schlüssel" und „keine id") lassen sich einzeln entfernen, ohne
+  // dass sich etwas ändert — dann deckt kein Test sie noch ab.
+  return !!token && token.toLowerCase() === String(id ?? '').toLowerCase();
+}
+
 // ── Darstellung ────────────────────────────────────────────
 // Zweiter Riegel: jede Adresse wird auch beim Zeichnen noch geprüft, nicht
 // nur beim Speichern. Stünde durch einen alten Datensatz oder einen Eingriff
@@ -552,6 +583,8 @@ h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 .btn{display:block;text-align:center;padding:14px 18px;border-radius:999px;background:${t.accent};color:${t.onAccent};
   text-decoration:none;font-weight:600;margin:0 0 10px}
 .btn.ghost{background:transparent;color:${t.accent};border:1px solid ${t.accent}}
+.preview{margin:0 0 18px;padding:11px 14px;border-radius:12px;border:1px dashed ${t.accent};
+  color:${t.dim};font-size:.8rem;line-height:1.45;text-align:center}
 .thanks{margin:18px 0 0;padding:14px 16px;border-radius:14px;background:${t.accent};color:${t.onAccent};text-align:center;font-weight:600}
 .lead{margin:6px 0 0;border-top:1px solid rgba(147,161,179,.28);padding-top:14px}
 .lead summary{cursor:pointer;font-weight:600;color:${t.accent};list-style:none;padding:6px 0}
@@ -731,6 +764,7 @@ export function renderCard(card: Card, base = config.siteUrl || '', notice: Card
 <style>${styles(t)}</style>
 </head><body>
 <main class="card">
+${card.preview ? `<p class="preview" role="status">${esc(label(lang, 'preview'))}</p>` : ''}
 ${business ? businessBody(d, card.slug, lang, notice) : giftBody(d, lang)}
 <p class="foot">${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>

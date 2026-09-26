@@ -12,6 +12,7 @@ import {
   cardSlug,
   esc,
   cardNotice,
+  cardVisible,
   httpsUrl,
   label,
   leadFields,
@@ -692,6 +693,59 @@ describe('Kontaktbogen', () => {
   });
 });
 
+/**
+ * Die Vorschau vor der Freigabe. Die Bestellbestätigung verspricht dem Kunden
+ * „die Adresse zur Freigabe" — ohne sie wäre das ein Versprechen, das der
+ * Code nicht halten kann.
+ */
+describe('Vorschau einer Karte', () => {
+  const card = (preview: boolean) =>
+    renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'de', preview, data: { company: 'Café Krone', phone: '0761123456' } },
+      '',
+      null,
+    );
+
+  test('sagt oben auf der Seite, dass es nur eine Vorschau ist', () => {
+    const html = card(true);
+    assert.match(html, /class="preview" role="status"/);
+    assert.match(html, /noch nicht veröffentlicht/);
+  });
+
+  test('sagt nichts davon, sobald die Karte freigegeben ist', () => {
+    assert.equal(/class="preview"/.test(card(false)), false);
+    assert.equal(/class="preview"/.test(renderCard({ slug: 'k', kind: 'business', theme: 'brand', data: { company: 'K' } })), false);
+  });
+
+  test('zeigt den Inhalt genauso wie später die fertige Karte', () => {
+    // Der Sinn der Vorschau: der Kunde sieht sein Logo und seine Angaben so,
+    // wie sie nachher dastehen — nicht eine Ersatzdarstellung.
+    const html = card(true);
+    assert.match(html, /Café Krone/);
+    assert.match(html, /href="tel:0761123456"/);
+    assert.match(html, /Zu Kontakten hinzufügen/);
+  });
+
+  test('sagt den Hinweis in der Sprache der Karte', () => {
+    const tr = renderCard(
+      { slug: 'k', kind: 'business', theme: 'brand', lang: 'tr', preview: true, data: { company: 'K' } },
+      '',
+      null,
+    );
+    assert.match(tr, /henüz yayında değil/);
+  });
+
+  test('nennt den Hinweis in jeder Sprache', () => {
+    for (const lang of CARD_LANGS) {
+      assert.ok(label(lang, 'preview').length > 30, `${lang}: Hinweis fehlt`);
+    }
+  });
+
+  test('bleibt auch als Vorschau aus dem Suchindex', () => {
+    assert.match(card(true), /name="robots" content="noindex,nofollow"/);
+  });
+});
+
 /** Adresse und Vorschau — die zwei Kleinigkeiten, die im Alltag zählen. */
 describe('Karte im Alltag', () => {
   test('führt die Adresse auf die Landkarte', () => {
@@ -971,5 +1025,52 @@ describe('Beschriftungen', () => {
 
   test('nimmt bei unbekannter Sprache die deutsche Tabelle', () => {
     assert.equal(label('klingonisch' as never, 'phone'), label('de', 'phone'));
+  });
+});
+
+/**
+ * Wer eine noch nicht freigegebene Karte sehen darf. Das ist eine
+ * Zugangsentscheidung — darum eigene Funktion und eigene Tests, statt einer
+ * Zeile mitten im Express-Handler.
+ */
+describe('cardVisible', () => {
+  const ID = '3f1a9c20-5b7e-4f2a-9c11-8d6e4b2a7c55';
+
+  test('zeigt eine freigegebene Karte jedem', () => {
+    assert.equal(cardVisible(true, null, ID), true);
+    assert.equal(cardVisible(true, 'egal', ID), true);
+  });
+
+  test('zeigt eine gesperrte Karte nur mit dem richtigen Schlüssel', () => {
+    assert.equal(cardVisible(false, ID, ID), true);
+    assert.equal(cardVisible(false, null, ID), false);
+    assert.equal(cardVisible(false, '', ID), false);
+    assert.equal(cardVisible(false, 'falsch', ID), false);
+  });
+
+  test('lässt sich mit einem leeren Ausweis nicht überreden', () => {
+    // Sonst käme man mit „?vorschau=" an jede gesperrte Karte, deren id
+    // irgendwie leer gelesen wird.
+    assert.equal(cardVisible(false, '', null), false);
+    assert.equal(cardVisible(false, '', ''), false);
+    assert.equal(cardVisible(false, 'x', null), false);
+    assert.equal(cardVisible(false, 'undefined', undefined), false);
+    assert.equal(cardVisible(false, 'null', null), false);
+  });
+
+  test('nimmt nur ein echtes Ja als freigegeben', () => {
+    // `active` kommt aus der Datenbank; alles außer true ist gesperrt.
+    for (const active of [false, null, undefined, 0, 1, 'true', 'ja']) {
+      assert.equal(cardVisible(active, null, ID), false, `durchgelassen: ${String(active)}`);
+    }
+  });
+
+  test('stört sich nicht an Groß- und Kleinschreibung des Schlüssels', () => {
+    assert.equal(cardVisible(false, ID.toUpperCase(), ID), true);
+  });
+
+  test('akzeptiert keinen Teil des Schlüssels', () => {
+    assert.equal(cardVisible(false, ID.slice(0, 20), ID), false);
+    assert.equal(cardVisible(false, ID + 'x', ID), false);
   });
 });

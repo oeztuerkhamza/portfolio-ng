@@ -16,6 +16,7 @@ import {
   cardNotice,
   label,
   cardSlug,
+  cardVisible,
   leadFields,
   leadRedirect,
   renderCard,
@@ -217,12 +218,33 @@ export async function cardPage(req: Request, res: Response) {
   // Absenden weitergeleitet wird (POST-Redirect-GET).
   const notice = cardNotice(req.query as Record<string, unknown>);
 
+  /**
+   * Vorschau vor der Freigabe. Die Bestellbestätigung verspricht dem Kunden
+   * „die Adresse zur Freigabe" — ohne das hier wäre das ein Versprechen, das
+   * der Code nicht halten kann: eine abgeschaltete Karte leitet sonst auf die
+   * Startseite.
+   *
+   * Der Schlüssel ist die id der Karte selbst: ein Zufalls-UUID, aus dem
+   * Kurznamen nicht zu erraten, und keine neue Spalte nötig. Wer den Link
+   * nicht hat, sieht die Karte nicht.
+   */
+  const token = str(req.query['vorschau'], 40);
+
   try {
-    const [row] = await sql`
-      with c as (select id, slug, kind, theme, lang, data from cards where slug = ${slug} and active),
-           s as (insert into scans (card_id, device) select id, ${deviceOf(req)} from c)
-      select slug, kind, theme, lang, data from c`;
+    // Bei einer Vorschau wird nicht gezählt: da schaut der Kunde auf seinen
+    // Entwurf, das ist keine Okutma.
+    const [row] = token
+      ? await sql`select id, slug, kind, theme, lang, data, active from cards where slug = ${slug}`
+      : await sql`
+          with c as (select id, slug, kind, theme, lang, data, active from cards where slug = ${slug} and active),
+               s as (insert into scans (card_id, device) select id, ${deviceOf(req)} from c)
+          select id, slug, kind, theme, lang, data, active from c`;
     if (!row) return res.redirect(302, '/');
+
+    // Mit Schlüssel, aber dem falschen: nichts verraten, wie ohne Karte.
+    if (!cardVisible(row['active'], token, row['id'])) return res.redirect(302, '/');
+    const preview = row['active'] !== true;
+
     return res.type('html').send(
       renderCard(
         {
@@ -230,6 +252,7 @@ export async function cardPage(req: Request, res: Response) {
           kind: row['kind'] as CardKind,
           theme: row['theme'] as CardTheme,
           lang: row['lang'] as CardLang,
+          preview,
           data: row['data'] as never,
         },
         origin(req),
@@ -259,8 +282,12 @@ export async function cardVcard(req: Request, res: Response) {
   if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
 
   try {
-    const [row] = await sql`select data from cards where slug = ${slug} and active and kind = 'business'`;
+    // Wie bei der Seite: mit dem Vorschau-Schlüssel auch vor der Freigabe,
+    // sonst führt der Knopf im Entwurf ins Leere.
+    const token = str(req.query['vorschau'], 40);
+    const [row] = await sql`select id, data, active from cards where slug = ${slug} and kind = 'business'`;
     if (!row) return res.redirect(302, '/');
+    if (!cardVisible(row['active'], token, row['id'])) return res.redirect(302, '/');
     const body = vcard(row['data'] as BusinessCardData);
     // Karte ohne Telefon, Mail, Web und Adresse: zurück auf die Karte.
     if (!body) return res.redirect(302, `/k/${slug}`);

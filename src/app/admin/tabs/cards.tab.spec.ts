@@ -571,4 +571,40 @@ describe('CardsTab', () => {
       expect(await blob!.text()).not.toContain('null');
     });
   });
+
+  describe('Önizleme linki', () => {
+    it('hängt den Schlüssel an, solange die Karte nicht freigegeben ist', () => {
+      const c = cardFixture({ id: 'abc-123', slug: 'cafe-krone', active: false });
+      expect(tab.preview(c)).toBe('/k/cafe-krone?vorschau=abc-123');
+    });
+
+    it('lässt ihn weg, sobald die Karte öffentlich ist', () => {
+      const c = cardFixture({ id: 'abc-123', slug: 'cafe-krone', active: true });
+      expect(tab.preview(c)).toBe('/k/cafe-krone');
+    });
+
+    it('kopiert die vollständige Adresse zum Verschicken', async () => {
+      const written: string[] = [];
+      spyOnProperty(navigator, 'clipboard', 'get').and.returnValue({
+        writeText: (t: string) => { written.push(t); return Promise.resolve(); },
+      } as unknown as Clipboard);
+
+      const c = cardFixture({ id: 'abc-123', slug: 'cafe-krone', active: false });
+      await tab.copyPreview(c);
+      expect(written[0]).toContain('/k/cafe-krone?vorschau=abc-123');
+      expect(written[0].startsWith('http') || written[0].startsWith('/k/')).toBeTrue();
+    });
+
+    it('verwechselt die zwei Kopierknöpfe nicht', async () => {
+      spyOnProperty(navigator, 'clipboard', 'get').and.returnValue({
+        writeText: () => Promise.resolve(),
+      } as unknown as Clipboard);
+
+      const c = cardFixture({ id: 'abc-123', slug: 'cafe-krone', active: false });
+      await tab.copyPreview(c);
+      expect(tab.copied()).toBe('pabc-123');
+      await tab.copy(c);
+      expect(tab.copied()).toBe('abc-123');
+    });
+  });
 });

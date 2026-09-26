@@ -263,6 +263,10 @@ interface Lead {
           <button type="button" class="btn btn-secondary btn-small" (click)="formOpen.set(false)">Vazgeç</button>
           @if (editId()) {
             <a class="adm-link" [href]="'/k/' + slug()" target="_blank" rel="noopener">Kartı aç</a>
+            <span class="adm-muted small">
+              Kart “Aktif” değilse adres ana sayfaya gider; müşteriye göstermek için listedeki
+              <strong>Önizleme linki</strong>'ni kullanın.
+            </span>
           }
         </div>
       </form>
@@ -282,7 +286,12 @@ interface Lead {
               <code>{{ origin }}/k/{{ c.slug }}</code>
               <button class="adm-link" (click)="copy(c)">{{ copied() === c.id ? 'Kopyalandı ✓' : 'Kopyala' }}</button>
               <button class="adm-link" (click)="qr(c)">QR (SVG)</button>
-              <a class="adm-link" [href]="'/k/' + c.slug" target="_blank" rel="noopener">Aç</a>
+              <a class="adm-link" [href]="preview(c)" target="_blank" rel="noopener">Aç</a>
+              @if (!c.active) {
+                <button class="adm-link" (click)="copyPreview(c)">
+                  {{ copied() === 'p' + c.id ? 'Kopyalandı ✓' : 'Önizleme linki' }}
+                </button>
+              }
             </div>
           </div>
           <div class="adm-scans">
@@ -694,10 +703,32 @@ export class CardsTab implements OnInit {
     }
   }
 
+  /**
+   * Adresse der Karte. Ist sie noch nicht freigegeben, hängt der
+   * Vorschau-Schlüssel dran — sonst landet man auf der Startseite.
+   *
+   * Der Schlüssel ist die id der Karte: ein Zufalls-UUID, aus dem Kurznamen
+   * nicht zu erraten. Wer den Link nicht hat, sieht den Entwurf nicht.
+   */
+  preview(c: Card) {
+    return `/k/${c.slug}${c.active ? '' : `?vorschau=${c.id}`}`;
+  }
+
   async copy(c: Card) {
     try {
       await navigator.clipboard.writeText(`${this.origin}/k/${c.slug}`);
       this.copied.set(c.id);
+      setTimeout(() => this.copied.set(''), 1500);
+    } catch {
+      /* Zwischenablage nicht verfügbar */
+    }
+  }
+
+  /** Den Link zum Verschicken: den bekommt der Kunde zur Freigabe. */
+  async copyPreview(c: Card) {
+    try {
+      await navigator.clipboard.writeText(`${this.origin}${this.preview(c)}`);
+      this.copied.set('p' + c.id);
       setTimeout(() => this.copied.set(''), 1500);
     } catch {
       /* Zwischenablage nicht verfügbar */
