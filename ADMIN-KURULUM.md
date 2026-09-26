@@ -31,7 +31,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260926120000_cards.sql` (kart sayfaları) ve
    `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri) ve
    `20260926150000_card_leads_consent.sql` (onay metninin kaydı) ve
-   `20260926160000_reviews.sql` (Google yorumları).
+   `20260926160000_reviews.sql` (Google yorumları) ve
+   `20260926170000_touch_search_path.sql` (bir güvenlik sertleştirmesi).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
@@ -41,6 +42,9 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    (şifre sıfırlama e-postası buraya döner).
 6. **Settings → Data Processing Agreement (DPA)**: Supabase'in veri işleme sözleşmesini kabul edin
    (GDPR için gerekli).
+7. **Authentication → Policies → Leaked password protection** açın. Supabase girilen şifreyi
+   HaveIBeenPwned listesiyle karşılaştırır; başka bir sitede sızmış bir şifreyi panel hesabına
+   koymanızı engeller. Tek tıklık bir ayar ve SQL'den yapılamıyor.
 
 > **Ücretsiz plan hakkında:** Supabase, uzun süre kullanılmayan ücretsiz projeleri duraklatabilir.
 > Proje duraklarsa NFC kısa linkleri müşterinin Google sayfası yerine ana sayfanıza yönlenir.
