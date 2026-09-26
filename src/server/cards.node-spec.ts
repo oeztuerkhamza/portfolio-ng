@@ -4,6 +4,8 @@ import {
   type BusinessCardData,
   type GiftCardData,
   MAX_LINKS,
+  MAX_PHOTOS,
+  NETWORKS,
   cardData,
   esc,
   httpsUrl,
@@ -143,6 +145,77 @@ describe('cardData — Firmenkarte', () => {
   });
 });
 
+describe('cardData — Profil: Portrait und Netzwerke', () => {
+  test('nimmt ein Portrait als https-Adresse', () => {
+    const d = cardData('business', { company: 'X', avatarUrl: 'https://cdn.example/me.jpg' }) as BusinessCardData;
+    assert.equal(d.avatarUrl, 'https://cdn.example/me.jpg');
+  });
+
+  test('wirft ein Portrait ab, das nicht https ist', () => {
+    const d = cardData('business', { company: 'X', avatarUrl: 'javascript:alert(1)' }) as BusinessCardData;
+    assert.equal('avatarUrl' in d, false);
+  });
+
+  test('merkt sich das Netzwerk und beschriftet es von selbst', () => {
+    const d = cardData('business', {
+      company: 'X',
+      links: [{ net: 'instagram', url: 'https://instagram.com/x' }],
+    }) as BusinessCardData;
+    assert.deepEqual(d.links, [{ label: NETWORKS.instagram, url: 'https://instagram.com/x', net: 'instagram' }]);
+  });
+
+  test('lässt eine eigene Beschriftung vor dem Netzwerknamen stehen', () => {
+    const d = cardData('business', {
+      company: 'X',
+      links: [{ net: 'instagram', label: 'Unser Insta', url: 'https://instagram.com/x' }],
+    }) as BusinessCardData;
+    assert.equal(d.links?.[0].label, 'Unser Insta');
+    assert.equal(d.links?.[0].net, 'instagram');
+  });
+
+  test('wirft ein unbekanntes Netzwerk weg, behält aber den Link mit Beschriftung', () => {
+    const d = cardData('business', {
+      company: 'X',
+      links: [{ net: 'myspace', label: 'MySpace', url: 'https://myspace.com/x' }],
+    }) as BusinessCardData;
+    assert.deepEqual(d.links, [{ label: 'MySpace', url: 'https://myspace.com/x' }]);
+  });
+
+  test('lässt einen Link ohne Beschriftung und ohne Netzwerk fallen', () => {
+    const d = cardData('business', { company: 'X', links: [{ url: 'https://nix.de' }] }) as BusinessCardData;
+    assert.equal('links' in d, false);
+  });
+});
+
+describe('cardData — Geschenkkarte: Bildergalerie', () => {
+  test('nimmt mehrere Bilder in der eingegebenen Reihenfolge', () => {
+    const d = cardData('gift', {
+      headline: 'H',
+      photos: ['https://cdn.example/1.jpg', 'https://cdn.example/2.jpg'],
+    }) as GiftCardData;
+    assert.deepEqual(d.photos, ['https://cdn.example/1.jpg', 'https://cdn.example/2.jpg']);
+  });
+
+  test('siebt Bilder aus, die nicht https sind', () => {
+    const d = cardData('gift', {
+      headline: 'H',
+      photos: ['https://cdn.example/1.jpg', 'javascript:alert(1)', 'http://unsicher/2.jpg', ''],
+    }) as GiftCardData;
+    assert.deepEqual(d.photos, ['https://cdn.example/1.jpg']);
+  });
+
+  test('begrenzt die Zahl der Bilder', () => {
+    const photos = Array.from({ length: MAX_PHOTOS + 5 }, (_, i) => `https://cdn.example/${i}.jpg`);
+    const d = cardData('gift', { headline: 'H', photos }) as GiftCardData;
+    assert.equal(d.photos?.length, MAX_PHOTOS);
+  });
+
+  test('lässt das Feld weg, wenn kein Bild übrig bleibt', () => {
+    const d = cardData('gift', { headline: 'H', photos: ['nix', 'http://auch-nix'] }) as GiftCardData;
+    assert.equal('photos' in d, false);
+  });
+});
+
 describe('cardData — Geschenkkarte', () => {
   test('verlangt die Überschrift', () => {
     assert.equal(cardData('gift', { message: 'nur Text' }), null);
@@ -203,6 +276,40 @@ describe('renderCard', () => {
       data: { company: 'X', links: [{ label: 'L', url: 'javascript:alert(1)' }] } as BusinessCardData,
     });
     assert.equal(/href="javascript:/i.test(html), false);
+  });
+
+  test('zeichnet das Portrait rund und das Logo quer', () => {
+    const html = business({ logoUrl: 'https://cdn.example/logo.png', avatarUrl: 'https://cdn.example/me.jpg' });
+    assert.match(html, /class="logo" src="https:\/\/cdn\.example\/logo\.png"/);
+    assert.match(html, /class="avatar" src="https:\/\/cdn\.example\/me\.jpg"/);
+  });
+
+  test('zeichnet ein einzelnes Bild ohne zweispaltige Galerie', () => {
+    const html = renderCard({ slug: 's', kind: 'gift', theme: 'brand', data: { headline: 'H', photos: ['https://cdn.example/1.jpg'] } });
+    assert.match(html, /class="gallery"/);
+    assert.equal(/gallery multi/.test(html), false);
+  });
+
+  test('zeichnet mehrere Bilder zweispaltig', () => {
+    const html = renderCard({
+      slug: 's',
+      kind: 'gift',
+      theme: 'brand',
+      data: { headline: 'H', photos: ['https://cdn.example/1.jpg', 'https://cdn.example/2.jpg'] },
+    });
+    assert.match(html, /class="gallery multi"/);
+    assert.equal((html.match(/<img src="https:\/\/cdn\.example/g) ?? []).length, 2);
+  });
+
+  test('lässt ein gefährliches Bild auch beim Zeichnen nicht durch', () => {
+    const html = renderCard({
+      slug: 's',
+      kind: 'gift',
+      theme: 'brand',
+      data: { headline: 'H', photos: ['javascript:alert(1)'] } as GiftCardData,
+    });
+    assert.equal(/javascript:/i.test(html), false);
+    assert.equal(/class="gallery/.test(html), false);
   });
 
   test('bittet Suchmaschinen, die Karte nicht aufzunehmen', () => {

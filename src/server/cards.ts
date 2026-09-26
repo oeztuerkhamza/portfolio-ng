@@ -17,15 +17,38 @@ export const CARD_KINDS: CardKind[] = ['business', 'gift'];
 export const CARD_THEMES = ['brand', 'dark', 'warm'] as const;
 export type CardTheme = (typeof CARD_THEMES)[number];
 
+/**
+ * Bekannte Netzwerke. Steht `net` an einem Link, wird er als Konto dieses
+ * Netzwerks gezeichnet (eigene Beschriftung); sonst als gewöhnlicher Knopf.
+ */
+export const NETWORKS = {
+  instagram: 'Instagram',
+  facebook: 'Facebook',
+  linkedin: 'LinkedIn',
+  x: 'X',
+  tiktok: 'TikTok',
+  youtube: 'YouTube',
+  whatsapp: 'WhatsApp',
+  spotify: 'Spotify',
+  google: 'Google',
+  web: 'Website',
+} as const;
+export type Network = keyof typeof NETWORKS;
+
 export interface CardLink {
   label: string;
   url: string;
+  /** Netzwerk, falls es eines ist. */
+  net?: Network;
 }
 
 export interface BusinessCardData {
   company: string;
   tagline?: string;
+  /** Logo des Betriebs — quer, wird oben gezeigt. */
   logoUrl?: string;
+  /** Portrait der Person — rund, für die persönliche Karte. */
+  avatarUrl?: string;
   phone?: string;
   email?: string;
   web?: string;
@@ -38,7 +61,8 @@ export interface GiftCardData {
   to?: string;
   from?: string;
   message?: string;
-  photoUrl?: string;
+  /** Mehrere Bilder, in der eingegebenen Reihenfolge. */
+  photos?: string[];
   songUrl?: string;
   songLabel?: string;
 }
@@ -51,7 +75,9 @@ export interface Card {
 }
 
 /** Maximal so viele Links je Karte — mehr wird abgeschnitten. */
-export const MAX_LINKS = 6;
+export const MAX_LINKS = 8;
+/** Maximal so viele Bilder je Geschenkkarte. */
+export const MAX_PHOTOS = 8;
 
 // ── Maskieren und prüfen ───────────────────────────────────
 /** Alles, was in HTML landet, läuft hier durch. */
@@ -109,9 +135,12 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
     const links = (Array.isArray(b['links']) ? b['links'] : [])
       .map((l) => {
         const item = (l ?? {}) as Record<string, unknown>;
-        const label = text(item['label'], 60);
         const url = httpsUrl(item['url']);
-        return label && url ? { label, url } : null;
+        if (!url) return null;
+        const net = (Object.keys(NETWORKS) as Network[]).find((n) => n === item['net']);
+        // Ohne eigene Beschriftung tut es der Name des Netzwerks.
+        const label = text(item['label'], 60) ?? (net ? NETWORKS[net] : null);
+        return label ? { label, url, ...(net ? { net } : {}) } : null;
       })
       .filter((l): l is CardLink => l !== null)
       .slice(0, MAX_LINKS);
@@ -121,6 +150,8 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
     if (tagline) out.tagline = tagline;
     const logoUrl = httpsUrl(b['logoUrl']);
     if (logoUrl) out.logoUrl = logoUrl;
+    const avatarUrl = httpsUrl(b['avatarUrl']);
+    if (avatarUrl) out.avatarUrl = avatarUrl;
     const phone = text(b['phone'], 40);
     if (phone) out.phone = phone;
     const email = mailAddress(b['email']);
@@ -142,8 +173,11 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
   if (from) out.from = from;
   const message = text(b['message'], 1200);
   if (message) out.message = message;
-  const photoUrl = httpsUrl(b['photoUrl']);
-  if (photoUrl) out.photoUrl = photoUrl;
+  const photos = (Array.isArray(b['photos']) ? b['photos'] : [])
+    .map((u) => httpsUrl(u))
+    .filter((u): u is string => u !== null)
+    .slice(0, MAX_PHOTOS);
+  if (photos.length) out.photos = photos;
   const songUrl = httpsUrl(b['songUrl']);
   if (songUrl) out.songUrl = songUrl;
   const songLabel = text(b['songLabel'], 120);
@@ -168,8 +202,13 @@ body{margin:0;background:${t.bg};color:${t.ink};font:16px/1.55 -apple-system,Bli
   -webkit-text-size-adjust:100%;padding:24px 16px 40px;display:flex;justify-content:center}
 .card{width:100%;max-width:420px;background:${t.panel};border-radius:20px;padding:28px 24px 24px;
   box-shadow:0 1px 2px rgba(14,26,43,.06),0 12px 32px rgba(14,26,43,.10)}
-.logo{display:block;max-width:160px;max-height:90px;margin:0 auto 18px;object-fit:contain}
-.photo{display:block;width:100%;border-radius:14px;margin:0 0 18px}
+.logo{display:block;max-width:160px;max-height:90px;margin:0 auto 14px;object-fit:contain}
+.avatar{display:block;width:104px;height:104px;border-radius:999px;object-fit:cover;margin:0 auto 16px;
+  box-shadow:0 0 0 4px ${t.panel},0 0 0 5px rgba(147,161,179,.35)}
+.gallery{display:grid;gap:8px;margin:0 0 18px}
+.gallery.multi{grid-template-columns:1fr 1fr}
+.gallery img{display:block;width:100%;height:100%;aspect-ratio:4/3;object-fit:cover;border-radius:14px}
+.gallery.multi img:first-child:nth-last-child(odd){grid-column:span 2}
 h1{margin:0 0 4px;font-size:1.5rem;line-height:1.25;letter-spacing:-.01em}
 .tagline,.who{margin:0 0 20px;color:${t.dim};font-size:.95rem}
 .msg{margin:0 0 22px;white-space:pre-line}
@@ -205,8 +244,11 @@ function businessBody(d: BusinessCardData): string {
     .map((l) => ({ label: l?.label, url: httpsUrl(l?.url) }))
     .filter((l): l is { label: string; url: string } => !!l.url && !!l.label);
 
+  const avatar = httpsUrl(d.avatarUrl);
+
   return [
     logo ? `<img class="logo" src="${esc(logo)}" alt="" />` : '',
+    avatar ? `<img class="avatar" src="${esc(avatar)}" alt="" />` : '',
     `<h1>${esc(d.company)}</h1>`,
     d.tagline ? `<p class="tagline">${esc(d.tagline)}</p>` : '',
     rows.length ? `<ul class="rows">${rows.join('')}</ul>` : '',
@@ -216,10 +258,13 @@ function businessBody(d: BusinessCardData): string {
 
 function giftBody(d: GiftCardData): string {
   const who = [d.to ? `Für ${d.to}` : '', d.from ? `von ${d.from}` : ''].filter(Boolean).join(' · ');
-  const photo = httpsUrl(d.photoUrl);
+  const photos = (d.photos ?? []).map((u) => httpsUrl(u)).filter((u): u is string => u !== null);
   const song = httpsUrl(d.songUrl);
+  const gallery = photos.length
+    ? `<div class="gallery${photos.length > 1 ? ' multi' : ''}">${photos.map((u) => `<img src="${esc(u)}" alt="" loading="lazy" />`).join('')}</div>`
+    : '';
   return [
-    photo ? `<img class="photo" src="${esc(photo)}" alt="" />` : '',
+    gallery,
     `<h1>${esc(d.headline)}</h1>`,
     who ? `<p class="who">${esc(who)}</p>` : '',
     d.message ? `<p class="msg">${esc(d.message)}</p>` : '',

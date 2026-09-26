@@ -1,0 +1,234 @@
+import { TestBed } from '@angular/core/testing';
+import { AdminApi } from '../admin-api.service';
+import { CardsTab } from './cards.tab';
+
+/**
+ * Tests der Kartenverwaltung. Geprüft wird vor allem, was am Ende an
+ * /api/admin/cards geschickt wird — dort steckt die Logik: je Art andere
+ * Felder, leere weg, Listen gefiltert.
+ */
+/** Was die Oberfläche an /api/admin/cards schickt. */
+interface CardData {
+  company?: string;
+  tagline?: string;
+  phone?: string;
+  headline?: string;
+  to?: string;
+  songUrl?: string;
+  links?: { url: string; label: string; net?: string }[];
+  photos?: string[];
+}
+interface CardPayload {
+  slug: string;
+  label: string | null;
+  customer_id: string | null;
+  kind: string;
+  theme: string;
+  data: CardData;
+}
+
+describe('CardsTab', () => {
+  let sent: { method: string; path: string; body?: unknown }[];
+  let tab: CardsTab;
+
+  class ApiStub {
+    async req<T>(method: string, path: string, body?: unknown): Promise<T> {
+      sent.push({ method, path, body });
+      return (path === '/cards' && method === 'GET' ? [] : {}) as T;
+    }
+  }
+
+  beforeEach(() => {
+    sent = [];
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      imports: [CardsTab],
+      providers: [{ provide: AdminApi, useClass: ApiStub }],
+    });
+    tab = TestBed.createComponent(CardsTab).componentInstance;
+  });
+
+  /** Absenden nachstellen, ohne ein echtes Formular zu brauchen. */
+  async function submit(): Promise<CardPayload> {
+    sent = [];
+    await tab.save(new Event('submit', { cancelable: true }));
+    const post = sent.find((s) => s.method === 'POST');
+    expect(post).withContext('POST wurde nicht geschickt').toBeTruthy();
+    return post!.body as CardPayload;
+  }
+
+  describe('Profil', () => {
+    beforeEach(() => {
+      tab.kind.set('business');
+      tab.slug.set('cafe-krone');
+      tab.label.set('Tresen Café Krone');
+    });
+
+    it('schickt nur die ausgefüllten Felder', async () => {
+      tab.setF('company', 'Café Krone');
+      tab.setF('phone', '  +49 761 1  ');
+      tab.setF('tagline', '   ');
+      const body = await submit();
+
+      expect(body.kind).toBe('business');
+      expect(body.slug).toBe('cafe-krone');
+      expect(body.data.company).toBe('Café Krone');
+      expect(body.data.phone).toBe('+49 761 1', 'wird beschnitten');
+      expect('tagline' in body.data).toBeFalse();
+    });
+
+    it('nimmt nur Bağlantılar mit Adresse mit und behält das Netzwerk', async () => {
+      tab.setF('company', 'X');
+      tab.addLink();
+      tab.setLink(0, 'net', 'instagram');
+      tab.setLink(0, 'url', ' https://instagram.com/x ');
+      tab.addLink();
+      tab.setLink(1, 'label', 'Ohne Adresse');
+      const body = await submit();
+
+      expect(body.data.links).toEqual([{ url: 'https://instagram.com/x', label: '', net: 'instagram' }]);
+    });
+
+    it('schickt kein Netzwerk, wenn keines gewählt ist', async () => {
+      tab.setF('company', 'X');
+      tab.addLink();
+      tab.setLink(0, 'label', 'Speisekarte');
+      tab.setLink(0, 'url', 'https://krone.de/karte');
+      const body = await submit();
+
+      expect(body.data.links?.[0]).toEqual({ url: 'https://krone.de/karte', label: 'Speisekarte' });
+    });
+
+    it('entfernt eine Zeile wieder', async () => {
+      tab.setF('company', 'X');
+      tab.addLink();
+      tab.setLink(0, 'url', 'https://a.de');
+      tab.addLink();
+      tab.setLink(1, 'url', 'https://b.de');
+      tab.removeLink(0);
+      const body = await submit();
+
+      expect(body.data.links?.map((l) => l.url)).toEqual(['https://b.de']);
+    });
+
+    it('schickt keine Geschenkfelder mit', async () => {
+      tab.setF('company', 'X');
+      tab.setF('headline', 'Sollte nicht mitkommen');
+      const body = await submit();
+      expect('headline' in body.data).toBeFalse();
+    });
+  });
+
+  describe('Özel gün', () => {
+    beforeEach(() => {
+      tab.kind.set('gift');
+      tab.slug.set('dogum-gunu');
+    });
+
+    it('schickt Überschrift, Namen und Lied', async () => {
+      tab.setF('headline', 'Alles Liebe!');
+      tab.setF('to', 'Ayşe');
+      tab.setF('songUrl', 'https://open.spotify.com/track/abc');
+      const body = await submit();
+
+      expect(body.kind).toBe('gift');
+      expect(body.data.headline).toBe('Alles Liebe!');
+      expect(body.data.to).toBe('Ayşe');
+      expect(body.data.songUrl).toBe('https://open.spotify.com/track/abc');
+    });
+
+    it('lässt leere Fotozeilen weg', async () => {
+      tab.setF('headline', 'H');
+      tab.addPhoto();
+      tab.setPhoto(0, ' https://cdn.example/1.jpg ');
+      tab.addPhoto();
+      tab.addPhoto();
+      tab.setPhoto(2, 'https://cdn.example/3.jpg');
+      const body = await submit();
+
+      expect(body.data.photos).toEqual(['https://cdn.example/1.jpg', 'https://cdn.example/3.jpg']);
+    });
+  });
+
+  describe('Kurzname vorschlagen', () => {
+    it('macht aus deutschen und türkischen Zeichen einen sauberen Kurznamen', () => {
+      // Umlaute werden deutsch umschrieben (ü → ue), wie in „NFC linkleri";
+      // türkische Buchstaben ohne deutsche Entsprechung werden vereinfacht
+      // (ş → s, ğ → g, ı → i, ç → c).
+      tab.label.set('Café Müller & Şişli Güneş');
+      tab.suggestSlug();
+      expect(tab.slug()).toBe('cafe-mueller-sisli-guenes');
+    });
+
+    it('lässt einen schon getippten Kurznamen in Ruhe', () => {
+      tab.slug.set('selbst-gesetzt');
+      tab.label.set('Ganz was anderes');
+      tab.suggestSlug();
+      expect(tab.slug()).toBe('selbst-gesetzt');
+    });
+
+    it('ändert den Kurznamen einer bestehenden Karte nicht', () => {
+      tab.editId.set('abc');
+      tab.slug.set('');
+      tab.label.set('Neue Beschreibung');
+      tab.suggestSlug();
+      expect(tab.slug()).toBe('');
+    });
+  });
+
+  describe('Thema', () => {
+    it('nimmt nur bekannte Themen', () => {
+      tab.setTheme('dark');
+      expect(tab.theme()).toBe('dark');
+      tab.setTheme('quatsch');
+      expect(tab.theme()).toBe('dark', 'unbekanntes Thema wird ignoriert');
+    });
+  });
+
+  describe('Bearbeiten', () => {
+    it('lädt eine Karte ins Formular und schickt sie unverändert zurück', async () => {
+      const card = {
+        id: 'id-1',
+        slug: 'cafe-krone',
+        kind: 'business' as const,
+        theme: 'dark' as const,
+        label: 'Tresen',
+        customer_id: null,
+        customer_name: null,
+        active: true,
+        scans_total: 0,
+        scans_30d: 0,
+        last_scan: null,
+        data: {
+          company: 'Café Krone',
+          phone: '+49 761 1',
+          links: [{ net: 'instagram', label: 'Insta', url: 'https://instagram.com/x' }],
+        },
+      };
+      await tab.openEdit(card);
+
+      expect(tab.kind()).toBe('business');
+      expect(tab.theme()).toBe('dark');
+      expect(tab.f('company')).toBe('Café Krone');
+      expect(tab.links()).toEqual([{ net: 'instagram', label: 'Insta', url: 'https://instagram.com/x' }]);
+
+      sent = [];
+      await tab.save(new Event('submit', { cancelable: true }));
+      const patch = sent.find((s) => s.method === 'PATCH');
+      expect(patch?.path).toBe('/cards/id-1', 'bestehende Karte wird geändert, nicht neu angelegt');
+      const body = patch!.body as CardPayload;
+      expect(body.data.company).toBe('Café Krone');
+      expect(body.data.links).toEqual([{ url: 'https://instagram.com/x', label: 'Insta', net: 'instagram' }]);
+    });
+
+    it('lädt die Bildergalerie einer Geschenkkarte', async () => {
+      await tab.openEdit({
+        id: 'id-2', slug: 'g', kind: 'gift', theme: 'warm', label: null, customer_id: null, customer_name: null,
+        active: true, scans_total: 0, scans_30d: 0, last_scan: null,
+        data: { headline: 'H', photos: ['https://cdn.example/1.jpg', 'https://cdn.example/2.jpg'] },
+      });
+      expect(tab.photos()).toEqual(['https://cdn.example/1.jpg', 'https://cdn.example/2.jpg']);
+      expect(tab.f('headline')).toBe('H');
+    });
+  });
+});
