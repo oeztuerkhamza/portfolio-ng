@@ -1,0 +1,192 @@
+// Produktseite: /bewertungskarten/<kurzname>.
+// Das Grundgerüst (page-hero, section, card, check-list, stepper) kommt aus
+// styles.scss — hier steht nur, was diese Seite zusätzlich braucht.
+
+@import "../../../styles/variables";
+
+.pd-grid {
+  align-items: start;
+}
+
+.pd-price {
+  margin: 0 0 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+
+  strong {
+    font-size: 2rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  small {
+    color: $text-mute;
+    font-size: 0.9rem;
+  }
+}
+
+.pd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+// Der Schrittzähler steht hier neben einem großen Knopf und muss dessen
+// Höhe halten, sonst springt die Zeile.
+.pd-stepper {
+  min-height: 3.25rem;
+  padding: 0 0.5rem;
+}
+
+.pd-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 0.5rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: $brand;
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.pd-note {
+  margin: 1rem 0 0;
+  color: $text-mute;
+  font-size: 0.95rem;
+  max-width: 46ch;
+}
+
+.pd-body {
+  display: grid;
+  gap: 2.5rem;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pd-text p {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.75;
+  max-width: 68ch;
+}
+
+.pd-side {
+  padding: 1.75rem;
+
+  .check-list {
+    margin: 0 0 1.5rem;
+  }
+}
+
+.pd-side-title {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pd-small {
+  margin: 0.5rem 0 0;
+  color: $text-mute;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.pd-more-title {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.pd-more {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
+.pd-more-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  height: 100%;
+
+  img {
+    width: 100%;
+    height: auto;
+    border-radius: $radius-sm;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  &:hover .pd-more-name {
+    text-decoration: underline;
+  }
+}
+
+.pd-more-name {
+  font-weight: 600;
+}
+
+.pd-more-price {
+  color: $text-mute;
+  font-size: 0.9rem;
+}
+
+// Ablauf in vier Schritten, unter dem Fließtext.
+.pd-steps-title {
+  margin: 2.5rem 0 1rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.pd-steps {
+  list-style: none;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.1rem;
+  max-width: 62ch;
+
+  li {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: 0.25rem 0.9rem;
+
+    &::before {
+      content: counter(step);
+      grid-row: span 2;
+      display: grid;
+      place-items: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 999px;
+      background: $brand-tint;
+      color: $brand;
+      font-family: $font-display;
+      font-weight: 500;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  span {
+    color: $text-dim;
+    grid-column: 2;
+  }
+}

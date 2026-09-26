@@ -664,19 +664,22 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'Dört adım,<br /><em>sonra tezgâhta</em>.',
     ku: 'Çar gav,<br /><em>paşê li ser tezgehê ye</em>.',
   },
+  // Schritt 1 beschreibt den Weg, den die Knöpfe auf der Seite gehen: seit der
+  // Shop offen ist, wird bestellt und nicht angefragt. Ist der Shop zu, führen
+  // die Knöpfe auf die E-Mail — der zweite Satz stimmt dann trotzdem.
   'rc.step1.t': {
-    de: 'Anfrage',
-    fr: 'Demande',
-    en: 'Request',
-    tr: 'Talep',
-    ku: 'Daxwaz',
+    de: 'Bestellung',
+    fr: 'Commande',
+    en: 'Order',
+    tr: 'Sipariş',
+    ku: 'Siparîş',
   },
   'rc.step1.d': {
-    de: 'Sie schreiben uns, welches Paket Sie möchten, und schicken den Link zu Ihrem Google-Unternehmensprofil. Wenn Sie ihn nicht finden, suchen wir ihn.',
-    fr: 'Vous nous écrivez le pack souhaité et envoyez le lien de votre fiche d’établissement Google. Si vous ne le trouvez pas, nous le cherchons.',
-    en: 'You tell us which package you want and send the link to your Google Business Profile. If you can’t find it, we will.',
-    tr: 'Hangi paketi istediğinizi yazıyor ve Google İşletme Profilinizin bağlantısını gönderiyorsunuz. Bulamazsanız biz buluruz.',
-    ku: 'Hûn dinivîsin kîjan pakêtê dixwazin û girêdana Profîla Karsaziyê ya Google dişînin. Ger nebînin, em jê re digerin.',
+    de: 'Sie legen Ihr Produkt in den Warenkorb und bezahlen online — Name des Betriebs und der Link zu Ihrem Google-Profil gehören zur Bestellung. Wenn Sie den Link nicht finden, suchen wir ihn.',
+    fr: 'Vous ajoutez votre produit au panier et payez en ligne — le nom de l’établissement et le lien de votre fiche Google font partie de la commande. Si vous ne trouvez pas le lien, nous le cherchons.',
+    en: 'You add your product to the cart and pay online — your business name and the link to your Google profile are part of the order. If you can’t find the link, we will.',
+    tr: 'Ürünü sepete ekleyip online ödersiniz — işletme adı ve Google profil linkiniz siparişin parçasıdır. Linki bulamazsanız biz buluruz.',
+    ku: 'Hûn berhema xwe têxin selikê û serhêl bidin — navê karsaziyê û girêdana profîla we ya Google beşek ji siparîşê ne. Ger girêdanê nebînin, em jê re digerin.',
   },
   'rc.step2.t': {
     de: 'Einrichtung',
@@ -888,12 +891,15 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     tr: 'tezgâh standı',
     ku: 'sêpaya tezgehê',
   },
+  // Lieferzeit muss zur Angabe im Shop passen (`shop.legal.delivery`, AGB,
+  // /versand und die Bestellbestätigung): 5–10 Werktage nach Freigabe. Zwei
+  // verschiedene Fristen auf einer Website sind irreführende Werbung.
   'rc.price.note': {
-    de: 'Alle Preise sind Endpreise inklusive Einrichtung und Versand innerhalb Deutschlands. Kleinunternehmer gemäß § 19 UStG — es wird keine Umsatzsteuer ausgewiesen. Lieferzeit in der Regel 5–7 Werktage nach Freigabe des Entwurfs.',
-    fr: 'Tous les prix sont des prix finaux, configuration et expédition en Allemagne comprises. Petite entreprise au sens du § 19 UStG — la TVA n’est pas facturée. Délai de livraison généralement de 5 à 7 jours ouvrés après validation de la maquette.',
-    en: 'All prices are final prices including setup and shipping within Germany. Small-business scheme under § 19 of the German VAT Act — no VAT is shown. Delivery usually 5–7 working days after the design is approved.',
-    tr: 'Tüm fiyatlar, kurulum ve Almanya içi gönderim dahil nihai fiyatlardır. § 19 UStG uyarınca küçük işletme — KDV gösterilmez. Teslim süresi, tasarım onayından sonra genellikle 5–7 iş günüdür.',
-    ku: 'Hemû biha bihayên dawî ne, amadekirin û şandina hundirê Almanyayê tê de. Karsaziya biçûk li gorî § 19 UStG — bac nayê nîşandan. Dema teslîmkirinê bi gelemperî 5–7 rojên xebatê piştî pejirandina sêwiranê.',
+    de: 'Alle Preise sind Endpreise inklusive Einrichtung und Versand innerhalb Deutschlands. Kleinunternehmer gemäß § 19 UStG — es wird keine Umsatzsteuer ausgewiesen. Lieferzeit in der Regel 5–10 Werktage nach Freigabe des Entwurfs.',
+    fr: 'Tous les prix sont des prix finaux, configuration et expédition en Allemagne comprises. Petite entreprise au sens du § 19 UStG — la TVA n’est pas facturée. Délai de livraison généralement de 5 à 10 jours ouvrés après validation de la maquette.',
+    en: 'All prices are final prices including setup and shipping within Germany. Small-business scheme under § 19 of the German VAT Act — no VAT is shown. Delivery usually 5–10 working days after the design is approved.',
+    tr: 'Tüm fiyatlar, kurulum ve Almanya içi gönderim dahil nihai fiyatlardır. § 19 UStG uyarınca küçük işletme — KDV gösterilmez. Teslim süresi, tasarım onayından sonra genellikle 5–10 iş günüdür.',
+    ku: 'Hemû biha bihayên dawî ne, amadekirin û şandina hundirê Almanyayê tê de. Karsaziya biçûk li gorî § 19 UStG — bac nayê nîşandan. Dema teslîmkirinê bi gelemperî 5–10 rojên xebatê piştî pejirandina sêwiranê.',
   },
   'rc.why.label': {
     de: 'Warum',

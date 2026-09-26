@@ -13,12 +13,13 @@
         <p class="section-subtitle" [innerHTML]="i18n.t('rc.intro')"></p>
         <p class="hero-price">{{ i18n.tp('price.from', priceFrom) }}</p>
         <div class="page-hero-actions">
-          <a [href]="mailto()" class="btn btn-primary btn-large">{{ i18n.t('rc.cta.order') }}</a>
-          <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-secondary btn-large">
-            <app-icon name="chat" /> {{ i18n.t('rc.cta.whatsapp') }}
-          </a>
-          @if (shop.enabled()) {
-            <a [routerLink]="'/bestellen' | localize" class="btn btn-secondary btn-large">{{ i18n.t('rc.shop.cta') }}</a>
+          @if (buyable()) {
+            <a [routerLink]="'/bestellen' | localize" class="btn btn-primary btn-large">
+              {{ i18n.t('rc.shop.cta') }}@if (cart.count()) { <span class="rc-badge">{{ cart.count() }}</span> }
+            </a>
+            <a [routerLink]="'/bewertungskarten' | localize" fragment="formen" class="btn btn-secondary btn-large">{{ i18n.t('rc.see') }}</a>
+          } @else {
+            <a [href]="mailto()" class="btn btn-primary btn-large">{{ i18n.t('rc.cta.order') }}</a>
           }
         </div>
       </div>
@@ -63,8 +64,25 @@
                 {{ f.price }} €
                 <small>{{ i18n.t('rc.form.unit') }}</small>
               </p>
-              <a [href]="mailtoForm(f.id)" class="btn btn-secondary">{{ i18n.t('rc.form.cta') }}</a>
+              @if (buyable()) {
+                @if (cart.qtyOf('form.' + f.id) === 0) {
+                  <button type="button" class="btn btn-secondary" (click)="cart.add('form.' + f.id, 1)">
+                    <app-icon name="bag" /> {{ i18n.t('shop.cart.add') }}
+                  </button>
+                } @else {
+                  <div class="stepper" role="group" [attr.aria-label]="i18n.t('rc.form.' + f.id + '.name')">
+                    <button type="button" (click)="cart.add('form.' + f.id, -1)" [attr.aria-label]="i18n.t('shop.minus')">−</button>
+                    <output>{{ cart.qtyOf('form.' + f.id) }}</output>
+                    <button type="button" (click)="cart.add('form.' + f.id, 1)" [disabled]="cart.qtyOf('form.' + f.id) >= maxQty" [attr.aria-label]="i18n.t('shop.plus')">+</button>
+                  </div>
+                }
+              } @else {
+                <a [href]="mailtoForm(f.id)" class="btn btn-secondary">{{ i18n.t('rc.form.cta') }}</a>
+              }
             </div>
+            <a [routerLink]="('/bewertungskarten/' + formSlug(f.id)) | localize" class="form-details">
+              {{ i18n.t('pd.details') }} <app-icon name="arrow" />
+            </a>
           </div>
         </article>
       }
@@ -154,11 +172,25 @@
           </ul>
 
           <div class="pkg-actions">
-            <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
-              {{ i18n.t('rc.cta.order') }}
-            </a>
-            <a [href]="whatsapp(p.id)" target="_blank" rel="noopener" class="pkg-wa">
-              {{ i18n.t('rc.cta.whatsapp') }}
+            @if (buyable()) {
+              @if (cart.qtyOf('pkg.' + p.id) === 0) {
+                <button type="button" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured" (click)="cart.add('pkg.' + p.id, 1)">
+                  <app-icon name="bag" /> {{ i18n.t('shop.cart.add') }}
+                </button>
+              } @else {
+                <div class="stepper" role="group" [attr.aria-label]="i18n.t('rc.pkg.' + p.id + '.name')">
+                  <button type="button" (click)="cart.add('pkg.' + p.id, -1)" [attr.aria-label]="i18n.t('shop.minus')">−</button>
+                  <output>{{ cart.qtyOf('pkg.' + p.id) }}</output>
+                  <button type="button" (click)="cart.add('pkg.' + p.id, 1)" [disabled]="cart.qtyOf('pkg.' + p.id) >= maxQty" [attr.aria-label]="i18n.t('shop.plus')">+</button>
+                </div>
+              }
+            } @else {
+              <a [href]="mailto(p.id)" class="btn btn-block" [class.btn-primary]="p.featured" [class.btn-secondary]="!p.featured">
+                {{ i18n.t('rc.cta.order') }}
+              </a>
+            }
+            <a [routerLink]="('/bewertungskarten/' + pkgSlug(p.id)) | localize" class="pkg-details">
+              {{ i18n.t('pd.details') }}
             </a>
           </div>
         </article>
@@ -224,10 +256,10 @@
         <p class="cta-text">{{ i18n.t('rc.cta.text') }}</p>
       </div>
       <div class="cta-actions">
-        <a [href]="mailto()" class="btn btn-light btn-large">{{ i18n.t('rc.cta.order') }}</a>
-        <a [href]="whatsapp()" target="_blank" rel="noopener" class="btn btn-outline-light btn-large">
-          <app-icon name="chat" /> WhatsApp
-        </a>
+        @if (buyable()) {
+          <a [routerLink]="'/bestellen' | localize" class="btn btn-light btn-large">{{ i18n.t('rc.shop.cta') }}</a>
+        }
+        <a [href]="mailto()" class="btn btn-outline-light btn-large">{{ i18n.t('rc.cta.order') }}</a>
       </div>
     </div>
   </div>

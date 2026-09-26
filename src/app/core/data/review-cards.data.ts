@@ -64,6 +64,90 @@ export const REVIEW_CARD_FORMS: ReviewCardForm[] = [
 ];
 
 /**
+ * Alle Produkte mit eigener Detailseite unter /bewertungskarten/<slug>.
+ *
+ * Formen und Pakete stehen hier in einer Liste, weil Detailseite und
+ * „In den Warenkorb"-Knopf beides gleich behandeln. `key` ist derselbe
+ * Schlüssel wie in der Tabelle `prices` — nur damit landet im Warenkorb die
+ * Zeile, die der Server später auch abrechnet.
+ *
+ * Die Kurznamen stehen hier fest und dürfen sich nicht mehr ändern: sie sind
+ * die Adresse der Seite und stehen irgendwann in Suchergebnissen.
+ */
+export interface ReviewCardProduct {
+  /** Adresse der Detailseite: /bewertungskarten/<slug>. */
+  slug: string;
+  /** Zeile im Shop-Katalog, z. B. `form.karte`. */
+  key: string;
+  /** Einzelprodukt oder Paket — entscheidet, welche i18n-Schlüssel gelten. */
+  kind: 'form' | 'pkg';
+  /** id innerhalb der Art, für `rc.form.<id>.*` bzw. `rc.pkg.<id>.*`. */
+  id: string;
+  price: number;
+  image: string;
+  imageSmall: string;
+  /** Pakete: enthaltene Karten. */
+  cards?: number;
+  /** Pakete: zusätzlicher Tischaufsteller. */
+  stand?: boolean;
+  /** Pakete: wie viele Punkte aus `rc.pkg.<id>.p*` gelten. */
+  points?: number;
+}
+
+/** Kurzname je Form. `anhaenger` heißt in der Adresse ausgeschrieben. */
+const FORM_SLUGS: Record<ReviewCardForm['id'], string> = {
+  karte: 'karte',
+  aufsteller: 'aufsteller',
+  aufkleber: 'aufkleber',
+  anhaenger: 'schluesselanhaenger',
+};
+
+const byForm = (id: ReviewCardForm['id']) => REVIEW_CARD_FORMS.find((f) => f.id === id)!;
+
+export const REVIEW_CARD_PRODUCTS: ReviewCardProduct[] = [
+  ...REVIEW_CARD_FORMS.map(
+    (f): ReviewCardProduct => ({
+      slug: FORM_SLUGS[f.id],
+      key: `form.${f.id}`,
+      kind: 'form',
+      id: f.id,
+      price: f.price,
+      image: f.image,
+      imageSmall: f.imageSmall,
+    }),
+  ),
+  ...REVIEW_CARD_PACKAGES.map((p): ReviewCardProduct => {
+    // Pakete haben kein eigenes Foto: das Tresen-Paket zeigt den Aufsteller,
+    // die anderen die Karte — das ist jeweils das Hauptstück darin.
+    const shown = byForm(p.stand ? 'aufsteller' : 'karte');
+    return {
+      slug: `paket-${p.id}`,
+      key: `pkg.${p.id}`,
+      kind: 'pkg',
+      id: p.id,
+      price: p.price,
+      image: shown.image,
+      imageSmall: shown.imageSmall,
+      cards: p.cards,
+      stand: p.stand,
+      points: p.points,
+    };
+  }),
+];
+
+/** Produkt zu einem Kurznamen — null, wenn es die Adresse nicht gibt. */
+export const reviewCardProduct = (slug: string | null): ReviewCardProduct | null =>
+  REVIEW_CARD_PRODUCTS.find((p) => p.slug === slug) ?? null;
+
+/** i18n-Schlüssel des Namens, je Art unterschiedlich. */
+export const productNameKey = (p: ReviewCardProduct): string =>
+  p.kind === 'form' ? `rc.form.${p.id}.name` : `rc.pkg.${p.id}.name`;
+
+/** i18n-Schlüssel der Kurzbeschreibung. */
+export const productTextKey = (p: ReviewCardProduct): string =>
+  p.kind === 'form' ? `rc.form.${p.id}.text` : `rc.pkg.${p.id}.for`;
+
+/**
  * Beispiel-Designs für verschiedene Branchen. Bild unter
  * `/assets/images/products/examples/<id>.webp`, Branche aus `rc.ex.<id>`.
  * Die Namen auf den Karten („Café Muster" …) sind Platzhalter.

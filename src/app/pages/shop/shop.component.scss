@@ -41,26 +41,6 @@
   span { color: $brand; font-family: $font-display; font-size: 1.1rem; }
 }
 
-.stepper {
-  display: inline-flex;
-  align-items: center;
-  border: 1px solid $rule-strong;
-  border-radius: 999px;
-  overflow: hidden;
-
-  button {
-    width: 40px;
-    height: 40px;
-    border: 0;
-    background: #fff;
-    font-size: 1.2rem;
-    color: $brand;
-    cursor: pointer;
-    &:hover { background: $brand-tint; }
-  }
-  output { min-width: 2ch; text-align: center; font-weight: 600; }
-}
-
 .shop-sum {
   display: grid;
   gap: 0.6rem;

@@ -98,6 +98,29 @@
 
 .pkg-actions { display: flex; flex-direction: column; gap: 0.4rem; }
 
+// Weg zur Produktseite — dort steht der lange Text zum Produkt.
+.pkg-details,
+.form-details {
+  font-size: 0.86rem;
+  font-weight: 500;
+  text-align: center;
+  color: $text-dim;
+  padding: 0.55rem;
+  transition: color $transition-fast;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  &:hover { color: $brand; }
+  app-icon { width: 0.9em; }
+}
+
+.form-details {
+  align-self: flex-start;
+  justify-content: flex-start;
+  padding: 0.75rem 0 0;
+}
+
 .pkg-wa {
   font-size: 0.86rem;
   font-weight: 500;

@@ -1,6 +1,7 @@
 import { RenderMode, ServerRoute } from '@angular/ssr';
 import { PROJECTS } from './core/data/project.data';
 import { LANG_CODES } from './core/i18n/i18n.service';
+import { REVIEW_CARD_PRODUCTS } from './core/data/review-cards.data';
 import { TOWNS } from './core/data/towns.data';
 
 const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
@@ -15,6 +16,13 @@ export const serverRoutes: ServerRoute[] = [
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  // Sieben Produkte × fünf Sprachen, alle fertig ausgeliefert.
+  {
+    path: ':locale/bewertungskarten/:produkt',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: async () =>
+      LANG_CODES.flatMap((locale) => REVIEW_CARD_PRODUCTS.map((p) => ({ locale, produkt: p.slug }))),
+  },
   { path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/abo', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

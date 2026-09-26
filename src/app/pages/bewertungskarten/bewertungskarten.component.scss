@@ -35,6 +35,21 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  flex-wrap: wrap;
+
+  // In der schmalen Kachel passt „In den Warenkorb" nicht neben den Preis,
+  // ohne mitten im Wort zu brechen. Darum bekommt der Knopf eine eigene
+  // Zeile — und der Mengenwähler danach dieselbe, damit beim Klick nichts
+  // springt.
+  .btn,
+  .stepper {
+    flex: 1 1 100%;
+    white-space: nowrap;
+  }
+
+  .stepper {
+    justify-content: space-between;
+  }
 }
 
 .form-price {

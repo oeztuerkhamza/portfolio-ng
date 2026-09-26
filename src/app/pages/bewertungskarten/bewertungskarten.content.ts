@@ -55,6 +55,7 @@ export const REVIEW_CARDS_CONTENT: Record<string, Entry> = {
     ku: 'Ji bo kesên ku diçin cem xerîdar: pîşesaz, lênêrîn, gihandin, karê derve. Piştî karî bi kurtî nîşan bidin.',
   },
   'rc.form.unit': { de: 'Einzelpreis', fr: 'Prix unitaire', en: 'Single price', tr: 'Birim fiyat', ku: 'Bihayê yekane' },
+  'rc.see': { de: 'Produkte ansehen', fr: 'Voir les produits', en: 'See the products', tr: 'Ürünlere bak', ku: 'Berheman bibîne' },
   'rc.form.cta': { de: 'Anfragen', fr: 'Demander', en: 'Enquire', tr: 'Talep et', ku: 'Daxwaz bike' },
 
   // ---- Beispiel-Designs ----------------------------------------------------

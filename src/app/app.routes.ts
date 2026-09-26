@@ -33,6 +33,13 @@ const localeChildren: Routes = [
       ),
     data: { animation: 'ReviewCards' },
   },
+  // Produktseite je Karte und Paket. Sie hat den WhatsApp-Knopf auf der
+  // Übersicht ersetzt: wer mehr wissen will, liest hier weiter.
+  {
+    path: 'bewertungskarten/:produkt',
+    loadComponent: () => import('./pages/produkt/produkt.component').then((m) => m.ProduktComponent),
+    data: { animation: 'Produkt' },
+  },
   {
     path: 'smart-home',
     loadComponent: () =>

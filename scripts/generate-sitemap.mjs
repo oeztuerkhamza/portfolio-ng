@@ -34,6 +34,8 @@ function meta(path) {
   if (['/leistungen', '/bewertungskarten', '/smart-home', '/abo'].includes(page)) {
     return { priority: '0.9', freq: 'monthly' };
   }
+  // Produktseiten der Bewertungskarten: echte Kaufseiten, kein Beiwerk.
+  if (page.startsWith('/bewertungskarten/')) return { priority: '0.8', freq: 'monthly' };
   if (page.startsWith('/webdesign/')) return { priority: page === '/webdesign/freiburg' ? '0.9' : '0.8', freq: 'monthly' };
   if (page === '/projects') return { priority: '0.7', freq: 'monthly' };
   if (page.startsWith('/projects/')) return { priority: '0.6', freq: 'monthly' };
