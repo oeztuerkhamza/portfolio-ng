@@ -13,6 +13,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Faturalar** | Logolu Rechnung: taslak → kesinleştir (RE-2026-0001 …) → PDF → ödendi. GiroCode QR, Storno, kopyala. |
 | **NFC linkleri** | Kartlara yazılan kısa linkler (`/r/cafe-muster`). Hedefi istediğiniz an değiştirin, okutma sayısını görün, QR kodu SVG olarak indirin. |
 | **NFC kartları** | Kendi alan adımızda kart sayfaları (`/k/cafe-krone`): firma kartı ya da özel gün kartı. Kart dili, tema, logo/fotoğraf yükleme, ziyaretçi bilgi formu, okutma sayısı, QR. |
+| **Google yorumları** | Google'daki yorumlarınız sitede döner. Place ID'yi girip “Şimdi al”a basın; sonra günde bir kez kendi yenilenir. İstemediğiniz yorumu gizleyebilirsiniz. |
 | **Fiyatlar** | Sitedeki tüm fiyatlar. Değiştirip **Siteyi güncelle**'ye basınca 2–4 dakikada sitede. |
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
 | **Ayarlar** | Online mağazayı açma / kapama. Varsayılan: **kapalı**. |
@@ -29,7 +30,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260924130000_invoices.sql` (faturalar), `20260925120000_invoice_sent.sql`,
    `20260926120000_cards.sql` (kart sayfaları) ve
    `20260926140000_cards_shop_leads.sql` (kartların mağazada satışı, kart dili, ziyaretçi bilgileri) ve
-   `20260926150000_card_leads_consent.sql` (onay metninin kaydı).
+   `20260926150000_card_leads_consent.sql` (onay metninin kaydı) ve
+   `20260926160000_reviews.sql` (Google yorumları).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
@@ -56,6 +58,7 @@ Vercel → proje **breisgau-digital** → **Settings → Environment Variables**
 | `SUPABASE_SERVICE_ROLE_KEY` | Yalnızca NFC kartlarının görsellerini Supabase deposuna yüklemek için gerekir (`SUPABASE_SECRET_KEY` adı da kabul edilir). Supabase entegrasyonu bunu Vercel'e kendisi ekler. Bu anahtar satır güvenliğini aşar: **sadece sunucuda kullanılır, tarayıcıya hiç gitmez.** Kart görseli yüklemeyecekseniz eklemeniz gerekmez. |
 | `ADMIN_EMAILS` | Panele girebilecek e-postalar, virgülle: `hamza.oeztuerk@web.de` |
 | `CRON_SECRET` | Kendi uydurduğunuz uzun rastgele bir metin (ör. `openssl rand -hex 32`). Vercel her gün `/api/cron/cleanup` adresini bununla çağırır ve **12 aydan eski ziyaretçi bilgileri silinir** — Datenschutzerklärung'da yazan söz budur. Girilmezse o adres kimseyi kabul etmez (açık bir silme ucu bırakmaktansa çalışmasın); temizlik o durumda da her yeni bilgi geldiğinde yapılır. |
+| `GOOGLE_API_KEY` | Google yorumlarını çekmek için. Google Cloud Console → **APIs & Services → Credentials → Create credentials → API key**; sonra **Enabled APIs** listesine **Places API (New)** ekleyin. Anahtarı “API restrictions” ile sadece bu API'ye kısıtlayın. Girilmezse yorum bölümü sitede hiç görünmez, başka hiçbir şey etkilenmez. Bu anahtar **sadece sunucuda kullanılır, tarayıcıya hiç gitmez.** |
 | `SITE_URL` | `https://breisgau-digital.de` |
 | `VERCEL_DEPLOY_HOOK_URL` | Vercel → Settings → Git → **Deploy Hooks** → ad: `fiyatlar`, branch: `main` → oluşan URL |
 | `SMTP_HOST` | Faturaları e-postayla göndermek için: `mail.bikehausfreiburg.com` (Mailcow) |
@@ -190,11 +193,51 @@ gitmek seçimi silmez, dolu sepet navbar'da rozetle görünür. Sepette yalnızc
 adet tutulur — fiyat tutulmaz, o yüzden sepetten tutar oynatılamaz. Ödeme dönüşünde
 "Danke" sayfası sepeti boşaltır.
 
+## 7. Google yorumları (sitede)
+
+Google'daki yorumlarınız ana sayfada ve “Bewertungskarten” sayfasında döner.
+
+1. **Place ID'yi bulun:** Google'ın “Place ID Finder” sayfasında işletme adınızı yazın.
+   `ChIJ…` diye başlayan uzun metni kopyalayın.
+2. Panel → **Google yorumları** → Place ID alanına yapıştırın → **Şimdi al**.
+3. Alınan yorumlar listede görünür. Her birinde **Sitede göster** işareti var; kaldırırsanız
+   o yorum sitede çıkmaz.
+4. İlk kez aldıktan sonra sitede görünmesi için bir yayın gerekir: panel →
+   **Fiyatlar → Siteyi güncelle**. Yorumlar derleme sırasında sayfanın içine yazılır.
+   Sonraki günlerde bu iş kendiliğinden olur: gece yenileme sırasında **görünen bir şey
+   değiştiyse** (yeni yorum, silinen yorum, değişen not) site otomatik yeniden yayınlanır.
+   Değişiklik yoksa boşuna derleme yapılmaz. Bunun için `VERCEL_DEPLOY_HOOK_URL` ve
+   `CRON_SECRET` ayarlı olmalı.
+
+Nasıl çalıştığı ve neden böyle:
+
+- Yorumlar **sunucudan** alınır ve veritabanımızda durur. Ziyaretçinin tarayıcısı Google'a hiç
+  bağlanmaz: ne bir script, ne bir resim, ne IP adresi. Bu yüzden yorumlar için **çerez onayı
+  gerekmez** ve yorumlar ilk açılışta görünür. Yazarların profil fotoğrafları yerine baş
+  harfleri gösterilir — fotoğraf Google'dan gelen bir istek olurdu.
+- Google şartları yorumları uzun süre saklamaya izin vermiyor: **30 günden eski** kayıtlar
+  otomatik silinir. Bu yüzden `CRON_SECRET` ayarlı olsun — günlük yenileme oradan çalışır.
+  Ayarlı değilse yorumlar bir süre sonra kaybolur, sadece elle “Şimdi al” ile gelir.
+- Google bir gün cevap vermezse ortalama not ve sayı **silinmez**, öylece kalır: geçici bir
+  arıza yüzünden siteden “4,9 / 5” satırının kaybolması doğru olmazdı. Gerçekten eskiyen
+  kayıtları 30 gün kuralı temizler.
+- Yorum metinleri **olduğu gibi** gösterilir; kısaltmak veya düzeltmek Google şartlarına aykırı.
+  Bir yorumu tamamen gizlemek serbest.
+- Sitede **AggregateRating / Review şeması (JSON-LD) yoktur**, bilerek: başka bir platformdan
+  gelen yorumları kendi yapılandırılmış verisi gibi işaretlemek Google'ın “self-serving markup”
+  kuralına girer ve cezası zengin sonuçların tamamen kaybı olabilir.
+- `GOOGLE_API_KEY` yoksa ya da Place ID girilmemişse bölüm sitede **hiç görünmez**; boş bir
+  başlık kalmaz.
+- Bir hata olursa panelde son denemenin altında yazar (ör. “403 — anahtar bu API'yi
+  kullanamıyor”). Anahtarın kendisi hiçbir yerde görünmez.
+
 ## Teknik notlar
 
 - API: `src/server/` (Express, `src/server.ts` içine bağlı). Panel: `src/app/admin/`.
 - Fiyatlar derleme sırasında `scripts/fetch-catalog.mjs` ile veritabanından
   `src/app/core/data/catalog.json` dosyasına yazılır. Veritabanı yoksa dosyadaki değerler kullanılır.
+- Google yorumları aynı şekilde: `scripts/fetch-reviews.mjs` → `src/app/core/data/reviews.json`.
+  Veritabanı yoksa depodaki dosya olduğu gibi kalır, derleme yine tamamlanır.
 - Yerel test: `DATABASE_URL=postgres://… npm run build && npm run serve:ssr`.
 - Otomatik testler: `npm run test:all` (Angular tarafı Karma ile, `src/server/`
   Node test runner ile). Ayrıntılar README'de.

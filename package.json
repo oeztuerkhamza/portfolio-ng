@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node scripts/fetch-catalog.mjs && ng build && node scripts/generate-sitemap.mjs && node scripts/build-api.mjs",
+    "build": "node scripts/fetch-catalog.mjs && node scripts/fetch-reviews.mjs && ng build && node scripts/generate-sitemap.mjs && node scripts/build-api.mjs",
     "build:api": "node scripts/build-api.mjs",
     "catalog": "node scripts/fetch-catalog.mjs",
     "watch": "ng build --watch --configuration development",

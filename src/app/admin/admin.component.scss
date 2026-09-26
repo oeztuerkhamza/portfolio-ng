@@ -98,6 +98,7 @@
   border-radius: 10px;
   background: $brand-tint;
   &.err { background: #fdecec; color: #9b1c1c; }
+  &.ok { background: #e8f6ee; color: #1c7a44; }
 }
 
 .adm-link {
@@ -342,4 +343,30 @@
   display: flex; align-items: center; gap: 0.5rem; margin-top: 0.3rem;
   input[type='file'] { font: inherit; font-size: 0.78rem; color: $text-dim; max-width: 100%; }
   em { font-style: normal; font-size: 0.78rem; color: $brand; }
+}
+
+// ── Google-Bewertungen ────────────────────────────────────────
+/** Zwei Spalten für „Feld: Wert" — schmal genug, dass die Werte nicht wandern. */
+.adm-kv {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0;
+  align-items: baseline;
+
+  dt { color: $text-mute; font-size: 0.85rem; }
+  dd { margin: 0; }
+  // Im Wert steckt manchmal ein .adm-msg; ohne das hier bekäme es Außenabstand.
+  dd .adm-msg { display: inline-block; margin: 0; padding: 0.15rem 0.5rem; font-size: 0.85rem; }
+}
+
+.adm-stars { color: #e8a13a; letter-spacing: 0.08em; margin-left: 0.5rem; }
+
+/** Der Wortlaut des Gastes. Steht bewusst unverändert da — Google verlangt das. */
+.adm-quote {
+  margin: 0.5rem 0;
+  padding-left: 0.85rem;
+  border-left: 3px solid $brand-tint;
+  white-space: pre-line;
+  color: $text;
 }

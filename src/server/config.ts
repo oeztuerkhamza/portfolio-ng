@@ -72,6 +72,13 @@ export const config = {
     return env('SITE_URL').replace(/\/+$/, '');
   },
   /**
+   * Schlüssel für die Google-Bewertungen (Places API). Nur serverseitig:
+   * im Browser wäre er für jeden lesbar, der die Seite öffnet.
+   */
+  get googleApiKey() {
+    return env('GOOGLE_API_KEY');
+  },
+  /**
    * Geheimnis für den täglichen Aufräumlauf (/api/cron/cleanup). Vercel
    * schickt es als `Authorization: Bearer …`, wenn es als Umgebungsvariable
    * gesetzt ist. Fehlt es, nimmt der Lauf niemanden an — lieber gar nicht

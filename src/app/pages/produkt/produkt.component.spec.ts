@@ -5,6 +5,7 @@ import { REVIEW_CARD_PRODUCTS } from '../../core/data/review-cards.data';
 import { TRANSLATIONS } from '../../core/i18n/translations';
 import { CartService } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
+import { expectNoBorrowedRatings } from '../../../testing/no-borrowed-ratings';
 import { ProduktComponent } from './produkt.component';
 
 /**
@@ -228,6 +229,15 @@ describe('ProduktComponent', () => {
 
     it('nennt die Ausnahme vom Widerrufsrecht bei personalisierter Ware', () => {
       expect(text('.pd-side')).toContain('312g');
+    });
+
+    /**
+     * Die Google-Bewertungen dürfen nicht als eigene strukturierte Daten an
+     * das Product-Schema dieser Seite geraten — self-serving markup kostet
+     * alle Rich Results, nicht nur die Sterne.
+     */
+    it('hängt keine geliehene Gesamtnote an das Product-Schema', () => {
+      expectNoBorrowedRatings();
     });
   });
 });

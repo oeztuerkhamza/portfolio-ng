@@ -4,6 +4,7 @@ import { ActivatedRoute, provideRouter } from '@angular/router';
 import { CUSTOM_CARDS } from '../../core/data/cards.data';
 import { CartService } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
+import { expectNoBorrowedRatings } from '../../../testing/no-borrowed-ratings';
 import { KartenComponent } from './karten.component';
 
 /**
@@ -124,6 +125,12 @@ describe('KartenComponent', () => {
     it('verweist zurück auf die Visitenkarte', () => {
       expect(all('.kt-more a').map((a) => a.getAttribute('href'))).toContain('/de/digitale-visitenkarte');
     });
+  });
+
+  /** Dieselbe Regel wie auf den anderen Produktseiten. */
+  it('hängt keine geliehene Gesamtnote an das Product-Schema', () => {
+    mount('digitale-visitenkarte');
+    expectNoBorrowedRatings();
   });
 
   describe('geschlossener Shop', () => {

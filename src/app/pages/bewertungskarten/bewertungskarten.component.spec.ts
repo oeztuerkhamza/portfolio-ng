@@ -4,6 +4,7 @@ import { provideRouter } from '@angular/router';
 import { REVIEW_CARD_FORMS, REVIEW_CARD_PACKAGES, REVIEW_CARD_PRODUCTS } from '../../core/data/review-cards.data';
 import { CartService } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
+import { expectNoBorrowedRatings } from '../../../testing/no-borrowed-ratings';
 import { BewertungskartenComponent } from './bewertungskarten.component';
 
 /**
@@ -90,6 +91,15 @@ describe('BewertungskartenComponent', () => {
     (all('.form-foot button')[0] as HTMLButtonElement).click();
     fixture.detectChanges();
     expect(el('.page-hero-actions .rc-badge')!.textContent!.trim()).toBe('1');
+  });
+
+  /**
+   * Auf dieser Seite stehen die Google-Bewertungen *und* ein Product-Schema.
+   * Genau hier wäre es verlockend, die Gesamtnote in die strukturierten Daten
+   * zu schreiben — self-serving markup kostet alle Rich Results.
+   */
+  it('hängt keine geliehene Gesamtnote an das Product-Schema', () => {
+    expectNoBorrowedRatings();
   });
 
   describe('geschlossener Shop', () => {

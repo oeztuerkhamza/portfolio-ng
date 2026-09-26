@@ -28,11 +28,12 @@ import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { HOME_CONTENT } from './home.content';
 import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { ReviewsComponent } from '../../shared/reviews/reviews.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent, ReviewsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],

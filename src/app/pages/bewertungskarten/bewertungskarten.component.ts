@@ -17,6 +17,7 @@ import {
   REVIEW_CARD_STEPS,
 } from '../../core/data/review-cards.data';
 import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { ReviewsComponent } from '../../shared/reviews/reviews.component';
 import { CartService, MAX_QTY } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
 import { PRODUCT_CONTENT } from '../produkt/produkt.content';
@@ -26,7 +27,7 @@ import { REVIEW_CARDS_CONTENT } from './bewertungskarten.content';
 @Component({
   selector: 'app-bewertungskarten',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent, ReviewsComponent],
   templateUrl: './bewertungskarten.component.html',
   styleUrl: './bewertungskarten.component.scss',
 })

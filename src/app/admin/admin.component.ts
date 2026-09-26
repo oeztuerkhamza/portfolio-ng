@@ -8,12 +8,13 @@ import { CustomersTab } from './tabs/customers.tab';
 import { SubscriptionsTab } from './tabs/subscriptions.tab';
 import { LinksTab } from './tabs/links.tab';
 import { CardsTab } from './tabs/cards.tab';
+import { ReviewsTab } from './tabs/reviews.tab';
 import { PricesTab } from './tabs/prices.tab';
 import { OrdersTab } from './tabs/orders.tab';
 import { SettingsTab } from './tabs/settings.tab';
 import { InvoicesTab } from './tabs/invoices.tab';
 
-type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'prices' | 'orders' | 'settings';
+type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'reviews' | 'prices' | 'orders' | 'settings';
 
 /**
  * Admin-Portal unter /admin. Läuft nur im Browser; der Server liefert
@@ -23,7 +24,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
   selector: 'app-admin',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab],
+  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, ReviewsTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab],
   styleUrl: './admin.component.scss',
   template: `
     <div class="adm">
@@ -117,6 +118,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
             @case ('invoices') { <adm-invoices /> }
             @case ('cards') { <adm-cards /> }
             @case ('links') { <adm-links /> }
+            @case ('reviews') { <adm-reviews /> }
             @case ('prices') { <adm-prices /> }
             @case ('orders') { <adm-orders /> }
             @case ('settings') { <adm-settings /> }
@@ -138,6 +140,7 @@ export class AdminComponent implements OnInit {
     { id: 'invoices', label: 'Faturalar' },
     { id: 'cards', label: 'NFC kartları' },
     { id: 'links', label: 'NFC linkleri' },
+    { id: 'reviews', label: 'Google yorumları' },
     { id: 'prices', label: 'Fiyatlar' },
     { id: 'orders', label: 'Siparişler' },
     { id: 'settings', label: 'Ayarlar' },

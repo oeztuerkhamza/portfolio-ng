@@ -25,6 +25,12 @@ import {
 import { h, sqlOr503, str, UUID } from './http';
 import { ALLOWED_TYPES, uploadImage } from './storage';
 import { invoices } from './invoices';
+import {
+  PLACE_ID_SETTING,
+  REVIEWS_SETTING,
+  REVIEW_MAX_AGE_DAYS,
+  fetchReviews,
+} from './reviews';
 import { type OrderMailItem, leadNotification, mailer, orderConfirmation } from './mail';
 import {
   CANCELLED_EVENTS,
@@ -444,6 +450,113 @@ export function cronAuthorized(header: unknown, secret: string): boolean {
   return sent.length === want.length && timingSafeEqual(sent, want);
 }
 
+/**
+ * Bewertungen, die zu lange liegen, löschen. Google erlaubt nur ein
+ * begrenztes Zwischenspeichern — was älter ist als REVIEW_MAX_AGE_DAYS, darf
+ * nicht bleiben, auch wenn es hübsch auf der Seite aussah.
+ */
+export async function purgeReviews(sql: NonNullable<ReturnType<typeof db>>): Promise<number> {
+  const gone = await sql`
+    delete from reviews
+    where fetched_at < now() - ${`${REVIEW_MAX_AGE_DAYS} days`}::interval
+    returning id`;
+  return gone.length;
+}
+
+/**
+ * Bewertungen bei Google holen und in die eigene Datenbank schreiben.
+ *
+ * Bestehende Zeilen werden aktualisiert, nicht verdoppelt (`external_id`).
+ * Das Ergebnis — auch ein Fehlschlag — landet unter `google_reviews` in den
+ * Einstellungen, damit das Portal sagen kann, was zuletzt passiert ist.
+ */
+export async function refreshReviews(
+  sql: NonNullable<ReturnType<typeof db>>,
+): Promise<{ ok: boolean; saved: number; changed: boolean; purged?: number; error?: string }> {
+  const [row] = await sql`select value from settings where key = ${PLACE_ID_SETTING}`;
+  const placeId = String(row?.['value'] ?? '').trim();
+
+  const [before, previous] = await Promise.all([reviewsFingerprint(sql), reviewSummary(sql)]);
+  const result = await fetchReviews(placeId);
+
+  if (!result.ok) {
+    /**
+     * Note und Anzahl bleiben stehen. Google einmal nicht erreichbar heißt
+     * nicht, dass der Betrieb keine Bewertungen mehr hat — sie zu leeren
+     * würde beim nächsten Bauen das „4,9 von 5" von der Seite nehmen. Was
+     * wirklich zu alt ist, räumt purgeReviews weg, und ohne Bewertungen
+     * zeigt der Abschnitt sich gar nicht.
+     */
+    await writeSummary(sql, {
+      rating: previous.rating,
+      total: previous.total,
+      fetched_at: new Date().toISOString(),
+      via: null,
+      error: result.error ?? 'unbekannt',
+      detail: result.detail ?? null,
+    });
+    return { ok: false, saved: 0, changed: false, error: result.error };
+  }
+
+  for (const r of result.reviews) {
+    await sql`
+      insert into reviews (source, external_id, author, rating, text, published_at, published_label, lang, fetched_at)
+      values ('google', ${r.externalId}, ${r.author}, ${r.rating}, ${r.text},
+              ${r.publishedAt}, ${r.publishedLabel}, ${r.lang}, now())
+      on conflict (source, external_id) do update set
+        author = excluded.author, rating = excluded.rating, text = excluded.text,
+        published_at = excluded.published_at, published_label = excluded.published_label,
+        lang = excluded.lang, fetched_at = now()`;
+  }
+
+  await writeSummary(sql, {
+    rating: result.rating,
+    total: result.total,
+    fetched_at: new Date().toISOString(),
+    via: result.via,
+    error: null,
+    detail: null,
+  });
+
+  const purged = await purgeReviews(sql);
+  // Die Website zeigt den Stand der letzten Bauzeit. Ob neu gebaut werden
+  // muss, entscheidet sich hier — nicht am Kalender.
+  const changed = (await reviewsFingerprint(sql)) !== before;
+  return { ok: true, saved: result.reviews.length, changed, purged };
+}
+
+/** Was unter `google_reviews` steht — leer, wenn noch nie geholt wurde. */
+async function reviewSummary(sql: NonNullable<ReturnType<typeof db>>): Promise<{ rating: number | null; total: number | null }> {
+  const [row] = await sql`select value from settings where key = ${REVIEWS_SETTING}`;
+  const value = (row?.['value'] ?? {}) as Record<string, unknown>;
+  const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null);
+  return { rating: num(value['rating']), total: num(value['total']) };
+}
+
+async function writeSummary(sql: NonNullable<ReturnType<typeof db>>, summary: Record<string, unknown>): Promise<void> {
+  await sql`
+    insert into settings (key, value) values (${REVIEWS_SETTING}, ${sql.json(summary as never)})
+    on conflict (key) do update set value = excluded.value, updated_at = now()`;
+}
+
+/**
+ * Fingerabdruck dessen, was die Website zeigt.
+ *
+ * Absichtlich nur die sichtbaren Felder: `fetched_at` ändert sich bei jedem
+ * Lauf, und ein neuer Bau deswegen wäre jeden Tag einer für nichts. Die
+ * Zeitangabe („vor zwei Monaten") steht dagegen auf der Seite und gehört
+ * darum dazu.
+ */
+async function reviewsFingerprint(sql: NonNullable<ReturnType<typeof db>>): Promise<string> {
+  const rows = await sql`
+    select external_id, rating, text, published_label, published_at
+    from reviews
+    where not hidden and length(text) > 0
+    order by external_id`;
+  const { rating, total } = await reviewSummary(sql);
+  return JSON.stringify([rows, rating, total]);
+}
+
 export async function purgeLeads(sql: NonNullable<ReturnType<typeof db>>): Promise<number> {
   const gone = await sql`
     delete from card_leads
@@ -565,7 +678,37 @@ api.get(
     if (!sql) return;
     const removed = await purgeLeads(sql);
     console.log('[cron] alte Kontakte gelöscht:', removed);
-    return res.json({ removed, retentionMonths: LEAD_RETENTION_MONTHS });
+
+    // Bei derselben Gelegenheit die Bewertungen erneuern. Ein Fehlschlag
+    // darf den Lauf nicht scheitern lassen — das Aufräumen ist wichtiger,
+    // und der Grund steht danach im Portal.
+    let reviews: Awaited<ReturnType<typeof refreshReviews>> = { ok: false, saved: 0, changed: false, error: 'nicht versucht' };
+    try {
+      reviews = await refreshReviews(sql);
+      console.log('[cron] Bewertungen:', reviews.ok ? `${reviews.saved} geholt` : reviews.error);
+    } catch (err) {
+      console.error('[cron] Bewertungen', err);
+    }
+
+    /**
+     * Die Bewertungen stehen zur Bauzeit in der Seite. Ohne einen neuen Bau
+     * bliebe die Website auf dem Stand des letzten — bis die Zeilen nach
+     * REVIEW_MAX_AGE_DAYS aus der Datenbank verschwinden und die Seite
+     * Bewertungen zeigt, die sie nicht mehr zeigen darf. Darum baut der Lauf
+     * neu, aber nur wenn sich am Sichtbaren etwas geändert hat.
+     */
+    let rebuilt = false;
+    if (reviews.changed && config.deployHookUrl) {
+      try {
+        const hook = await fetch(config.deployHookUrl, { method: 'POST' });
+        rebuilt = hook.ok;
+        console.log('[cron] Neubau angestoßen:', hook.status);
+      } catch (err) {
+        console.error('[cron] Neubau', err);
+      }
+    }
+
+    return res.json({ removed, retentionMonths: LEAD_RETENTION_MONTHS, reviews, rebuilt });
   }),
 );
 
@@ -887,6 +1030,59 @@ admin.get(
   }),
 );
 crud('leads', 'card_leads', ['handled'], { remove: true });
+
+/**
+ * Bewertungen im Portal: was in der eigenen Datenbank liegt, plus was beim
+ * letzten Holen passiert ist. Ohne die zweite Hälfte rät man bei einem
+ * Fehlschlag herum.
+ */
+admin.get(
+  '/reviews',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const [reviews, summary, place] = await Promise.all([
+      sql`select * from reviews order by hidden, published_at desc nulls last, rating desc`,
+      sql`select value from settings where key = ${REVIEWS_SETTING}`,
+      sql`select value from settings where key = ${PLACE_ID_SETTING}`,
+    ]);
+    return res.json({
+      reviews,
+      summary: summary[0]?.['value'] ?? {},
+      placeId: String(place[0]?.['value'] ?? ''),
+      // Ohne Schlüssel kann das Holen nicht klappen; das soll man sehen,
+      // bevor man auf den Knopf drückt.
+      hasKey: !!config.googleApiKey,
+      maxAgeDays: REVIEW_MAX_AGE_DAYS,
+    });
+  }),
+);
+
+/** Place ID setzen — die Kennung des Betriebs bei Google. */
+admin.put(
+  '/reviews/place',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const value = str(req.body?.placeId, 200) ?? '';
+    await sql`
+      insert into settings (key, value) values (${PLACE_ID_SETTING}, ${sql.json(value)})
+      on conflict (key) do update set value = excluded.value, updated_at = now()`;
+    return res.json({ placeId: value });
+  }),
+);
+
+/** Jetzt holen. Antwortet auch bei einem Fehlschlag mit 200 und dem Grund. */
+admin.post(
+  '/reviews/fetch',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    return res.json(await refreshReviews(sql));
+  }),
+);
+
+crud('reviews', 'reviews', ['hidden'], { remove: true });
 
 
 

@@ -1,0 +1,188 @@
+// Bewertungsabschnitt. Gedreht wird mit Schnappscrollen, nicht mit einem
+// Zeitgeber: was von allein weiterläuft, verliert jeden, der langsam liest.
+
+@import "../../../styles/variables";
+
+.rv-score {
+  margin: 1rem 0 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  strong {
+    font-family: $font-display;
+    font-size: 1.6rem;
+    font-weight: 500;
+    color: $brand;
+  }
+}
+
+.rv-stars {
+  color: #d99b00;
+  font-size: 1.15rem;
+  letter-spacing: 0.08em;
+}
+
+.rv-of,
+.rv-count {
+  color: $text-mute;
+  font-size: 0.92rem;
+}
+
+// Der Mittelpunkt trennt zwei Angaben in einer Zeile. Bricht die Anzahl auf
+// eine eigene Zeile, hängt er sonst führerlos am Anfang.
+.rv-count::before {
+  content: '· ';
+}
+@media (max-width: 30rem) {
+  .rv-count::before {
+    content: none;
+  }
+}
+
+// Zwei Knöpfe, die scrollen. Auf dem Telefon braucht es sie nicht — dort wird
+// gewischt —, aber sie schaden auch nicht und zeigen, dass da mehr kommt.
+.rv-nav {
+  display: flex;
+  gap: 0.5rem;
+  // Der negative Abstand frisst einen Teil des Abstands, den die Liste
+  // darunter mitbringt — übrig bleibt eine kleine Lücke, keine Überdeckung.
+  margin: 1.25rem 0 -1.25rem;
+  justify-content: flex-end;
+}
+
+.rv-arrow {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  border: 1px solid $rule;
+  background: #fff;
+  color: $brand;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: border-color 0.2s, color 0.2s;
+  @include focus-ring;
+
+  &:hover {
+    border-color: $brand;
+  }
+}
+
+.rv-track {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0 0 1rem;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(280px, 340px);
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  @include focus-ring;
+
+  // Ohne Maus: mit den Pfeiltasten scrollen, darum ist die Liste fokussierbar.
+  > li {
+    scroll-snap-align: start;
+  }
+
+  @media (max-width: 48rem) {
+    $gutter: clamp(1.25rem, 5vw, 4rem);
+    // Bis an den Bildschirmrand, aber die erste Karte bleibt auf der Kante
+    // des Textes darüber — und hinter der letzten bleibt derselbe Abstand.
+    margin-inline: calc(-1 * #{$gutter});
+    padding-inline: $gutter;
+    scroll-padding-inline: $gutter;
+  }
+}
+
+.rv-card {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rv-head {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+// Anfangsbuchstaben statt Profilbild: ein Bild von googleusercontent.com
+// wäre eine Anfrage des Besuchers an Google.
+.rv-initials {
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 999px;
+  background: $brand-tint;
+  color: $brand;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.rv-who {
+  display: grid;
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.rv-when {
+  color: $text-mute;
+  font-size: 0.82rem;
+}
+
+.rv-rating {
+  margin: 0;
+  color: #d99b00;
+  letter-spacing: 0.06em;
+}
+
+.rv-text {
+  margin: 0;
+  border: 0;
+  padding: 0;
+  color: $text-soft;
+  line-height: 1.7;
+  // Der Text wird nicht gekürzt — Google verlangt ihn unverändert. Lange
+  // Bewertungen machen die Karte höher, das ist in Ordnung.
+  white-space: pre-line;
+}
+
+.rv-foot {
+  margin: 1.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.rv-source {
+  margin: 0;
+  color: $text-mute;
+  font-size: 0.82rem;
+
+  a {
+    color: $text-dim;
+    margin-left: 0.35rem;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+}
+
+.rv-more {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: $brand;
+}

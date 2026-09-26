@@ -878,3 +878,20 @@ a.card,
   font-size: 0.8rem;
   font-weight: 700;
 }
+
+// ── Nur für Vorleseprogramme ────────────────────────────────
+// Text, der da sein muss, aber nicht zu sehen sein soll: etwa „4 von 5
+// Sternen" neben Sternchen, die für das Auge reichen. Nicht display:none —
+// das würde ihn auch dem Vorleseprogramm nehmen.
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
