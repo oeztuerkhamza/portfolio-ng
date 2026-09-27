@@ -333,54 +333,6 @@ Darunter liegt Next.js 16 mit React Server Components und Server Actions, Prisma
     },
   },
   {
-    slug: 'hotel-bergfrieden',
-    title: 'Hotel Bergfrieden',
-    subtitle: 'Statisch gerenderte Hotel-Website im Hochschwarzwald',
-    category: 'Website',
-    tags: ['Angular 21', 'SSG', 'Tailwind', '4 Sprachen', 'SEO'],
-    image: '/assets/images/hbf-hotel.webp',
-    liveUrl: 'https://oeztuerkhamza.github.io/bergfrieden-hotel/',
-    githubUrl: 'https://github.com/oeztuerkhamza/bergfrieden-hotel',
-    description:
-      'Website für ein familiengeführtes Hotel in Löffingen. Angular 21, jede Route als fertiges HTML vorgerendert, vier Sprachen — ohne Server-Runtime.',
-    longDescription: `Das Hotel Bergfrieden ist ein familiengeführtes Haus in Löffingen im Hochschwarzwald. Der Entwurf folgt einer Vorgabe, die leichter gesagt als gebaut ist: luxuriös, aber warm. Das trägt eine Black-Forest-Palette aus Waldgrün, Cream und Bronze, dazu Cormorant Garamond für die Überschriften und Inter für den Fließtext — großzügige Bilder, viel Weißraum, kein Effektgewitter.
-
-Inhaltlich deckt die Seite ab, was ein Haus dieser Größe wirklich braucht: fünf Zimmertypen mit Anfrage-Button, das Bio-Regiofrühstück mit Bezugsquellen, eine Region-Seite mit Hochschwarzwald-Card, Galerie mit Lightbox, Blog, Kontakt mit Anfrage und WhatsApp — in vier Sprachen. Für ein Hotel, das seine Buchungen über Portale und Direktanfragen bekommt, ist das der richtige Zuschnitt: keine Buchungsmaschine, die gepflegt werden will, sondern eine Seite, die überzeugt und die Anfrage auslöst.
-
-Technisch ist es bewusst die einfachste tragfähige Lösung. Angular 21 mit Standalone Components und Signals, beim Build werden alle Routen zu fertigem HTML vorgerendert und liegen auf GitHub Pages — kein Server, keine Laufzeitkosten, nichts, was nachts ausfallen könnte. Meta-Tags pro Route, Hotel-Schema.org als JSON-LD, sitemap.xml, robots.txt und ein PWA-Manifest sind eingebaut, das Deployment läuft automatisch bei jedem Push.`,
-    features: [
-      'Warm-luxuriöses Design: Black-Forest-Palette, Cormorant Garamond + Inter',
-      'Static Site Generation — jede Route als fertiges HTML, kein Server nötig',
-      'Vier Sprachen (DE, EN, FR, TR) mit eigenen URLs',
-      'Zimmer, Bio-Regiofrühstück, Region mit Hochschwarzwald-Card, Galerie, Blog',
-      'Anfragestrecke mit WhatsApp-Abkürzung statt Buchungsmaschine',
-      'Pro-Route-SEO mit Hotel-Schema.org JSON-LD, sitemap.xml, OG/Twitter-Cards',
-      'PWA-Manifest und llms.txt',
-      'Automatisches Deployment über GitHub Actions auf GitHub Pages',
-    ],
-    techStack: [
-      { name: 'Angular 21', icon: '🅰️' },
-      { name: 'Tailwind', icon: '💨' },
-      { name: 'TypeScript', icon: '📘' },
-      { name: 'SSG / Prerender', icon: '⚡' },
-      { name: 'GitHub Actions', icon: '🔄' },
-      { name: 'Schema.org', icon: '🔍' },
-    ],
-    screenshots: [
-      '/assets/images/hbf-hotel.webp',
-      '/assets/images/hbf-hotel-2.webp',
-      '/assets/images/hbf-hotel-3.webp',
-    ],
-    role: 'Full-Stack Developer & Designer',
-    duration: '2025 – Heute',
-    demo: {
-      type: 'iframe',
-      url: 'https://oeztuerkhamza.github.io/bergfrieden-hotel/',
-      poster: '/assets/images/hbf-hotel.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
-    },
-  },
-  {
     slug: 'kulturplattform-freiburg',
     title: 'Kulturplattform Freiburg',
     subtitle: 'Vereinsplattform mit CMS, Kursen und Newsletter',

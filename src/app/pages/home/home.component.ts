@@ -48,8 +48,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly whatsapp = whatsappUrl();
   readonly products = PRODUCTS;
   readonly stats = STATS;
-  /** Drei Betriebe aus drei Branchen — Handel, Hotellerie, Dienstleistung. */
-  readonly references = ['bikehaus-freiburg', 'hotel-bergfrieden', 'gkn-portraits']
+  /**
+   * Drei echte Kundenbetriebe aus drei Branchen — Fahrradhandel, Juwelier,
+   * Fotostudio. Alle drei laufen auf eigener Domain; Zerin Gold und Bike Haus
+   * haben ihre Bewertung öffentlich bei Google hinterlassen.
+   */
+  readonly references = ['bikehaus-freiburg', 'zerin-gold', 'gkn-portraits']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
   readonly townsOnsite = TOWNS_ONSITE;
