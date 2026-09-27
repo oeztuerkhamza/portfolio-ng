@@ -81,6 +81,9 @@
   grid-auto-columns: minmax(280px, 340px);
   gap: 1rem;
   overflow-x: auto;
+  // Jede Karte so hoch wie ihr Inhalt. Ohne das wachsen alle auf die Höhe
+  // der längsten Bewertung, und neben tausend Zeichen steht dann viel Leere.
+  align-items: start;
   scroll-snap-type: x mandatory;
   scrollbar-width: thin;
   @include focus-ring;
@@ -154,9 +157,38 @@
   padding: 0;
   color: $text-soft;
   line-height: 1.7;
-  // Der Text wird nicht gekürzt — Google verlangt ihn unverändert. Lange
-  // Bewertungen machen die Karte höher, das ist in Ordnung.
   white-space: pre-line;
+
+  /**
+   * Zusammengelegt, nicht gekürzt. Der vollständige Wortlaut steht im HTML —
+   * Google verlangt Bewertungen unverändert, und unverändert sind sie: hier
+   * wirkt nur eine Anzeigeregel, die der Knopf darunter aufhebt.
+   */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 10;
+  overflow: hidden;
+
+  &.open {
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+}
+
+.rv-more-btn {
+  align-self: flex-start;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: $brand;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  @include focus-ring;
 }
 
 .rv-foot {

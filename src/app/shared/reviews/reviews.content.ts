@@ -33,6 +33,8 @@ export const REVIEWS_CONTENT: Record<string, Entry> = {
   },
   'rv.prev': { de: 'Vorige Bewertungen', fr: 'Avis précédents', en: 'Previous reviews', tr: 'Önceki değerlendirmeler', ku: 'Nirxandinên berê' },
   'rv.next': { de: 'Weitere Bewertungen', fr: 'Avis suivants', en: 'More reviews', tr: 'Sonraki değerlendirmeler', ku: 'Nirxandinên din' },
+  'rv.more': { de: 'Ganz lesen', fr: 'Lire en entier', en: 'Read in full', tr: 'Tamamını oku', ku: 'Bi tevahî bixwîne' },
+  'rv.less': { de: 'Weniger', fr: 'Réduire', en: 'Show less', tr: 'Daha az', ku: 'Kêmtir' },
   'rv.source': {
     de: 'Bewertungen von Google, unverändert übernommen.',
     fr: 'Avis provenant de Google, repris sans modification.',

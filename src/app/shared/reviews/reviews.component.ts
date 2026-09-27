@@ -1,9 +1,15 @@
-import { Component, ElementRef, computed, inject, input, viewChild } from '@angular/core';
+import { Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import reviewData from '../../core/data/reviews.json';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { REVIEWS_CONTENT } from './reviews.content';
+
+/**
+ * Ab dieser Länge bekommt eine Bewertung einen „Ganz lesen"-Knopf. Der Wert
+ * passt zu den zehn Zeilen, auf die die CSS-Regel zusammenlegt.
+ */
+const CLAMP_FROM = 320;
 
 /** Der Stand, den scripts/fetch-reviews.mjs zur Bauzeit hinterlässt. */
 export interface ReviewData {
@@ -86,7 +92,12 @@ export interface ReviewData {
                   <span aria-hidden="true">{{ stars(r.rating) }}</span>
                   <span class="visually-hidden">{{ i18n.tp('rv.stars', r.rating) }}</span>
                 </p>
-                <blockquote class="rv-text">{{ r.text }}</blockquote>
+                <blockquote class="rv-text" [class.open]="open().has($index)">{{ r.text }}</blockquote>
+                @if (long(r.text)) {
+                  <button type="button" class="rv-more-btn" (click)="toggle($index)">
+                    {{ i18n.t(open().has($index) ? 'rv.less' : 'rv.more') }}
+                  </button>
+                }
               </li>
             }
           </ul>
@@ -132,6 +143,27 @@ export class ReviewsComponent {
 
   constructor() {
     this.i18n.register(REVIEWS_CONTENT);
+  }
+
+  /**
+   * Welche Bewertungen ganz aufgeklappt sind.
+   *
+   * Gekürzt wird **nichts**: der vollständige Wortlaut steht immer im HTML
+   * und Google liest ihn auch so. Zusammengelegt ist er nur fürs Auge — vier
+   * Bewertungen mit je tausend Zeichen wären sonst eine Textwand, und die
+   * Karten würden alle auf die Höhe der längsten wachsen.
+   */
+  readonly open = signal(new Set<number>());
+
+  /** Ab wann sich ein Knopf lohnt. Kürzeres passt ohnehin ins Sichtfeld. */
+  long(text: string): boolean {
+    return text.length > CLAMP_FROM;
+  }
+
+  toggle(index: number): void {
+    const next = new Set(this.open());
+    if (!next.delete(index)) next.add(index);
+    this.open.set(next);
   }
 
   /** Sterne als Zeichen — für Vorleseprogramme steht der Text daneben. */

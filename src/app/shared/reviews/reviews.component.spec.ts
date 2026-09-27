@@ -206,6 +206,52 @@ describe('ReviewsComponent', () => {
     });
   });
 
+  describe('Lange Bewertungen', () => {
+    const lang = 'Sehr zufrieden. '.repeat(40);
+
+    it('legt lange Bewertungen zusammen und bietet einen Knopf', () => {
+      mount(data({ items: [review({ text: lang })] }));
+      expect(el('.rv-more-btn')?.textContent?.trim()).toBe('Ganz lesen');
+      expect(el('.rv-text')?.classList.contains('open')).toBe(false);
+    });
+
+    it('lässt kurze Bewertungen in Ruhe', () => {
+      mount(data({ items: [review({ text: 'Alles gut, gerne wieder.' })] }));
+      expect(el('.rv-more-btn')).toBeNull();
+    });
+
+    /**
+     * Der Punkt, auf den es ankommt: gekürzt wird nichts. Der vollständige
+     * Wortlaut steht immer im HTML — Google verlangt Bewertungen unverändert,
+     * und die CSS-Regel ist nur eine Anzeigesache.
+     */
+    it('hat den vollen Wortlaut auch zusammengelegt im HTML', () => {
+      mount(data({ items: [review({ text: lang })] }));
+      expect(el('.rv-text')?.textContent).toBe(lang);
+    });
+
+    it('klappt auf und wieder zu', () => {
+      mount(data({ items: [review({ text: lang })] }));
+      const btn = () => el<HTMLButtonElement>('.rv-more-btn')!;
+      btn().click();
+      fixture.detectChanges();
+      expect(el('.rv-text')?.classList.contains('open')).toBe(true);
+      expect(btn().textContent?.trim()).toBe('Weniger');
+
+      btn().click();
+      fixture.detectChanges();
+      expect(el('.rv-text')?.classList.contains('open')).toBe(false);
+    });
+
+    it('klappt nur die angeklickte Bewertung auf', () => {
+      mount(data({ items: [review({ text: lang }), review({ author: 'Mehmet Kaya', text: lang })] }));
+      (all('.rv-more-btn')[1] as HTMLButtonElement).click();
+      fixture.detectChanges();
+      const open = all('.rv-text').map((e) => e.classList.contains('open'));
+      expect(open).toEqual([false, true]);
+    });
+  });
+
   describe('kein Review-Schema', () => {
     beforeEach(() => mount(data()));
 
