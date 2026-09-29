@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
-import { COMPANY, PRODUCTS, whatsappUrl } from '../../core/data/company.data';
+import { COMPANY, PRODUCTS, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { SUBSCRIPTION_PRICE_FROM } from '../../core/data/subscriptions.data';
 import { ProductFocus, TOWNS, Town, townBySlug } from '../../core/data/towns.data';
 import { IconComponent } from '../../shared/icon/icon.component';
@@ -166,7 +166,9 @@ export class TownComponent implements OnInit {
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
   readonly town: Town | undefined = townBySlug(inject(ActivatedRoute).snapshot.paramMap.get('town') ?? '');
-  readonly cards: Card[] = (this.town?.focus ?? []).map((id) => ({
+  readonly cards: Card[] = (this.town?.focus ?? [])
+    .filter((id) => id !== 'sh' || SMART_HOME_ENABLED)
+    .map((id) => ({
     id,
     title: PRODUCT_META[id].title,
     link: PRODUCT_META[id].link,
@@ -185,7 +187,7 @@ export class TownComponent implements OnInit {
     const path = `/webdesign/${t.slug}`;
     this.seo.update({
       title: `Webdesign ${t.short} & Google-Bewertungen | Breisgau Digital`,
-      description: `Websites, NFC-Bewertungskarten und Smart Home für Betriebe in ${t.short}${
+      description: `Websites, NFC-Bewertungskarten und digitale Abläufe für Betriebe in ${t.short}${
         t.km ? ` – persönlich vor Ort, ca. ${t.minutes} Min. ab Freiburg` : ' – persönlich vor Ort'
       }. Festpreis oder Monatsabo, Erstgespräch kostenlos.`,
       path,
@@ -199,8 +201,14 @@ export class TownComponent implements OnInit {
     this.seo.setJsonLd('town', {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      name: `Webdesign, Google-Bewertungskarten und Smart Home in ${t.name}`,
-      serviceType: ['Webdesign', 'Google-Bewertungskarten', 'Smart Home', 'Local SEO'],
+      name: `Webdesign, Google-Bewertungskarten und digitale Abläufe in ${t.name}`,
+      // Smart Home nur, wenn wir es anbieten — siehe SMART_HOME_ENABLED.
+      serviceType: [
+        'Webdesign',
+        'Google-Bewertungskarten',
+        ...(SMART_HOME_ENABLED ? ['Smart Home'] : []),
+        'Local SEO',
+      ],
       provider: { '@id': `${SeoService.ORIGIN}/#service` },
       areaServed: {
         '@type': 'City',

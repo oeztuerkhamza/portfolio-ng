@@ -43,9 +43,11 @@
       <figure class="hero-thumb thumb-web">
         <img src="/assets/images/products/website-800.webp" width="800" height="600" alt="" loading="lazy" />
       </figure>
-      <figure class="hero-thumb thumb-sh">
-        <img src="/assets/images/products/smart-home-800.webp" width="800" height="600" alt="" loading="lazy" />
-      </figure>
+      @if (smartHome) {
+        <figure class="hero-thumb thumb-sh">
+          <img src="/assets/images/products/smart-home-800.webp" width="800" height="600" alt="" loading="lazy" />
+        </figure>
+      }
       <p class="hero-chip">
         <span class="chip-icon"><app-icon name="nfc" [stroke]="2" /></span>
         <span>

@@ -1,6 +1,7 @@
 import { Routes, CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { LANG_CODES, DEFAULT_LANG, Lang } from './core/i18n/i18n.service';
+import { SMART_HOME_ENABLED } from './core/data/company.data';
 
 /** Validates the :locale segment; unknown prefixes redirect under the default locale. */
 const localeGuard: CanActivateFn = (route, state) => {
@@ -53,14 +54,17 @@ const localeChildren: Routes = [
     loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
     data: { animation: 'Karten', slug: 'geschenkkarte' },
   },
-  {
-    path: 'smart-home',
-    loadComponent: () =>
-      import('./pages/smart-home/smart-home.component').then(
-        (m) => m.SmartHomeComponent,
-      ),
-    data: { animation: 'SmartHome' },
-  },
+  // Seite bleibt im Code; erreichbar nur, wenn die Leistung angeboten wird.
+  ...(SMART_HOME_ENABLED
+    ? [
+        {
+          path: 'smart-home',
+          loadComponent: () =>
+            import('./pages/smart-home/smart-home.component').then((m) => m.SmartHomeComponent),
+          data: { animation: 'SmartHome' },
+        },
+      ]
+    : []),
   {
     path: 'abo',
     loadComponent: () =>

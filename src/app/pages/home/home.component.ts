@@ -19,6 +19,7 @@ import {
   TOWNS_REMOTE,
   WEBSITE_PRICE_FROM,
   whatsappUrl,
+  SMART_HOME_ENABLED,
 } from '../../core/data/company.data';
 import { fadeIn } from '../../core/animations/shared.animations';
 import { SeoService } from '../../core/seo/seo.service';
@@ -56,6 +57,8 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly references = ['bikehaus-freiburg', 'zerin-gold', 'gkn-portraits']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
+  /** Siehe SMART_HOME_ENABLED in company.data.ts. */
+  readonly smartHome = SMART_HOME_ENABLED;
   readonly townsOnsite = TOWNS_ONSITE;
   /** Ortsseite zum Ortsnamen, z. B. „Breisach" → breisach. */
   townSlug(name: string): string | undefined {
@@ -101,7 +104,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         'Google Bewertungskarte Freiburg',
         'NFC Bewertungskarte',
         'Webseite erstellen lassen Freiburg',
-        'Smart Home Freiburg',
         'Digitalisierung kleine Unternehmen Baden-Württemberg',
       ],
     });

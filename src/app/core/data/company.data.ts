@@ -27,6 +27,18 @@ export function whatsappUrl(text?: string): string {
 /** Einstiegspreis Firmen-Website (Festpreis, „ab"), aus catalog.json. */
 export const WEBSITE_PRICE_FROM = price('web.from');
 
+/**
+ * Smart Home ist vorübergehend abgeschaltet: die Leistung wird derzeit nicht
+ * angeboten. Alles dazu bleibt im Code stehen — Seite, Texte, Preise, Bilder —
+ * und hängt an diesem einen Schalter.
+ *
+ * **Wieder einschalten:** hier auf `true` setzen *und* die beiden
+ * Weiterleitungen für `/:locale/smart-home` aus `vercel.json` entfernen.
+ * Bleibt die Weiterleitung stehen, ist die Seite trotz Schalter nicht
+ * erreichbar — sie greift vor dem Routing.
+ */
+export const SMART_HOME_ENABLED = false;
+
 export type ProductId = 'cards' | 'web' | 'sh';
 
 export interface Product {
@@ -46,7 +58,7 @@ export interface Product {
  * Die Fotos sind gerenderte Produktaufnahmen und können 1:1 durch echte
  * Fotos gleichen Namens (4:3, 1600 × 1200) ersetzt werden.
  */
-export const PRODUCTS: Product[] = [
+const ALL_PRODUCTS: Product[] = [
   {
     id: 'cards',
     path: '/bewertungskarten',
@@ -70,6 +82,9 @@ export const PRODUCTS: Product[] = [
     priceFrom: Math.min(...SMART_HOME_PACKAGES.map((p) => p.price)),
   },
 ];
+
+/** Was gerade angeboten wird. Smart Home fällt über den Schalter heraus. */
+export const PRODUCTS: Product[] = ALL_PRODUCTS.filter((p) => p.id !== 'sh' || SMART_HOME_ENABLED);
 
 /** Orte, in die wir persönlich fahren — und der Rest des Landes per Video. */
 export const TOWNS_ONSITE = [

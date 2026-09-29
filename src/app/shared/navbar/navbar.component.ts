@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, Lang } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { COMPANY, whatsappUrl } from '../../core/data/company.data';
+import { COMPANY, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { CartService } from '../../core/shop/cart.service';
 import { LangSwitcherComponent } from '../lang-switcher/lang-switcher.component';
 import { IconComponent } from '../icon/icon.component';
@@ -27,10 +27,11 @@ export class NavbarComponent {
 
   /** Desktop: „Kontakt" steckt im Button „Erstgespräch" rechts daneben. */
   readonly navLinks = [
+    // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
+    ...(SMART_HOME_ENABLED ? [{ path: '/smart-home', key: 'nav.smarthome' }] : []),
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/bewertungskarten', key: 'nav.cards' },
     { path: '/digitale-visitenkarte', key: 'nav.nfc' },
-    { path: '/smart-home', key: 'nav.smarthome' },
     { path: '/abo', key: 'nav.abo' },
     { path: '/projects', key: 'nav.references' },
     { path: '/ueber-uns', key: 'nav.about' },

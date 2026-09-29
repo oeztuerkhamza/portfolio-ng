@@ -132,11 +132,11 @@ export const ABO_CONTENT: Record<string, Entry> = {
     ku: 'Bersivên nirxandinan — wek reşnivîs ji bo pejirandinê',
   },
   'abo.plan.premium.p4': {
-    de: 'Smart-Home-Fernwartung, falls vorhanden',
-    fr: 'Maintenance à distance de la maison connectée, le cas échéant',
-    en: 'Remote smart-home maintenance, if you have one',
-    tr: 'Varsa akıllı ev uzaktan bakımı',
-    ku: 'Lênêrîna ji dûr ve ya mala biaqil, heke hebe',
+    de: 'Monatlicher Bericht: Aufrufe, Anfragen, neue Bewertungen',
+    fr: 'Rapport mensuel : visites, demandes, nouveaux avis',
+    en: 'Monthly report: visits, enquiries, new reviews',
+    tr: 'Aylık rapor: ziyaret, talep, yeni değerlendirmeler',
+    ku: 'Rapora mehane: serdan, daxwaz, nirxandinên nû',
   },
   'abo.plan.premium.p5': {
     de: 'Ein Vor-Ort-Termin pro Quartal', fr: 'Un rendez-vous sur place par trimestre', en: 'One on-site visit per quarter', tr: 'Her çeyrekte bir yerinde ziyaret', ku: 'Her sê mehan serdanek li cih',
@@ -234,11 +234,11 @@ export const ABO_CONTENT: Record<string, Entry> = {
     de: 'Gibt es das Abo auch für Privatkunden?', fr: 'L’abonnement est-il ouvert aux particuliers ?', en: 'Is the plan available to private customers?', tr: 'Abonelik bireysel müşteriler için de var mı?', ku: 'Ma abonetî ji bo xerîdarên taybet jî heye?',
   },
   'abo.faq5.a': {
-    de: 'Die Abos richten sich an Betriebe und Selbstständige. Für private Smart-Home-Projekte erstellen wir Ihnen gern ein Einzelangebot.',
-    fr: 'Les abonnements s’adressent aux entreprises et indépendants. Pour un projet domotique privé, nous vous faisons volontiers une offre individuelle.',
-    en: 'The plans are for businesses and the self-employed. For private smart-home projects we’re happy to make you an individual quote.',
-    tr: 'Abonelikler işletmeler ve serbest çalışanlar içindir. Özel akıllı ev projeleri için size memnuniyetle ayrı bir teklif hazırlarız.',
-    ku: 'Abonetî ji bo karsazî û xebatkarên serbixwe ne. Ji bo projeyên mala biaqil ên taybet em bi kêfxweşî pêşniyareke taybet amade dikin.',
+    de: 'Die Abos richten sich an Betriebe und Selbstständige. Für ein einzelnes Vorhaben erstellen wir Ihnen gern ein Angebot zum Festpreis.',
+    fr: 'Les abonnements s’adressent aux entreprises et indépendants. Pour un projet ponctuel, nous établissons volontiers une offre à prix fixe.',
+    en: 'The plans are for businesses and the self-employed. For a one-off project we’re happy to quote a fixed price.',
+    tr: 'Abonelikler işletmeler ve serbest çalışanlar içindir. Tek bir iş için size memnuniyetle sabit fiyatlı teklif hazırlarız.',
+    ku: 'Abonetî ji bo karsazî û xebatkarên serbixwe ne. Ji bo projeyeke yekcar em bi kêfxweşî pêşniyareke bi bihayê sabit amade dikin.',
   },
 
   // ---- Hinweis & Abschluss -------------------------------------------------

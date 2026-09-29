@@ -1,5 +1,6 @@
 import { TOWNS } from '../data/towns.data';
 import { SeoService } from './seo.service';
+import { SMART_HOME_ENABLED } from '../data/company.data';
 
 const ORIGIN = SeoService.ORIGIN;
 
@@ -17,7 +18,7 @@ export function personSchema(): Record<string, unknown> {
     jobTitle: 'Gründer & Full-Stack-Entwickler',
     worksFor: { '@id': `${ORIGIN}/#service` },
     description:
-      'Gründer von Breisgau Digital in Freiburg im Breisgau. Digitalisiert kleine und mittlere Betriebe: Google-Bewertungskarten, Websites und Smart Home.',
+      'Gründer von Breisgau Digital in Freiburg im Breisgau. Digitalisiert kleine und mittlere Betriebe: Google-Bewertungskarten, Websites und digitale Abläufe.',
     knowsAbout: [
       'Webentwicklung',
       'Webdesign',
@@ -61,7 +62,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
     url: ORIGIN,
     priceRange: '€€',
     description:
-      'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites und Relaunch, Smart Home und Automatisierung, digitale Abläufe sowie Shop und Buchung.',
+      'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites und Relaunch, digitale Abläufe sowie Shop und Buchung.',
     founder: { '@id': `${ORIGIN}/#person` },
     logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [
@@ -105,7 +106,8 @@ export function professionalServiceSchema(): Record<string, unknown> {
       'Web-App Entwicklung',
       'E-Commerce',
       'Google-Bewertungskarten',
-      'Smart Home Einrichtung',
+      // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
+      ...(SMART_HOME_ENABLED ? ['Smart Home Einrichtung'] : []),
     ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
@@ -116,7 +118,15 @@ export function professionalServiceSchema(): Record<string, unknown> {
         offer('Abläufe digitalisieren', 'Bestand, Termine, Angebote und Rechnungen in einer Oberfläche, die das Team bedienen kann.'),
         offer('Shop, Buchung & Verleih', 'Online verkaufen, vermieten oder Termine vergeben — inklusive Bezahlung und Verwaltung.'),
         offer('Google-Bewertungskarten', 'NFC- und QR-Karten, eingerichtet auf das Google-Profil des Betriebs.'),
-        offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.'),
+        /**
+         * Ein Offer im Schema ist ein Angebot, auch wenn es auf der Seite
+         * nicht mehr steht — Google liest genau das. Es muss mit dem
+         * Schalter verschwinden, sonst widerspricht die Maschinenlesung der
+         * Website.
+         */
+        ...(SMART_HOME_ENABLED
+          ? [offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.')]
+          : []),
         offer('Digital-Abo', 'Bewertungskarten, Website und laufende Pflege zum festen Monatspreis.'),
       ],
     },

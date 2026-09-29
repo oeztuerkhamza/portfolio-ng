@@ -4,7 +4,7 @@ import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { COMPANY, whatsappUrl } from '../../core/data/company.data';
+import { COMPANY, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { CONTACT_CONTENT } from './contact.content';
 
@@ -26,7 +26,14 @@ export class ContactComponent implements OnInit {
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
 
-  readonly interests: Interest[] = ['cards', 'web', 'sh', 'abo', 'other'];
+  /**
+   * Smart Home steht nur zur Wahl, wenn wir es auch anbieten — ein Thema
+   * anzubieten und dann abzusagen ist schlimmer, als es weglassen.
+   * Der Typ behält 'sh': alte Anfragen im Portal sollen lesbar bleiben.
+   */
+  readonly interests: Interest[] = (['cards', 'web', 'sh', 'abo', 'other'] as Interest[]).filter(
+    (i) => i !== 'sh' || SMART_HOME_ENABLED,
+  );
 
   // Formularzustand. Es gibt kein Backend: die Anfrage wird als fertig
   // ausgefüllte E-Mail bzw. WhatsApp-Nachricht geöffnet und vom Kunden
@@ -54,7 +61,6 @@ export class ContactComponent implements OnInit {
         'Digitalagentur Freiburg Kontakt',
         'Webseite erstellen lassen Freiburg',
         'Google Bewertungskarte bestellen',
-        'Smart Home Beratung Freiburg',
       ],
     });
     this.seo.setJsonLd(

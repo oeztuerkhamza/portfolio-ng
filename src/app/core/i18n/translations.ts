@@ -58,11 +58,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Dîjîtalkirin ji bo karsaziyên biçûk · Freiburg & Baden-Württemberg',
   },
   'home.hero.lede': {
-    de: 'Breisgau Digital macht kleine und mittlere Betriebe digital: NFC-Karten für mehr Google-Bewertungen, Websites, die Kunden bringen, und Smart Home, das Energie und Zeit spart. Persönlich vor Ort, zum Festpreis, aus einer Hand.',
-    fr: 'Breisgau Digital numérise les petites et moyennes entreprises : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et maison connectée qui économise énergie et temps. Sur place, à prix fixe, un seul interlocuteur.',
-    en: 'Breisgau Digital takes small and medium businesses digital: NFC cards for more Google reviews, websites that bring in customers, and smart home tech that saves energy and time. In person, at a fixed price, from one source.',
-    tr: 'Breisgau Digital küçük ve orta ölçekli işletmeleri dijitalleştirir: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve enerji ile zaman kazandıran akıllı ev sistemleri. Yerinde, sabit fiyatla, tek elden.',
-    ku: 'Breisgau Digital karsaziyên biçûk û navîn dîjîtal dike: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û mala biaqil ku enerjî û dem teserûf dike. Li cih, bi bihayê sabît, ji destekî.',
+    de: 'Breisgau Digital macht kleine und mittlere Betriebe digital: NFC-Karten für mehr Google-Bewertungen, Websites, die Kunden bringen, und digitale Abläufe, die Zeit sparen. Persönlich vor Ort, zum Festpreis, aus einer Hand.',
+    fr: 'Breisgau Digital numérise les petites et moyennes entreprises : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et des processus numériques qui font gagner du temps. Sur place, à prix fixe, un seul interlocuteur.',
+    en: 'Breisgau Digital takes small and medium businesses digital: NFC cards for more Google reviews, websites that bring in customers, and digital workflows that save time. In person, at a fixed price, from one source.',
+    tr: 'Breisgau Digital küçük ve orta ölçekli işletmeleri dijitalleştirir: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve zaman kazandıran dijital iş akışları. Yerinde, sabit fiyatla, tek elden.',
+    ku: 'Breisgau Digital karsaziyên biçûk û navîn dîjîtal dike: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û pêvajoyên dîjîtal ku dem teserûf dikin. Li cih, bi bihayê sabît, ji destekî.',
   },
 
   // ---- Section: Stats ------------------------------------------------------
@@ -130,11 +130,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   // ---- Footer --------------------------------------------------------------
   'footer.col.direct': { de: 'Direkt', fr: 'Direct', en: 'Direct', tr: 'Doğrudan', ku: 'Rasterast' },
   'footer.tagline': {
-    de: 'Digitalisierung für kleine und mittlere Betriebe in Freiburg und Baden-Württemberg.<br />Bewertungskarten · Websites · Smart Home.',
-    fr: 'Numérisation pour les petites et moyennes entreprises à Fribourg et dans le Bade-Wurtemberg.<br />Cartes d’avis · Sites web · Maison connectée.',
-    en: 'Digitalisation for small and medium businesses in Freiburg and Baden-Württemberg.<br />Review cards · Websites · Smart home.',
-    tr: 'Freiburg ve Baden-Württemberg’deki küçük ve orta ölçekli işletmeler için dijitalleşme.<br />Değerlendirme kartları · Web siteleri · Akıllı ev.',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk û navîn li Freiburg û Baden-Württemberg.<br />Kartên nirxandinê · Malper · Mala biaqil.',
+    de: 'Digitalisierung für kleine und mittlere Betriebe in Freiburg und Baden-Württemberg.<br />Bewertungskarten · Websites · Digital-Abo.',
+    fr: 'Numérisation pour les petites et moyennes entreprises à Fribourg et dans le Bade-Wurtemberg.<br />Cartes d’avis · Sites web · Abonnement numérique.',
+    en: 'Digitalisation for small and medium businesses in Freiburg and Baden-Württemberg.<br />Review cards · Websites · Digital plan.',
+    tr: 'Freiburg ve Baden-Württemberg’deki küçük ve orta ölçekli işletmeler için dijitalleşme.<br />Değerlendirme kartları · Web siteleri · Dijital abonelik.',
+    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk û navîn li Freiburg û Baden-Württemberg.<br />Kartên nirxandinê · Malper · Abonetiya dîjîtal.',
   },
   'footer.rights': {
     de: 'Alle Rechte vorbehalten', fr: 'Tous droits réservés', en: 'All rights reserved', tr: 'Tüm hakları saklıdır', ku: 'Hemû maf parastî ne',
@@ -494,17 +494,17 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
     de: 'Webdesign Freiburg & Google-Bewertungskarten | Breisgau Digital',
-    fr: 'Breisgau Digital — sites web, cartes d’avis Google & maison connectée à Fribourg',
-    en: 'Breisgau Digital — websites, Google review cards & smart home in Freiburg',
-    tr: 'Breisgau Digital — Freiburg’da web siteleri, Google değerlendirme kartları ve akıllı ev',
-    ku: 'Breisgau Digital — malper, kartên nirxandinê yên Google û mala biaqil li Freiburg',
+    fr: 'Breisgau Digital — sites web & cartes d’avis Google à Fribourg',
+    en: 'Breisgau Digital — websites & Google review cards in Freiburg',
+    tr: 'Breisgau Digital — Freiburg’da web siteleri ve Google değerlendirme kartları',
+    ku: 'Breisgau Digital — malper û kartên nirxandinê yên Google li Freiburg',
   },
   'seo.home.desc': {
-    de: 'Webdesign, Google-Bewertungskarten und Smart Home für kleine Betriebe in Freiburg und Südbaden – persönlich vor Ort, Festpreis oder Monatsabo.',
-    fr: 'Numérisation des petites entreprises à Fribourg et dans le Bade-Wurtemberg : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et maison connectée. Prix fixe, sur place.',
-    en: 'Digitalisation for small businesses in Freiburg and Baden-Württemberg: NFC review cards for more Google reviews, websites that bring in customers, and smart home. Fixed price, in person.',
-    tr: 'Freiburg ve Baden-Württemberg’deki küçük işletmeler için dijitalleşme: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve akıllı ev. Sabit fiyat, yerinde hizmet.',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk li Freiburg û Baden-Württemberg: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û mala biaqil. Bihayê sabît, li cih.',
+    de: 'Webdesign, Google-Bewertungskarten und digitale Abläufe für kleine Betriebe in Freiburg und Südbaden – persönlich vor Ort, Festpreis oder Monatsabo.',
+    fr: 'Numérisation des petites entreprises à Fribourg et dans le Bade-Wurtemberg : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et processus numériques. Prix fixe, sur place.',
+    en: 'Digitalisation for small businesses in Freiburg and Baden-Württemberg: NFC review cards for more Google reviews, websites that bring in customers, and digital workflows. Fixed price, in person.',
+    tr: 'Freiburg ve Baden-Württemberg’deki küçük işletmeler için dijitalleşme: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve dijital iş akışları. Sabit fiyat, yerinde hizmet.',
+    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk li Freiburg û Baden-Württemberg: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û pêvajoyên dîjîtal. Bihayê sabît, li cih.',
   },
   'seo.leist.title': {
     de: 'Website erstellen lassen in Freiburg | Breisgau Digital',

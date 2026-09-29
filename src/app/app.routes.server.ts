@@ -3,6 +3,7 @@ import { PROJECTS } from './core/data/project.data';
 import { LANG_CODES } from './core/i18n/i18n.service';
 import { REVIEW_CARD_PRODUCTS } from './core/data/review-cards.data';
 import { TOWNS } from './core/data/towns.data';
+import { SMART_HOME_ENABLED } from './core/data/company.data';
 
 const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
 
@@ -25,7 +26,9 @@ export const serverRoutes: ServerRoute[] = [
   },
   { path: ':locale/digitale-visitenkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/geschenkkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
-  { path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  ...(SMART_HOME_ENABLED
+    ? [{ path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams } as ServerRoute]
+    : []),
   { path: ':locale/abo', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/projects', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

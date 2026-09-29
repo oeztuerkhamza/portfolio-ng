@@ -79,7 +79,7 @@ export const TOWNS: Town[] = [
     lat: 48.121,
     lng: 7.849,
     intro:
-      'Websites, Google-Bewertungskarten und Smart Home für Betriebe in Emmendingen und im Landkreis — von Freiburg aus in rund 20 Minuten bei Ihnen.',
+      'Websites, Google-Bewertungskarten und digitale Abläufe für Betriebe in Emmendingen und im Landkreis — von Freiburg aus in rund 20 Minuten bei Ihnen.',
     local:
       'Emmendingen lebt vom Handel in der Innenstadt, von Handwerksbetrieben und Praxen, die ihre Kundschaft aus dem ganzen Landkreis holen — aus Teningen, Denzlingen, Kenzingen oder Herbolzheim. Wer dort sucht, tippt oft „in der Nähe" statt eines Ortsnamens. Damit Sie dann oben erscheinen, braucht es ein vollständiges Google-Profil, eine Website mit klaren Angaben zu Ort und Leistungen und regelmäßig neue Bewertungen.',
     focus: ['cards', 'web', 'abo', 'sh'],
@@ -112,7 +112,7 @@ export const TOWNS: Town[] = [
     lat: 48.093,
     lng: 7.962,
     intro:
-      'Digitale Sichtbarkeit für Betriebe in Waldkirch und im Elztal: Websites, Google-Bewertungskarten und Smart Home — persönlich betreut aus Freiburg.',
+      'Digitale Sichtbarkeit für Betriebe in Waldkirch und im Elztal: Websites und Google-Bewertungskarten — persönlich betreut aus Freiburg.',
     local:
       'Im Elztal treffen Handwerk und Tourismus aufeinander: Gastgeber am Kandel und im Simonswälder Tal, Gasthäuser, Werkstätten und Läden in der Waldkircher Altstadt. Gäste planen ihren Ausflug auf dem Handy und wählen nach Bewertungen und Fotos. Ein aktuelles Google-Profil mit Öffnungszeiten, Bildern und ehrlichen Bewertungen ist hier oft wichtiger als jede Anzeige.',
     focus: ['cards', 'web', 'sh', 'abo'],
@@ -145,7 +145,7 @@ export const TOWNS: Town[] = [
     lat: 48.029,
     lng: 7.583,
     intro:
-      'Websites, Bewertungskarten und Smart Home für Betriebe in Breisach und am Kaiserstuhl — mehrsprachig, damit auch Gäste aus Frankreich Sie finden.',
+      'Websites, Bewertungskarten und digitale Abläufe für Betriebe in Breisach und am Kaiserstuhl — mehrsprachig, damit auch Gäste aus Frankreich Sie finden.',
     local:
       'Breisach liegt direkt an der Grenze, Colmar ist näher als Karlsruhe. Weingüter, Straußwirtschaften, Hotels und Läden rund um das Münster haben viele Gäste aus dem Elsass und aus der Schweiz. Wer seine Website auch auf Französisch anbietet und auf Google gute Bewertungen in mehreren Sprachen sammelt, gewinnt diese Gäste. Genau das richten wir ein — vom Weingut in Ihringen bis zur Pension in Vogtsburg.',
     focus: ['web', 'cards', 'abo', 'sh'],
@@ -178,7 +178,7 @@ export const TOWNS: Town[] = [
     lat: 47.917,
     lng: 7.702,
     intro:
-      'Websites, Google-Bewertungskarten und Smart Home für Praxen, Kurbetriebe, Gastgeber und Handel in Bad Krozingen.',
+      'Websites, Google-Bewertungskarten und digitale Abläufe für Praxen, Kurbetriebe, Gastgeber und Handel in Bad Krozingen.',
     local:
       'Als Kurort hat Bad Krozingen viele Praxen, Therapie- und Gesundheitsbetriebe, dazu Cafés, Hotels und Ferienwohnungen für Kurgäste. Wer neu in der Stadt ist, sucht auf dem Handy nach „Physiotherapie in der Nähe" oder „Café Bad Krozingen" und entscheidet nach Bewertungen. Eine klare Website mit Terminhinweisen und ein gepflegtes Google-Profil bringen hier direkt Anrufe.',
     focus: ['cards', 'web', 'sh', 'abo'],
@@ -211,7 +211,7 @@ export const TOWNS: Town[] = [
     lat: 47.882,
     lng: 7.731,
     intro:
-      'Digitale Sichtbarkeit für Cafés, Weingüter, Läden und Gastgeber in Staufen und im Münstertal — Websites, Bewertungskarten und Smart Home aus einer Hand.',
+      'Digitale Sichtbarkeit für Cafés, Weingüter, Läden und Gastgeber in Staufen und im Münstertal — Websites und Bewertungskarten aus einer Hand.',
     local:
       'Die Fauststadt mit ihrer Altstadt und der Burgruine zieht Tagesgäste und Wanderer an, dazu kommen Weingüter und Gastgeber im Münstertal. Die meisten Besucher planen spontan auf dem Handy: Wo gibt es Kaffee, wo ist heute geöffnet, wo schmeckt es? Wer dort mit Fotos, Öffnungszeiten und vielen Bewertungen auftaucht, bekommt die Gäste.',
     focus: ['cards', 'web', 'sh', 'abo'],
@@ -244,7 +244,7 @@ export const TOWNS: Town[] = [
     lat: 47.808,
     lng: 7.63,
     intro:
-      'Websites, Google-Bewertungskarten und Smart Home für Betriebe in Müllheim und im Markgräflerland — Weingüter, Handwerk, Praxen und Handel.',
+      'Websites, Google-Bewertungskarten und digitale Abläufe für Betriebe in Müllheim und im Markgräflerland — Weingüter, Handwerk, Praxen und Handel.',
     local:
       'Das Markgräflerland ist Weinland, und Müllheim ist sein Mittelpunkt: Weingüter mit Hofverkauf, Gasthäuser, dazu Handwerk und Handel für die Orte ringsum bis Neuenburg am Rhein. Viele Kunden kommen aus der Schweiz und aus Frankreich. Eine Website mit Onlineshop oder Weinbestellung, mehrsprachig und mit klaren Öffnungszeiten, holt diese Kunden ab — Bewertungskarten sorgen dafür, dass man Sie auf Google wiederfindet.',
     focus: ['web', 'cards', 'abo', 'sh'],
@@ -277,7 +277,7 @@ export const TOWNS: Town[] = [
     lat: 47.614,
     lng: 7.664,
     intro:
-      'Websites, Bewertungskarten und Smart Home für Betriebe in Lörrach und im Dreiländereck — sichtbar für Kunden aus Deutschland, der Schweiz und Frankreich.',
+      'Websites, Bewertungskarten und digitale Abläufe für Betriebe in Lörrach und im Dreiländereck — sichtbar für Kunden aus Deutschland, der Schweiz und Frankreich.',
     local:
       'In Lörrach, Weil am Rhein und Rheinfelden kaufen viele Kunden aus Basel und dem Elsass ein. Sie suchen auf Google, oft auf Französisch oder Englisch, und vergleichen Bewertungen, Preise und Öffnungszeiten. Handel, Gastronomie und Dienstleister, die dort mehrsprachig und mit vielen guten Bewertungen auftauchen, holen sich diese Kunden. Termine in Lörrach machen wir gern vor Ort, alles Weitere läuft per Video und Telefon.',
     focus: ['web', 'cards', 'abo', 'sh'],
@@ -310,7 +310,7 @@ export const TOWNS: Town[] = [
     lat: 48.473,
     lng: 7.944,
     intro:
-      'Websites, Google-Bewertungskarten und Smart Home für Mittelstand, Handwerk und Handel in Offenburg und der Ortenau.',
+      'Websites, Google-Bewertungskarten und digitale Abläufe für Mittelstand, Handwerk und Handel in Offenburg und der Ortenau.',
     local:
       'Die Ortenau ist stark im Mittelstand: Handwerksbetriebe, Dienstleister und Einzelhandel mit Kundschaft aus dem ganzen Kreis zwischen Kehl und Gengenbach. Viele haben eine Website, die seit Jahren nicht angepasst wurde, langsam lädt und auf dem Handy schwer zu bedienen ist. Ein Relaunch mit klaren Leistungen, Referenzen und Kontaktwegen bringt hier oft schnell mehr Anfragen.',
     focus: ['web', 'cards', 'abo', 'sh'],
@@ -343,7 +343,7 @@ export const TOWNS: Town[] = [
     lat: 48.339,
     lng: 7.873,
     intro:
-      'Websites, Bewertungskarten und Smart Home für Betriebe in Lahr und der südlichen Ortenau — persönlich betreut, auch vor Ort.',
+      'Websites, Bewertungskarten und digitale Abläufe für Betriebe in Lahr und der südlichen Ortenau — persönlich betreut, auch vor Ort.',
     local:
       'Lahr verbindet eine lebendige Innenstadt mit Handel und Gastronomie mit vielen Handwerks- und Dienstleistungsbetrieben im Umland, von Friesenheim bis Seelbach. Hier zählt, wer bei Google zuerst mit guten Bewertungen erscheint, und wer eine Website hat, die auf dem Handy in Sekunden die wichtigsten Fragen beantwortet: Was bieten Sie an, wann haben Sie geöffnet, wie erreicht man Sie?',
     focus: ['cards', 'web', 'abo', 'sh'],
@@ -376,7 +376,7 @@ export const TOWNS: Town[] = [
     lat: 47.918,
     lng: 8.214,
     intro:
-      'Websites, Google-Bewertungskarten und Smart Home für Gastgeber, Gastronomie und Handel in Titisee-Neustadt und im Hochschwarzwald.',
+      'Websites, Google-Bewertungskarten und digitale Abläufe für Gastgeber, Gastronomie und Handel in Titisee-Neustadt und im Hochschwarzwald.',
     local:
       'Am Titisee und im Hochschwarzwald hängt fast alles am Tourismus: Hotels, Pensionen, Ferienwohnungen, Restaurants und Läden an der Seestraße. Gäste buchen und wählen nach Bewertungen auf Google und Buchungsportalen. Wer selbst eine gute Website mit Direktanfrage hat, spart Provisionen — und wer seine Ferienwohnung mit Self-Check-in betreibt, spart sich die Schlüsselübergabe am Abend.',
     focus: ['sh', 'cards', 'web', 'abo'],
