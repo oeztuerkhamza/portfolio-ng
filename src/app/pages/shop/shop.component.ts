@@ -3,6 +3,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { SeoService } from '../../core/seo/seo.service';
+import { CardDraftService } from '../../core/cards/card-draft.service';
 import { CartService, MAX_QTY, SHOP_PRODUCTS } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
 import { IconComponent } from '../../shared/icon/icon.component';
@@ -168,6 +169,7 @@ export class ShopComponent implements OnInit {
   readonly i18n = inject(I18nService);
   readonly shop = inject(ShopStatus);
   readonly cart = inject(CartService);
+  readonly drafts = inject(CardDraftService);
   private readonly seo = inject(SeoService);
   readonly thanks = inject(ActivatedRoute).snapshot.data['thanks'] === true;
   readonly maxQty = MAX_QTY;
@@ -221,6 +223,10 @@ export class ShopComponent implements OnInit {
           lang: this.i18n.lang(),
           businessName: (form.elements.namedItem('business') as HTMLInputElement).value,
           googleLink: (form.elements.namedItem('google') as HTMLInputElement).value,
+          // Was im Kartengestalter entstanden ist, fährt mit. Liegt keine
+          // Karte im Korb, wirft der Server es weg — was hier steht, ist bis
+          // dahin nur der Entwurf aus dem Browser.
+          cardDesigns: this.drafts.payload(),
         }),
       });
       const data = (await res.json()) as { url?: string };

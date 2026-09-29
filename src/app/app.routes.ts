@@ -54,6 +54,20 @@ const localeChildren: Routes = [
     loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
     data: { animation: 'Karten', slug: 'geschenkkarte' },
   },
+  // Der Gestalter zu beiden Karten. Eine Komponente, zwei Adressen — welche
+  // Art gemeint ist, sagt `data.slug`, wie bei den Produktseiten darüber.
+  {
+    path: 'karte-gestalten/digitale-visitenkarte',
+    loadComponent: () =>
+      import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
+    data: { animation: 'CardDesigner', slug: 'digitale-visitenkarte' },
+  },
+  {
+    path: 'karte-gestalten/geschenkkarte',
+    loadComponent: () =>
+      import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
+    data: { animation: 'CardDesigner', slug: 'geschenkkarte' },
+  },
   // Seite bleibt im Code; erreichbar nur, wenn die Leistung angeboten wird.
   ...(SMART_HOME_ENABLED
     ? [

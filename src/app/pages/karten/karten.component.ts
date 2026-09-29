@@ -12,6 +12,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
 import { SHOP_CONTENT } from '../shop/shop.content';
 import { PRODUCT_CONTENT } from '../produkt/produkt.content';
 import { CARDS_CONTENT } from './karten.content';
+import { CARD_DESIGNER_CONTENT } from '../karte-gestalten/karte-gestalten.content';
 
 /**
  * Die zwei Seiten der eigenen NFC-Karten: /digitale-visitenkarte und
@@ -68,6 +69,13 @@ import { CARDS_CONTENT } from './karten.content';
                 <a [href]="mailto(p)" class="btn btn-primary btn-large">{{ i18n.t('pd.ask') }}</a>
               }
             </div>
+            <!-- Zweiter Weg, nicht der Hauptweg: wer einfach bestellen will,
+                 soll nicht erst gestalten müssen. -->
+            <p class="kt-design">
+              <a [routerLink]="('/karte-gestalten/' + p.slug) | localize">{{ i18n.t('cg.design') }}</a>
+              <span>{{ i18n.t('cg.design.d') }}</span>
+            </p>
+
             @if (shop.checked() && !shop.enabled()) {
               <p class="kt-note">{{ i18n.t('pd.closed') }}</p>
             }
@@ -193,6 +201,9 @@ export class KartenComponent implements OnInit {
     this.i18n.register(SHOP_CONTENT);
     this.i18n.register(PRODUCT_CONTENT);
     this.i18n.register(CARDS_CONTENT);
+    // Nur zwei Zeilen daraus (cg.design*), aber sie gehören zum Gestalter
+    // und sollen dort gepflegt werden, nicht hier.
+    this.i18n.register(CARD_DESIGNER_CONTENT);
   }
 
   /** Nur solange der Shop zu ist: Anfrage per E-Mail. */

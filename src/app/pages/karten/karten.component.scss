@@ -29,6 +29,20 @@
   padding: 0 0.5rem;
 }
 
+// Verweis in den Gestalter — unter den Knöpfen, weil er der zweite Weg ist.
+.kt-design {
+  display: grid;
+  gap: 0.15rem;
+  margin: 1rem 0 0;
+  max-width: 46ch;
+  font-size: 0.95rem;
+
+  span {
+    color: $text-mute;
+    font-size: 0.875rem;
+  }
+}
+
 .kt-note {
   margin: 1rem 0 0;
   color: $text-mute;

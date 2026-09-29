@@ -104,6 +104,79 @@ describe('draftCards', () => {
     assert.equal(new Set(db.slugs).size, 3);
   });
 
+  test('übernimmt den Entwurf, den der Kunde selbst gestaltet hat', async () => {
+    const db = fakeSql();
+    await draftCards(
+      db.sql,
+      order([{ key: 'card.business', qty: 1 }], {
+        card_designs: { business: { company: 'Krone am Markt', phone: '0761 1234' } },
+      }),
+    );
+    const f = fields(db.inserts()[0]);
+    // Nicht der Firmenname der Bestellung („Café Krone"), sondern der Entwurf.
+    assert.equal(f.data['company'], 'Krone am Markt');
+    assert.equal(f.data['phone'], '0761 1234');
+  });
+
+  test('gibt drei bestellten Karten denselben Entwurf', async () => {
+    const db = fakeSql();
+    const made = await draftCards(
+      db.sql,
+      order([{ key: 'card.business', qty: 3 }], { card_designs: { business: { company: 'Krone am Markt' } } }),
+    );
+    assert.equal(made, 3);
+    for (const q of db.inserts()) assert.equal(fields(q).data['company'], 'Krone am Markt');
+  });
+
+  test('nimmt je Art den passenden Entwurf', async () => {
+    const db = fakeSql();
+    await draftCards(
+      db.sql,
+      order([
+        { key: 'card.business', qty: 1 },
+        { key: 'card.gift', qty: 1 },
+      ], {
+        card_designs: { business: { company: 'Krone am Markt' }, gift: { headline: 'Herzlichen Glückwunsch' } },
+      }),
+    );
+    const [b, g] = db.inserts().map(fields);
+    assert.equal(b.data['company'], 'Krone am Markt');
+    assert.equal(g.data['headline'], 'Herzlichen Glückwunsch');
+  });
+
+  test('fällt auf den Platzhalter zurück, wenn für die Art nichts gestaltet wurde', async () => {
+    const db = fakeSql();
+    await draftCards(
+      db.sql,
+      order([{ key: 'card.gift', qty: 1 }], { card_designs: { business: { company: 'Krone am Markt' } } }),
+    );
+    const f = fields(db.inserts()[0]);
+    assert.ok(f.data['headline'], 'Geschenkkarte braucht eine Überschrift');
+    assert.equal(f.data['company'], undefined);
+  });
+
+  test('prüft den Entwurf erneut — die Spalte ist frei geformtes JSON', async () => {
+    const db = fakeSql();
+    await draftCards(
+      db.sql,
+      order([{ key: 'card.business', qty: 1 }], {
+        card_designs: { business: { company: 'Krone', heimlich: '<script>', logoUrl: 'javascript:alert(1)' } },
+      }),
+    );
+    const f = fields(db.inserts()[0]);
+    assert.equal(f.data['heimlich'], undefined);
+    assert.equal(f.data['logoUrl'], undefined);
+  });
+
+  test('lässt eine unbrauchbare Spalte den Entwurf nicht verschlucken', async () => {
+    for (const designs of [null, 'kaputt', 42, { business: {} }, { business: 'x' }]) {
+      const db = fakeSql();
+      const made = await draftCards(db.sql, order([{ key: 'card.business', qty: 1 }], { card_designs: designs }));
+      assert.equal(made, 1, `verschluckt bei ${JSON.stringify(designs)}`);
+      assert.equal(fields(db.inserts()[0]).data['company'], 'Café Krone');
+    }
+  });
+
   test('rührt Bewertungskarten nicht an', async () => {
     const db = fakeSql();
     const made = await draftCards(

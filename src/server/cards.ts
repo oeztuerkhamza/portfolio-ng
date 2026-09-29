@@ -369,6 +369,34 @@ export function cardData(kind: CardKind, input: unknown): BusinessCardData | Gif
 }
 
 /**
+ * Entwürfe, die der Kunde selbst gestaltet hat — je Art einer.
+ *
+ * Aus dem Gestalter kommt `{ business: {…}, gift: {…} }`: was der Kunde in
+ * den Bogen geschrieben hat, bevor er bezahlt. Jede Art läuft durch dieselbe
+ * Prüfung wie das Portal; eine unvollständige Art fällt einfach heraus, statt
+ * die ganze Bestellung scheitern zu lassen. Was der Browser schickt, ist
+ * nichts wert — geprüft wird hier, sonst nirgends.
+ *
+ * Bestellt jemand drei Visitenkarten, bekommen alle drei denselben Entwurf:
+ * drei Karten desselben Betriebs sind der Normalfall. Wer sie verschieden
+ * haben will, ändert sie danach im Portal.
+ *
+ * `null`, wenn nichts Brauchbares dabei war — dann bleibt die Spalte leer und
+ * die Entwürfe entstehen wie bisher aus dem Firmennamen der Bestellung.
+ */
+export function cardDesigns(input: unknown): Partial<Record<CardKind, BusinessCardData | GiftCardData>> | null {
+  // Ein Text oder eine Zahl ist kein Entwurf. Die Spalte ist frei geformtes
+  // JSON und kommt aus dem Browser — hier darf nichts angenommen werden.
+  const b = (typeof input === 'object' && input !== null ? input : {}) as Record<string, unknown>;
+  const out: Partial<Record<CardKind, BusinessCardData | GiftCardData>> = {};
+  for (const kind of CARD_KINDS) {
+    const data = cardData(kind, b[kind]);
+    if (data) out[kind] = data;
+  }
+  return Object.keys(out).length ? out : null;
+}
+
+/**
  * Kurzname für eine Karte aus dem Namen des Betriebs.
  *
  * Buchstabe für Buchstabe dasselbe wie im Portal (suggestSlug in

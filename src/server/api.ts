@@ -13,6 +13,7 @@ import {
   type CardTheme,
   type LeadInput,
   cardData,
+  cardDesigns,
   cardNotice,
   label,
   cardSlug,
@@ -167,10 +168,17 @@ async function confirmOrder(
  *
  * Mehrfach kann es nicht laufen: aufgerufen wird es nur beim Übergang auf
  * „bezahlt", und den macht genau eine Abfrage genau einmal.
+ *
+ * Hat der Kunde die Karte im Gestalter selbst gefüllt (/karte-gestalten), steht
+ * sein Entwurf in `card_designs` und wird übernommen — die Karte kommt dann
+ * fertig im Portal an statt leer. Sonst bleibt es beim bisherigen Platzhalter.
  */
 export async function draftCards(sql: NonNullable<ReturnType<typeof db>>, order: Record<string, unknown>): Promise<number> {
   const items = (order['items'] as { key?: string; qty?: number }[] | null) ?? [];
   const label = str(order['business_name'], 200);
+  // Erneut geprüft, nicht bloß gelesen: die Spalte ist frei geformtes JSON,
+  // und was die Karte nicht kennt, darf nicht in `data` landen.
+  const designs = cardDesigns(order['card_designs']) ?? {};
   let made = 0;
 
   for (const item of items) {
@@ -182,7 +190,9 @@ export async function draftCards(sql: NonNullable<ReturnType<typeof db>>, order:
       // Der Inhalt läuft durch dieselbe Prüfung wie im Portal, damit im Feld
       // `data` nie etwas steht, das die Karte nicht kennt.
       const draft =
-        cardData(kind, kind === 'business' ? { company: label || 'Neue Karte' } : { headline: 'Alles Gute!' }) ?? {};
+        designs[kind] ??
+        cardData(kind, kind === 'business' ? { company: label || 'Neue Karte' } : { headline: 'Alles Gute!' }) ??
+        {};
       // Die Sprache der Bestellung ist geprüft (LANGS im Checkout) — geprüft
       // wird sie hier trotzdem: eine Zeile, die die Spaltenprüfung verletzt,
       // würde eine bezahlte Karte verschlucken.
@@ -605,7 +615,7 @@ api.post(
         const [order] = await sql`
           update orders set status = 'bezahlt', paid_at = now()
           where stripe_session_id = ${s.id} and status = 'offen'
-          returning id, items, amount_total, customer_email, customer_name, business_name, lang`;
+          returning id, items, amount_total, customer_email, customer_name, business_name, lang, card_designs`;
         if (order) {
           // Erst die Entwürfe, dann die Mail: die Mail verspricht dem Kunden,
           // dass wir seine Karte einrichten — dann soll sie auch schon im
@@ -753,6 +763,49 @@ api.get(
   }),
 );
 
+/**
+ * Vorschau des Kartengestalters: Entwurf rein, fertige Kartenseite raus.
+ *
+ * Gezeichnet wird mit demselben `renderCard`, das auch /k/<name> ausliefert.
+ * Das ist der ganze Sinn dieser Runde zum Server: eine zweite, nachgebaute
+ * Vorschau im Browser würde früher oder später etwas anderes zeigen als die
+ * Karte, die der Kunde am Ende bekommt.
+ *
+ * Nichts wird gespeichert und nichts gezählt — der Entwurf lebt bis hierher
+ * nur im Browser des Kunden. Gebremst wird trotzdem: die Seite zu zeichnen
+ * kostet Rechenzeit, und der Bogen schickt bei jeder Eingabe neu.
+ *
+ * `preview` steht bewusst nicht auf `true`: der Hinweis dort spricht von einer
+ * noch nicht veröffentlichten Karte und passt nicht zu einem Entwurf, der noch
+ * gar nicht bestellt ist. Dass es eine Vorschau ist, sagt die Seite drumherum.
+ */
+api.post(
+  '/card-preview',
+  h(async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (limited('cv:' + clientIp(req), 120, 60_000)) return res.status(429).json({ error: 'too_many' });
+
+    const b = req.body ?? {};
+    const kind = CARD_KINDS.find((k) => k === b.kind);
+    if (!kind) return res.status(400).json({ error: 'invalid_kind' });
+    const theme = CARD_THEMES.find((t) => t === b.theme) ?? 'brand';
+    const lang = CARD_LANGS.includes(b.lang as CardLang) ? (b.lang as CardLang) : 'de';
+
+    // Fehlt das Pflichtfeld (Firmenname bzw. Überschrift), gibt es noch nichts
+    // zu zeigen. Das ist kein Fehler, sondern der Anfang jedes Entwurfs — der
+    // Bogen macht daraus einen Hinweis, keine Fehlermeldung.
+    const data = cardData(kind, b.data);
+    if (!data) return res.status(422).json({ error: 'incomplete' });
+
+    // Der Kurzname ist erfunden: eine Karte hat ihn erst, wenn es sie gibt.
+    // Die Knöpfe darauf zeigen ins Leere — im abgeschotteten Rahmen der
+    // Vorschau kann sie ohnehin niemand betätigen.
+    return res.json({
+      html: renderCard({ slug: 'vorschau', kind, theme, lang, data }, origin(req)),
+    });
+  }),
+);
+
 api.post(
   '/checkout',
   h(async (req, res) => {
@@ -799,9 +852,16 @@ api.post(
     const shipping = Number(ship?.['value'] ?? 0);
     const total = items.reduce((s, i) => s + i.qty * i.unit_price, 0) + shipping;
 
+    // Was der Kunde im Gestalter gefüllt hat, fährt bis zur Bestellung mit.
+    // Ohne Karte im Korb ist es gegenstandslos: dann käme die Spalte nie zum
+    // Einsatz und stünde nur als fremde Angabe in der Bestellung.
+    const wantsCard = items.some((i) => CARD_KINDS.some((k) => i.key === `card.${k}`));
+    const designs = wantsCard ? cardDesigns(b.cardDesigns) : null;
+
     const [order] = await sql`
-      insert into orders (items, amount_total, business_name, google_link, lang)
-      values (${sql.json(items)}, ${total}, ${str(b.businessName, 200)}, ${str(b.googleLink, 500)}, ${lang})
+      insert into orders (items, amount_total, business_name, google_link, lang, card_designs)
+      values (${sql.json(items)}, ${total}, ${str(b.businessName, 200)}, ${str(b.googleLink, 500)}, ${lang},
+              ${designs ? sql.json(designs as any) : null})
       returning id`;
     const orderId = String(order['id']);
 

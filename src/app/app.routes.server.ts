@@ -26,6 +26,10 @@ export const serverRoutes: ServerRoute[] = [
   },
   { path: ':locale/digitale-visitenkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/geschenkkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  // Der Gestalter ist ein Werkzeug: die Hülle wird vorgerendert, der Entwurf
+  // entsteht im Browser. Im Index steht er nicht (noIndex in der Komponente).
+  { path: ':locale/karte-gestalten/digitale-visitenkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  { path: ':locale/karte-gestalten/geschenkkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   ...(SMART_HOME_ENABLED
     ? [{ path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams } as ServerRoute]
     : []),

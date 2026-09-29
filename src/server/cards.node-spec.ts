@@ -9,6 +9,7 @@ import {
   MAX_PHOTOS,
   NETWORKS,
   cardData,
+  cardDesigns,
   cardSlug,
   esc,
   cardNotice,
@@ -248,6 +249,53 @@ describe('cardData — Geschenkkarte', () => {
   test('wirft ein Lied ab, das keine https-Adresse ist', () => {
     const d = cardData('gift', { headline: 'H', songUrl: 'javascript:alert(1)' }) as GiftCardData;
     assert.equal('songUrl' in d, false);
+  });
+});
+
+describe('cardDesigns — was der Kunde im Gestalter gefüllt hat', () => {
+  test('nimmt beide Arten an und prüft jede für sich', () => {
+    const out = cardDesigns({
+      business: { company: 'Café Krone', phone: '0761 1234' },
+      gift: { headline: 'Alles Gute!', to: 'Mira' },
+    });
+    assert.equal((out?.['business'] as BusinessCardData).company, 'Café Krone');
+    assert.equal((out?.['gift'] as GiftCardData).headline, 'Alles Gute!');
+  });
+
+  test('lässt eine unvollständige Art fallen, statt alles zu verwerfen', () => {
+    // Wer eine Visitenkarte gestaltet und die Geschenkkarte leer lässt, soll
+    // seine Visitenkarte bekommen — nicht beides verlieren.
+    const out = cardDesigns({ business: { company: 'Krone' }, gift: { to: 'Mira' } });
+    assert.ok(out?.['business']);
+    assert.equal(out?.['gift'], undefined);
+  });
+
+  test('gibt null zurück, wenn nichts Brauchbares dabei ist', () => {
+    assert.equal(cardDesigns({}), null);
+    assert.equal(cardDesigns(null), null);
+    assert.equal(cardDesigns('nein'), null);
+    assert.equal(cardDesigns({ business: {}, gift: {} }), null);
+  });
+
+  test('übernimmt keine erfundenen Arten', () => {
+    const out = cardDesigns({ business: { company: 'Krone' }, kupon: { company: 'Krone' } });
+    assert.deepEqual(Object.keys(out ?? {}), ['business']);
+  });
+
+  test('wirft weg, was die Karte nicht kennt — der Browser darf nichts durchreichen', () => {
+    const out = cardDesigns({
+      business: { company: 'Krone', leads: 'ja', logoUrl: 'javascript:alert(1)', heimlich: 'x' },
+    });
+    const b = out?.['business'] as BusinessCardData & Record<string, unknown>;
+    assert.equal(b['heimlich'], undefined);
+    assert.equal(b.logoUrl, undefined);
+    // `leads` ist ein Schalter, kein Text: alles außer true bleibt aus.
+    assert.equal(b.leads, undefined);
+  });
+
+  test('kürzt zu lange Eingaben, statt sie abzulehnen', () => {
+    const out = cardDesigns({ business: { company: 'x'.repeat(500) } });
+    assert.equal((out?.['business'] as BusinessCardData).company.length, 120);
   });
 });
 
