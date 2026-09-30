@@ -37,6 +37,12 @@ yarn-error.log
 testem.log
 /typings
 
+# Zugangsdaten für die lokale Entwicklung (scripts/dev-api.mjs liest sie).
+# Dieses Repository ist öffentlich — hier darf nie ein Schlüssel landen.
+.env
+.env.*
+!.env.example
+
 # System files
 .DS_Store
 Thumbs.db

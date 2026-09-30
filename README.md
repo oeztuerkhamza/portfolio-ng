@@ -12,6 +12,36 @@ ng serve
 
 Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
 
+### Server-API dazu (`/api`, `/k`, `/r`)
+
+`ng serve` rendert nur die Angular-Anwendung. Der Express-Teil — die API, die
+Kartenseiten `/k/<name>` und die Kurzlinks `/r/<name>` — läuft dort nicht mit:
+Anfragen an `/api/...` bekommen sonst Vites `index.html` zurück, mit Status 200.
+Das sieht wie ein Erfolg aus und ist keiner; am deutlichsten merkt man es im
+Kartengestalter, dessen Vorschau dann immer „ließ sich nicht laden" meldet.
+
+Darum im zweiten Fenster:
+
+```bash
+npm run dev:api
+```
+
+Das startet denselben Express-Baum, den auch Vercel ausführt, auf Port 4301;
+`proxy.conf.json` leitet `/api`, `/k` und `/r` von `ng serve` dorthin. Änderungen
+unter `src/server` werden neu gebaut und ohne Neustart nachgeladen.
+
+Zugangsdaten kommen aus einer `.env` im Projektordner (steht in `.gitignore` —
+dieses Repository ist öffentlich). Ohne sie läuft der Server trotzdem: was eine
+Datenbank braucht, antwortet mit 503, der Rest tut es. Die Kartenvorschau
+gehört zum Rest, sie zeichnet nur und speichert nichts.
+
+```
+DATABASE_URL=postgres://…          # Bestellungen, Karten, Preise
+SUPABASE_URL=https://….supabase.co # Speicher für hochgeladene Bilder
+SUPABASE_SERVICE_ROLE_KEY=…        # nur serverseitig, nie in den Browser
+SITE_URL=http://localhost:4200
+```
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
