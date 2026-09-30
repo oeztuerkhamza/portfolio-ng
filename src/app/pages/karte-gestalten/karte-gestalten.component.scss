@@ -134,6 +134,12 @@
   }
 }
 
+// Bild der Geschenkkarte: das Feld bringt seinen eigenen Rahmen mit, hier
+// braucht es nur den Abstand zu den Geschwistern.
+.cg-photo {
+  min-width: 0;
+}
+
 .cg-check {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);

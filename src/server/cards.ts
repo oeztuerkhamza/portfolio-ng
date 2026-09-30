@@ -397,6 +397,30 @@ export function cardDesigns(input: unknown): Partial<Record<CardKind, BusinessCa
 }
 
 /**
+ * Alle Bildadressen, die in einem Satz Entwürfe vorkommen.
+ *
+ * Damit wird beim Bestellen entschieden, welche hochgeladenen Dateien
+ * bleiben dürfen: was hier auftaucht, gehört zu einer Karte, alles andere
+ * ist liegen gebliebenes Zeug und wird später weggeräumt.
+ *
+ * Absichtlich aus den *geprüften* Entwürfen gelesen, nicht aus dem, was der
+ * Browser geschickt hat: sonst könnte man sich mit einer erfundenen Liste
+ * fremde Dateien vor dem Aufräumen retten.
+ */
+export function designImageUrls(
+  designs: Partial<Record<CardKind, BusinessCardData | GiftCardData>> | null,
+): string[] {
+  const out = new Set<string>();
+  for (const data of Object.values(designs ?? {})) {
+    const d = data as BusinessCardData & GiftCardData;
+    for (const url of [d.logoUrl, d.avatarUrl, ...(d.photos ?? [])]) {
+      if (typeof url === 'string' && url) out.add(url);
+    }
+  }
+  return [...out];
+}
+
+/**
  * Kurzname für eine Karte aus dem Namen des Betriebs.
  *
  * Buchstabe für Buchstabe dasselbe wie im Portal (suggestSlug in

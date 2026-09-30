@@ -11,6 +11,7 @@ import {
   cardData,
   cardDesigns,
   cardSlug,
+  designImageUrls,
   esc,
   cardNotice,
   cardVisible,
@@ -296,6 +297,43 @@ describe('cardDesigns — was der Kunde im Gestalter gefüllt hat', () => {
   test('kürzt zu lange Eingaben, statt sie abzulehnen', () => {
     const out = cardDesigns({ business: { company: 'x'.repeat(500) } });
     assert.equal((out?.['business'] as BusinessCardData).company.length, 120);
+  });
+});
+
+describe('designImageUrls — welche Bilder zu einer Bestellung gehören', () => {
+  const urls = (input: unknown) => designImageUrls(cardDesigns(input));
+
+  test('sammelt Logo und Portrait der Visitenkarte', () => {
+    const out = urls({
+      business: { company: 'Krone', logoUrl: 'https://x.test/logo.png', avatarUrl: 'https://x.test/ich.jpg' },
+    });
+    assert.deepEqual(out.sort(), ['https://x.test/ich.jpg', 'https://x.test/logo.png']);
+  });
+
+  test('sammelt die Fotos der Geschenkkarte', () => {
+    const out = urls({ gift: { headline: 'Hallo', photos: ['https://x.test/1.jpg', 'https://x.test/2.jpg'] } });
+    assert.equal(out.length, 2);
+  });
+
+  test('nimmt beide Arten zusammen und nennt jedes Bild nur einmal', () => {
+    const out = urls({
+      business: { company: 'Krone', logoUrl: 'https://x.test/gleich.png' },
+      gift: { headline: 'Hallo', photos: ['https://x.test/gleich.png', 'https://x.test/anders.png'] },
+    });
+    assert.deepEqual(out.sort(), ['https://x.test/anders.png', 'https://x.test/gleich.png']);
+  });
+
+  test('liest aus den geprüften Entwürfen — eine erfundene Adresse kommt nicht durch', () => {
+    // Sonst könnte man mit einer untergeschobenen Liste fremde Dateien vor
+    // dem Aufräumen retten.
+    const out = urls({ business: { company: 'Krone', logoUrl: 'http://x.test/unsicher.png' } });
+    assert.deepEqual(out, []);
+  });
+
+  test('kommt mit leeren und unbrauchbaren Eingaben zurecht', () => {
+    assert.deepEqual(designImageUrls(null), []);
+    assert.deepEqual(urls({}), []);
+    assert.deepEqual(urls({ business: { company: 'Krone' } }), []);
   });
 });
 

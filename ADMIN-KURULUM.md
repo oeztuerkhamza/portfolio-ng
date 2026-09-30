@@ -34,7 +34,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260926160000_reviews.sql` (Google yorumları) ve
    `20260926170000_touch_search_path.sql` (bir güvenlik sertleştirmesi) ve
    `20260926180000_maintenance.sql` (bakım modu) ve
-   `20260929120000_card_designs.sql` (müşterinin kart tasarlayıcıda doldurduğu taslak).
+   `20260929120000_card_designs.sql` (müşterinin kart tasarlayıcıda doldurduğu taslak) ve
+   `20260930120000_card_uploads.sql` (tasarlayıcıya yüklenen görsellerin kaydı; siparişe bağlanmayanlar iki hafta sonra otomatik silinir).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).

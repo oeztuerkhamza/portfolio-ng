@@ -83,6 +83,27 @@ export async function uploadImage(bytes: Buffer, contentType: unknown): Promise<
   return { ok: true, path, url: publicUrl(bucket, path) };
 }
 
+/**
+ * Eine hochgeladene Datei wieder entfernen.
+ *
+ * Gebraucht vom Aufräumlauf: Bilder, die jemand im Gestalter hochgeladen
+ * und dann nie bestellt hat. `true` auch, wenn die Datei schon weg war —
+ * das Ziel ist „liegt nicht mehr da", nicht „ich habe sie gelöscht".
+ */
+export async function deleteImage(path: string): Promise<boolean> {
+  if (!config.supabaseUrl || !config.supabaseServiceKey || !path) return false;
+  try {
+    const res = await fetch(`${base()}/storage/v1/object/${config.storageBucket}/${path}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${config.supabaseServiceKey}` },
+      signal: AbortSignal.timeout(15_000),
+    });
+    return res.ok || res.status === 404;
+  } catch {
+    return false;
+  }
+}
+
 /** Adresse, unter der die Datei öffentlich liegt. */
 export function publicUrl(bucket: string, path: string): string {
   return `${base()}/storage/v1/object/public/${bucket}/${path}`;

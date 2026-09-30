@@ -2,7 +2,7 @@ import { createServer, type IncomingMessage, type ServerResponse } from 'node:ht
 import type { AddressInfo } from 'node:net';
 import assert from 'node:assert/strict';
 import { afterEach, describe, test } from 'node:test';
-import { ALLOWED_TYPES, MAX_UPLOAD_BYTES, extFor, publicUrl, uploadImage } from './storage';
+import { ALLOWED_TYPES, MAX_UPLOAD_BYTES, deleteImage, extFor, publicUrl, uploadImage } from './storage';
 
 /**
  * Tests des Datei-Uploads. Ein lokaler Server spielt Supabase, damit auch
@@ -84,6 +84,54 @@ describe('extFor', () => {
   test('lehnt alles ab, was kein erlaubtes Bild ist', () => {
     for (const bad of ['text/html', 'application/pdf', 'application/javascript', '', null, undefined, 42]) {
       assert.equal(extFor(bad), null, String(bad));
+    }
+  });
+});
+
+describe('deleteImage — Aufräumen nach dem Gestalter', () => {
+  test('tut ohne eingerichteten Speicher nichts und behauptet nichts', async () => {
+    setEnv();
+    assert.equal(await deleteImage('2026/abc.png'), false);
+  });
+
+  test('löscht über den Pfad, mit dem Dienstschlüssel', async () => {
+    const fake = await fakeSupabase(() => ({ status: 200 }));
+    try {
+      assert.equal(await deleteImage('2026/abc.png'), true);
+      const call = fake.calls[0];
+      assert.equal(call.method, 'DELETE');
+      assert.match(call.path, /\/storage\/v1\/object\/cards\/2026\/abc\.png$/);
+      assert.equal(call.auth, `Bearer ${SERVICE_KEY}`);
+    } finally {
+      await fake.close();
+    }
+  });
+
+  test('nimmt „war schon weg" als Erfolg — das Ziel ist, dass sie nicht mehr daliegt', async () => {
+    const fake = await fakeSupabase(() => ({ status: 404 }));
+    try {
+      assert.equal(await deleteImage('2026/weg.png'), true);
+    } finally {
+      await fake.close();
+    }
+  });
+
+  test('meldet einen echten Fehlschlag, damit der Lauf es erneut versucht', async () => {
+    const fake = await fakeSupabase(() => ({ status: 500 }));
+    try {
+      assert.equal(await deleteImage('2026/kaputt.png'), false);
+    } finally {
+      await fake.close();
+    }
+  });
+
+  test('fragt ohne Pfad gar nicht erst', async () => {
+    const fake = await fakeSupabase(() => ({ status: 200 }));
+    try {
+      assert.equal(await deleteImage(''), false);
+      assert.equal(fake.calls.length, 0);
+    } finally {
+      await fake.close();
     }
   });
 });

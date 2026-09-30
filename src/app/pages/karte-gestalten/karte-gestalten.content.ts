@@ -45,8 +45,8 @@ export const CARD_DESIGNER_CONTENT: Record<string, Entry> = {
   // ── Felder der Visitenkarte ───────────────────────────────
   'cg.f.company': { de: 'Name des Betriebs', fr: 'Nom de l’entreprise', en: 'Business name', tr: 'İşletme adı', ku: 'Navê karsaziyê' },
   'cg.f.tagline': { de: 'Zeile darunter', fr: 'Ligne en dessous', en: 'Line underneath', tr: 'Altındaki satır', ku: 'Rêza jêr' },
-  'cg.f.logoUrl': { de: 'Logo (Adresse des Bildes)', fr: 'Logo (adresse de l’image)', en: 'Logo (image address)', tr: 'Logo (görsel adresi)', ku: 'Logo (navnîşana wêneyê)' },
-  'cg.f.avatarUrl': { de: 'Portrait (Adresse des Bildes)', fr: 'Portrait (adresse de l’image)', en: 'Portrait (image address)', tr: 'Portre (görsel adresi)', ku: 'Portre (navnîşana wêneyê)' },
+  'cg.f.logo': { de: 'Logo', fr: 'Logo', en: 'Logo', tr: 'Logo', ku: 'Logo' },
+  'cg.f.avatar': { de: 'Portrait', fr: 'Portrait', en: 'Portrait', tr: 'Portre', ku: 'Portre' },
   'cg.f.phone': { de: 'Telefon', fr: 'Téléphone', en: 'Phone', tr: 'Telefon', ku: 'Telefon' },
   'cg.f.email': { de: 'E-Mail', fr: 'E-mail', en: 'E-mail', tr: 'E-posta', ku: 'E-name' },
   'cg.f.web': { de: 'Website', fr: 'Site web', en: 'Website', tr: 'Web sitesi', ku: 'Malper' },
@@ -76,17 +76,17 @@ export const CARD_DESIGNER_CONTENT: Record<string, Entry> = {
   'cg.link.url': { de: 'Adresse', fr: 'Adresse', en: 'Address', tr: 'Adres', ku: 'Navnîşan' },
   'cg.link.none': { de: 'Noch kein Link.', fr: 'Aucun lien pour l’instant.', en: 'No link yet.', tr: 'Henüz bağlantı yok.', ku: 'Hêj girêdan tune.' },
   'cg.photo.add': { de: 'Bild hinzufügen', fr: 'Ajouter une photo', en: 'Add a photo', tr: 'Fotoğraf ekle', ku: 'Wêne zêde bike' },
-  'cg.photo.url': { de: 'Adresse des Bildes', fr: 'Adresse de l’image', en: 'Image address', tr: 'Görsel adresi', ku: 'Navnîşana wêneyê' },
+  'cg.photo.n': { de: 'Bild', fr: 'Photo', en: 'Photo', tr: 'Fotoğraf', ku: 'Wêne' },
   'cg.photo.none': { de: 'Noch kein Bild.', fr: 'Aucune photo pour l’instant.', en: 'No photo yet.', tr: 'Henüz fotoğraf yok.', ku: 'Hêj wêne tune.' },
   'cg.remove': { de: 'Entfernen', fr: 'Retirer', en: 'Remove', tr: 'Kaldır', ku: 'Rake' },
 
   // ── Hinweise ──────────────────────────────────────────────
-  'cg.hint.https': {
-    de: 'Adressen müssen mit https:// beginnen. Bilder, die noch nicht im Netz stehen, schicken Sie uns nach der Bestellung — wir setzen sie ein.',
-    fr: 'Les adresses doivent commencer par https://. Les images qui ne sont pas encore en ligne, envoyez-les après la commande : nous les intégrons.',
-    en: 'Addresses must start with https://. Images that are not online yet you send us after ordering — we put them in.',
-    tr: 'Adresler https:// ile başlamalı. Henüz internette olmayan görselleri sipariş sonrası bize gönderin — biz ekleriz.',
-    ku: 'Navnîşan divê bi https:// dest pê bikin. Wêneyên ku hêj li torê nînin piştî siparîşê ji me re bişînin — em wan datînin.',
+  'cg.hint.img': {
+    de: 'JPG, PNG, WebP, GIF oder AVIF, bis 5 MB. Das Bild liegt danach auf unserem Server; bestellen Sie nicht, wird es nach zwei Wochen wieder gelöscht.',
+    fr: 'JPG, PNG, WebP, GIF ou AVIF, jusqu’à 5 Mo. L’image est ensuite stockée sur notre serveur ; sans commande, elle est supprimée au bout de deux semaines.',
+    en: 'JPG, PNG, WebP, GIF or AVIF, up to 5 MB. The image then sits on our server; without an order it is deleted after two weeks.',
+    tr: 'JPG, PNG, WebP, GIF veya AVIF, en fazla 5 MB. Görsel sonrasında sunucumuzda durur; sipariş vermezseniz iki hafta sonra silinir.',
+    ku: 'JPG, PNG, WebP, GIF an AVIF, heta 5 MB. Wêne piştre li servera me dimîne; heke hûn siparîş nedin, piştî du hefteyan tê jêbirin.',
   },
   'cg.hint.saved': {
     de: 'Ihr Entwurf bleibt in diesem Browser gespeichert, bis Sie bestellen. Auf unseren Server kommt er erst mit der Bestellung.',

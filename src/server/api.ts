@@ -15,6 +15,7 @@ import {
   cardData,
   cardDesigns,
   cardNotice,
+  designImageUrls,
   label,
   cardSlug,
   cardVisible,
@@ -24,7 +25,7 @@ import {
   vcard,
 } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
-import { ALLOWED_TYPES, uploadImage } from './storage';
+import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
 import { invoices } from './invoices';
 import {
   PLACE_ID_SETTING,
@@ -446,6 +447,64 @@ export const LEAD_RETENTION_MONTHS = 12;
  * Gibt zurück, wie viele Zeilen gegangen sind — nie, welche.
  */
 /**
+ * So lange darf ein hochgeladenes Bild ohne Bestellung liegen bleiben.
+ *
+ * Zwei Wochen, weil der Gestalter kein Formular ist, das man in einem Zug
+ * ausfüllt: wer ein Logo hochlädt, holt danach vielleicht erst das
+ * Portrait vom Fotografen. Ein Entwurf, der so lange nicht bestellt wurde,
+ * wird es auch nicht mehr — und bis dahin steht er im Browser des Kunden,
+ * nicht bei uns.
+ */
+export const UPLOAD_RETENTION_DAYS = 14;
+
+/**
+ * Hochgeladene Bilder, die nie in einer Bestellung auftauchten, wegräumen.
+ *
+ * Erst aus dem Speicher, dann aus dem Verzeichnis: andersherum wüsste
+ * niemand mehr, welche Datei zu löschen wäre, wenn der Lauf dazwischen
+ * abbricht. Eine Datei, die sich nicht löschen lässt, bleibt darum auch im
+ * Verzeichnis und wird beim nächsten Lauf erneut versucht.
+ *
+ * Gibt zurück, wie viele gegangen sind — nie, welche.
+ */
+export async function purgeUploads(sql: NonNullable<ReturnType<typeof db>>): Promise<number> {
+  const old = await sql`
+    select id, path from card_uploads
+    where claimed_at is null
+      and created_at < now() - ${`${UPLOAD_RETENTION_DAYS} days`}::interval
+    limit 500`;
+
+  let gone = 0;
+  for (const row of old) {
+    if (!(await deleteImage(String(row['path'])))) continue;
+    await sql`delete from card_uploads where id = ${String(row['id'])}`;
+    gone++;
+  }
+  return gone;
+}
+
+/**
+ * Die Bilder einer Bestellung als „gehört dazu" merken.
+ *
+ * Ein Fehler hier darf die Bestellung nicht scheitern lassen: bezahlt ist
+ * bezahlt, und das Schlimmste, was passiert, ist ein Bild, das zwei Wochen
+ * später weggeräumt wird, obwohl es gebraucht wurde. Darum wird der Fehler
+ * nur protokolliert — sichtbar genug, um ihn zu bemerken.
+ */
+async function claimUploads(
+  sql: NonNullable<ReturnType<typeof db>>,
+  designs: Parameters<typeof designImageUrls>[0],
+): Promise<void> {
+  const urls = designImageUrls(designs);
+  if (!urls.length) return;
+  try {
+    await sql`update card_uploads set claimed_at = now() where claimed_at is null and url in ${sql(urls)}`;
+  } catch (err) {
+    console.error('[upload] Zuordnung zur Bestellung', err);
+  }
+}
+
+/**
  * Darf dieser Aufruf aufräumen?
  *
  * Ohne gesetztes Geheimnis nie — eine offene Löschstrecke im Netz wäre
@@ -690,6 +749,16 @@ api.get(
     const removed = await purgeLeads(sql);
     console.log('[cron] alte Kontakte gelöscht:', removed);
 
+    // Bilder, die jemand im Gestalter hochgeladen und nie bestellt hat.
+    // Ein Fehlschlag darf den übrigen Lauf nicht mitnehmen.
+    let uploads = 0;
+    try {
+      uploads = await purgeUploads(sql);
+      console.log('[cron] unbeanspruchte Bilder gelöscht:', uploads);
+    } catch (err) {
+      console.error('[cron] Bilder aufräumen', err);
+    }
+
     // Bei derselben Gelegenheit die Bewertungen erneuern. Ein Fehlschlag
     // darf den Lauf nicht scheitern lassen — das Aufräumen ist wichtiger,
     // und der Grund steht danach im Portal.
@@ -719,7 +788,7 @@ api.get(
       }
     }
 
-    return res.json({ removed, retentionMonths: LEAD_RETENTION_MONTHS, reviews, rebuilt });
+    return res.json({ removed, uploads, retentionMonths: LEAD_RETENTION_MONTHS, reviews, rebuilt });
   }),
 );
 
@@ -760,6 +829,59 @@ api.get(
       message: state.message,
       bypass: state.token ? await sha256Hex(state.token) : null,
     });
+  }),
+);
+
+/**
+ * Ein Bild für den Kartengestalter hochladen — ohne Anmeldung.
+ *
+ * Das ist die einzige offene Schreibstrecke der Seite, und sie musste es
+ * werden: wer eine Karte gestaltet, hat noch nichts bestellt und kann sich
+ * nirgends anmelden. Vorher blieb nur „geben Sie die Adresse Ihres Logos
+ * an" — was voraussetzt, dass das Logo schon irgendwo im Netz steht, und
+ * das trifft für einen Handwerksbetrieb selten zu.
+ *
+ * Geprüft wird nichts hier, sondern in `uploadImage`: erlaubte Bildarten
+ * (SVG bewusst nicht, es darf Skript enthalten), Größe, und der Dateiname
+ * kommt vom Server, nie aus der Anfrage.
+ *
+ * Gegen Missbrauch dreierlei: eine Grenze je Stunde und Adresse, die Größe
+ * aus dem Speicher-Modul, und das Verzeichnis `card_uploads` — was nie in
+ * einer Bestellung auftaucht, räumt der tägliche Lauf nach
+ * UPLOAD_RETENTION_DAYS wieder weg.
+ *
+ * Ohne Datenbank wird trotzdem hochgeladen: das Bild ist dem Kunden
+ * wichtiger als unsere Buchführung darüber. Dann fehlt nur die Zeile, und
+ * das steht im Protokoll.
+ */
+api.post(
+  '/card-image',
+  express.raw({ type: ALLOWED_TYPES, limit: '6mb' }),
+  h(async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    // Eine Karte braucht Logo, Portrait und bis zu acht Fotos — zehn Stück
+    // sind der Normalfall, zwanzig je Stunde also reichlich Luft.
+    if (limited('cu:' + clientIp(req), 20, 60 * 60_000)) return res.status(429).json({ error: 'too_many' });
+
+    const bytes = Buffer.isBuffer(req.body) ? req.body : Buffer.alloc(0);
+    const result = await uploadImage(bytes, req.headers['content-type']);
+    if (!result.ok) {
+      console.error('[card-image]', result.error, result.detail ?? '');
+      const status = result.error === 'storage_not_configured' ? 503 : result.error === 'upload_failed' ? 502 : 400;
+      return res.status(status).json({ error: result.error });
+    }
+
+    const sql = db();
+    if (sql) {
+      try {
+        await sql`insert into card_uploads (path, url, bytes) values (${result.path}, ${result.url}, ${bytes.length})`;
+      } catch (err) {
+        // Das Bild liegt schon da; ohne Zeile wird es nur nie aufgeräumt.
+        console.error('[card-image] Verzeichniseintrag', err);
+      }
+    }
+
+    return res.status(201).json({ url: result.url });
   }),
 );
 
@@ -857,6 +979,10 @@ api.post(
     // Einsatz und stünde nur als fremde Angabe in der Bestellung.
     const wantsCard = items.some((i) => CARD_KINDS.some((k) => i.key === `card.${k}`));
     const designs = wantsCard ? cardDesigns(b.cardDesigns) : null;
+
+    // Die Bilder daraus gehören ab jetzt zu einer Bestellung und dürfen
+    // nicht mehr weggeräumt werden.
+    await claimUploads(sql, designs);
 
     const [order] = await sql`
       insert into orders (items, amount_total, business_name, google_link, lang, card_designs)

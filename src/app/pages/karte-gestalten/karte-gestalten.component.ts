@@ -16,6 +16,7 @@ import { SeoService } from '../../core/seo/seo.service';
 import { CartService, MAX_QTY } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
 import { CardPreviewComponent } from '../../shared/card-preview/card-preview.component';
+import { ImageFieldComponent } from '../../shared/image-field/image-field.component';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { SHOP_CONTENT } from '../shop/shop.content';
 import { CARDS_CONTENT } from '../karten/karten.content';
@@ -42,7 +43,7 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
 @Component({
   selector: 'app-karte-gestalten',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, CardPreviewComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, CardPreviewComponent, ImageFieldComponent],
   styleUrl: './karte-gestalten.component.scss',
   template: `
     @let p = product();
@@ -112,31 +113,19 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
                 />
               </label>
 
-              <label class="cg-field">
-                <span class="cg-label">{{ i18n.t('cg.f.logoUrl') }}</span>
-                <input
-                  type="url"
-                  inputmode="url"
-                  placeholder="https://"
-                  [value]="d.business.logoUrl"
-                  [attr.maxlength]="limits.url"
-                  (input)="drafts.setBusiness('logoUrl', value($event))"
-                />
-              </label>
+              <app-image-field
+                [label]="i18n.t('cg.f.logo')"
+                [url]="d.business.logoUrl"
+                (urlChange)="drafts.setBusiness('logoUrl', $event)"
+              />
 
-              <label class="cg-field">
-                <span class="cg-label">{{ i18n.t('cg.f.avatarUrl') }}</span>
-                <input
-                  type="url"
-                  inputmode="url"
-                  placeholder="https://"
-                  [value]="d.business.avatarUrl"
-                  [attr.maxlength]="limits.url"
-                  (input)="drafts.setBusiness('avatarUrl', value($event))"
-                />
-              </label>
+              <app-image-field
+                [label]="i18n.t('cg.f.avatar')"
+                [url]="d.business.avatarUrl"
+                (urlChange)="drafts.setBusiness('avatarUrl', $event)"
+              />
 
-              <p class="cg-hint">{{ i18n.t('cg.hint.https') }}</p>
+              <p class="cg-hint">{{ i18n.t('cg.hint.img') }}</p>
             </fieldset>
 
             <fieldset class="card cg-block">
@@ -306,21 +295,12 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
               <legend class="cg-legend">{{ i18n.t('cg.sec.photos') }}</legend>
 
               @for (photo of d.gift.photos; track $index) {
-                <div class="cg-row">
-                  <label class="cg-field">
-                    <span class="cg-label">{{ i18n.t('cg.photo.url') }}</span>
-                    <input
-                      type="url"
-                      inputmode="url"
-                      placeholder="https://"
-                      [value]="photo"
-                      [attr.maxlength]="limits.url"
-                      (input)="drafts.setPhoto($index, value($event))"
-                    />
-                  </label>
-                  <button type="button" class="cg-drop" (click)="drafts.removePhoto($index)">
-                    {{ i18n.t('cg.remove') }}
-                  </button>
+                <div class="cg-photo">
+                  <app-image-field
+                    [label]="i18n.t('cg.photo.n') + ' ' + ($index + 1)"
+                    [url]="photo"
+                    (urlChange)="setPhoto($index, $event)"
+                  />
                 </div>
               } @empty {
                 <p class="cg-hint">{{ i18n.t('cg.photo.none') }}</p>
@@ -334,7 +314,7 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
               >
                 {{ i18n.t('cg.photo.add') }}
               </button>
-              <p class="cg-hint">{{ i18n.t('cg.hint.https') }}</p>
+              <p class="cg-hint">{{ i18n.t('cg.hint.img') }}</p>
             </fieldset>
 
             <fieldset class="card cg-block">
@@ -445,6 +425,16 @@ export class KarteGestaltenComponent implements OnInit {
   /** Netzwerkname wie auf der Karte — steht in keiner Übersetzung, das sind Eigennamen. */
   netName(net: CardNetwork): string {
     return net === 'web' ? 'Website' : net === 'x' ? 'X' : net[0].toUpperCase() + net.slice(1);
+  }
+
+  /**
+   * Ein Bild der Geschenkkarte setzen. Das Bildfeld meldet beim Entfernen
+   * eine leere Adresse — dann soll die Zeile verschwinden und nicht als
+   * leerer Platz stehen bleiben.
+   */
+  setPhoto(index: number, url: string): void {
+    if (url) this.drafts.setPhoto(index, url);
+    else this.drafts.removePhoto(index);
   }
 
   value(e: Event): string {
