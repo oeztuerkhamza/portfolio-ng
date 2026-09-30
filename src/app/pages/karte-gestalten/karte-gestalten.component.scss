@@ -236,6 +236,34 @@
   &[data-theme="warm"]  { background: linear-gradient(135deg, #fbf7f1 50%, #a9741f 50%); }
 }
 
+// ── Umschalter über der Vorschau ────────────────────────────
+// Dieselbe Form wie die Farbwahl darunter: es sind beides Reihen von
+// Knöpfen, von denen einer an ist.
+.cg-views {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.cg-view {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid $rule;
+  border-radius: 999px;
+  background: $surface;
+  color: $text-soft;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color $transition-fast, color $transition-fast;
+
+  &.is-on {
+    border-color: $brand;
+    color: $text;
+    box-shadow: inset 0 0 0 1px $brand;
+  }
+}
+
 // ── Bestellkasten unter der Vorschau ────────────────────────
 .cg-buy {
   display: grid;

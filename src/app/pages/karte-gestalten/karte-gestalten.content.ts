@@ -29,6 +29,15 @@ export const CARD_DESIGNER_CONTENT: Record<string, Entry> = {
   // Die Texte der Vorschau stehen bei der Vorschau selbst
   // (src/app/shared/card-preview/card-preview.content.ts) — sie meldet sie an.
 
+  // ── Umschalter über der Vorschau ──────────────────────────
+  // Diese drei gehören hierher und nicht zu den zwei Vorschauen: gezeichnet
+  // werden die Knöpfe vom Gestalter, und zwar bevor die Vorschau dahinter
+  // überhaupt besteht. Stünden sie dort, zeigte der Knopf beim ersten Bild
+  // seinen eigenen Schlüssel.
+  'cg.view.label': { de: 'Ansicht', fr: 'Vue', en: 'View', tr: 'Görünüm', ku: 'Dîtin' },
+  'cg.view.screen': { de: 'Am Telefon', fr: 'Sur le téléphone', en: 'On the phone', tr: 'Telefonda', ku: 'Li telefonê' },
+  'cg.view.print': { de: 'Gedruckt', fr: 'Imprimée', en: 'Printed', tr: 'Basılmış', ku: 'Çapkirî' },
+
   // ── Abschnitte des Bogens ─────────────────────────────────
   'cg.sec.basics': { de: 'Das Wichtigste', fr: 'L’essentiel', en: 'The essentials', tr: 'En önemlisi', ku: 'Ya herî girîng' },
   'cg.sec.contact': { de: 'Kontakt', fr: 'Contact', en: 'Contact', tr: 'İletişim', ku: 'Têkilî' },

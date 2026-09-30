@@ -1,0 +1,128 @@
+// Die gedruckte Karte, gezeichnet statt fotografiert.
+//
+// Alle Maße hängen an der Kartenbreite (--pr-w) und nicht am Bildschirm:
+// so bleibt das Verhältnis von Schrift zu Karte gleich, egal wie breit die
+// Spalte daneben gerade ist. Ein Foto der Karte würde falsch, sobald sich am
+// Aufbau etwas ändert — das hier nicht.
+
+@import "../../../styles/variables";
+
+.pr {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+}
+
+.pr-card {
+  // Scheckkartenmaß nach ISO/IEC 7810 ID-1: 85,6 × 54 mm.
+  --pr-w: min(340px, 86vw);
+  width: var(--pr-w);
+  aspect-ratio: 85.6 / 54;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: calc(var(--pr-w) * 0.04);
+  align-items: stretch;
+
+  padding: calc(var(--pr-w) * 0.055);
+  // Echte Karten haben rund 3 mm Eckenradius — auf 85,6 mm sind das ~3,5 %.
+  border-radius: calc(var(--pr-w) * 0.035);
+  background: var(--pr-bg);
+  color: var(--pr-ink);
+  box-shadow: $shadow-md, inset 0 0 0 1px rgb(0 0 0 / 0.06);
+  overflow: hidden;
+}
+
+.pr-left {
+  display: grid;
+  align-content: start;
+  gap: calc(var(--pr-w) * 0.012);
+  min-width: 0;
+}
+
+.pr-logo {
+  height: calc(var(--pr-w) * 0.075);
+  max-width: 55%;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: calc(var(--pr-w) * 0.018);
+}
+
+.pr-title {
+  margin: 0;
+  font-family: $font-heading;
+  font-size: calc(var(--pr-w) * 0.062);
+  font-weight: 600;
+  line-height: 1.15;
+  // Lange Namen dürfen die Karte nicht sprengen; zwei Zeilen, dann Schluss.
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.pr-sub {
+  margin: 0;
+  color: var(--pr-dim);
+  font-size: calc(var(--pr-w) * 0.036);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+// Der NFC-Hinweis sitzt unten links, wie auf den Beispielkarten.
+.pr-nfc {
+  align-self: end;
+  margin: calc(var(--pr-w) * 0.03) 0 0;
+  display: flex;
+  align-items: center;
+  gap: calc(var(--pr-w) * 0.018);
+  color: var(--pr-dim);
+  font-size: calc(var(--pr-w) * 0.032);
+
+  app-icon {
+    display: block;
+    width: calc(var(--pr-w) * 0.042);
+    height: calc(var(--pr-w) * 0.042);
+    color: var(--pr-accent);
+  }
+}
+
+.pr-right {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: calc(var(--pr-w) * 0.015);
+}
+
+// Weißer Grund unter dem Code: auf dunklem Karton liest ihn sonst keine
+// Kamera.
+.pr-qr {
+  width: calc(var(--pr-w) * 0.27);
+  height: calc(var(--pr-w) * 0.27);
+  padding: calc(var(--pr-w) * 0.012);
+  border-radius: calc(var(--pr-w) * 0.012);
+  background: #fff;
+  display: block;
+}
+
+.pr-scan {
+  color: var(--pr-dim);
+  font-size: calc(var(--pr-w) * 0.026);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.pr-note {
+  margin: 0;
+  max-width: 34ch;
+  color: $text-mute;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: balance;
+}

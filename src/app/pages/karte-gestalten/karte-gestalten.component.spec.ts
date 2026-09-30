@@ -141,6 +141,19 @@ describe('KarteGestaltenComponent', () => {
       expect(drafts.draft().gift.headline).toBe('Alles Gute!');
     });
 
+    it('zeigt die zwei Blicke und wechselt auf die gedruckte Karte', () => {
+      const tabs = all('.cg-view') as HTMLButtonElement[];
+      expect(tabs.length).toBe(2);
+      expect(el('app-card-preview')).not.toBeNull();
+      expect(el('app-card-print')).toBeNull();
+
+      tabs[1].click();
+      fixture.detectChanges();
+      expect(el('app-card-print')).not.toBeNull();
+      expect(el('app-card-preview')).toBeNull();
+      expect(tabs[1].getAttribute('aria-selected')).toBe('true');
+    });
+
     it('bleibt aus dem Suchindex — der Gestalter ist ein Werkzeug, kein Inhalt', () => {
       expect(document.head.querySelector('meta[name="robots"]')?.getAttribute('content')).toContain('noindex');
     });
@@ -172,6 +185,31 @@ describe('KarteGestaltenComponent', () => {
       fixture.detectChanges();
       expect(drafts.draft().gift.photos.length).toBe(1);
     });
+  });
+
+  /**
+   * Der Gestalter holt seine Texte aus vier Tabellen. Vergisst man eine
+   * anzumelden, steht der Schlüssel selbst auf der Seite — `pd.closed` stand
+   * schon einmal so da, und im Bau fällt das niemandem auf: es ist kein
+   * Fehler, nur ein hässlicher Satz. Darum hier.
+   */
+  it('zeigt nirgends einen Übersetzungsschlüssel statt eines Textes', () => {
+    for (const slug of ['digitale-visitenkarte', 'geschenkkarte']) {
+      mount(slug);
+      // Auch der Zweig, der nur bei geschlossenem Shop gezeichnet wird.
+      (TestBed.inject(ShopStatus) as unknown as ShopStatusStub).enabled.set(false);
+      fixture.detectChanges();
+
+      // `textContent`, nicht `innerText`: im Test hängt das Element nicht im
+      // sichtbaren Baum, und `innerText` liefert dann nichts.
+      const text = (fixture.nativeElement as HTMLElement).textContent ?? '';
+      expect(text.length).withContext(`${slug}: nichts gezeichnet`).toBeGreaterThan(200);
+      // Ein Schlüssel sieht aus wie `pd.closed`: eine der vier Vorsilben,
+      // ein Punkt, dann Kleinbuchstaben. Keine Wortgrenze davor — im Text
+      // klebt er an dem, was davor steht („49 €pd.closed").
+      const raw = text.match(/(?:cg|pd|shop|nav)\.[a-z][a-z0-9.]*/g) ?? [];
+      expect(raw).withContext(`${slug}: unübersetzte Schlüssel`).toEqual([]);
+    }
   });
 
   it('fällt bei einer unbekannten Adresse auf die Visitenkarte zurück', () => {

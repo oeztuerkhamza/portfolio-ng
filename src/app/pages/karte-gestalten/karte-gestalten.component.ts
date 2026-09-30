@@ -16,9 +16,11 @@ import { SeoService } from '../../core/seo/seo.service';
 import { CartService, MAX_QTY } from '../../core/shop/cart.service';
 import { ShopStatus } from '../../core/shop/shop-status.service';
 import { CardPreviewComponent } from '../../shared/card-preview/card-preview.component';
+import { CardPrintComponent } from '../../shared/card-print/card-print.component';
 import { ImageFieldComponent } from '../../shared/image-field/image-field.component';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { SHOP_CONTENT } from '../shop/shop.content';
+import { PRODUCT_CONTENT } from '../produkt/produkt.content';
 import { CARDS_CONTENT } from '../karten/karten.content';
 import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
 
@@ -43,7 +45,7 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
 @Component({
   selector: 'app-karte-gestalten',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, CardPreviewComponent, ImageFieldComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, CardPreviewComponent, CardPrintComponent, ImageFieldComponent],
   styleUrl: './karte-gestalten.component.scss',
   template: `
     @let p = product();
@@ -350,7 +352,30 @@ import { CARD_DESIGNER_CONTENT } from './karte-gestalten.content';
 
         <!-- ── Vorschau ──────────────────────────────────── -->
         <aside class="cg-side">
-          <app-card-preview [kind]="p.id" [theme]="d.theme" [data]="data()" />
+          <!-- Zwei Blicke auf dasselbe: die Seite, die aufgeht, und das
+               Stück Plastik, das ankommt. Das zweite hatte der Kunde bis
+               hierher nie gesehen — er bestellte eine Karte und bekam ein
+               Foto vom Beispielprodukt. -->
+          <div class="cg-views" role="tablist" [attr.aria-label]="i18n.t('cg.view.label')">
+            @for (v of views; track v) {
+              <button
+                type="button"
+                role="tab"
+                class="cg-view"
+                [class.is-on]="view() === v"
+                [attr.aria-selected]="view() === v"
+                (click)="view.set(v)"
+              >
+                {{ i18n.t('cg.view.' + v) }}
+              </button>
+            }
+          </div>
+
+          @if (view() === 'screen') {
+            <app-card-preview [kind]="p.id" [theme]="d.theme" [data]="data()" />
+          } @else {
+            <app-card-print [kind]="p.id" [theme]="d.theme" [data]="data()" />
+          }
 
           <div class="cg-buy">
             <p class="cg-price"><strong>{{ p.price }} €</strong></p>
@@ -401,6 +426,10 @@ export class KarteGestaltenComponent implements OnInit {
   readonly maxPhotos = MAX_PHOTOS;
   readonly limits = CARD_LIMITS;
   readonly themes = CARD_THEMES;
+
+  /** Welcher der zwei Blicke gezeigt wird. */
+  readonly views = ['screen', 'print'] as const;
+  readonly view = signal<(typeof this.views)[number]>('screen');
   readonly networks = CARD_NETWORKS;
 
   /** Welche Karte gestaltet wird — wie bei KartenComponent aus der Route. */
@@ -418,6 +447,9 @@ export class KarteGestaltenComponent implements OnInit {
 
   constructor() {
     this.i18n.register(SHOP_CONTENT);
+    // `pd.closed` steht im Bestellkasten, wenn der Shop zu ist — derselbe
+    // Satz wie auf den Produktseiten, und er kommt aus derselben Tabelle.
+    this.i18n.register(PRODUCT_CONTENT);
     this.i18n.register(CARDS_CONTENT);
     this.i18n.register(CARD_DESIGNER_CONTENT);
   }
