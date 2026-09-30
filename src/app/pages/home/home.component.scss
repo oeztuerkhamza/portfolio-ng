@@ -378,6 +378,34 @@
   margin-top: clamp(2.5rem, 7vw, 4.5rem);
 }
 
+// Das Versprechen übernimmt den Abstand nach oben und rückt damit an die
+// Stelle, an der vorher die Zahlen begannen.
+.home-promise {
+  display: grid;
+  gap: 0.3rem;
+  margin: clamp(2.5rem, 7vw, 4.5rem) 0 0;
+  max-width: 54ch;
+
+  strong {
+    font-family: $font-heading;
+    font-size: clamp(1.05rem, 2.4vw, 1.25rem);
+    font-weight: 600;
+    color: $text;
+  }
+
+  span {
+    color: $text-dim;
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+}
+
+// Die Zahlen sind jetzt die Begründung der Zeile darüber und rücken näher —
+// sonst stünden zwei große Abstände hintereinander.
+.home-promise + .home-stats {
+  margin-top: clamp(1.25rem, 3vw, 2rem);
+}
+
 // ══════════════════════════════════════════════
 // ABLAUF, REGION, ANSPRECHPARTNER
 // ══════════════════════════════════════════════

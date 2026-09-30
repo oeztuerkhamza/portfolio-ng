@@ -144,6 +144,23 @@
       </div>
     </div>
 
+    <!-- Das Versprechen über den Zahlen.
+
+         Die Kacheln sagen, was wir geliefert haben — für den Betrieb zieht
+         stärker, was er davon hat. Beides gehört zusammen: erst die Zusage,
+         darunter, woran sie sich nachzählen lässt.
+
+         Die zwei Texte stehen schon in den Übersetzungen und gehören zu den
+         „Vier Dingen" auf /ueber-uns. Absichtlich dieselben Schlüssel: eine
+         Zusage, die an zwei Stellen steht und an einer gepflegt wird, kann
+         nicht an einer Stelle strenger klingen als an der anderen. Und
+         strenger darf sie nicht werden — „ohne Nachberechnung" wäre mehr,
+         als § 5 der AGB für Projektarbeit deckt. -->
+    <p class="home-promise">
+      <strong>{{ i18n.t('about.pr1.t') }}</strong>
+      <span>{{ i18n.t('about.pr1.d') }}</span>
+    </p>
+
     <ul class="stats home-stats">
       @for (stat of stats; track stat.key) {
         <li>
