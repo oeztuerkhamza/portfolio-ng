@@ -7,14 +7,21 @@
   max-width: 62ch;
 }
 
-// Ab Tablettbreite stehen Bogen und Vorschau nebeneinander, darunter
-// untereinander — auf dem Telefon soll die Vorschau zuerst kommen, damit man
-// sieht, worauf man hinarbeitet, bevor man zu tippen anfängt.
+// Bogen und Vorschau stehen erst ab Desktopbreite nebeneinander.
+//
+// Vorher stand hier $bp-tablet, und das war zu früh: die Vorschau braucht
+// mindestens 320 px, sonst ist die Karte darin nicht mehr zu lesen. Bei 820 px
+// blieben dem Bogen davon 331 px — schmaler als die Vorschau daneben, und ein
+// Eingabefeld von 331 px ist kein Bogen mehr. Nebeneinander lohnt sich erst,
+// wenn beide Spalten genug bekommen; darunter untereinander.
+//
+// Auf dem Telefon kommt die Vorschau zuerst: man soll sehen, worauf man
+// hinarbeitet, bevor man zu tippen anfängt.
 .cg-grid {
   display: grid;
   gap: 2rem;
 
-  @media (min-width: $bp-tablet) {
+  @media (min-width: $bp-desktop) {
     grid-template-columns: minmax(0, 1fr) minmax(320px, 22rem);
     align-items: start;
     gap: 3rem;
@@ -26,7 +33,7 @@
   gap: 1.5rem;
   order: -1;
 
-  @media (min-width: $bp-tablet) {
+  @media (min-width: $bp-desktop) {
     order: 0;
     position: sticky;
     top: 7rem;
@@ -101,13 +108,18 @@
 }
 
 .cg-narrow {
-  @media (min-width: $bp-tablet) {
+  @media (min-width: $bp-wide) {
     max-width: 11rem;
   }
 }
 
-// Eine Zeile aus mehreren Feldern plus Entfernen-Knopf. Auf dem Telefon
-// untereinander: drei Felder nebeneinander wären dort unbenutzbar.
+// Eine Zeile aus mehreren Feldern plus Entfernen-Knopf.
+//
+// Nebeneinander erst ab $bp-wide, und zwar nach der Breite des Fensters,
+// obwohl es auf die Breite der Bogenspalte ankäme: die Zeile steht in der
+// linken Spalte, die neben der Vorschau noch einmal schmaler ist als das
+// Fenster. Drei Felder plus Knopf in einer 500-px-Spalte sind unbenutzbar —
+// darunter bleibt es untereinander.
 .cg-row {
   display: grid;
   gap: 0.75rem;
@@ -116,7 +128,7 @@
   border-radius: $radius-sm;
   background: $surface-2;
 
-  @media (min-width: $bp-tablet) {
+  @media (min-width: $bp-wide) {
     grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.4fr) auto;
     align-items: end;
   }
