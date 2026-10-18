@@ -54,7 +54,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    * Fotostudio. Alle drei laufen auf eigener Domain; Zerin Gold und Bike Haus
    * haben ihre Bewertung öffentlich bei Google hinterlassen.
    */
-  readonly references = ['bikehaus-freiburg', 'zerin-gold', 'gkn-portraits']
+  readonly references = ['bikehaus-freiburg', 'zerin-gold', 'praxis-gueltekin']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
   /** Siehe SMART_HOME_ENABLED in company.data.ts. */

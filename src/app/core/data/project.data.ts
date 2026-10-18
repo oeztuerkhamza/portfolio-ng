@@ -179,56 +179,6 @@ Das System erkennt automatisch gesetzlich vorgeschriebene Pausen, validiert maxi
     },
   },
   {
-    slug: 'gkn-portraits',
-    title: 'GKN Portraits',
-    subtitle: 'Bewerbungsfoto-Studio in Freiburg mit Online-Terminbuchung',
-    category: 'Website & Buchungssystem',
-    tags: ['Next.js 16', 'React 19', 'Buchungssystem', '15 Sprachen', 'Local SEO'],
-    image: '/assets/images/gkn-portraits.webp',
-    liveUrl: 'https://gknportraits.de',
-    githubUrl: 'https://github.com/oeztuerkhamza',
-    description:
-      'Website und Terminbuchung für ein Bewerbungsfoto-Studio in Freiburg. Next.js 16, 15 Sprachen, Buchung in drei Schritten — mit einem Studiokalender, den sich zwei Marken teilen.',
-    longDescription: `GKN Portraits ist die Website eines Fotostudios in Freiburg, das auf Bewerbungs- und Businessporträts spezialisiert ist. Der Kern ist keine Imageseite, sondern eine Buchung: Paket wählen, freien Termin im Kalender anklicken, Kontaktdaten eintragen — drei Schritte, Bestätigung per E-Mail, Stornolink inklusive. Damit fällt das Telefonieren über freie Termine weg, das bei kurzen Shootings den größten Teil des Aufwands ausmacht.
-
-Technisch läuft die Seite auf Next.js 16 mit React 19 und Tailwind 4. Fünfzehn Sprachen mit übersetzten URLs decken ab, wer in Freiburg ein Bewerbungsfoto braucht — inklusive Rechts-nach-Links-Layout für Arabisch. Preise gibt es in zwei Listen (privat und geschäftlich), weil sich nicht der Aufwand unterscheidet, sondern die Nutzung des Bildes.
-
-Die Besonderheit liegt hinter den Kulissen: Das Studio betreibt zwei Marken — Porträt und Hochzeit — aber es gibt nur einen Raum und einen Terminplan. Beide Websites buchen deshalb in denselben Kalender, und jede Buchung merkt sich, über welche Marke sie hereinkam. Ein Datenbank-Index stellt sicher, dass derselbe Slot nie zweimal bestätigt wird. Verwaltet wird alles über einen gemeinsamen Bereich mit passwortlosem Login per Einmal-Link.`,
-    features: [
-      'Online-Terminbuchung in drei Schritten mit Bestätigungsmail und Stornolink',
-      'Ein gemeinsamer Studiokalender für zwei Marken — doppelte Buchung technisch ausgeschlossen',
-      '15 Sprachen mit übersetzten URLs, inkl. RTL-Layout für Arabisch',
-      'Zwei Preislisten (privat / geschäftlich) mit drei Paketen',
-      'Lokale Landingpages für die Städte rund um Freiburg',
-      'Ratgeber-Bereich zu Kleidung, Ablauf und Bildauswahl',
-      'Passwortloses Login für den Verwaltungsbereich (Einmal-Link, JWT-Cookie)',
-      'Rund 285 indexierbare URLs mit hreflang, JSON-LD und eigener Sitemap',
-    ],
-    techStack: [
-      { name: 'Next.js 16', icon: '▲' },
-      { name: 'React 19', icon: '⚛️' },
-      { name: 'Tailwind 4', icon: '💨' },
-      { name: 'next-intl', icon: '🌍' },
-      { name: 'PostgreSQL', icon: '🐘' },
-      { name: 'Drizzle ORM', icon: '🌧️' },
-      { name: 'TypeScript', icon: '📘' },
-      { name: 'Docker', icon: '🐳' },
-    ],
-    screenshots: [
-      '/assets/images/gkn-portraits.webp',
-      '/assets/images/gkn-portraits-2.webp',
-      '/assets/images/gkn-portraits-3.webp',
-    ],
-    role: 'Full-Stack Developer & Designer',
-    duration: '2026 – Heute',
-    demo: {
-      type: 'iframe',
-      url: 'https://gknportraits.de',
-      poster: '/assets/images/gkn-portraits.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
-    },
-  },
-  {
     slug: 'dj-veys',
     title: 'DJ Veys',
     subtitle: 'Website und Anfragesystem für einen Hochzeits-DJ',
@@ -330,6 +280,56 @@ Darunter liegt Next.js 16 mit React Server Components und Server Actions, Prisma
       url: 'https://zerin-gold.de',
       poster: '/assets/images/zerin-gold.webp',
       note: 'Live-System — geöffnet im eingebetteten Browser',
+    },
+  },
+  {
+    slug: 'praxis-gueltekin',
+    title: 'Hausarztpraxis Gültekin',
+    subtitle: 'Mehrsprachige Praxis-Website für eine Hausärztin in Hofheim am Taunus',
+    category: 'Praxis-Website',
+    tags: ['Astro', 'Statische Website', '10 Sprachen', 'Local SEO', 'DSGVO'],    image: '/assets/images/praxis-gueltekin.webp',
+    liveUrl: 'https://www.praxis-gueltekin.de',
+    githubUrl: 'https://github.com/oeztuerkhamza',
+    description:
+      'Website für eine Hausarztpraxis in Hofheim am Taunus: Allgemeinmedizin, Innere Medizin und Infektiologie in zehn Sprachen, mit Gesundheitsratgeber, FAQ und Einwilligung für Statistik — als schnelle statische Seite.',
+    longDescription: `Die Hausarztpraxis von Fazilet Gültekin liegt in Hofheim am Taunus und betreut gesetzlich wie privat Versicherte — auf Deutsch und Türkisch, in der Region aber auch für Patientinnen und Patienten, die lieber in ihrer eigenen Sprache nachlesen. Die Website setzt deshalb auf Sprache: zehn Sprachen (DE, TR, EN, AR, RU, UK, PL, RO, IT, ES) mit eigenen, übersetzten URLs, Arabisch mit Rechts-nach-links-Layout, insgesamt 93 indexierbare Seiten samt hreflang-Verweisen und Sitemap.
+
+Inhaltlich bildet sie ab, was eine Praxis wirklich beantworten muss: Wer behandelt hier, was wird angeboten, wann ist geöffnet, wie komme ich an einen Termin? Dazu kommen Leistungsübersicht mit Schwerpunkt Infektiologie, häufige Fragen und ein Gesundheitsratgeber mit Artikeln zu Themen wie Bluthochdruck, Eisenmangel, Impfungen für Erwachsene oder Vorsorge. Sprechzeiten, Notdienst-Hinweis (116 117) und Kontaktwege stehen auf jeder Seite im Kopf bzw. Fuß.
+
+Technisch ist die Seite bewusst schlicht gehalten: Astro erzeugt beim Build reines HTML mit minimalem JavaScript, Schriften und Bilder werden selbst ausgeliefert, auf nginx mit Sicherheits-Headern. Statistik über den Google Tag Manager läuft erst nach aktiver Einwilligung, die jederzeit widerrufbar ist — ein Muss bei einer Arztpraxis. Impressum und Datenschutzerklärung gibt es in allen Sprachen.`,
+    features: [
+      'Zehn Sprachen mit übersetzten URLs, inkl. RTL-Layout für Arabisch',
+      '93 indexierbare Seiten mit hreflang, Sitemap und strukturierten Daten (Arzt, Praxis, Sprechzeiten)',
+      'Leistungsübersicht mit Schwerpunkt Infektiologie und Diagnostik in der Praxis',
+      'Gesundheitsratgeber mit Fachartikeln und FAQ für Patientinnen und Patienten',
+      'Sprechzeiten, Bereitschaftsdienst-Hinweis und Termin-Link auf jeder Seite',
+      'Einwilligungsbanner: Google Tag Manager erst nach Zustimmung, jederzeit widerrufbar',
+      'Statisch gebaut mit Astro — schnell, ohne Datenbank, kaum JavaScript',
+      'Selbst ausgelieferte Schriften und Bilder, Sicherheits-Header auf nginx',
+    ],
+    techStack: [
+      { name: 'Astro', icon: '🚀' },
+      { name: 'nginx', icon: '🔀' },
+      { name: 'Schema.org / JSON-LD', icon: '🧬' },
+      { name: 'Google Tag Manager', icon: '🏷️' },
+      { name: 'hreflang / SEO', icon: '🌍' },
+    ],
+    screenshots: [
+      '/assets/images/praxis-gueltekin.webp',
+      '/assets/images/praxis-gueltekin-2.webp',
+      '/assets/images/praxis-gueltekin-3.webp',
+    ],
+    role: 'Full-Stack Developer & Designer',
+    duration: '2026',
+    demo: {
+      type: 'image',
+      url: 'https://www.praxis-gueltekin.de',
+      screens: [
+        '/assets/images/praxis-gueltekin.webp',
+        '/assets/images/praxis-gueltekin-2.webp',
+        '/assets/images/praxis-gueltekin-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
   {

@@ -274,96 +274,6 @@ Pergal bêhnvedanên qanûnî dibîne, demên kar ên herî zêde piştrast dike
       ],
     },
   },
-  'gkn-portraits': {
-    fr: {
-      subtitle: 'Studio photo pour photos de candidature à Fribourg, avec réservation en ligne',
-      category: 'Site web & système de réservation',
-      description:
-        'Site web et réservation pour un studio de photos de candidature à Fribourg. Next.js 16, 15 langues, réservation en trois étapes — et un agenda de studio partagé par deux marques.',
-      role: 'Développeur full-stack & designer',
-      long: `GKN Portraits est le site d’un studio photo de Fribourg spécialisé dans les photos de candidature et les portraits professionnels. Le cœur n’est pas une vitrine mais une réservation : choisir une formule, cliquer sur un créneau libre, laisser ses coordonnées — trois étapes, confirmation par e-mail, lien d’annulation inclus. Les appels pour connaître les disponibilités, qui représentent l’essentiel du travail administratif sur des séances courtes, disparaissent.
-
-Techniquement, le site tourne sous Next.js 16 avec React 19 et Tailwind 4. Quinze langues aux URL traduites couvrent qui, à Fribourg, a besoin d’une photo de candidature — y compris une mise en page de droite à gauche pour l’arabe. Les prix existent en deux listes (particuliers et entreprises), car ce n’est pas le travail qui diffère, mais l’usage de l’image.
-
-La particularité est en coulisses : le studio exploite deux marques — portrait et mariage — mais il n’y a qu’une salle et qu’un agenda. Les deux sites écrivent donc dans le même calendrier, et chaque réservation retient par quelle marque elle est arrivée. Un index en base garantit qu’un créneau n’est jamais confirmé deux fois. L’ensemble se gère depuis un espace commun, avec une connexion sans mot de passe par lien à usage unique.`,
-      features: [
-        'Réservation en ligne en trois étapes, e-mail de confirmation et lien d’annulation',
-        'Un agenda de studio commun à deux marques — double réservation techniquement impossible',
-        '15 langues aux URL traduites, mise en page RTL pour l’arabe incluse',
-        'Deux grilles tarifaires (particuliers / entreprises) et trois formules',
-        'Pages locales pour les villes autour de Fribourg',
-        'Guide pratique : tenue, déroulé, choix des images',
-        'Connexion sans mot de passe à l’espace d’administration (lien unique, cookie JWT)',
-        'Environ 285 URL indexables avec hreflang, JSON-LD et sitemap dédié',
-      ],
-    },
-    en: {
-      subtitle: 'Application-photo studio in Freiburg with online booking',
-      category: 'Website & booking system',
-      description:
-        'Website and booking flow for an application-photo studio in Freiburg. Next.js 16, 15 languages, booking in three steps — with one studio calendar shared by two brands.',
-      role: 'Full-stack developer & designer',
-      long: `GKN Portraits is the website of a Freiburg photo studio specialising in application and business portraits. The core isn’t a brochure page, it’s a booking: pick a package, click a free slot, leave your details — three steps, confirmation by email, cancellation link included. That removes the phone calls about open slots, which take up most of the admin work on short shoots.
-
-Technically the site runs on Next.js 16 with React 19 and Tailwind 4. Fifteen languages with translated URLs cover who actually needs an application photo in Freiburg — including a right-to-left layout for Arabic. Prices come in two lists (private and business), because what differs isn’t the work but how the picture is used.
-
-The interesting part is behind the scenes: the studio runs two brands — portrait and wedding — but there is one room and one schedule. Both websites therefore book into the same calendar, and every booking records which brand it came through. A database index makes sure the same slot is never confirmed twice. Everything is managed from a shared admin area with passwordless one-time-link login.`,
-      features: [
-        'Three-step online booking with confirmation email and cancellation link',
-        'One studio calendar for two brands — double booking ruled out at database level',
-        '15 languages with translated URLs, including RTL layout for Arabic',
-        'Two price lists (private / business) with three packages',
-        'Local landing pages for the towns around Freiburg',
-        'Guide section on clothing, process and picture selection',
-        'Passwordless login for the admin area (one-time link, JWT cookie)',
-        'Around 285 indexable URLs with hreflang, JSON-LD and its own sitemap',
-      ],
-    },
-    tr: {
-      subtitle: 'Freiburg’da online randevulu vesikalık/başvuru fotoğrafı stüdyosu',
-      category: 'Web sitesi & randevu sistemi',
-      description:
-        'Freiburg’daki bir başvuru fotoğrafı stüdyosu için web sitesi ve randevu sistemi. Next.js 16, 15 dil, üç adımda randevu — ve iki markanın paylaştığı tek bir stüdyo takvimi.',
-      role: 'Full-stack geliştirici & tasarımcı',
-      long: `GKN Portraits, Freiburg’da başvuru ve kurumsal portre fotoğrafına odaklanan bir stüdyonun web sitesidir. Merkezinde bir tanıtım sayfası değil, randevu var: paketi seç, takvimden boş saati tıkla, iletişim bilgilerini bırak — üç adım, e-posta ile onay, iptal bağlantısı dahil. Böylece kısa çekimlerde işin büyük kısmını oluşturan „boş saat var mı" telefonları ortadan kalkıyor.
-
-Teknik olarak site Next.js 16, React 19 ve Tailwind 4 üzerinde çalışıyor. URL’leri de çevrilmiş on beş dil, Freiburg’da başvuru fotoğrafına ihtiyaç duyan herkesi kapsıyor — Arapça için sağdan sola yerleşim dahil. Fiyatlar iki listede: özel ve kurumsal. Çünkü fark eden şey emek değil, fotoğrafın kullanım biçimi.
-
-Asıl mesele perde arkasında: stüdyonun iki markası var — portre ve düğün — ama tek bir mekân ve tek bir takvim. Bu yüzden iki site de aynı takvime yazıyor ve her randevu hangi marka üzerinden geldiğini saklıyor. Veritabanındaki bir indeks, aynı saatin iki kez onaylanmasını imkânsız kılıyor. Yönetim ise tek bir ortak panelden, tek kullanımlık bağlantıyla şifresiz girişle yapılıyor.`,
-      features: [
-        'Üç adımda online randevu: onay e-postası ve iptal bağlantısı',
-        'İki marka için tek stüdyo takvimi — çift rezervasyon teknik olarak imkânsız',
-        'URL’leri çevrilmiş 15 dil, Arapça için RTL yerleşim dahil',
-        'İki fiyat listesi (özel / kurumsal) ve üç paket',
-        'Freiburg çevresindeki şehirler için yerel sayfalar',
-        'Kıyafet, akış ve fotoğraf seçimi üzerine rehber bölümü',
-        'Yönetim paneline şifresiz giriş (tek kullanımlık bağlantı, JWT çerezi)',
-        'hreflang, JSON-LD ve kendi site haritasıyla yaklaşık 285 indekslenebilir URL',
-      ],
-    },
-    ku: {
-      subtitle: 'Studyoya wêneyên serîlêdanê li Freiburgê bi randevûya online',
-      category: 'Malper & pergala randevûyê',
-      description:
-        'Malper û pergala randevûyê ji bo studyoyek wêneyên serîlêdanê li Freiburgê. Next.js 16, 15 ziman, randevû di sê gavan de — û salnameyek studyoyê ya ku du marka par vedikin.',
-      role: 'Pêşvebirê full-stack & sêwirkar',
-      long: `GKN Portraits malpera studyoyek wênegiriyê ya li Freiburgê ye ku li ser wêneyên serîlêdanê û portreyên karsaziyê pispor e. Di navenda wê de ne rûpelek nasandinê, lê randevûyek heye: paketê hilbijêre, saeta vala ya salnameyê bitikîne, agahiyên têkiliyê binivîse — sê gav, erêkirin bi e-nameyê, girêdana betalkirinê jî tê de. Bi vî awayî têlefonên „saetek vala heye?" — ku di kişandinên kurt de piraniya kar in — winda dibin.
-
-Ji aliyê teknîkî ve malper li ser Next.js 16 bi React 19 û Tailwind 4 dixebite. Panzdeh ziman bi URLên wergerandî kesên ku li Freiburgê wêneyek serîlêdanê dixwazin digire nav xwe — bi rêzkirina ji rastê ber bi çepê ji bo erebî. Biha di du lîsteyan de ne (şexsî û karsazî), ji ber ku ne kar, lê bikaranîna wêneyê cuda ye.
-
-Ya taybet li paş perdeyê ye: studyo du markan dimeşîne — portre û dawet — lê tenê jûrek û tenê bernameyek heye. Ji ber vê yekê her du malper jî di heman salnameyê de tomar dikin, û her randevû tomar dike ku bi kîjan markayê hatiye. Indexek di danegehê de misoger dike ku heman saet ducar nayê erêkirin. Rêveberî ji beşek hevpar tê kirin, bi têketina bê şîfre bi girêdaneke yek-carî.`,
-      features: [
-        'Randevûya online di sê gavan de bi e-nameya erêkirinê û girêdana betalkirinê',
-        'Salnameyek studyoyê ji bo du markan — randevûya ducar bi teknîkî ne gengaz e',
-        '15 ziman bi URLên wergerandî, bi rêzkirina RTL ji bo erebî',
-        'Du lîsteyên biha (şexsî / karsazî) bi sê paketan',
-        'Rûpelên herêmî ji bo bajarên dora Freiburgê',
-        'Beşa rêbernameyê: cil, rêzik û hilbijartina wêneyan',
-        'Têketina bê şîfre ji bo beşa rêveberiyê (girêdana yek-carî, cookie ya JWT)',
-        'Nêzîkî 285 URLên indexbar bi hreflang, JSON-LD û sitemapa xwe',
-      ],
-    },
-  },
   'dj-veys': {
     fr: {
       subtitle: 'Site et système de demandes pour un DJ de mariage',
@@ -541,6 +451,52 @@ Di bin de: Next.js 16 bi React Server Components û Server Actions, Prisma 7 li 
         'Têketina rêveber bi Argon2 û faktora duyem a TOTP (Auth.js v5)',
         'Form bi Cloudflare Turnstile têne parastin, ne bi mamikên captcha',
         'Nêzîkî 290 URL bi rûpelên peyvên mifteyî, test bi Vitest û Playwright',
+      ],
+    },
+  },
+  'praxis-gueltekin': {
+    en: {
+      subtitle: 'Multilingual practice website for a GP in Hofheim am Taunus',
+      category: 'Practice website',
+      description:
+        'Website for a general practice in Hofheim am Taunus: general medicine, internal medicine and infectious diseases in ten languages, with a health guide, FAQ and consent for analytics — built as a fast static site.',
+      role: 'Full-stack developer & designer',
+      long: `Fazilet Gültekin’s general practice is in Hofheim am Taunus and treats patients with statutory and private insurance — in German and Turkish, but also for patients in the region who prefer to read in their own language. The website is therefore built around language: ten languages (DE, TR, EN, AR, RU, UK, PL, RO, IT, ES) with their own translated URLs, Arabic with a right-to-left layout, 93 indexable pages in total with hreflang references and a sitemap.
+
+Content-wise it answers what a practice really has to answer: who treats here, what is offered, when is it open, how do I get an appointment? On top of that come a service overview focused on infectious diseases, frequently asked questions and a health guide with articles on topics such as high blood pressure, iron deficiency, adult vaccinations or check-ups. Opening hours, the on-call service notice (116 117) and contact options are in the header or footer of every page.
+
+Technically the site is deliberately plain: Astro generates pure HTML with minimal JavaScript at build time, fonts and images are self-hosted, served by nginx with security headers. Analytics via Google Tag Manager only runs after active consent, which can be withdrawn at any time — a must for a medical practice. Legal notice and privacy policy exist in every language.`,
+      features: [
+        'Ten languages with translated URLs, including RTL layout for Arabic',
+        '93 indexable pages with hreflang, sitemap and structured data (physician, practice, opening hours)',
+        'Service overview focused on infectious diseases and in-practice diagnostics',
+        'Health guide with articles and FAQ for patients',
+        'Opening hours, on-call service notice and appointment link on every page',
+        'Consent banner: Google Tag Manager only after consent, revocable at any time',
+        'Built statically with Astro — fast, no database, hardly any JavaScript',
+        'Self-hosted fonts and images, security headers on nginx',
+      ],
+    },
+    tr: {
+      subtitle: 'Hofheim am Taunus’taki bir aile hekimi için çok dilli muayenehane sitesi',
+      category: 'Muayenehane web sitesi',
+      description:
+        'Hofheim am Taunus’taki bir aile hekimliği muayenehanesi için web sitesi: on dilde genel tıp, iç hastalıkları ve enfeksiyon hastalıkları; sağlık rehberi, SSS ve istatistik için onay mekanizmasıyla — hızlı bir statik site olarak.',
+      role: 'Full-stack geliştirici & tasarımcı',
+      long: `Fazilet Gültekin’in aile hekimliği muayenehanesi Hofheim am Taunus’ta; yasal ve özel sigortalı hastalara Almanca ve Türkçe hizmet veriyor, ayrıca bölgede kendi dilinde okumayı tercih eden hastalara da. Bu yüzden site dil üzerine kurulu: kendi çevrilmiş URL’leriyle on dil (DE, TR, EN, AR, RU, UK, PL, RO, IT, ES), sağdan sola yerleşimli Arapça, hreflang bağlantıları ve site haritasıyla toplam 93 indekslenebilir sayfa.
+
+İçerik olarak bir muayenehanenin gerçekten yanıtlaması gerekenleri karşılıyor: Burada kim tedavi ediyor, neler sunuluyor, ne zaman açık, nasıl randevu alırım? Bunlara enfeksiyon hastalıkları odaklı hizmet özeti, sık sorulan sorular ve yüksek tansiyon, demir eksikliği, yetişkin aşıları ya da check-up gibi konularda makaleler içeren bir sağlık rehberi ekleniyor. Çalışma saatleri, nöbetçi hizmet notu (116 117) ve iletişim yolları her sayfanın üstünde veya altında.
+
+Teknik olarak site bilinçli olarak sade: Astro, derleme sırasında asgari JavaScript’li saf HTML üretiyor; yazı tipleri ve görseller kendi sunucumuzdan geliyor, nginx üzerinde güvenlik başlıklarıyla. Google Tag Manager ile istatistik yalnızca aktif onaydan sonra çalışıyor ve her an geri alınabiliyor — bir muayenehane için şart. Künye ve gizlilik politikası tüm dillerde mevcut.`,
+      features: [
+        'Çevrilmiş URL’lerle on dil, Arapça için RTL yerleşim dahil',
+        'hreflang, site haritası ve yapılandırılmış veriyle (hekim, muayenehane, çalışma saatleri) 93 indekslenebilir sayfa',
+        'Enfeksiyon hastalıkları odaklı hizmet özeti ve muayenehanede tanı',
+        'Hastalar için makaleli sağlık rehberi ve SSS',
+        'Her sayfada çalışma saatleri, nöbetçi hizmet notu ve randevu bağlantısı',
+        'Onay bannerı: Google Tag Manager yalnızca onaydan sonra, her an geri alınabilir',
+        'Astro ile statik derleme — hızlı, veritabanı yok, neredeyse hiç JavaScript yok',
+        'Kendi sunucumuzdan yazı tipleri ve görseller, nginx üzerinde güvenlik başlıkları',
       ],
     },
   },
