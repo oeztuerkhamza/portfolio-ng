@@ -1,66 +1,42 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { COMPANY, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
+import { COMPANY, whatsappUrl } from '../../core/data/company.data';
 import { IconComponent } from '../../shared/icon/icon.component';
+import { RequestWizardComponent } from '../../shared/request-wizard/request-wizard.component';
 import { CONTACT_CONTENT } from './contact.content';
 
-type Interest = 'cards' | 'web' | 'sh' | 'wartung' | 'other';
-
-const PLAN_IDS = ['basis', 'pflege', 'plus'];
-
+/**
+ * Kontaktseite: oben die direkten Wege (Telefon, WhatsApp, E-Mail), darunter
+ * der Anfrage-Assistent. Er führt in drei kurzen Schritten zur Anfrage und
+ * versteht Links wie /contact?thema=wartung&paket=pflege.
+ */
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, RequestWizardComponent],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss',
 })
 export class ContactComponent implements OnInit {
   private readonly seo = inject(SeoService);
-  private readonly route = inject(ActivatedRoute);
   readonly i18n = inject(I18nService);
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
-
-  /**
-   * Smart Home steht nur zur Wahl, wenn wir es auch anbieten — ein Thema
-   * anzubieten und dann abzusagen ist schlimmer, als es weglassen.
-   * Der Typ behält 'sh': alte Anfragen im Portal sollen lesbar bleiben.
-   */
-  readonly interests: Interest[] = (['web', 'wartung', 'cards', 'sh', 'other'] as Interest[]).filter(
-    (i) => (i !== 'sh' || SMART_HOME_ENABLED) && (i !== 'cards' || REVIEW_CARDS_ENABLED),
-  );
-
-  // Formularzustand. Es gibt kein Backend: die Anfrage wird als fertig
-  // ausgefüllte E-Mail bzw. WhatsApp-Nachricht geöffnet und vom Kunden
-  // selbst abgeschickt — auf dieser Website wird nichts gespeichert.
-  readonly name = signal('');
-  readonly business = signal('');
-  readonly reach = signal('');
-  readonly message = signal('');
-  readonly chosen = signal<Interest[]>([]);
-  readonly sent = signal(false);
-  /** Vorbelegung der Nachricht, z. B. „Wartung Pflege". */
-  readonly prefill = signal('');
 
   constructor() {
     this.i18n.register(CONTACT_CONTENT);
   }
 
   ngOnInit(): void {
-    this.applyQuery();
     this.seo.update({
       title: this.i18n.t('seo.contact.title'),
       description: this.i18n.t('seo.contact.desc'),
       path: '/contact',
-      keywords: [
-        'Digitalagentur Freiburg Kontakt',
-        'Webseite erstellen lassen Freiburg',
-      ],
+      keywords: ['Digitalagentur Freiburg Kontakt', 'Webseite erstellen lassen Freiburg', 'Webdesign Anfrage'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
@@ -69,90 +45,5 @@ export class ContactComponent implements OnInit {
         { name: 'Kontakt', path: '/contact' },
       ]),
     );
-  }
-
-  /**
-   * Links wie /contact?thema=wartung&paket=pflege wählen das
-   * Thema vor und schreiben das Paket in die Nachricht.
-   */
-  private applyQuery(): void {
-    const q = this.route.snapshot.queryParamMap;
-    const topic = q.get('thema') as Interest | null;
-    if (topic && this.interests.includes(topic)) this.chosen.set([topic]);
-
-    const plan = q.get('paket');
-    if (topic === 'wartung' && plan && PLAN_IDS.includes(plan)) {
-      const text = this.i18n
-        .t('contact.f.plan.msg')
-        .replace('{plan}', this.i18n.t('wart.plan.' + plan + '.name'));
-      this.prefill.set(text);
-      this.message.set(text);
-    }
-  }
-
-  value(event: Event): string {
-    return (event.target as HTMLInputElement | HTMLTextAreaElement).value;
-  }
-
-  toggle(option: Interest): void {
-    this.chosen.update((list) =>
-      list.includes(option) ? list.filter((o) => o !== option) : [...list, option],
-    );
-  }
-
-  sendMail(event: Event): void {
-    event.preventDefault();
-    const form = event.target as HTMLFormElement;
-    if (!form.reportValidity()) return;
-    const subject = this.i18n.t('contact.mail.subject');
-    this.store(form);
-    window.location.href =
-      `mailto:${COMPANY.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(this.compose())}`;
-    this.sent.set(true);
-  }
-
-  sendWhatsApp(form: HTMLFormElement): void {
-    if (!form.reportValidity()) return;
-    this.store(form);
-    window.open(whatsappUrl(this.compose()), '_blank', 'noopener');
-    this.sent.set(true);
-  }
-
-  /**
-   * Anfrage zusätzlich im Admin-Portal ablegen. Läuft im Hintergrund; schlägt
-   * es fehl (z. B. ohne Datenbank), bleiben E-Mail und WhatsApp der Weg.
-   */
-  private store(form: HTMLFormElement): void {
-    const q = this.route.snapshot.queryParamMap;
-    const honeypot = (form.elements.namedItem('website') as HTMLInputElement | null)?.value ?? '';
-    fetch('/api/enquiry', {
-      method: 'POST',
-      keepalive: true,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        name: this.name(),
-        business: this.business(),
-        reach: this.reach(),
-        message: this.message(),
-        topics: this.chosen(),
-        plan: q.get('paket'),
-        billing: q.get('zahlung'),
-        lang: this.i18n.lang(),
-        website: honeypot,
-      }),
-    }).catch(() => undefined);
-  }
-
-  /** Nachrichtentext in der Sprache der Seite. */
-  private compose(): string {
-    const t = (key: string) => this.i18n.t(key);
-    const topics = this.chosen().map((o) => t('contact.f.opt.' + o)).join(', ');
-    const lines = [t('contact.mail.greeting'), ''];
-    if (this.message().trim()) lines.push(this.message().trim(), '');
-    if (topics) lines.push(`${t('contact.f.interest')} ${topics}`);
-    lines.push(`${t('contact.f.name')}: ${this.name().trim()}`);
-    if (this.business().trim()) lines.push(`${t('contact.f.business.short')}: ${this.business().trim()}`);
-    lines.push(`${t('contact.f.reach')}: ${this.reach().trim()}`);
-    return lines.join('\n');
   }
 }

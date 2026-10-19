@@ -99,6 +99,43 @@ export function leadNotification(d: LeadMailData): { subject: string; text: stri
   return { subject: `Neuer Kontakt über „${d.cardTitle}": ${d.name}${reach ? ` (${reach})` : ''}`, text };
 }
 
+export interface EnquiryMailData {
+  name: string;
+  reach: string;
+  business: string | null;
+  message: string | null;
+  topics: string[];
+  plan: string | null;
+  lang: string | null;
+  siteUrl: string;
+}
+
+/**
+ * Uns melden, dass jemand über den Anfrage-Assistenten geschrieben hat. Die
+ * Nachricht enthält schon die Auswahl des Kunden (Leistung, Paket, Adresse der
+ * Website), damit der erste Rückruf ohne Rückfrage anfangen kann.
+ */
+export function enquiryNotification(d: EnquiryMailData): { subject: string; text: string } {
+  const site = d.siteUrl.replace(/\/+$/, '');
+  const text = [
+    `${d.name} hat über die Website eine Anfrage gestellt.`,
+    '',
+    `Name:     ${d.name}`,
+    ...(d.business ? [`Betrieb:  ${d.business}`] : []),
+    `Erreichbar: ${d.reach}`,
+    ...(d.lang ? [`Sprache:  ${d.lang}`] : []),
+    ...(d.topics.length ? [`Thema:    ${d.topics.join(', ')}${d.plan ? ` (${d.plan})` : ''}`] : []),
+    ...(d.message ? ['', d.message] : []),
+    '',
+    `Portal:   ${site}/admin (Reiter „Anfragen")`,
+    '',
+    'Auf diese E-Mail antworten geht direkt an den Kunden, falls er eine',
+    'E-Mail-Adresse angegeben hat. Im Portal den Eintrag abhaken, sobald Sie',
+    'sich gemeldet haben.',
+  ].join('\n');
+  return { subject: `Neue Anfrage: ${d.name}${d.topics.length ? ` — ${d.topics.join(', ')}` : ''}`, text };
+}
+
 /**
  * Text der Bestellbestätigung. Sie ist zugleich die Bestätigung des
  * Vertrages in Textform (§ 312f BGB): darum stehen Bestellnummer, Positionen,

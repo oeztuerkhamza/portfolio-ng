@@ -1,6 +1,15 @@
 import assert from 'node:assert/strict';
 import { afterEach, describe, test } from 'node:test';
-import { type LeadMailData, euro, leadNotification, mailer, orderConfirmation, type OrderMailData } from './mail';
+import {
+  type EnquiryMailData,
+  type LeadMailData,
+  enquiryNotification,
+  euro,
+  leadNotification,
+  mailer,
+  orderConfirmation,
+  type OrderMailData,
+} from './mail';
 
 /**
  * Tests des Postausgangs und der Bestellbestätigung.
@@ -198,5 +207,40 @@ describe('leadNotification', () => {
 
   test('sagt, dass Antworten an den Gast geht', () => {
     assert.match(leadNotification(lead()).text, /antworten geht direkt an den Gast/i);
+  });
+});
+
+describe('enquiryNotification', () => {
+  const enquiry = (over: Partial<EnquiryMailData> = {}): EnquiryMailData => ({
+    name: 'Anna Beispiel',
+    reach: 'anna@example.com',
+    business: 'Café Krone',
+    message: 'Leistung: Website-Wartung\nAuswahl: Wartung Pflege (49 € pro Monat)',
+    topics: ['wartung'],
+    plan: 'pflege',
+    lang: 'de',
+    siteUrl: 'https://breisgau-digital.de/',
+    ...over,
+  });
+
+  test('nennt Name, Erreichbarkeit und die Auswahl des Kunden', () => {
+    const { subject, text } = enquiryNotification(enquiry());
+    assert.match(subject, /Anna Beispiel/);
+    assert.match(subject, /wartung/);
+    assert.match(text, /anna@example\.com/);
+    assert.match(text, /Wartung Pflege/);
+    assert.match(text, /Café Krone/);
+  });
+
+  test('verweist ins Portal, ohne doppelten Schrägstrich', () => {
+    const { text } = enquiryNotification(enquiry());
+    assert.match(text, /https:\/\/breisgau-digital\.de\/admin/);
+    assert.equal(/de\/\/admin/.test(text), false);
+  });
+
+  test('kommt ohne Betrieb, Thema und Nachricht aus', () => {
+    const { subject, text } = enquiryNotification(enquiry({ business: null, message: null, topics: [], plan: null }));
+    assert.equal(subject, 'Neue Anfrage: Anna Beispiel');
+    assert.equal(/Betrieb:/.test(text), false);
   });
 });

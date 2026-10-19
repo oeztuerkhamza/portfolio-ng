@@ -34,7 +34,7 @@ import {
   fetchReviews,
 } from './reviews';
 import { type MaintenanceState, newToken, parseMaintenance, sha256Hex } from './maintenance';
-import { type OrderMailItem, leadNotification, mailer, orderConfirmation } from './mail';
+import { type EnquiryMailData, type OrderMailItem, enquiryNotification, leadNotification, mailer, orderConfirmation } from './mail';
 import {
   CANCELLED_EVENTS,
   PAID_EVENTS,
@@ -49,8 +49,8 @@ import {
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 const LANGS = ['de', 'fr', 'en', 'tr', 'ku'];
-const TOPICS = ['cards', 'web', 'sh', 'abo', 'other'];
-const PLANS = ['basis', 'business', 'premium'];
+const TOPICS = ['cards', 'web', 'sh', 'abo', 'update', 'wartung', 'other'];
+const PLANS = ['basis', 'business', 'premium', 'start', 'standard', 'komplett', 'pflege', 'plus'];
 
 /** Nur erlaubte Spalten übernehmen; leere Texte werden zu NULL. */
 function pick(body: any, cols: string[]): Record<string, unknown> {
@@ -428,6 +428,25 @@ async function notifyLead(
 }
 
 /**
+ * Uns melden, dass über den Anfrage-Assistenten jemand geschrieben hat.
+ * `reply-to` ist die E-Mail-Adresse des Kunden, falls er eine angegeben hat —
+ * eine Telefonnummer taugt nicht als Antwortadresse.
+ */
+async function notifyEnquiry(d: EnquiryMailData): Promise<void> {
+  const transport = mailer();
+  if (!transport) return;
+  const { subject, text } = enquiryNotification(d);
+  const replyTo = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.reach) ? d.reach : null;
+  await transport.sendMail({
+    from: { name: 'Breisgau Digital', address: config.smtpUser },
+    to: config.smtpUser,
+    ...(replyTo ? { replyTo } : {}),
+    subject,
+    text,
+  });
+}
+
+/**
  * Wie lange ein hinterlassener Kontakt höchstens liegen bleibt.
  *
  * Die Zahl steht auch in der Datenschutzerklärung (/datenschutz, Abschnitt zu
@@ -722,6 +741,13 @@ api.post(
     await sql`
       insert into enquiries (name, business, reach, message, topics, plan, billing, lang)
       values (${name}, ${str(b.business, 200)}, ${reach}, ${str(b.message, 5000)}, ${topics}, ${plan}, ${billing}, ${lang})`;
+
+    // Gespeichert ist gespeichert: die E-Mail an uns darf die Antwort an den
+    // Kunden nicht aufhalten und nicht scheitern lassen, was schon in der
+    // Datenbank steht. Darum ohne await und mit eigenem Fang.
+    void notifyEnquiry(
+      { name, reach, business: str(b.business, 200), message: str(b.message, 5000), topics, plan, lang, siteUrl: origin(req) },
+    ).catch((err) => console.error('[enquiry] Benachrichtigung', err));
     return res.status(201).json({ ok: true });
   }),
 );

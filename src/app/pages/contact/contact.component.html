@@ -54,66 +54,7 @@
 <!-- Anfrageformular -->
 <section class="section section-white" id="anfrage">
   <div class="container form-grid">
-    <form class="card enquiry" #form (submit)="sendMail($event)">
-      <header class="enquiry-head">
-        <p class="section-label">{{ i18n.t('contact.form.label') }}</p>
-        <h2 class="section-title" [innerHTML]="i18n.t('contact.form.title')"></h2>
-        <p class="card-text">{{ i18n.t('contact.form.intro') }}</p>
-      </header>
-
-      <div class="field-row">
-        <div class="field">
-          <label for="cf-name">{{ i18n.t('contact.f.name') }}</label>
-          <input id="cf-name" name="name" autocomplete="name" required (input)="name.set(value($event))" />
-        </div>
-        <div class="field">
-          <label for="cf-business">{{ i18n.t('contact.f.business') }}</label>
-          <input id="cf-business" name="business" autocomplete="organization" (input)="business.set(value($event))" />
-        </div>
-      </div>
-
-      <div class="field">
-        <label for="cf-reach">{{ i18n.t('contact.f.reach') }}</label>
-        <input id="cf-reach" name="reach" autocomplete="tel" required (input)="reach.set(value($event))" />
-      </div>
-
-      <fieldset class="field">
-        <legend class="field-label">{{ i18n.t('contact.f.interest') }}</legend>
-        <div class="choice-group">
-          @for (o of interests; track o) {
-            <label [class.on]="chosen().includes(o)">
-              <input type="checkbox" [checked]="chosen().includes(o)" (change)="toggle(o)" />
-              {{ i18n.t('contact.f.opt.' + o) }}
-            </label>
-          }
-        </div>
-      </fieldset>
-
-      <div class="field">
-        <label for="cf-message">{{ i18n.t('contact.f.message') }}</label>
-        <textarea id="cf-message" name="message" rows="5" [placeholder]="i18n.t('contact.f.message.ph')" [defaultValue]="prefill()" (input)="message.set(value($event))"></textarea>
-      </div>
-
-      <!-- Falle für Spam-Bots: für Menschen unsichtbar -->
-      <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
-
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary btn-large">
-          <app-icon name="mail" /> {{ i18n.t('contact.f.send.mail') }}
-        </button>
-        <button type="button" class="btn btn-secondary btn-large" (click)="sendWhatsApp(form)">
-          <app-icon name="chat" /> {{ i18n.t('contact.f.send.wa') }}
-        </button>
-      </div>
-
-      @if (sent()) {
-        <p class="form-sent" role="status">
-          {{ i18n.t('contact.f.sent') }}
-          <a [href]="'mailto:' + company.email">{{ company.email }}</a>
-        </p>
-      }
-      <p class="form-note">{{ i18n.t('contact.f.privacy') }}</p>
-    </form>
+    <app-request-wizard />
 
     <aside class="contact-aside">
       <div class="card">

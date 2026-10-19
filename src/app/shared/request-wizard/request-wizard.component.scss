@@ -1,0 +1,342 @@
+@import "../../../styles/variables";
+
+// Anfrage-Assistent. Große Tippflächen, eine Frage pro Bildschirm, ruhig.
+
+:host {
+  display: block;
+}
+
+.wizard {
+  padding: clamp(1.25rem, 4vw, 2.25rem);
+  scroll-margin-top: 90px;
+}
+
+// ── Fortschritt ─────────────────────────────────
+.wz-head {
+  margin-bottom: 1.25rem;
+}
+
+.wz-progress {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: $text-mute;
+}
+
+.wz-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: $surface-3;
+  overflow: hidden;
+
+  span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: $brand;
+    transition: width 0.45s $ease-editorial;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wz-bar span {
+    transition: none;
+  }
+}
+
+// ── Frage ───────────────────────────────────────
+.wz-title {
+  margin: 0 0 0.5rem;
+  font-family: $font-display;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 380;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: $text;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.wz-text {
+  margin: 0 0 1.25rem;
+  color: $text-dim;
+  line-height: 1.6;
+}
+
+// ── Auswahlkarten ───────────────────────────────
+.wz-choices {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.wz-services {
+  margin-top: 0;
+
+  @media (min-width: 700px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.wz-choice {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  min-height: 64px;
+  padding: 1rem 1.15rem;
+  border: 1px solid $rule;
+  border-radius: $radius;
+  background: $surface-2;
+  color: $text;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color $transition-fast,
+    background $transition-fast,
+    transform $transition-fast,
+    box-shadow $transition-fast;
+
+  &:hover {
+    border-color: $rule-brand;
+    background: $brand-tint;
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid $brand-glow;
+    outline-offset: 2px;
+    border-color: $brand;
+  }
+
+  &.on {
+    border-color: $brand;
+    background: $brand-tint;
+    box-shadow: 0 0 0 1px $brand;
+  }
+}
+
+.wz-ico {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: $brand-tint;
+  color: $brand;
+}
+
+.wz-ct {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+
+  strong {
+    font-size: 1.02rem;
+    font-weight: 650;
+  }
+
+  span {
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: $text-dim;
+  }
+
+  .wz-meta {
+    margin-top: 0.15rem;
+    font-weight: 600;
+    color: $brand;
+  }
+}
+
+.wz-go {
+  flex: none;
+  color: $text-mute;
+}
+
+.wz-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 1.25rem;
+  padding: 0.5rem 0.25rem;
+  border: 0;
+  background: none;
+  color: $text-dim;
+  font-weight: 600;
+  font-size: 0.92rem;
+  cursor: pointer;
+
+  &:hover {
+    color: $brand;
+  }
+}
+
+.wz-back-ico {
+  transform: scaleX(-1);
+}
+
+// ── Formular ────────────────────────────────────
+.wz-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  label,
+  .field-label {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: $text;
+  }
+
+  input:not([type='radio']),
+  textarea {
+    width: 100%;
+    min-height: 48px;
+    padding: 0.75rem 0.9rem;
+    border: 1px solid $rule-strong;
+    border-radius: $radius-sm;
+    background: $surface-2;
+    color: $text;
+    font: inherit;
+
+    &:focus-visible {
+      outline: 3px solid $brand-glow;
+      border-color: $brand;
+    }
+
+    &[aria-invalid='true'] {
+      border-color: #b03a2e;
+    }
+  }
+}
+
+.wz-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0.5rem 1rem;
+    border: 1px solid $rule-strong;
+    border-radius: 999px;
+    background: $surface-2;
+    font-weight: 500;
+    cursor: pointer;
+
+    &.on {
+      border-color: $brand;
+      background: $brand-tint;
+      color: $brand;
+      font-weight: 650;
+    }
+
+    &:focus-within {
+      outline: 3px solid $brand-glow;
+    }
+
+    input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+  }
+}
+
+.wz-error {
+  margin: -0.25rem 0 0;
+  color: #b03a2e;
+  font-size: 0.9rem;
+}
+
+.hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.wz-send {
+  justify-content: center;
+  width: 100%;
+}
+
+.wz-privacy {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: $text-mute;
+
+  a {
+    color: $brand;
+    text-decoration: underline;
+  }
+}
+
+.wz-fail {
+  padding: 1rem 1.1rem;
+  border: 1px solid #e3b7b0;
+  border-radius: $radius-sm;
+  background: #fdf1ef;
+
+  p {
+    margin: 0 0 0.75rem;
+    color: $text;
+  }
+}
+
+.wz-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+// ── Bestätigung ─────────────────────────────────
+.wz-done {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: start;
+}
+
+.wz-done-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 0.75rem;
+  border-radius: 50%;
+  background: #e3f4ea;
+  color: #1b7a43;
+}
+
+.wz-sum {
+  margin: 0 0 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: $radius-sm;
+  background: $surface-3;
+  color: $text;
+  font-weight: 600;
+
+  span {
+    display: block;
+    margin-bottom: 0.15rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: $text-mute;
+  }
+}

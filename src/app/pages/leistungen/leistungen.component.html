@@ -59,7 +59,7 @@
               <li>{{ i18n.t('upd.' + u.id + '.p' + n) }}</li>
             }
           </ul>
-          <a [routerLink]="'/contact' | localize" class="btn upd-cta" [class.btn-primary]="u.featured" [class.btn-secondary]="!u.featured">
+          <a [routerLink]="'/contact' | localize" [queryParams]="{ thema: 'update', paket: u.id }" fragment="anfrage" class="btn upd-cta" [class.btn-primary]="u.featured" [class.btn-secondary]="!u.featured">
             {{ i18n.t('upd.cta') }}
             <app-icon name="arrow" />
           </a>

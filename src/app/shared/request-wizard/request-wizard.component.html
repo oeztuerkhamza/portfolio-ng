@@ -1,0 +1,151 @@
+<section class="wizard card" #card aria-live="polite">
+  @if (status() !== 'done') {
+    <header class="wz-head">
+      <p class="wz-progress">{{ progress() }}</p>
+      <div class="wz-bar" aria-hidden="true">
+        <span [style.width.%]="(step() / 3) * 100"></span>
+      </div>
+    </header>
+  }
+
+  @if (status() === 'done') {
+    <!-- Bestätigung -->
+    <div class="wz-done">
+      <span class="wz-done-icon"><app-icon name="check" [stroke]="2.4" /></span>
+      <h2 class="wz-title" #heading tabindex="-1">{{ i18n.t('rw.done.title').replace('{name}', name().trim()) }}</h2>
+      <p class="wz-text">{{ i18n.t('rw.done.text') }}</p>
+      <p class="wz-sum"><span>{{ i18n.t('rw.done.sum') }}</span> {{ summary() }}</p>
+      <p class="wz-text">{{ i18n.t('rw.done.urgent') }}</p>
+      <div class="wz-actions">
+        <a [href]="company.phoneHref" class="btn btn-secondary"><app-icon name="phone" /> {{ i18n.t('rw.call') }}</a>
+        <a [href]="waHref()" target="_blank" rel="noopener" class="btn btn-secondary"><app-icon name="chat" /> WhatsApp</a>
+      </div>
+    </div>
+  } @else {
+    @switch (step()) {
+      @case (1) {
+        <h2 class="wz-title" #heading tabindex="-1" id="wz-q1">{{ i18n.t('rw.q1') }}</h2>
+        <p class="wz-text">{{ i18n.t('rw.q1.hint') }}</p>
+        <div class="wz-choices wz-services" role="radiogroup" aria-labelledby="wz-q1">
+          @for (s of services; track s.id) {
+            <button
+              type="button"
+              class="wz-choice"
+              role="radio"
+              [attr.aria-checked]="service() === s.id"
+              [class.on]="service() === s.id"
+              (click)="pickService(s.id)"
+            >
+              <span class="wz-ico"><app-icon [name]="s.icon" /></span>
+              <span class="wz-ct">
+                <strong>{{ i18n.t('rw.s.' + s.id + '.t') }}</strong>
+                <span>{{ serviceText(s.id) }}</span>
+              </span>
+              <app-icon class="wz-go" name="arrow" />
+            </button>
+          }
+        </div>
+      }
+
+      @case (2) {
+        <h2 class="wz-title" #heading tabindex="-1" id="wz-q2">{{ i18n.t('rw.q2.' + service()) }}</h2>
+        <div class="wz-choices" role="radiogroup" aria-labelledby="wz-q2">
+          @for (c of choices(); track c.id) {
+            <button
+              type="button"
+              class="wz-choice"
+              role="radio"
+              [attr.aria-checked]="detail() === c.id"
+              [class.on]="detail() === c.id"
+              (click)="pickDetail(c.id)"
+            >
+              <span class="wz-ct">
+                <strong>{{ c.title }}</strong>
+                @if (c.text) {
+                  <span>{{ c.text }}</span>
+                }
+                @if (c.meta) {
+                  <span class="wz-meta">{{ c.meta }}</span>
+                }
+              </span>
+              <app-icon class="wz-go" name="arrow" />
+            </button>
+          }
+        </div>
+        <button type="button" class="wz-back" (click)="back()"><app-icon name="arrow" class="wz-back-ico" /> {{ i18n.t('rw.back') }}</button>
+      }
+
+      @case (3) {
+        <h2 class="wz-title" #heading tabindex="-1" id="wz-q3">{{ i18n.t('rw.q3') }}</h2>
+        <p class="wz-text">{{ i18n.t('rw.q3.hint') }}</p>
+        <form class="wz-form" (submit)="submit($event)" novalidate>
+          <div class="field">
+            <label for="wz-name">{{ i18n.t('rw.f.name') }}</label>
+            <input id="wz-name" name="name" autocomplete="name" required [attr.aria-invalid]="invalid() && !name().trim()" (input)="name.set(value($event))" />
+          </div>
+          <div class="field">
+            <label for="wz-reach">{{ i18n.t('rw.f.reach') }}</label>
+            <input id="wz-reach" name="reach" autocomplete="tel" inputmode="email" required [attr.aria-invalid]="invalid() && !reach().trim()" (input)="reach.set(value($event))" />
+          </div>
+          @if (invalid()) {
+            <p class="wz-error" role="alert">{{ i18n.t('rw.invalid') }}</p>
+          }
+
+          <div class="field">
+            <label for="wz-business">{{ i18n.t('rw.f.business') }}</label>
+            <input id="wz-business" name="business" autocomplete="organization" (input)="business.set(value($event))" />
+          </div>
+          @if (asksWebsite()) {
+            <div class="field">
+              <label for="wz-site">{{ i18n.t('rw.f.website') }}</label>
+              <input id="wz-site" name="site" type="url" inputmode="url" autocomplete="url" placeholder="https://" (input)="website.set(value($event))" />
+            </div>
+          }
+
+          <fieldset class="field">
+            <legend class="field-label">{{ i18n.t('rw.f.slot') }}</legend>
+            <div class="wz-slots">
+              @for (s of slots; track s) {
+                <label [class.on]="slot() === s">
+                  <input type="radio" name="slot" [value]="s" [checked]="slot() === s" (change)="slot.set(s)" />
+                  {{ i18n.t('rw.slot.' + s) }}
+                </label>
+              }
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <label for="wz-note">{{ i18n.t('rw.f.note') }}</label>
+            <textarea id="wz-note" name="note" rows="3" (input)="note.set(value($event))"></textarea>
+          </div>
+
+          <!-- Falle für Spam-Bots: für Menschen unsichtbar -->
+          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+          <button type="submit" class="btn btn-primary btn-large wz-send" [disabled]="status() === 'sending'">
+            {{ i18n.t(status() === 'sending' ? 'rw.sending' : 'rw.send') }}
+            @if (status() !== 'sending') {
+              <app-icon name="arrow" />
+            }
+          </button>
+
+          @if (status() === 'error') {
+            <div class="wz-fail" role="alert">
+              <p><strong>{{ i18n.t('rw.err.title') }}</strong> {{ i18n.t('rw.err.text') }}</p>
+              <div class="wz-actions">
+                <a [href]="mailHref()" class="btn btn-secondary"><app-icon name="mail" /> {{ i18n.t('rw.mail') }}</a>
+                <a [href]="waHref()" target="_blank" rel="noopener" class="btn btn-secondary"><app-icon name="chat" /> {{ i18n.t('rw.wa') }}</a>
+              </div>
+            </div>
+          }
+
+          <p class="wz-privacy">
+            {{ i18n.t('rw.privacy') }}
+            <a [routerLink]="'/datenschutz' | localize">{{ i18n.t('rw.privacy.link') }}</a>
+          </p>
+        </form>
+        <button type="button" class="wz-back" (click)="back()"><app-icon name="arrow" class="wz-back-ico" /> {{ i18n.t('rw.back') }}</button>
+      }
+    }
+  }
+</section>
