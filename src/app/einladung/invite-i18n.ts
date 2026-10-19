@@ -1,0 +1,330 @@
+import { InviteLang } from './invite.model';
+
+type Row = Partial<Record<InviteLang, string>>;
+
+/**
+ * Texte der Gästeseite in allen sechs Sprachen.
+ *
+ * Die Inhalte des Gastgebers (Namen, Geschichte, Ablauf) stehen in der
+ * Einladung selbst und können je Sprache gepflegt werden; hier steht nur der
+ * feste Rahmen. Fehlt eine Sprache, gilt Englisch, dann Deutsch.
+ */
+export const GUEST_TEXT: Record<string, Row> = {
+  // ── Umschlag ──
+  'open': { de: 'Einladung öffnen', tr: 'Davetiyeyi aç', en: 'Open invitation', fr: 'Ouvrir l’invitation', ku: 'Vexwendinê veke', ar: 'افتح الدعوة' },
+  'open.for': { de: 'Eine Einladung für', tr: 'Sizin için bir davetiye', en: 'An invitation for', fr: 'Une invitation pour', ku: 'Vexwendinek ji bo', ar: 'دعوة خاصة لـ' },
+  'open.you': { de: 'Euch', tr: 'Size', en: 'You', fr: 'Vous', ku: 'We', ar: 'كم' },
+  'open.music': { de: 'mit Musik', tr: 'müzikli', en: 'with music', fr: 'avec musique', ku: 'bi muzîkê', ar: 'مع الموسيقى' },
+
+  // ── Art des Events (Zeile über dem Titel) ──
+  'kind.wedding': { de: 'Wir heiraten', tr: 'Evleniyoruz', en: 'We’re getting married', fr: 'Nous nous marions', ku: 'Em dizewicin', ar: 'نحن نتزوج' },
+  'kind.henna': { de: 'Henna-Abend', tr: 'Kına Gecesi', en: 'Henna Night', fr: 'Soirée du henné', ku: 'Şeva Hineyê', ar: 'ليلة الحناء' },
+  'kind.engagement': { de: 'Wir verloben uns', tr: 'Nişanlanıyoruz', en: 'We’re engaged', fr: 'Nos fiançailles', ku: 'Em nîşan dibin', ar: 'خطوبتنا' },
+  'kind.birthday': { de: 'Einladung zum Geburtstag', tr: 'Doğum günü davetiyesi', en: 'Birthday invitation', fr: 'Invitation d’anniversaire', ku: 'Vexwendina rojbûnê', ar: 'دعوة عيد ميلاد' },
+  'kind.corporate': { de: 'Einladung', tr: 'Davet', en: 'Invitation', fr: 'Invitation', ku: 'Vexwendin', ar: 'دعوة' },
+  'kind.other': { de: 'Einladung', tr: 'Davet', en: 'Invitation', fr: 'Invitation', ku: 'Vexwendin', ar: 'دعوة' },
+
+  // ── Navigation ──
+  'nav.welcome': { de: 'Willkommen', tr: 'Hoş geldiniz', en: 'Welcome', fr: 'Bienvenue', ku: 'Bi xêr hatin', ar: 'أهلاً بكم' },
+  'nav.schedule': { de: 'Ablauf', tr: 'Program', en: 'Schedule', fr: 'Programme', ku: 'Bername', ar: 'البرنامج' },
+  'nav.locations': { de: 'Anfahrt', tr: 'Konum', en: 'Venue', fr: 'Accès', ku: 'Cih', ar: 'المكان' },
+  'nav.rsvp': { de: 'Zusage', tr: 'Katılım', en: 'RSVP', fr: 'Réponse', ku: 'Bersiv', ar: 'تأكيد الحضور' },
+  'nav.gifts': { de: 'Geschenke', tr: 'Hediye', en: 'Gifts', fr: 'Cadeaux', ku: 'Diyarî', ar: 'الهدايا' },
+  'nav.photos': { de: 'Fotos', tr: 'Fotoğraflar', en: 'Photos', fr: 'Photos', ku: 'Wêne', ar: 'الصور' },
+  'nav.faq': { de: 'Infos', tr: 'Bilgiler', en: 'Info', fr: 'Infos', ku: 'Agahî', ar: 'معلومات' },
+
+  // ── Countdown ──
+  'cd.title': { de: 'Bis zum großen Tag', tr: 'Büyük güne kalan', en: 'Counting down to the big day', fr: 'Avant le grand jour', ku: 'Heta roja mezin', ar: 'العد التنازلي لليوم الكبير' },
+  'cd.days': { de: 'Tage', tr: 'Gün', en: 'Days', fr: 'Jours', ku: 'Roj', ar: 'أيام' },
+  'cd.hours': { de: 'Stunden', tr: 'Saat', en: 'Hours', fr: 'Heures', ku: 'Saet', ar: 'ساعات' },
+  'cd.minutes': { de: 'Minuten', tr: 'Dakika', en: 'Minutes', fr: 'Minutes', ku: 'Deqe', ar: 'دقائق' },
+  'cd.seconds': { de: 'Sekunden', tr: 'Saniye', en: 'Seconds', fr: 'Secondes', ku: 'Çirke', ar: 'ثوانٍ' },
+  'cd.today': { de: 'Heute ist es so weit!', tr: 'Bugün o gün!', en: 'Today’s the day!', fr: 'C’est aujourd’hui !', ku: 'Îro ew roj e!', ar: 'اليوم هو اليوم الموعود!' },
+  'cd.past': { de: 'Danke, dass ihr dabei wart!', tr: 'Bizimle olduğunuz için teşekkürler!', en: 'Thank you for celebrating with us!', fr: 'Merci d’avoir été là !', ku: 'Spas ku hûn bi me re bûn!', ar: 'شكراً لمشاركتكم فرحتنا!' },
+  'cal.add': { de: 'In den Kalender', tr: 'Takvime ekle', en: 'Add to calendar', fr: 'Ajouter au calendrier', ku: 'Li salnameyê zêde bike', ar: 'أضف إلى التقويم' },
+  'cal.google': { de: 'Google Kalender', tr: 'Google Takvim', en: 'Google Calendar', fr: 'Google Agenda', ku: 'Salnameya Google', ar: 'تقويم Google' },
+  'cal.ics': { de: 'Apple / Outlook', tr: 'Apple / Outlook', en: 'Apple / Outlook', fr: 'Apple / Outlook', ku: 'Apple / Outlook', ar: 'Apple / Outlook' },
+
+  // ── Abschnitte ──
+  'sec.story': { de: 'Unsere Geschichte', tr: 'Hikâyemiz', en: 'Our story', fr: 'Notre histoire', ku: 'Çîroka me', ar: 'قصتنا' },
+  'sec.about': { de: 'Worum es geht', tr: 'Etkinlik hakkında', en: 'About the event', fr: 'L’événement', ku: 'Derbarê bûyerê', ar: 'عن الفعالية' },
+  'sec.schedule': { de: 'Ablauf des Tages', tr: 'Günün programı', en: 'Order of the day', fr: 'Programme de la journée', ku: 'Bernameya rojê', ar: 'برنامج اليوم' },
+  'sec.locations': { de: 'Orte & Anfahrt', tr: 'Mekân ve yol tarifi', en: 'Venues & directions', fr: 'Lieux & accès', ku: 'Cih û rê', ar: 'الأماكن والاتجاهات' },
+  'sec.dress': { de: 'Dresscode', tr: 'Kıyafet', en: 'Dress code', fr: 'Tenue', ku: 'Cil û berg', ar: 'قواعد اللباس' },
+  'sec.faq': { de: 'Gut zu wissen', tr: 'Bilmeniz gerekenler', en: 'Good to know', fr: 'Bon à savoir', ku: 'Baş e ku hûn bizanin', ar: 'معلومات مفيدة' },
+  'sec.contacts': { de: 'Fragen? Ansprechpartner', tr: 'Sorularınız için', en: 'Questions? Contacts', fr: 'Des questions ? Contacts', ku: 'Pirs? Têkilî', ar: 'أسئلة؟ للتواصل' },
+
+  // ── Orte ──
+  'loc.route': { de: 'Route starten', tr: 'Yol tarifi al', en: 'Get directions', fr: 'Itinéraire', ku: 'Rê nîşan bide', ar: 'ابدأ الملاحة' },
+  'loc.apple': { de: 'Apple Karten', tr: 'Apple Haritalar', en: 'Apple Maps', fr: 'Plans (Apple)', ku: 'Nexşeyên Apple', ar: 'خرائط Apple' },
+  'loc.waze': { de: 'Waze', tr: 'Waze', en: 'Waze', fr: 'Waze', ku: 'Waze', ar: 'Waze' },
+  'loc.copy': { de: 'Adresse kopieren', tr: 'Adresi kopyala', en: 'Copy address', fr: 'Copier l’adresse', ku: 'Navnîşanê kopî bike', ar: 'نسخ العنوان' },
+
+  // ── Zusage ──
+  'rsvp.title': { de: 'Seid ihr dabei?', tr: 'Bizimle misiniz?', en: 'Will you join us?', fr: 'Serez-vous des nôtres ?', ku: 'Hûn ê werin?', ar: 'هل ستحضرون؟' },
+  'rsvp.until': { de: 'Bitte gebt uns bis {date} Bescheid.', tr: 'Lütfen {date} tarihine kadar haber verin.', en: 'Please let us know by {date}.', fr: 'Merci de répondre avant le {date}.', ku: 'Ji kerema xwe heta {date} bersiv bidin.', ar: 'يرجى إعلامنا قبل {date}.' },
+  'rsvp.hello': { de: 'Hallo {name}, schön, dass du da bist!', tr: 'Merhaba {name}, hoş geldin!', en: 'Hi {name}, lovely to see you here!', fr: 'Bonjour {name}, ravi(e) de vous voir !', ku: 'Silav {name}, bi xêr hatî!', ar: 'مرحباً {name}، سعداء بوجودك!' },
+  'rsvp.name': { de: 'Vor- und Nachname', tr: 'Ad soyad', en: 'Full name', fr: 'Prénom et nom', ku: 'Nav û paşnav', ar: 'الاسم الكامل' },
+  'rsvp.coming': { de: 'Kommt ihr?', tr: 'Katılacak mısınız?', en: 'Are you coming?', fr: 'Venez-vous ?', ku: 'Hûn tên?', ar: 'هل ستأتون؟' },
+  'rsvp.yes': { de: 'Ja, sehr gern!', tr: 'Evet, memnuniyetle!', en: 'Yes, with pleasure!', fr: 'Oui, avec joie !', ku: 'Erê, bi kêfxweşî!', ar: 'نعم، بكل سرور!' },
+  'rsvp.no': { de: 'Leider nein', tr: 'Maalesef hayır', en: 'Sadly not', fr: 'Malheureusement non', ku: 'Mixabin na', ar: 'للأسف لا' },
+  'rsvp.maybe': { de: 'Noch unsicher', tr: 'Henüz belli değil', en: 'Not sure yet', fr: 'Pas encore sûr', ku: 'Hê ne diyar e', ar: 'لست متأكداً بعد' },
+  'rsvp.adults': { de: 'Erwachsene', tr: 'Yetişkin', en: 'Adults', fr: 'Adultes', ku: 'Mezin', ar: 'بالغون' },
+  'rsvp.children': { de: 'Kinder', tr: 'Çocuk', en: 'Children', fr: 'Enfants', ku: 'Zarok', ar: 'أطفال' },
+  'rsvp.menu': { de: 'Menüwunsch', tr: 'Menü tercihi', en: 'Menu choice', fr: 'Choix du menu', ku: 'Bijartina xwarinê', ar: 'اختيار الطعام' },
+  'menu.meat': { de: 'Fleisch', tr: 'Et', en: 'Meat', fr: 'Viande', ku: 'Goşt', ar: 'لحم' },
+  'menu.fish': { de: 'Fisch', tr: 'Balık', en: 'Fish', fr: 'Poisson', ku: 'Masî', ar: 'سمك' },
+  'menu.veggie': { de: 'Vegetarisch', tr: 'Vejetaryen', en: 'Vegetarian', fr: 'Végétarien', ku: 'Vejetaryen', ar: 'نباتي' },
+  'menu.vegan': { de: 'Vegan', tr: 'Vegan', en: 'Vegan', fr: 'Végan', ku: 'Vegan', ar: 'نباتي صرف' },
+  'menu.kids': { de: 'Kindermenü', tr: 'Çocuk menüsü', en: 'Kids’ menu', fr: 'Menu enfant', ku: 'Xwarina zarokan', ar: 'وجبة أطفال' },
+  'rsvp.allergies': { de: 'Allergien oder Unverträglichkeiten', tr: 'Alerji veya hassasiyetler', en: 'Allergies or intolerances', fr: 'Allergies ou intolérances', ku: 'Alerjî', ar: 'الحساسية الغذائية' },
+  'rsvp.song': { de: 'Musikwunsch für die Party', tr: 'Parti için şarkı isteği', en: 'Song request for the party', fr: 'Une chanson pour la fête', ku: 'Strana ku hûn dixwazin', ar: 'أغنية تودّون سماعها' },
+  'rsvp.message': { de: 'Ein paar Worte an uns (optional)', tr: 'Bize birkaç söz (isteğe bağlı)', en: 'A few words for us (optional)', fr: 'Un petit mot (facultatif)', ku: 'Çend gotin ji me re (bijarte)', ar: 'كلمة لنا (اختياري)' },
+  'rsvp.send': { de: 'Antwort senden', tr: 'Yanıtı gönder', en: 'Send reply', fr: 'Envoyer', ku: 'Bersivê bişîne', ar: 'إرسال الرد' },
+  'rsvp.sending': { de: 'Wird gesendet …', tr: 'Gönderiliyor …', en: 'Sending …', fr: 'Envoi …', ku: 'Tê şandin …', ar: 'جارٍ الإرسال …' },
+  'rsvp.thanks.yes': { de: 'Danke, {name}! Wir freuen uns riesig auf euch.', tr: 'Teşekkürler {name}! Sizi görmek için sabırsızlanıyoruz.', en: 'Thank you, {name}! We can’t wait to see you.', fr: 'Merci {name} ! Nous avons hâte de vous voir.', ku: 'Spas {name}! Em bi hêvî ne ku we bibînin.', ar: 'شكراً {name}! نتطلع لرؤيتكم.' },
+  'rsvp.thanks.no': { de: 'Schade, {name} — danke für eure Nachricht!', tr: 'Ne yazık {name} — haber verdiğiniz için teşekkürler!', en: 'What a pity, {name} — thanks for letting us know!', fr: 'Dommage, {name} — merci de nous avoir prévenus !', ku: 'Mixabin {name} — spas ji bo bersivê!', ar: 'يا للأسف يا {name} — شكراً لإعلامنا!' },
+  'rsvp.thanks.maybe': { de: 'Danke, {name}! Gebt uns Bescheid, sobald ihr es wisst.', tr: 'Teşekkürler {name}! Netleşince bize haber verin.', en: 'Thanks, {name}! Let us know once you’re sure.', fr: 'Merci {name} ! Dites-nous dès que vous savez.', ku: 'Spas {name}! Gava diyar bû, ji me re bêjin.', ar: 'شكراً {name}! أخبرونا عندما تتأكدون.' },
+  'rsvp.change': { de: 'Antwort ändern', tr: 'Yanıtı değiştir', en: 'Change reply', fr: 'Modifier la réponse', ku: 'Bersivê biguherîne', ar: 'تعديل الرد' },
+  'rsvp.error': { de: 'Das hat nicht geklappt. Bitte versucht es noch einmal.', tr: 'Gönderilemedi. Lütfen tekrar deneyin.', en: 'That didn’t work. Please try again.', fr: 'Échec de l’envoi. Veuillez réessayer.', ku: 'Nehat şandin. Ji kerema xwe dîsa biceribînin.', ar: 'تعذّر الإرسال. يرجى المحاولة مرة أخرى.' },
+  'rsvp.required': { de: 'Bitte Namen eintragen und Zu- oder Absage wählen.', tr: 'Lütfen adınızı yazın ve katılım durumunu seçin.', en: 'Please enter your name and choose a reply.', fr: 'Indiquez votre nom et votre réponse.', ku: 'Ji kerema xwe navê xwe binivîsin û bersivê hilbijêrin.', ar: 'يرجى كتابة الاسم واختيار الرد.' },
+  'rsvp.closed': { de: 'Die Anmeldefrist ist vorbei. Meldet euch gern direkt bei uns.', tr: 'Katılım bildirimi süresi doldu. Lütfen bize doğrudan ulaşın.', en: 'The RSVP deadline has passed. Feel free to contact us directly.', fr: 'La date limite est passée. Contactez-nous directement.', ku: 'Dema bersivê derbas bû. Rasterast bi me re têkilî daynin.', ar: 'انتهت مهلة التأكيد. تواصلوا معنا مباشرة.' },
+
+  // ── Geschenke ──
+  'gift.title': { de: 'Geschenke', tr: 'Hediyeler', en: 'Gifts', fr: 'Cadeaux', ku: 'Diyarî', ar: 'الهدايا' },
+  'gift.default': {
+    de: 'Das schönste Geschenk ist, dass ihr mit uns feiert. Wer uns darüber hinaus etwas schenken möchte, kann das ganz einfach hier tun.',
+    tr: 'En güzel hediye bizimle kutlamanız. Bunun dışında bir şey hediye etmek isterseniz buradan kolayca yapabilirsiniz.',
+    en: 'Celebrating with you is the greatest gift. If you’d like to give us something more, you can do so easily here.',
+    fr: 'Votre présence est le plus beau des cadeaux. Si vous souhaitez nous offrir quelque chose, c’est très simple ici.',
+    ku: 'Diyariya herî xweş ew e ku hûn bi me re şahî bikin. Heke hûn dixwazin tiştekî bidin, li vir hêsan e.',
+    ar: 'حضوركم هو أجمل هدية. ولمن يرغب بإهدائنا شيئاً، يمكنه ذلك بسهولة هنا.',
+  },
+  'gift.holder': { de: 'Kontoinhaber', tr: 'Hesap sahibi', en: 'Account holder', fr: 'Titulaire', ku: 'Xwediyê hesabê', ar: 'صاحب الحساب' },
+  'gift.reference': { de: 'Verwendungszweck', tr: 'Açıklama', en: 'Reference', fr: 'Référence', ku: 'Têbînî', ar: 'البيان' },
+  'gift.copy': { de: 'Kopieren', tr: 'Kopyala', en: 'Copy', fr: 'Copier', ku: 'Kopî bike', ar: 'نسخ' },
+  'gift.copied': { de: 'Kopiert!', tr: 'Kopyalandı!', en: 'Copied!', fr: 'Copié !', ku: 'Hat kopîkirin!', ar: 'تم النسخ!' },
+  'gift.paypal': { de: 'Mit PayPal schenken', tr: 'PayPal ile hediye gönder', en: 'Give with PayPal', fr: 'Offrir via PayPal', ku: 'Bi PayPal diyarî bişîne', ar: 'أهدِ عبر PayPal' },
+  'gift.qr': { de: 'GiroCode: mit der Banking-App scannen — Name, IBAN und Zweck sind dann schon ausgefüllt.', tr: 'GiroCode: banka uygulamanızla tarayın — alıcı, IBAN ve açıklama otomatik dolar.', en: 'GiroCode: scan with your banking app — recipient, IBAN and reference are filled in.', fr: 'GiroCode : scannez avec votre appli bancaire — bénéficiaire, IBAN et référence sont remplis.', ku: 'GiroCode: bi sepana bankê bixwînin — nav, IBAN û têbînî tên dagirtin.', ar: 'رمز GiroCode: امسحه بتطبيق البنك لتعبئة الاسم والآيبان والبيان تلقائياً.' },
+
+  // ── Fotos ──
+  'photo.title': { de: 'Unser Fotoalbum', tr: 'Fotoğraf albümümüz', en: 'Our photo album', fr: 'Notre album photo', ku: 'Albuma me ya wêneyan', ar: 'ألبوم صورنا' },
+  'photo.text': { de: 'Teilt eure schönsten Momente mit uns — die Fotos laufen bei der Feier auch als Diashow auf der Leinwand.', tr: 'En güzel anlarınızı bizimle paylaşın — fotoğraflar kutlamada perdede slayt gösterisi olarak da yansıtılacak.', en: 'Share your favourite moments — the photos also run as a slideshow on the big screen at the party.', fr: 'Partagez vos plus beaux moments — les photos défilent aussi en diaporama pendant la fête.', ku: 'Demên xwe yên herî xweş bi me re parve bikin — wêne di şahiyê de wek slaydê jî tên nîşandan.', ar: 'شاركونا أجمل لحظاتكم — ستُعرض الصور أيضاً على الشاشة أثناء الحفل.' },
+  'photo.upload': { de: 'Fotos hochladen', tr: 'Fotoğraf yükle', en: 'Upload photos', fr: 'Ajouter des photos', ku: 'Wêne bar bike', ar: 'رفع الصور' },
+  'photo.uploading': { de: 'Wird hochgeladen … {n}', tr: 'Yükleniyor … {n}', en: 'Uploading … {n}', fr: 'Envoi … {n}', ku: 'Tê barkirin … {n}', ar: 'جارٍ الرفع … {n}' },
+  'photo.by': { de: 'Dein Name (optional)', tr: 'Adınız (isteğe bağlı)', en: 'Your name (optional)', fr: 'Votre nom (facultatif)', ku: 'Navê te (bijarte)', ar: 'اسمك (اختياري)' },
+  'photo.done': { de: 'Danke! Deine Fotos sind im Album.', tr: 'Teşekkürler! Fotoğraflarınız albümde.', en: 'Thank you! Your photos are in the album.', fr: 'Merci ! Vos photos sont dans l’album.', ku: 'Spas! Wêneyên te di albumê de ne.', ar: 'شكراً! صورك الآن في الألبوم.' },
+  'photo.error': { de: 'Ein Foto ließ sich nicht hochladen (nur Bilder bis 5 MB).', tr: 'Bir fotoğraf yüklenemedi (yalnızca 5 MB’a kadar resimler).', en: 'A photo could not be uploaded (images up to 5 MB only).', fr: 'Une photo n’a pas pu être envoyée (images de 5 Mo max.).', ku: 'Wêneyek nehat barkirin (tenê heta 5 MB).', ar: 'تعذّر رفع صورة (الصور حتى 5 ميغابايت فقط).' },
+  'photo.empty': { de: 'Noch keine Fotos — macht den Anfang!', tr: 'Henüz fotoğraf yok — ilk siz yükleyin!', en: 'No photos yet — be the first!', fr: 'Pas encore de photos — lancez-vous !', ku: 'Hê wêne tune — yê pêşîn bin!', ar: 'لا توجد صور بعد — كونوا أول من يشارك!' },
+  'photo.show': { de: 'Diashow starten', tr: 'Slayt gösterisini başlat', en: 'Start slideshow', fr: 'Lancer le diaporama', ku: 'Slaydê dest pê bike', ar: 'بدء عرض الشرائح' },
+  'photo.closed': { de: 'Das Hochladen ist für diese Einladung ausgeschaltet.', tr: 'Bu davetiyede fotoğraf yükleme kapalı.', en: 'Uploading is turned off for this invitation.', fr: 'L’envoi de photos est désactivé.', ku: 'Barkirin ji bo vê vexwendinê girtî ye.', ar: 'رفع الصور مغلق لهذه الدعوة.' },
+
+  // ── Kontakte ──
+  'contact.call': { de: 'Anrufen', tr: 'Ara', en: 'Call', fr: 'Appeler', ku: 'Telefon bike', ar: 'اتصال' },
+
+  // ── Musik, Sprache, Gestaltung ──
+  'music.on': { de: 'Musik an', tr: 'Müziği aç', en: 'Music on', fr: 'Musique', ku: 'Muzîk vekirî', ar: 'تشغيل الموسيقى' },
+  'music.off': { de: 'Musik aus', tr: 'Müziği kapat', en: 'Music off', fr: 'Couper la musique', ku: 'Muzîk girtî', ar: 'إيقاف الموسيقى' },
+  'music.none': { de: 'Keine Musik', tr: 'Müzik yok', en: 'No music', fr: 'Sans musique', ku: 'Bê muzîk', ar: 'بدون موسيقى' },
+  'music.piano': { de: 'Klavier', tr: 'Piyano', en: 'Piano', fr: 'Piano', ku: 'Piyano', ar: 'بيانو' },
+  'music.strings': { de: 'Streicher', tr: 'Yaylılar', en: 'Strings', fr: 'Cordes', ku: 'Têl', ar: 'وتريات' },
+  'music.oud': { de: 'Oud (orientalisch)', tr: 'Ud (oryantal)', en: 'Oud (oriental)', fr: 'Oud (oriental)', ku: 'Ûd (rojhilatî)', ar: 'عود شرقي' },
+  'music.guitar': { de: 'Akustikgitarre', tr: 'Akustik gitar', en: 'Acoustic guitar', fr: 'Guitare acoustique', ku: 'Gîtara akustîk', ar: 'غيتار' },
+  'music.lounge': { de: 'Lounge', tr: 'Lounge', en: 'Lounge', fr: 'Lounge', ku: 'Lounge', ar: 'لاونج' },
+  'music.ambient': { de: 'Ambient', tr: 'Ambiyans', en: 'Ambient', fr: 'Ambiance', ku: 'Ambient', ar: 'هادئة' },
+  'music.custom': { de: 'Eigenes Lied', tr: 'Kendi şarkımız', en: 'Our own song', fr: 'Notre chanson', ku: 'Strana me', ar: 'أغنيتنا' },
+  'ui.lang': { de: 'Sprache', tr: 'Dil', en: 'Language', fr: 'Langue', ku: 'Ziman', ar: 'اللغة' },
+  'ui.theme': { de: 'Gestaltung', tr: 'Tema', en: 'Theme', fr: 'Thème', ku: 'Tema', ar: 'التصميم' },
+  'ui.music': { de: 'Musik', tr: 'Müzik', en: 'Music', fr: 'Musique', ku: 'Muzîk', ar: 'الموسيقى' },
+  'ui.settings': { de: 'Einstellungen', tr: 'Ayarlar', en: 'Settings', fr: 'Réglages', ku: 'Mîheng', ar: 'الإعدادات' },
+  'ui.close': { de: 'Schließen', tr: 'Kapat', en: 'Close', fr: 'Fermer', ku: 'Bigire', ar: 'إغلاق' },
+  'ui.loading': { de: 'Einladung wird geladen …', tr: 'Davetiye yükleniyor …', en: 'Loading invitation …', fr: 'Chargement …', ku: 'Vexwendin tê barkirin …', ar: 'جارٍ تحميل الدعوة …' },
+  'ui.notfound': { de: 'Diese Einladung gibt es nicht (mehr). Bitte prüft den Link.', tr: 'Bu davetiye bulunamadı. Lütfen bağlantıyı kontrol edin.', en: 'This invitation doesn’t exist (any more). Please check the link.', fr: 'Cette invitation n’existe pas (ou plus). Vérifiez le lien.', ku: 'Ev vexwendin tune ye. Ji kerema xwe girêdanê kontrol bikin.', ar: 'هذه الدعوة غير موجودة. يرجى التحقق من الرابط.' },
+  'ui.top': { de: 'Nach oben', tr: 'Yukarı', en: 'Back to top', fr: 'Haut de page', ku: 'Jor', ar: 'إلى الأعلى' },
+
+  // ── Vorschau-Leiste (nur Beispiele) ──
+  'demo.bar': { de: 'Beispiel-Einladung', tr: 'Örnek davetiye', en: 'Sample invitation', fr: 'Invitation exemple', ku: 'Vexwendina mînak', ar: 'دعوة تجريبية' },
+  'demo.planner': { de: 'Gastgeber-Planer ansehen', tr: 'Ev sahibi panelini gör', en: 'See the host planner', fr: 'Voir le planificateur', ku: 'Panela mazûvanê bibîne', ar: 'لوحة المضيف' },
+  'demo.order': { de: 'So eine Einladung bestellen', tr: 'Bu davetiyeyi sipariş et', en: 'Order an invitation like this', fr: 'Commander cette invitation', ku: 'Vexwendinek wiha ferman bike', ar: 'اطلب دعوة مثل هذه' },
+  'demo.note': { de: 'Alles hier funktioniert — Antworten und Fotos bleiben nur in deinem Browser.', tr: 'Her şey çalışıyor — yanıtlar ve fotoğraflar yalnızca tarayıcınızda kalır.', en: 'Everything here works — replies and photos stay in your browser only.', fr: 'Tout fonctionne — réponses et photos restent dans votre navigateur.', ku: 'Her tişt dixebite — bersiv û wêne tenê di geroka te de dimînin.', ar: 'كل شيء هنا يعمل — الردود والصور تبقى في متصفحك فقط.' },
+  'footer.made': { de: 'Digitale Einladung von', tr: 'Dijital davetiye:', en: 'Digital invitation by', fr: 'Invitation numérique par', ku: 'Vexwendina dîjîtal ji', ar: 'دعوة رقمية من' },
+};
+
+/**
+ * Texte des Gastgeber-Planers. Der Planer ist ein Werkzeug für den
+ * Gastgeber, nicht für Gäste: Deutsch, Türkisch und Englisch; die übrigen
+ * Sprachen zeigen Englisch.
+ */
+export const HOST_TEXT: Record<string, Row> = {
+  'h.title': { de: 'Gastgeber-Planer', tr: 'Ev Sahibi Paneli', en: 'Host planner' },
+  'h.view': { de: 'Einladung ansehen', tr: 'Davetiyeyi gör', en: 'View invitation' },
+  'h.demo': { de: 'Beispiel: Änderungen bleiben nur in diesem Browser.', tr: 'Örnek: değişiklikler yalnızca bu tarayıcıda kalır.', en: 'Demo: changes stay in this browser only.' },
+  'h.reset': { de: 'Beispiel zurücksetzen', tr: 'Örneği sıfırla', en: 'Reset demo' },
+  'h.saved': { de: 'Gespeichert', tr: 'Kaydedildi', en: 'Saved' },
+  'h.saving': { de: 'Speichert …', tr: 'Kaydediliyor …', en: 'Saving …' },
+  'h.save': { de: 'Speichern', tr: 'Kaydet', en: 'Save' },
+  'h.error': { de: 'Speichern fehlgeschlagen', tr: 'Kaydedilemedi', en: 'Saving failed' },
+  'h.key': { de: 'Zugangsschlüssel', tr: 'Erişim anahtarı', en: 'Access key' },
+  'h.key.hint': { de: 'Den Schlüssel findest du in der E-Mail bzw. im Link, den du von uns bekommen hast.', tr: 'Anahtarı sizden gönderdiğimiz e-postada veya bağlantıda bulabilirsiniz.', en: 'You’ll find the key in the e-mail or link we sent you.' },
+  'h.key.go': { de: 'Öffnen', tr: 'Aç', en: 'Open' },
+  'h.key.wrong': { de: 'Der Schlüssel passt nicht.', tr: 'Anahtar hatalı.', en: 'That key doesn’t match.' },
+
+  'tab.overview': { de: 'Übersicht', tr: 'Genel bakış', en: 'Overview' },
+  'tab.guests': { de: 'Gäste', tr: 'Misafirler', en: 'Guests' },
+  'tab.seating': { de: 'Sitzplan', tr: 'Oturma planı', en: 'Seating' },
+  'tab.tasks': { de: 'Checkliste', tr: 'Yapılacaklar', en: 'Checklist' },
+  'tab.budget': { de: 'Budget', tr: 'Bütçe', en: 'Budget' },
+  'tab.photos': { de: 'Fotos', tr: 'Fotoğraflar', en: 'Photos' },
+  'tab.settings': { de: 'Einladung', tr: 'Davetiye', en: 'Invitation' },
+
+  's.invited': { de: 'Eingeladen', tr: 'Davetli', en: 'Invited' },
+  's.yes': { de: 'Zugesagt', tr: 'Geliyor', en: 'Attending' },
+  's.no': { de: 'Abgesagt', tr: 'Gelmiyor', en: 'Declined' },
+  's.maybe': { de: 'Unsicher', tr: 'Belirsiz', en: 'Maybe' },
+  's.open': { de: 'Offen', tr: 'Yanıt yok', en: 'No reply' },
+  's.persons': { de: 'Personen kommen', tr: 'kişi geliyor', en: 'people coming' },
+  's.adults': { de: 'Erwachsene', tr: 'Yetişkin', en: 'Adults' },
+  's.children': { de: 'Kinder', tr: 'Çocuk', en: 'Children' },
+  's.days': { de: 'Tage bis zum Event', tr: 'gün kaldı', en: 'days to go' },
+  's.menu': { de: 'Menüs für die Küche', tr: 'Mutfak için menüler', en: 'Menus for the kitchen' },
+  's.allergies': { de: 'Allergien', tr: 'Alerjiler', en: 'Allergies' },
+  's.songs': { de: 'Musikwünsche', tr: 'Şarkı istekleri', en: 'Song requests' },
+  's.messages': { de: 'Nachrichten der Gäste', tr: 'Misafir mesajları', en: 'Guest messages' },
+  's.tasks': { de: 'Aufgaben erledigt', tr: 'görev tamamlandı', en: 'tasks done' },
+  's.next': { de: 'Als Nächstes', tr: 'Sıradaki', en: 'Up next' },
+  's.none': { de: 'Noch nichts', tr: 'Henüz yok', en: 'Nothing yet' },
+  's.share': { de: 'Einladung teilen', tr: 'Davetiyeyi paylaş', en: 'Share invitation' },
+  's.copylink': { de: 'Link kopieren', tr: 'Bağlantıyı kopyala', en: 'Copy link' },
+
+  'g.add': { de: 'Gast hinzufügen', tr: 'Misafir ekle', en: 'Add guest' },
+  'g.name': { de: 'Name', tr: 'Ad', en: 'Name' },
+  'g.group': { de: 'Gruppe', tr: 'Grup', en: 'Group' },
+  'g.status': { de: 'Status', tr: 'Durum', en: 'Status' },
+  'g.persons': { de: 'Pers.', tr: 'Kişi', en: 'Ppl.' },
+  'g.menu': { de: 'Menü', tr: 'Menü', en: 'Menu' },
+  'g.table': { de: 'Tisch', tr: 'Masa', en: 'Table' },
+  'g.search': { de: 'Suchen …', tr: 'Ara …', en: 'Search …' },
+  'g.all': { de: 'Alle', tr: 'Hepsi', en: 'All' },
+  'g.csv': { de: 'Als CSV (Excel)', tr: 'CSV (Excel) indir', en: 'Export CSV (Excel)' },
+  'g.link': { de: 'Persönlicher Link', tr: 'Kişisel bağlantı', en: 'Personal link' },
+  'g.wa': { de: 'Per WhatsApp einladen', tr: 'WhatsApp ile davet et', en: 'Invite via WhatsApp' },
+  'g.wa.text': { de: 'Hallo {name}, wir laden dich herzlich ein! Alle Infos und die Zusage findest du hier: {url}', tr: 'Merhaba {name}, seni davetimize bekliyoruz! Tüm bilgiler ve katılım bildirimi burada: {url}', en: 'Hi {name}, you’re warmly invited! All details and the RSVP are here: {url}' },
+  'g.delete': { de: 'Löschen', tr: 'Sil', en: 'Delete' },
+  'g.confirm': { de: '{name} wirklich löschen?', tr: '{name} silinsin mi?', en: 'Really delete {name}?' },
+  'g.empty': { de: 'Noch keine Gäste. Füge welche hinzu oder teile die Einladung.', tr: 'Henüz misafir yok. Ekleyin veya davetiyeyi paylaşın.', en: 'No guests yet. Add some or share the invitation.' },
+  'g.note': { de: 'Notiz', tr: 'Not', en: 'Note' },
+  'g.phone': { de: 'Telefon', tr: 'Telefon', en: 'Phone' },
+  'g.details': { de: 'Details', tr: 'Detaylar', en: 'Details' },
+
+  'seat.add': { de: 'Tisch hinzufügen', tr: 'Masa ekle', en: 'Add table' },
+  'seat.name': { de: 'Tisch {n}', tr: 'Masa {n}', en: 'Table {n}' },
+  'seat.seats': { de: 'Plätze', tr: 'Sandalye', en: 'Seats' },
+  'seat.unseated': { de: 'Noch ohne Platz', tr: 'Yeri belli olmayanlar', en: 'Not seated yet' },
+  'seat.hint': { de: 'Gast antippen, dann Tisch antippen — oder per Drag & Drop. Gezählt werden nur Zusagen.', tr: 'Misafire, sonra masaya dokunun — ya da sürükleyip bırakın. Yalnızca gelenler sayılır.', en: 'Tap a guest, then a table — or drag and drop. Only confirmed guests are listed.' },
+  'seat.full': { de: 'voll', tr: 'dolu', en: 'full' },
+  'seat.remove': { de: 'Vom Tisch nehmen', tr: 'Masadan kaldır', en: 'Remove from table' },
+  'seat.print': { de: 'Sitzplan drucken', tr: 'Oturma planını yazdır', en: 'Print seating plan' },
+
+  't.add': { de: 'Aufgabe hinzufügen', tr: 'Görev ekle', en: 'Add task' },
+  't.due': { de: 'Fällig', tr: 'Tarih', en: 'Due' },
+  't.overdue': { de: 'überfällig', tr: 'gecikti', en: 'overdue' },
+  't.template': { de: 'Vorlage laden', tr: 'Şablon yükle', en: 'Load template' },
+
+  'b.total': { de: 'Gesamtbudget', tr: 'Toplam bütçe', en: 'Total budget' },
+  'b.item': { de: 'Posten', tr: 'Kalem', en: 'Item' },
+  'b.planned': { de: 'Geplant', tr: 'Planlanan', en: 'Planned' },
+  'b.paid': { de: 'Bezahlt', tr: 'Ödenen', en: 'Paid' },
+  'b.left': { de: 'Noch frei', tr: 'Kalan', en: 'Remaining' },
+  'b.add': { de: 'Posten hinzufügen', tr: 'Kalem ekle', en: 'Add item' },
+  'b.perGuest': { de: 'pro Gast', tr: 'misafir başına', en: 'per guest' },
+
+  'p.upload': { de: 'Eigene Fotos hochladen', tr: 'Kendi fotoğraflarınızı yükleyin', en: 'Upload your own photos' },
+  'p.hero': { de: 'Als Titelbild', tr: 'Kapak yap', en: 'Use as cover' },
+  'p.hide': { de: 'Ausblenden', tr: 'Gizle', en: 'Hide' },
+  'p.show': { de: 'Einblenden', tr: 'Göster', en: 'Show' },
+  'p.guests': { de: 'Fotos der Gäste', tr: 'Misafir fotoğrafları', en: 'Guest photos' },
+  'p.own': { de: 'Galerie (eure Fotos)', tr: 'Galeri (sizin fotoğraflarınız)', en: 'Gallery (your photos)' },
+  'p.slideshow': { de: 'Diashow für die Leinwand', tr: 'Perde için slayt gösterisi', en: 'Slideshow for the big screen' },
+  'p.allow': { de: 'Gäste dürfen Fotos hochladen', tr: 'Misafirler fotoğraf yükleyebilir', en: 'Guests may upload photos' },
+
+  'set.basics': { de: 'Grunddaten', tr: 'Temel bilgiler', en: 'Basics' },
+  'set.title': { de: 'Titel / Namen', tr: 'Başlık / İsimler', en: 'Title / names' },
+  'set.kind': { de: 'Anlass', tr: 'Etkinlik türü', en: 'Occasion' },
+  'set.date': { de: 'Datum & Uhrzeit', tr: 'Tarih ve saat', en: 'Date & time' },
+  'set.rsvpUntil': { de: 'Zusage bis', tr: 'Son katılım bildirimi', en: 'RSVP by' },
+  'set.hosts': { de: 'Einladende', tr: 'Davet edenler', en: 'Hosts' },
+  'set.welcome': { de: 'Begrüßung', tr: 'Karşılama metni', en: 'Welcome text' },
+  'set.story': { de: 'Geschichte / Beschreibung', tr: 'Hikâye / açıklama', en: 'Story / description' },
+  'set.dress': { de: 'Dresscode', tr: 'Kıyafet kuralı', en: 'Dress code' },
+  'set.look': { de: 'Gestaltung, Musik & Sprachen', tr: 'Tema, müzik ve diller', en: 'Look, music & languages' },
+  'set.langs': { de: 'Angebotene Sprachen', tr: 'Sunulan diller', en: 'Languages offered' },
+  'set.musicUrl': { de: 'Eigenes Lied (MP3-Adresse)', tr: 'Kendi şarkınız (MP3 adresi)', en: 'Own song (MP3 URL)' },
+  'set.textLang': { de: 'Texte bearbeiten auf', tr: 'Metinleri düzenleme dili', en: 'Edit texts in' },
+  'set.schedule': { de: 'Ablauf', tr: 'Program', en: 'Schedule' },
+  'set.addItem': { de: 'Programmpunkt hinzufügen', tr: 'Program öğesi ekle', en: 'Add item' },
+  'set.locations': { de: 'Orte', tr: 'Mekânlar', en: 'Venues' },
+  'set.addLoc': { de: 'Ort hinzufügen', tr: 'Mekân ekle', en: 'Add venue' },
+  'set.gifts': { de: 'Geschenke (IBAN & PayPal)', tr: 'Hediyeler (IBAN ve PayPal)', en: 'Gifts (IBAN & PayPal)' },
+  'set.ibanBad': { de: 'Die IBAN scheint nicht zu stimmen.', tr: 'IBAN hatalı görünüyor.', en: 'That IBAN doesn’t look right.' },
+  'set.sections': { de: 'Sichtbare Abschnitte', tr: 'Görünen bölümler', en: 'Visible sections' },
+  'set.contacts': { de: 'Ansprechpartner', tr: 'İletişim kişileri', en: 'Contacts' },
+  'set.addContact': { de: 'Kontakt hinzufügen', tr: 'Kişi ekle', en: 'Add contact' },
+  'set.faq': { de: 'Fragen & Antworten', tr: 'Sorular ve cevaplar', en: 'Q & A' },
+  'set.addFaq': { de: 'Frage hinzufügen', tr: 'Soru ekle', en: 'Add question' },
+  'set.rsvp': { de: 'Zusage-Formular', tr: 'Katılım formu', en: 'RSVP form' },
+  'set.menu': { de: 'Menüwahl abfragen', tr: 'Menü tercihi sor', en: 'Ask for menu choice' },
+  'set.song': { de: 'Musikwunsch abfragen', tr: 'Şarkı isteği sor', en: 'Ask for song requests' },
+  'set.max': { de: 'Max. Personen je Antwort', tr: 'Yanıt başına en fazla kişi', en: 'Max. people per reply' },
+  'f.time': { de: 'Uhrzeit', tr: 'Saat', en: 'Time' },
+  'f.what': { de: 'Programmpunkt', tr: 'Etkinlik', en: 'What' },
+  'f.label': { de: 'Bezeichnung', tr: 'Etiket', en: 'Label' },
+  'f.place': { de: 'Name des Ortes', tr: 'Mekân adı', en: 'Venue name' },
+  'f.address': { de: 'Adresse', tr: 'Adres', en: 'Address' },
+  'f.role': { de: 'Rolle', tr: 'Rol', en: 'Role' },
+  'f.question': { de: 'Frage', tr: 'Soru', en: 'Question' },
+  'f.answer': { de: 'Antwort', tr: 'Cevap', en: 'Answer' },
+  'f.remove': { de: 'Entfernen', tr: 'Kaldır', en: 'Remove' },
+  'kind.wedding': { de: 'Hochzeit', tr: 'Düğün', en: 'Wedding' },
+  'kind.henna': { de: 'Henna-Abend / Kına', tr: 'Kına gecesi', en: 'Henna night' },
+  'kind.engagement': { de: 'Verlobung', tr: 'Nişan', en: 'Engagement' },
+  'kind.birthday': { de: 'Geburtstag', tr: 'Doğum günü', en: 'Birthday' },
+  'kind.corporate': { de: 'Firmenevent / Meeting', tr: 'Kurumsal etkinlik / toplantı', en: 'Corporate event / meeting' },
+  'kind.other': { de: 'Sonstiges', tr: 'Diğer', en: 'Other' },
+  'sec.countdown': { de: 'Countdown', tr: 'Geri sayım', en: 'Countdown' },
+  'sec.story': { de: 'Geschichte', tr: 'Hikâye', en: 'Story' },
+  'sec.schedule': { de: 'Ablauf', tr: 'Program', en: 'Schedule' },
+  'sec.locations': { de: 'Orte', tr: 'Mekânlar', en: 'Venues' },
+  'sec.rsvp': { de: 'Zusage', tr: 'Katılım', en: 'RSVP' },
+  'sec.gifts': { de: 'Geschenke', tr: 'Hediyeler', en: 'Gifts' },
+  'sec.photos': { de: 'Fotoalbum', tr: 'Fotoğraf albümü', en: 'Photo album' },
+  'sec.faq': { de: 'Infos & FAQ', tr: 'Bilgi ve SSS', en: 'Info & FAQ' },
+};
+
+export function tx(table: Record<string, Row>, key: string, lang: InviteLang): string {
+  const row = table[key];
+  if (!row) return key;
+  return row[lang] ?? row.en ?? row.de ?? key;
+}
+
+/** Datum lesbar in der Sprache der Seite. Kurmandschi kennt Intl kaum — eigene Monatsnamen. */
+const KU_MONTHS = ['Rêbendan', 'Reşemeh', 'Adar', 'Avrêl', 'Gulan', 'Pûşper', 'Tîrmeh', 'Gelawêj', 'Rezber', 'Kewçêr', 'Sermawez', 'Berfanbar'];
+const LOCALE: Record<InviteLang, string> = { de: 'de-DE', tr: 'tr-TR', en: 'en-GB', fr: 'fr-FR', ku: 'de-DE', ar: 'ar' };
+
+export function formatDate(iso: string, lang: InviteLang, withWeekday = true): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  if (lang === 'ku') return `${d.getDate()} ${KU_MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+  return new Intl.DateTimeFormat(LOCALE[lang], {
+    weekday: withWeekday ? 'long' : undefined,
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/Berlin',
+  }).format(d);
+}
+
+export function formatTime(iso: string, lang: InviteLang): string {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return '';
+  return new Intl.DateTimeFormat(LOCALE[lang], { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Berlin' }).format(d);
+}

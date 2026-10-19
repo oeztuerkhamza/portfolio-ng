@@ -4,8 +4,11 @@ import { LANG_CODES } from './core/i18n/i18n.service';
 import { REVIEW_CARD_PRODUCTS } from './core/data/review-cards.data';
 import { TOWNS } from './core/data/towns.data';
 import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from './core/data/company.data';
+import { INVITE_THEMES } from './einladung/invite-themes';
+import { demoSlug } from './einladung/invite-demo';
 
 const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
+const inviteParams = async () => [...INVITE_THEMES.map((t) => ({ slug: demoSlug(t.id) })), { slug: 'live' }];
 
 // Every known page is prerendered once per locale → static, fully crawlable
 // HTML in each language. Unknown URLs are server-rendered (real 404 / redirect).
@@ -14,6 +17,13 @@ export const serverRoutes: ServerRoute[] = [
   // Admin-Portal: als leere Hülle vorgerendert (Vercel liefert nur fertige
   // Seiten aus); Anmeldung und Daten laufen danach im Browser.
   { path: 'admin', renderMode: RenderMode.Prerender },
+  /**
+   * Einladungen: die zehn Beispiele fertig im HTML, dazu eine Hülle „live",
+   * auf die vercel.json alle echten Einladungen umschreibt — deren Daten
+   * kommen erst im Browser aus der API.
+   */
+  { path: 'einladung/:slug', renderMode: RenderMode.Prerender, getPrerenderParams: inviteParams },
+  { path: 'einladung/:slug/planer', renderMode: RenderMode.Prerender, getPrerenderParams: inviteParams },
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   // Kartenprodukte und Shop: nur mit REVIEW_CARDS_ENABLED (siehe company.data.ts).
