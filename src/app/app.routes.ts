@@ -1,7 +1,7 @@
 import { Routes, CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { LANG_CODES, DEFAULT_LANG, Lang } from './core/i18n/i18n.service';
-import { SMART_HOME_ENABLED } from './core/data/company.data';
+import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from './core/data/company.data';
 
 /** Validates the :locale segment; unknown prefixes redirect under the default locale. */
 const localeGuard: CanActivateFn = (route, state) => {
@@ -26,48 +26,53 @@ const localeChildren: Routes = [
       ),
     data: { animation: 'Leistungen' },
   },
-  {
-    path: 'bewertungskarten',
-    loadComponent: () =>
-      import('./pages/bewertungskarten/bewertungskarten.component').then(
-        (m) => m.BewertungskartenComponent,
-      ),
-    data: { animation: 'ReviewCards' },
-  },
-  // Produktseite je Karte und Paket. Sie hat den WhatsApp-Knopf auf der
-  // Übersicht ersetzt: wer mehr wissen will, liest hier weiter.
-  {
-    path: 'bewertungskarten/:produkt',
-    loadComponent: () => import('./pages/produkt/produkt.component').then((m) => m.ProduktComponent),
-    data: { animation: 'Produkt' },
-  },
-  // Die eigenen NFC-Karten. Zwei Adressen, eine Komponente: welche Karte
-  // gemeint ist, sagt `data.slug`. Die Adressen sind die Suchbegriffe und
-  // dürfen sich nicht mehr ändern.
-  {
-    path: 'digitale-visitenkarte',
-    loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
-    data: { animation: 'Karten', slug: 'digitale-visitenkarte' },
-  },
-  {
-    path: 'geschenkkarte',
-    loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
-    data: { animation: 'Karten', slug: 'geschenkkarte' },
-  },
-  // Der Gestalter zu beiden Karten. Eine Komponente, zwei Adressen — welche
-  // Art gemeint ist, sagt `data.slug`, wie bei den Produktseiten darüber.
-  {
-    path: 'karte-gestalten/digitale-visitenkarte',
-    loadComponent: () =>
-      import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
-    data: { animation: 'CardDesigner', slug: 'digitale-visitenkarte' },
-  },
-  {
-    path: 'karte-gestalten/geschenkkarte',
-    loadComponent: () =>
-      import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
-    data: { animation: 'CardDesigner', slug: 'geschenkkarte' },
-  },
+  // Kartenprodukte und Shop: Seiten bleiben im Code, erreichbar nur mit REVIEW_CARDS_ENABLED.
+  ...(REVIEW_CARDS_ENABLED
+    ? [
+      {
+        path: 'bewertungskarten',
+        loadComponent: () =>
+          import('./pages/bewertungskarten/bewertungskarten.component').then(
+            (m) => m.BewertungskartenComponent,
+          ),
+        data: { animation: 'ReviewCards' },
+      },
+      // Produktseite je Karte und Paket. Sie hat den WhatsApp-Knopf auf der
+      // Übersicht ersetzt: wer mehr wissen will, liest hier weiter.
+      {
+        path: 'bewertungskarten/:produkt',
+        loadComponent: () => import('./pages/produkt/produkt.component').then((m) => m.ProduktComponent),
+        data: { animation: 'Produkt' },
+      },
+      // Die eigenen NFC-Karten. Zwei Adressen, eine Komponente: welche Karte
+      // gemeint ist, sagt `data.slug`. Die Adressen sind die Suchbegriffe und
+      // dürfen sich nicht mehr ändern.
+      {
+        path: 'digitale-visitenkarte',
+        loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
+        data: { animation: 'Karten', slug: 'digitale-visitenkarte' },
+      },
+      {
+        path: 'geschenkkarte',
+        loadComponent: () => import('./pages/karten/karten.component').then((m) => m.KartenComponent),
+        data: { animation: 'Karten', slug: 'geschenkkarte' },
+      },
+      // Der Gestalter zu beiden Karten. Eine Komponente, zwei Adressen — welche
+      // Art gemeint ist, sagt `data.slug`, wie bei den Produktseiten darüber.
+      {
+        path: 'karte-gestalten/digitale-visitenkarte',
+        loadComponent: () =>
+          import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
+        data: { animation: 'CardDesigner', slug: 'digitale-visitenkarte' },
+      },
+      {
+        path: 'karte-gestalten/geschenkkarte',
+        loadComponent: () =>
+          import('./pages/karte-gestalten/karte-gestalten.component').then((m) => m.KarteGestaltenComponent),
+        data: { animation: 'CardDesigner', slug: 'geschenkkarte' },
+      },
+      ]
+    : []),
   // Seite bleibt im Code; erreichbar nur, wenn die Leistung angeboten wird.
   ...(SMART_HOME_ENABLED
     ? [
@@ -114,16 +119,20 @@ const localeChildren: Routes = [
     loadComponent: () => import('./pages/town/town.component').then((m) => m.TownComponent),
     data: { animation: 'Town' },
   },
-  {
-    path: 'bestellen',
-    loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
-    data: { animation: 'Shop' },
-  },
-  {
-    path: 'bestellen/danke',
-    loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
-    data: { animation: 'ShopThanks', thanks: true },
-  },
+  ...(REVIEW_CARDS_ENABLED
+    ? [
+      {
+        path: 'bestellen',
+        loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
+        data: { animation: 'Shop' },
+      },
+      {
+        path: 'bestellen/danke',
+        loadComponent: () => import('./pages/shop/shop.component').then((m) => m.ShopComponent),
+        data: { animation: 'ShopThanks', thanks: true },
+      },
+      ]
+    : []),
   {
     path: 'contact',
     loadComponent: () =>

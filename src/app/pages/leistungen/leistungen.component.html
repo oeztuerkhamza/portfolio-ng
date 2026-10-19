@@ -101,25 +101,27 @@
 <!-- Produkte zum Festpreis -->
 <section class="section">
   <div class="container">
-    <header class="sec-head">
-      <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
-      <h2 class="section-title" [innerHTML]="i18n.t('leist.products.title')"></h2>
-    </header>
-    <div class="grid grid-2">
-      @for (p of products; track p.id) {
-        <a [routerLink]="p.path | localize" class="card prod-link">
-          <img [src]="p.imageSmall" width="800" height="600" loading="lazy" [alt]="i18n.t('home.prod.' + p.id + '.alt')" />
-          <div class="prod-link-body">
-            <h3 class="prod-link-title">{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
-            <p class="card-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
-            <p class="prod-link-foot">
-              <span class="prod-link-price">{{ i18n.tp('price.from', p.priceFrom) }}</span>
-              <span class="prod-link-more">{{ i18n.t('home.prod.' + p.id + '.cta') }} <app-icon name="arrow" /></span>
-            </p>
-          </div>
-        </a>
-      }
-    </div>
+    @if (products.length) {
+      <header class="sec-head">
+        <p class="section-label">{{ i18n.t('home.prod.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('leist.products.title')"></h2>
+      </header>
+      <div class="grid grid-2">
+        @for (p of products; track p.id) {
+          <a [routerLink]="p.path | localize" class="card prod-link">
+            <img [src]="p.imageSmall" width="800" height="600" loading="lazy" [alt]="i18n.t('home.prod.' + p.id + '.alt')" />
+            <div class="prod-link-body">
+              <h3 class="prod-link-title">{{ i18n.t('home.prod.' + p.id + '.title') }}</h3>
+              <p class="card-text">{{ i18n.t('home.prod.' + p.id + '.text') }}</p>
+              <p class="prod-link-foot">
+                <span class="prod-link-price">{{ i18n.tp('price.from', p.priceFrom) }}</span>
+                <span class="prod-link-more">{{ i18n.t('home.prod.' + p.id + '.cta') }} <app-icon name="arrow" /></span>
+              </p>
+            </div>
+          </a>
+        }
+      </div>
+    }
     <app-wartung-banner class="abo" />
   </div>
 </section>

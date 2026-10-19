@@ -127,7 +127,6 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         'Website erstellen lassen Freiburg',
         'Webdesign Ortenau',
         'SEO Südbaden',
-        'Google Bewertungskarte Freiburg',
       ],
     });
     this.seo.setJsonLd('breadcrumb', breadcrumbSchema([{ name: 'Start', path: '/' }]));

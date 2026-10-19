@@ -2,7 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
-import { COMPANY, PRODUCTS, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
+import { COMPANY, PRODUCTS, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { MAINTENANCE_PRICE_FROM } from '../../core/data/maintenance.data';
 import { ProductFocus, TOWNS, Town, townBySlug } from '../../core/data/towns.data';
 import { IconComponent } from '../../shared/icon/icon.component';
@@ -169,7 +169,7 @@ export class TownComponent implements OnInit {
   readonly whatsapp = whatsappUrl();
   readonly town: Town | undefined = townBySlug(inject(ActivatedRoute).snapshot.paramMap.get('town') ?? '');
   readonly cards: Card[] = [...(this.town?.focus ?? [])]
-    .filter((id) => id !== 'sh' || SMART_HOME_ENABLED)
+    .filter((id) => (id !== 'sh' || SMART_HOME_ENABLED) && (id !== 'cards' || REVIEW_CARDS_ENABLED))
     // Websites zuerst — danach die Wartung, die Karten als Ergänzung.
     .sort((a, b) => FOCUS_ORDER.indexOf(a) - FOCUS_ORDER.indexOf(b))
     .map((id) => ({
@@ -196,7 +196,7 @@ export class TownComponent implements OnInit {
       }. Individuelle Websites und Shops zum Festpreis, Erstgespräch kostenlos.`,
       path,
       langs: ['de'],
-      keywords: [...(t.isRegion ? [`Webdesign ${t.district}`, `Online-Shop erstellen ${t.short}`] : []), `Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Google Bewertungen ${t.short}`],
+      keywords: [...(t.isRegion ? [`Webdesign ${t.district}`, `Online-Shop erstellen ${t.short}`] : []), `Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Website Wartung ${t.short}`],
     });
     this.seo.setJsonLd('breadcrumb', breadcrumbSchema([
       { name: 'Start', path: '/de' },
@@ -210,7 +210,7 @@ export class TownComponent implements OnInit {
       serviceType: [
         'Webdesign',
         'Webentwicklung',
-        'Google-Bewertungskarten',
+        ...(REVIEW_CARDS_ENABLED ? ['Google-Bewertungskarten'] : []),
         ...(SMART_HOME_ENABLED ? ['Smart Home'] : []),
         'Local SEO',
       ],

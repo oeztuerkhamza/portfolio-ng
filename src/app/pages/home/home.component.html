@@ -70,7 +70,7 @@
       <p class="section-subtitle">{{ i18n.t('home.prod.subtitle') }}</p>
     </header>
 
-    <div class="prod-grid">
+    <div class="prod-grid" [class.single]="products.length === 1">
       @for (p of products; track p.id) {
         <article class="prod-card" [class.featured]="p.featured">
           <div class="prod-media">

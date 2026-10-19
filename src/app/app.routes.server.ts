@@ -3,7 +3,7 @@ import { PROJECTS } from './core/data/project.data';
 import { LANG_CODES } from './core/i18n/i18n.service';
 import { REVIEW_CARD_PRODUCTS } from './core/data/review-cards.data';
 import { TOWNS } from './core/data/towns.data';
-import { SMART_HOME_ENABLED } from './core/data/company.data';
+import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from './core/data/company.data';
 
 const localeParams = async () => LANG_CODES.map((locale) => ({ locale }));
 
@@ -16,6 +16,9 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'admin', renderMode: RenderMode.Prerender },
   { path: ':locale', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/leistungen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+  // Kartenprodukte und Shop: nur mit REVIEW_CARDS_ENABLED (siehe company.data.ts).
+  ...(REVIEW_CARDS_ENABLED
+    ? ([
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   // Sieben Produkte × fünf Sprachen, alle fertig ausgeliefert.
   {
@@ -30,6 +33,8 @@ export const serverRoutes: ServerRoute[] = [
   // entsteht im Browser. Im Index steht er nicht (noIndex in der Komponente).
   { path: ':locale/karte-gestalten/digitale-visitenkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/karte-gestalten/geschenkkarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+      ] as ServerRoute[])
+    : []),
   ...(SMART_HOME_ENABLED
     ? [{ path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams } as ServerRoute]
     : []),
@@ -51,8 +56,12 @@ export const serverRoutes: ServerRoute[] = [
     renderMode: RenderMode.Prerender,
     getPrerenderParams: async () => TOWNS.map((t) => ({ locale: 'de', town: t.slug })),
   },
+  ...(REVIEW_CARDS_ENABLED
+    ? ([
   { path: ':locale/bestellen', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/bestellen/danke', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
+      ] as ServerRoute[])
+    : []),
   { path: ':locale/impressum', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/datenschutz', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/agb', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

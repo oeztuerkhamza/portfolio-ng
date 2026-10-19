@@ -3,7 +3,7 @@ import { DOCUMENT } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { I18nService, Lang } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { COMPANY, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
+import { COMPANY, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { CartService } from '../../core/shop/cart.service';
 import { LangSwitcherComponent } from '../lang-switcher/lang-switcher.component';
 import { IconComponent } from '../icon/icon.component';
@@ -32,8 +32,13 @@ export class NavbarComponent {
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/projects', key: 'nav.references' },
     { path: '/wartung', key: 'nav.wartung' },
-    { path: '/bewertungskarten', key: 'nav.cards' },
-    { path: '/digitale-visitenkarte', key: 'nav.nfc' },
+    // Kartenprodukte fehlen hier bewusst: siehe REVIEW_CARDS_ENABLED in company.data.ts.
+    ...(REVIEW_CARDS_ENABLED
+      ? [
+          { path: '/bewertungskarten', key: 'nav.cards' },
+          { path: '/digitale-visitenkarte', key: 'nav.nfc' },
+        ]
+      : []),
     { path: '/ueber-uns', key: 'nav.about' },
   ];
 

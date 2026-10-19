@@ -3,6 +3,36 @@
   "buildCommand": "npm run build",
   "redirects": [
     {
+      "source": "/:locale(de|fr|en|tr|ku)/bewertungskarten/:path*",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/bewertungskarten",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/(digitale-visitenkarte|geschenkkarte)",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/karte-gestalten/:path*",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/bestellen/:path*",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|fr|en|tr|ku)/bestellen",
+      "destination": "/:locale/leistungen",
+      "permanent": true
+    },
+    {
       "source": "/:locale(de|fr|en|tr|ku)/abo",
       "destination": "/:locale/wartung",
       "permanent": true

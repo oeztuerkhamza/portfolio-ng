@@ -1,6 +1,6 @@
 import { TOWNS } from '../data/towns.data';
 import { SeoService } from './seo.service';
-import { SMART_HOME_ENABLED } from '../data/company.data';
+import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../data/company.data';
 
 const ORIGIN = SeoService.ORIGIN;
 
@@ -62,7 +62,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
     url: ORIGIN,
     priceRange: '€€',
     description:
-      'Breisgau Digital ist eine IT- und Webagentur in Freiburg: Webdesign, Webentwicklung, Relaunch und SEO, Online-Shops, Buchungssysteme und Web-Apps für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden — dazu NFC-Bewertungskarten für mehr Google-Bewertungen.',
+      'Breisgau Digital ist eine IT- und Webagentur in Freiburg: Webdesign, Webentwicklung, Relaunch und SEO, Online-Shops, Buchungssysteme und Web-Apps für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden.',
     founder: { '@id': `${ORIGIN}/#person` },
     logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [
@@ -106,7 +106,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
       'Local SEO',
       'Web-App Entwicklung',
       'E-Commerce',
-      'Google-Bewertungskarten',
+      ...(REVIEW_CARDS_ENABLED ? ['Google-Bewertungskarten'] : []),
       // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
       ...(SMART_HOME_ENABLED ? ['Smart Home Einrichtung'] : []),
     ],
@@ -118,7 +118,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
         offer('Lokal gefunden werden', 'Google-Unternehmensprofil, Ortsseiten und Bewertungen für die Suche in der Umgebung.'),
         offer('Abläufe digitalisieren', 'Bestand, Termine, Angebote und Rechnungen in einer Oberfläche, die das Team bedienen kann.'),
         offer('Shop, Buchung & Verleih', 'Online verkaufen, vermieten oder Termine vergeben — inklusive Bezahlung und Verwaltung.'),
-        offer('Google-Bewertungskarten', 'NFC- und QR-Karten, eingerichtet auf das Google-Profil des Betriebs.'),
+        ...(REVIEW_CARDS_ENABLED ? [offer('Google-Bewertungskarten', 'NFC- und QR-Karten, eingerichtet auf das Google-Profil des Betriebs.')] : []),
         /**
          * Ein Offer im Schema ist ein Angebot, auch wenn es auf der Seite
          * nicht mehr steht — Google liest genau das. Es muss mit dem

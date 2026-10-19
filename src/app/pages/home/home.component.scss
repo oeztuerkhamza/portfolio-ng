@@ -316,6 +316,27 @@ $sand: #f0dfb8;
   }
 }
 
+// Nur noch ein Produkt (die Karten sind aus): die Karte läuft über die ganze
+// Breite, Bild links, Text rechts.
+.prod-grid.single {
+  grid-template-columns: 1fr;
+
+  .prod-card {
+    @media (min-width: 900px) {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      max-width: none;
+    }
+  }
+
+  .prod-media {
+    @media (min-width: 900px) {
+      aspect-ratio: auto;
+      min-height: 100%;
+    }
+  }
+}
+
 .prod-card {
   display: flex;
   flex-direction: column;

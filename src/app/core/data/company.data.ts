@@ -39,6 +39,23 @@ export const WEBSITE_PRICE_FROM = price('web.from');
  */
 export const SMART_HOME_ENABLED = false;
 
+/**
+ * Bewertungskarten, digitale Visitenkarte, Geschenkkarte und der Shop dazu
+ * werden nicht mehr angeboten. Wie bei Smart Home bleibt alles im Code stehen
+ * — Seiten, Texte, Preise, Gestalter, Bestellstrecke — und hängt an diesem
+ * einen Schalter.
+ *
+ * Nicht am Schalter hängen die Kurzlinks /r/<name> und /k/<name> (und die
+ * API dahinter): Karten, die schon bei Kunden liegen, müssen weiter
+ * funktionieren. Die alten Seitenadressen leiten per vercel.json auf
+ * /leistungen um.
+ *
+ * **Wieder einschalten:** hier auf `true` setzen *und* die Weiterleitungen
+ * für die Kartenseiten aus `vercel.json` entfernen — sie greifen vor dem
+ * Routing.
+ */
+export const REVIEW_CARDS_ENABLED = false;
+
 export type ProductId = 'cards' | 'web' | 'sh';
 
 export interface Product {
@@ -83,8 +100,10 @@ const ALL_PRODUCTS: Product[] = [
   },
 ];
 
-/** Was gerade angeboten wird. Smart Home fällt über den Schalter heraus. */
-export const PRODUCTS: Product[] = ALL_PRODUCTS.filter((p) => p.id !== 'sh' || SMART_HOME_ENABLED);
+/** Was gerade angeboten wird. Smart Home und die Karten fallen über ihre Schalter heraus. */
+export const PRODUCTS: Product[] = ALL_PRODUCTS.filter(
+  (p) => (p.id !== 'sh' || SMART_HOME_ENABLED) && (p.id !== 'cards' || REVIEW_CARDS_ENABLED),
+);
 
 /** Orte, in die wir persönlich fahren — und der Rest des Landes per Video. */
 export const TOWNS_ONSITE = [

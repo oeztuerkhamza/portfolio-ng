@@ -58,11 +58,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     ku: 'Sêwirana malperê û pêşvebirin · Freiburg, Ortenau û başûrê Badenê',
   },
   'home.hero.lede': {
-    de: 'Breisgau Digital entwirft und entwickelt Websites, Online-Shops und Web-Apps für Betriebe in Freiburg, der Ortenau und Südbaden — individuell programmiert statt Baukasten, bei Google gut auffindbar, zum Festpreis. Auf Wunsch dazu NFC-Bewertungskarten für mehr Google-Bewertungen.',
-    fr: 'Breisgau Digital conçoit et développe sites web, boutiques en ligne et applications web pour les entreprises de Fribourg, de l’Ortenau et du sud du Bade — développés sur mesure plutôt que sur kit, bien référencés sur Google, à prix fixe. En option : des cartes NFC pour plus d’avis Google.',
-    en: 'Breisgau Digital designs and builds websites, online shops and web apps for businesses in Freiburg, the Ortenau and southern Baden — custom-coded rather than template-based, easy to find on Google, at a fixed price. Optionally with NFC review cards for more Google reviews.',
-    tr: 'Breisgau Digital; Freiburg, Ortenau ve Güney Baden’deki işletmeler için web siteleri, online mağazalar ve web uygulamaları tasarlar ve geliştirir — hazır şablon değil özel kodlanmış, Google’da kolay bulunan, sabit fiyatlı. İsteğe bağlı olarak daha fazla Google yorumu için NFC kartlar.',
-    ku: 'Breisgau Digital ji bo karsaziyên li Freiburg, Ortenau û başûrê Badenê malper, firotgehên serhêl û sepanên malperê sêwirîne û pêş dixe — bi kodkirina taybet, ne bi şablon, li Google bi hêsanî tê dîtin, bi bihayê sabît. Bi daxwazê kartên NFC ji bo bêtir nirxandinên Google jî.',
+    de: 'Breisgau Digital entwirft und entwickelt Websites, Online-Shops und Web-Apps für Betriebe in Freiburg, der Ortenau und Südbaden — jede Zeile selbst programmiert statt Baukasten, bei Google gut auffindbar, zum Festpreis.',
+    fr: 'Breisgau Digital conçoit et développe sites web, boutiques en ligne et applications web pour les entreprises de Fribourg, de l’Ortenau et du sud du Bade — chaque ligne écrite à la main plutôt qu’un kit, bien référencés sur Google, à prix fixe.',
+    en: 'Breisgau Digital designs and builds websites, online shops and web apps for businesses in Freiburg, the Ortenau and southern Baden — every line written by hand instead of a template, easy to find on Google, at a fixed price.',
+    tr: 'Breisgau Digital; Freiburg, Ortenau ve Güney Baden’deki işletmeler için web siteleri, online mağazalar ve web uygulamaları tasarlar ve geliştirir — hazır şablon yerine her satırı elle yazılmış, Google’da kolay bulunan, sabit fiyatlı.',
+    ku: 'Breisgau Digital ji bo karsaziyên li Freiburg, Ortenau û başûrê Badenê malper, firotgehên serhêl û sepanên malperê sêwirîne û pêş dixe — her rêzek bi destan hatiye nivîsandin, ne şablon, li Google bi hêsanî tê dîtin, bi bihayê sabît.',
   },
 
   // ---- Section: Stats ------------------------------------------------------
@@ -130,11 +130,11 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
   // ---- Footer --------------------------------------------------------------
   'footer.col.direct': { de: 'Direkt', fr: 'Direct', en: 'Direct', tr: 'Doğrudan', ku: 'Rasterast' },
   'footer.tagline': {
-    de: 'Webdesign und Webentwicklung für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden.<br />Websites · Web-Apps · SEO · Bewertungskarten.',
-    fr: 'Webdesign et développement web pour les petites et moyennes entreprises à Fribourg, en Ortenau et dans le sud du Bade.<br />Sites web · Applications web · SEO · Cartes d’avis.',
-    en: 'Web design and development for small and medium businesses in Freiburg, the Ortenau and southern Baden.<br />Websites · Web apps · SEO · Review cards.',
-    tr: 'Freiburg, Ortenau ve Güney Baden’deki küçük ve orta ölçekli işletmeler için web tasarım ve geliştirme.<br />Web siteleri · Web uygulamaları · SEO · Değerlendirme kartları.',
-    ku: 'Sêwirana malperê û pêşvebirin ji bo karsaziyên biçûk û navîn li Freiburg, Ortenau û başûrê Badenê.<br />Malper · Sepanên malperê · SEO · Kartên nirxandinê.',
+    de: 'Webdesign und Webentwicklung für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden.<br />Websites · Web-Apps · SEO · Wartung.',
+    fr: 'Webdesign et développement web pour les petites et moyennes entreprises à Fribourg, en Ortenau et dans le sud du Bade.<br />Sites web · Applications web · SEO · Maintenance.',
+    en: 'Web design and development for small and medium businesses in Freiburg, the Ortenau and southern Baden.<br />Websites · Web apps · SEO · Maintenance.',
+    tr: 'Freiburg, Ortenau ve Güney Baden’deki küçük ve orta ölçekli işletmeler için web tasarım ve geliştirme.<br />Web siteleri · Web uygulamaları · SEO · Bakım.',
+    ku: 'Sêwirana malperê û pêşvebirin ji bo karsaziyên biçûk û navîn li Freiburg, Ortenau û başûrê Badenê.<br />Malper · Sepanên malperê · SEO · Lênêrîn.',
   },
   'footer.rights': {
     de: 'Alle Rechte vorbehalten', fr: 'Tous droits réservés', en: 'All rights reserved', tr: 'Tüm hakları saklıdır', ku: 'Hemû maf parastî ne',

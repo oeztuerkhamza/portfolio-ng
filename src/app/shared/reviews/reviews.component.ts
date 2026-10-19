@@ -1,4 +1,5 @@
 import { Component, ElementRef, computed, inject, input, signal, viewChild } from '@angular/core';
+import { REVIEW_CARDS_ENABLED } from '../../core/data/company.data';
 import { RouterLink } from '@angular/router';
 import reviewData from '../../core/data/reviews.json';
 import { I18nService } from '../../core/i18n/i18n.service';
@@ -109,7 +110,9 @@ export interface ReviewData {
                 <a [href]="url" target="_blank" rel="noopener nofollow">{{ i18n.t('rv.open') }}</a>
               }
             </p>
-            <a [routerLink]="'/bewertungskarten' | localize" class="rv-more">{{ i18n.t('rv.own') }}</a>
+            @if (cardsOn) {
+              <a [routerLink]="'/bewertungskarten' | localize" class="rv-more">{{ i18n.t('rv.own') }}</a>
+            }
           </div>
         </div>
       </section>
@@ -117,6 +120,8 @@ export interface ReviewData {
   `,
 })
 export class ReviewsComponent {
+  /** Siehe REVIEW_CARDS_ENABLED in company.data.ts. */
+  readonly cardsOn = REVIEW_CARDS_ENABLED;
   readonly i18n = inject(I18nService);
   private readonly track = viewChild<ElementRef<HTMLElement>>('track');
 

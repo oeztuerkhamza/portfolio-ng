@@ -4,7 +4,7 @@ import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { COMPANY, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
+import { COMPANY, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { CONTACT_CONTENT } from './contact.content';
 
@@ -32,7 +32,7 @@ export class ContactComponent implements OnInit {
    * Der Typ behält 'sh': alte Anfragen im Portal sollen lesbar bleiben.
    */
   readonly interests: Interest[] = (['web', 'wartung', 'cards', 'sh', 'other'] as Interest[]).filter(
-    (i) => i !== 'sh' || SMART_HOME_ENABLED,
+    (i) => (i !== 'sh' || SMART_HOME_ENABLED) && (i !== 'cards' || REVIEW_CARDS_ENABLED),
   );
 
   // Formularzustand. Es gibt kein Backend: die Anfrage wird als fertig
@@ -60,7 +60,6 @@ export class ContactComponent implements OnInit {
       keywords: [
         'Digitalagentur Freiburg Kontakt',
         'Webseite erstellen lassen Freiburg',
-        'Google Bewertungskarte bestellen',
       ],
     });
     this.seo.setJsonLd(
