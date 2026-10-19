@@ -192,6 +192,9 @@
       <header class="sec-head">
         <p class="section-label">{{ i18n.t('home.why.label') }}</p>
         <h2 class="section-title" [innerHTML]="i18n.t('home.why.title')"></h2>
+        <figure class="why-photo reveal">
+          <img src="/assets/images/stock/designer-imac.webp" alt="" width="1400" height="934" loading="lazy" />
+        </figure>
       </header>
       <div class="grid grid-2">
         @for (r of reasons; track r.n) {
@@ -242,12 +245,21 @@
       <p class="section-label">{{ i18n.t('home.ind.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.ind.title')"></h2>
     </header>
-    <ul class="grid grid-3">
+    <ul class="ind-grid">
       @for (ind of industries; track ind.n) {
-        <li class="card feature reveal">
-          <span class="icon-badge"><app-icon [name]="ind.icon" /></span>
-          <h3 class="card-title">{{ i18n.t('home.ind' + ind.n + '.t') }}</h3>
-          <p class="card-text">{{ i18n.t('home.ind' + ind.n + '.d') }}</p>
+        <li class="ind-card reveal">
+          <img
+            [src]="'/assets/images/stock/' + ind.img + '.webp'"
+            [style.object-position]="ind.pos"
+            alt=""
+            width="960"
+            height="640"
+            loading="lazy"
+          />
+          <div class="ind-body">
+            <h3 class="card-title">{{ i18n.t('home.ind' + ind.n + '.t') }}</h3>
+            <p class="card-text">{{ i18n.t('home.ind' + ind.n + '.d') }}</p>
+          </div>
         </li>
       }
     </ul>
@@ -264,6 +276,9 @@
       <p class="section-label">{{ i18n.t('home.proc.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.proc.title')"></h2>
     </header>
+    <figure class="proc-photo reveal">
+      <img src="/assets/images/stock/designer-laptop.webp" alt="" width="1400" height="951" loading="lazy" />
+    </figure>
     <ol class="steps">
       @for (n of steps; track n) {
         <li class="step reveal">
@@ -292,6 +307,9 @@
       <p class="section-label">{{ i18n.t('home.region.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.region.title')"></h2>
       <p class="section-subtitle">{{ i18n.t('home.region.text') }}</p>
+      <figure class="region-photo">
+        <img src="/assets/images/stock/freiburg-muenster.webp" alt="Das Freiburger Münster" width="1400" height="934" loading="lazy" />
+      </figure>
     </div>
     <div class="card reveal">
       <p class="town-head"><app-icon name="pin" /> {{ i18n.t('home.region.onsite') }}</p>

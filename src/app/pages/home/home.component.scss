@@ -777,3 +777,108 @@ $sand: #f0dfb8;
   font-weight: 500;
   line-height: 1.5;
 }
+
+// ══════════════════════════════════════════════
+// FOTOS: Branchen, Warum wir, Ablauf, Region
+// ══════════════════════════════════════════════
+// Alle Bilder sind freie Stockfotos (src/assets/images/stock/CREDITS.md).
+// Sie geben den Abschnitten Gesichter und Orte; Inhalt tragen weiter die Texte.
+.ind-grid {
+  display: grid;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 700px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+.ind-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  background: $surface-2;
+  box-shadow: $shadow-sm;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+}
+
+.ind-body {
+  padding: 1.1rem 1.25rem 1.35rem;
+
+  .card-title {
+    margin: 0 0 0.35rem;
+  }
+
+  .card-text {
+    margin: 0;
+  }
+}
+
+.why-photo,
+.proc-photo,
+.region-photo {
+  margin: 0;
+  overflow: hidden;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+}
+
+.why-photo {
+  margin-top: 1.75rem;
+
+  img {
+    aspect-ratio: 4 / 3;
+    object-position: 60% 40%;
+  }
+
+  // Auf dem Handy reicht ein schmales Band; Platz bekommt die Fototafel erst daneben.
+  @media (max-width: 1023px) {
+    img {
+      aspect-ratio: 16 / 9;
+    }
+  }
+}
+
+.proc-photo {
+  margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+
+  img {
+    aspect-ratio: 21 / 8;
+    object-position: 50% 55%;
+
+    @media (max-width: 700px) {
+      aspect-ratio: 16 / 9;
+    }
+  }
+}
+
+.region-photo {
+  margin-top: 1.75rem;
+
+  img {
+    aspect-ratio: 3 / 2;
+    object-position: 50% 35%;
+  }
+}

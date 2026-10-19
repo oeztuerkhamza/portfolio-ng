@@ -94,13 +94,18 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     { n: 3, icon: 'layers' },
     { n: 4, icon: 'shield' },
   ];
+  /**
+   * Branchen mit Foto. Die Bilder sind freie Stockfotos (Pexels-Lizenz, siehe
+   * src/assets/images/stock/CREDITS.md) und zeigen die Branche, nicht unsere
+   * Kunden — darum bleibt der Alternativtext leer, die Überschrift trägt.
+   */
   readonly industries = [
-    { n: 1, icon: 'cup' },
-    { n: 2, icon: 'hammer' },
-    { n: 3, icon: 'bag' },
-    { n: 4, icon: 'scissors' },
-    { n: 5, icon: 'briefcase' },
-    { n: 6, icon: 'bed' },
+    { n: 1, img: 'cafe', pos: '50% 30%' },
+    { n: 2, img: 'handwerk', pos: '30% 40%' },
+    { n: 3, img: 'einzelhandel', pos: '50% 35%' },
+    { n: 4, img: 'friseur', pos: '50% 40%' },
+    { n: 5, img: 'praxis', pos: '50% 50%' },
+    { n: 6, img: 'ferien', pos: '50% 55%' },
   ];
   readonly steps = [1, 2, 3, 4];
   readonly faqs = [1, 2, 3, 4, 5];
