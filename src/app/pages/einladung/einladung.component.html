@@ -1,0 +1,207 @@
+<!-- Kopf -->
+<header class="page-hero inv-hero">
+  <div class="container page-hero-grid">
+    <div>
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page">{{ i18n.t('nav.invite') }}</span>
+      </nav>
+      <p class="section-label">{{ i18n.t('inv.label') }}</p>
+      <h1 class="section-title" [innerHTML]="i18n.t('inv.title')"></h1>
+      <p class="section-subtitle">{{ i18n.t('inv.intro') }}</p>
+      <p class="hero-price">{{ i18n.tp('inv.from', priceFrom) }}</p>
+      <div class="page-hero-actions">
+        <a href="#designs" class="btn btn-primary btn-large">{{ i18n.t('inv.cta.demos') }} <app-icon name="arrow" /></a>
+        <a [routerLink]="'/contact' | localize" [queryParams]="{ thema: 'other', paket: 'invite' }" fragment="anfrage" class="btn btn-secondary btn-large">
+          {{ i18n.t('inv.cta.request') }}
+        </a>
+      </div>
+      <ul class="chips inv-trust">
+        <li class="chip">{{ i18n.t('inv.trust1') }}</li>
+        <li class="chip">{{ i18n.t('inv.trust2') }}</li>
+        <li class="chip">{{ i18n.t('inv.trust3') }}</li>
+        <li class="chip">{{ i18n.t('inv.trust4') }}</li>
+      </ul>
+    </div>
+
+    <!-- Drei Handys mit Beispielen -->
+    <div class="inv-phones" aria-hidden="true">
+      @for (d of [themes[0], themes[3], themes[8]]; track d.slug; let i = $index) {
+        <a class="inv-phone" [class]="'inv-phone inv-phone-' + i" [routerLink]="['/einladung', d.slug]" tabindex="-1"
+           [style.--bg]="d.theme.colors.bg" [style.--ink]="d.theme.colors.ink" [style.--acc]="d.theme.colors.accentText" [style.--line]="d.theme.colors.accent">
+          <span class="inv-phone-img"><img [src]="d.theme.image" alt="" loading="eager" (error)="hideImage($event)" /></span>
+          <span class="inv-phone-kind">{{ kindLabel(d.event.kind) }}</span>
+          <span class="inv-phone-title" [style.font-family]="d.theme.fonts.script">{{ d.event.title }}</span>
+          <span class="inv-phone-line"></span>
+          <span class="inv-phone-date">{{ demoDate(d.event.date) }}</span>
+          <span class="inv-phone-btn">RSVP</span>
+        </a>
+      }
+    </div>
+  </div>
+</header>
+
+<!-- Designs -->
+<section class="section section-white" id="designs">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('inv.themes.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.themes.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('inv.themes.text') }}</p>
+    </header>
+    <div class="inv-themes">
+      @for (d of themes; track d.slug) {
+        <article class="inv-theme" [style.--bg]="d.theme.colors.bg" [style.--ink]="d.theme.colors.ink" [style.--acc]="d.theme.colors.accentText" [style.--line]="d.theme.colors.accent">
+          <a class="inv-theme-prev" [routerLink]="['/einladung', d.slug]" [attr.aria-label]="themeName(d.theme) + ' — ' + i18n.t('inv.themes.open')">
+            <span class="inv-theme-img"><img [src]="d.theme.image" alt="" loading="lazy" (error)="hideImage($event)" /></span>
+            <span class="inv-theme-kind">{{ kindLabel(d.event.kind) }}</span>
+            <span class="inv-theme-title" [style.font-family]="d.theme.fonts.script">{{ d.event.title }}</span>
+            <span class="inv-theme-date">{{ demoDate(d.event.date) }}</span>
+          </a>
+          <div class="inv-theme-body">
+            <h3 class="card-title">{{ themeName(d.theme) }}</h3>
+            <p class="card-text">{{ themeMood(d.theme) }}</p>
+            <div class="inv-theme-links">
+              <a [routerLink]="['/einladung', d.slug]" class="btn btn-secondary btn-small"><app-icon name="eye" /> {{ i18n.t('inv.themes.open') }}</a>
+              <a [routerLink]="['/einladung', d.slug, 'planer']" class="inv-link">{{ i18n.t('inv.themes.planner') }} →</a>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Funktionen -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('inv.feat.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.feat.title')"></h2>
+    </header>
+    <div class="grid grid-3 inv-features">
+      @for (f of features; track f.id) {
+        <div class="card feature">
+          <span class="icon-badge"><app-icon [name]="f.icon" /></span>
+          <h3 class="card-title">{{ i18n.t('inv.f.' + f.id + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('inv.f.' + f.id + '.d') }}</p>
+        </div>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Anlässe -->
+<section class="section section-white inv-occ">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('inv.occ.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.occ.title')"></h2>
+    </header>
+    <ul class="chips inv-occ-list">
+      @for (n of occasions; track n) {
+        <li class="chip chip-outline"><app-icon name="heart" /> {{ i18n.t('inv.occ.' + n) }}</li>
+      }
+    </ul>
+  </div>
+</section>
+
+<!-- Pakete -->
+<section class="section packages" id="pakete">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('inv.pkg.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.pkg.title')"></h2>
+    </header>
+    <div class="pkg-grid">
+      @for (p of packages; track p.id) {
+        <article class="pkg-card" [class.featured]="p.featured">
+          @if (p.featured) {
+            <span class="pkg-badge">{{ i18n.t('inv.pkg.badge') }}</span>
+          }
+          <h3 class="pkg-name">{{ i18n.t('inv.pkg.' + p.id + '.name') }}</h3>
+          <p class="pkg-for">{{ i18n.t('inv.pkg.' + p.id + '.for') }}</p>
+          <p class="pkg-price">
+            <span class="amount">{{ i18n.tp('inv.pkg.price', p.price) }}</span>
+            <span class="per">{{ i18n.t('inv.pkg.once') }}</span>
+          </p>
+          <ul class="check-list pkg-points">
+            @for (i of points(p); track i) {
+              <li>{{ i18n.t('inv.pkg.' + p.id + '.p' + i) }}</li>
+            }
+          </ul>
+          <a
+            [routerLink]="'/contact' | localize"
+            [queryParams]="{ thema: 'other', paket: 'invite' }"
+            fragment="anfrage"
+            class="btn btn-block btn-large"
+            [class.btn-primary]="p.featured"
+            [class.btn-secondary]="!p.featured"
+          >
+            {{ i18n.t('inv.pkg.cta') }}
+          </a>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Ablauf -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('inv.steps.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.steps.title')"></h2>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('inv.step' + n + '.t') }}</h3>
+          <p>{{ i18n.t('inv.step' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container faq-layout">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('inv.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('inv.faq.title')"></h2>
+    </header>
+    <div class="faq-list">
+      @for (n of faqs; track n) {
+        <details class="faq-item">
+          <summary>{{ i18n.t('inv.faq' + n + '.q') }}</summary>
+          <p>{{ i18n.t('inv.faq' + n + '.a') }}</p>
+        </details>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Abschluss -->
+<section class="final-cta" id="anfrage">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('inv.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('inv.cta.text') }}</p>
+      </div>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" [queryParams]="{ thema: 'other', paket: 'invite' }" fragment="anfrage" class="btn btn-light btn-large">
+          {{ i18n.t('inv.cta.request') }}
+          <app-icon name="arrow" />
+        </a>
+        <div class="cta-direct">
+          <a [href]="company.phoneHref" class="btn btn-outline-light"><app-icon name="phone" /> {{ i18n.t('cta.call') }}</a>
+          <a [href]="whatsapp" target="_blank" rel="noopener" class="btn btn-outline-light"><app-icon name="chat" /> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

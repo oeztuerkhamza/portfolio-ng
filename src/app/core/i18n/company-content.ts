@@ -10,6 +10,7 @@ import type { Entry } from './translations';
  * aus den Produktdaten gefüllt — Preise stehen nie in den Übersetzungen.
  */
 export const COMPANY_TRANSLATIONS: Record<string, Entry> = {
+  'nav.invite': { de: 'Einladungen', fr: 'Invitations', en: 'Invitations', tr: 'Davetiyeler', ku: 'Vexwendin' },
   'nav.smarthome': { de: 'Smart Home', fr: 'Maison connectée', en: 'Smart home', tr: 'Akıllı ev', ku: 'Mala biaqil' },
   'nav.wartung': {
     de: 'Wartung',

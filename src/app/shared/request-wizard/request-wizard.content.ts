@@ -44,6 +44,7 @@ export const REQUEST_WIZARD_CONTENT: Record<string, Entry> = {
   'rw.other.shop': { de: 'Online-Shop', fr: 'Boutique en ligne', en: 'Online shop', tr: 'Online mağaza', ku: 'Firotgeha serhêl' },
   'rw.other.app': { de: 'Web-App oder Software', fr: 'Application web ou logiciel', en: 'Web app or software', tr: 'Web uygulaması veya yazılım', ku: 'Sepana malperê an nermalav' },
   'rw.other.booking': { de: 'Buchungssystem', fr: 'Système de réservation', en: 'Booking system', tr: 'Randevu sistemi', ku: 'Sîstema randevûyê' },
+  'rw.other.invite': { de: 'Digitale Einladung (Hochzeit, Kına, Event)', fr: 'Invitation numérique (mariage, henné, événement)', en: 'Digital invitation (wedding, henna, event)', tr: 'Dijital davetiye (düğün, kına, etkinlik)', ku: 'Vexwendina dîjîtal (dawet, hine, bûyer)' },
   'rw.other.question': { de: 'Nur eine Frage', fr: 'Juste une question', en: 'Just a question', tr: 'Sadece bir soru', ku: 'Tenê pirsek' },
 
   'rw.pkg.days': { de: 'Fertig in {p} Werktagen', fr: 'Prêt en {p} jours ouvrés', en: 'Done in {p} working days', tr: '{p} iş gününde hazır', ku: 'Di {p} rojên xebatê de amade' },

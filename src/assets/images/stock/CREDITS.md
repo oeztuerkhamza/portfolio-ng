@@ -19,3 +19,23 @@ eingesetzt werden, dass sie ein Produkt oder eine Person empfehlen.
 | freiburg-muenster.webp | https://www.pexels.com/photo/freiburger-munster-12476350/ (Ilo Frey) |
 | designer-imac.webp | https://www.pexels.com/photo/graphic-designer-working-on-computer-13451104/ |
 | designer-laptop.webp | https://www.pexels.com/photo/photo-of-person-using-laptop-for-graphic-designs-4348404/ |
+
+## Digitale Einladungen
+
+Die Titelbilder der zehn Einladungs-Designs werden direkt vom Pexels-CDN
+geladen (Pexels erlaubt das), nicht hier gespeichert. Lädt eines nicht, zeigt
+die Einladung stattdessen Farbverlauf und Ornament ihres Designs. Quelle je
+Design: `imageSource` in `src/app/einladung/invite-themes.ts`.
+
+| Design | Pexels-Seite |
+| --- | --- |
+| Klassik Gold | https://www.pexels.com/photo/wedding-couple-holding-hands-51305/ |
+| Boho Garten | https://www.pexels.com/photo/chairs-and-arch-outdoors-for-wedding-ceremony-11433914/ |
+| Modern Minimal | https://www.pexels.com/photo/wedding-rings-by-a-flower-bouquet-11309259/ |
+| Henna-Nacht | https://www.pexels.com/photo/a-bride-and-groom-are-holding-hands-with-henna-16814609/ |
+| 1001 Nacht | https://www.pexels.com/photo/bride-hands-decorated-with-henna-tattoos-and-jewelry-18662849/ |
+| Romantik Rosé | https://www.pexels.com/photo/close-up-on-wedding-ring-among-decorations-and-flowers-9967319/ |
+| Rustikal | https://www.pexels.com/photo/triangle-wedding-arch-decorated-with-flowers-5589847/ |
+| Mediterran | https://www.pexels.com/photo/tables-with-flower-decors-2306281/ |
+| Mitternacht Gala | https://www.pexels.com/photo/person-holding-lighted-sparkler-450301/ |
+| Business Event | https://www.pexels.com/photo/audience-business-conference-education-207716/ |

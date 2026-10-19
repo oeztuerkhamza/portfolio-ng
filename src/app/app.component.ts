@@ -36,11 +36,11 @@ export class AppComponent implements OnInit {
   private readonly seo = inject(SeoService);
   private readonly router = inject(Router);
 
-  /** Admin-Portal ohne Navigation, Footer und Handy-Leiste. */
+  /** Admin-Portal und Einladungen ohne Navigation, Footer und Handy-Leiste. */
   readonly bare = toSignal(
     this.router.events.pipe(
       filter((e) => e instanceof NavigationEnd),
-      map(() => this.router.url.startsWith('/admin')),
+      map(() => /^\/(admin|einladung\/)/.test(this.router.url)),
     ),
     { initialValue: false },
   );

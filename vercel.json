@@ -92,6 +92,14 @@
   ],
   "rewrites": [
     {
+      "source": "/einladung/:slug/planer",
+      "destination": "/einladung/live/planer"
+    },
+    {
+      "source": "/einladung/:slug",
+      "destination": "/einladung/live"
+    },
+    {
       "source": "/api/:path*",
       "destination": "/api"
     },

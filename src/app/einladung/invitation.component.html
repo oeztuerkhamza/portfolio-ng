@@ -1,0 +1,516 @@
+@if (status() === 'loading') {
+  <div class="iv-state" aria-live="polite">
+    <span class="iv-spinner" aria-hidden="true"></span>
+    <p>{{ t('ui.loading') }}</p>
+  </div>
+} @else if (status() === 'missing' || !event()) {
+  <div class="iv-state">
+    <p>{{ t('ui.notfound') }}</p>
+    <a routerLink="/de/digitale-einladung" class="iv-btn">Breisgau Digital</a>
+  </div>
+} @else {
+  @let e = event()!;
+  <div
+    class="iv"
+    [class]="'iv iv--' + theme().id + ' iv-o--' + theme().ornament"
+    [class.iv-dark]="theme().dark"
+    [class.iv-caps]="theme().caps"
+    [class.iv-js]="js()"
+    [class.iv-opened]="opened()"
+    [class.iv-rtl]="rtl()"
+    [class.iv-demo]="demo"
+    [style]="vars()"
+    [attr.dir]="rtl() ? 'rtl' : 'ltr'"
+    [attr.lang]="lang()"
+  >
+    <!-- ── Umschlag ── -->
+    <div class="iv-cover" [class.gone]="opened()" [attr.aria-hidden]="opened()">
+      <div class="iv-cover-card">
+        <div class="iv-cover-seal" aria-hidden="true"><span>{{ e.title.charAt(0) }}</span></div>
+        <p class="iv-cover-for">{{ t('open.for') }}</p>
+        <p class="iv-cover-name">{{ data()?.guest?.name || t('open.you') }}</p>
+        <div class="iv-divider" [innerHTML]="divider()"></div>
+        <p class="iv-cover-eyebrow">{{ eyebrow() }}</p>
+        <h1 class="iv-cover-title">{{ e.title }}</h1>
+        <p class="iv-cover-date">{{ dateText() }}</p>
+        <button type="button" class="iv-btn iv-btn-lg" (click)="open(true)">
+          <app-icon name="heart" /> {{ t('open') }}
+        </button>
+        @if (hasMusic()) {
+          <button type="button" class="iv-link" (click)="open(false)">{{ t('open') }} · {{ t('music.off') }}</button>
+        }
+      </div>
+    </div>
+
+    <!-- ── Vorschau-Leiste (nur Beispiele) ── -->
+    @if (demo) {
+      <div class="iv-demobar">
+        <span class="iv-demobar-label"><app-icon name="sparkle" /> {{ t('demo.bar') }} · {{ theme().name[lang()] }}</span>
+        <a [routerLink]="['/einladung', slug, 'planer']" class="iv-demobar-link"><app-icon name="list" /> {{ t('demo.planner') }}</a>
+        <a routerLink="/de/digitale-einladung" fragment="anfrage" class="iv-demobar-cta">{{ t('demo.order') }}</a>
+      </div>
+    }
+
+    <!-- ── Schwebende Knöpfe: Musik, Sprache, Gestaltung ── -->
+    <div class="iv-fab">
+      @if (hasMusic() || demo) {
+        <button
+          type="button"
+          class="iv-fab-btn"
+          [class.on]="music.playing()"
+          (click)="toggleMusic()"
+          [attr.aria-label]="music.playing() ? t('music.off') : t('music.on')"
+          [attr.aria-pressed]="music.playing()"
+        >
+          <app-icon [name]="music.playing() ? 'pause' : 'music'" />
+          @if (music.playing()) {
+            <span class="iv-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+          }
+        </button>
+      }
+      <button type="button" class="iv-fab-btn" (click)="panel.set(!panel())" [attr.aria-expanded]="panel()" [attr.aria-label]="t('ui.settings')">
+        @if (demo) {
+          <app-icon name="palette" />
+        } @else {
+          <app-icon name="globe" />
+        }
+      </button>
+    </div>
+
+    @if (panel()) {
+      <div class="iv-panel" role="dialog" [attr.aria-label]="t('ui.settings')">
+        <div class="iv-panel-head">
+          <strong>{{ t('ui.settings') }}</strong>
+          <button type="button" class="iv-icon-btn" (click)="panel.set(false)" [attr.aria-label]="t('ui.close')"><app-icon name="close" /></button>
+        </div>
+        @if (e.langs.length > 1) {
+          <p class="iv-panel-label">{{ t('ui.lang') }}</p>
+          <div class="iv-chips">
+            @for (l of e.langs; track l) {
+              <button type="button" class="iv-chip" [class.on]="lang() === l" (click)="setLang(l)" [attr.lang]="l">{{ langNames[l] }}</button>
+            }
+          </div>
+        }
+        @if (demo) {
+          <p class="iv-panel-label">{{ t('ui.theme') }}</p>
+          <div class="iv-swatches">
+            @for (th of themes; track th.id) {
+              <button
+                type="button"
+                class="iv-swatch"
+                [class.on]="theme().id === th.id"
+                (click)="pickTheme(th.id)"
+                [style.--sw-a]="th.colors.bg"
+                [style.--sw-b]="th.colors.accent"
+                [style.--sw-c]="th.colors.ink"
+              >
+                <span class="iv-swatch-dot" aria-hidden="true"></span>
+                {{ th.name[lang()] }}
+              </button>
+            }
+          </div>
+          <p class="iv-panel-label">{{ t('ui.music') }}</p>
+          <div class="iv-chips">
+            @for (m of musicIds; track m) {
+              <button type="button" class="iv-chip" [class.on]="musicId() === m" (click)="pickMusic(m)">{{ t('music.' + m) }}</button>
+            }
+          </div>
+          <p class="iv-panel-note">{{ t('demo.note') }}</p>
+        }
+      </div>
+    }
+
+    <!-- ── Kopf ── -->
+    <header class="iv-hero" id="start">
+      @if (heroImage()) {
+        <div class="iv-hero-media" aria-hidden="true">
+          <img class="iv-hero-img" [src]="heroImage()" alt="" (error)="heroFailed()" fetchpriority="high" />
+        </div>
+      }
+      <div class="iv-hero-pattern" aria-hidden="true"></div>
+      <div class="iv-hero-inner">
+        <p class="iv-eyebrow" ivReveal>{{ eyebrow() }}</p>
+        <h1 class="iv-title" ivReveal="120">{{ e.title }}</h1>
+        <div class="iv-divider iv-divider-lg" [innerHTML]="divider()" ivReveal="220"></div>
+        @if (l(e.hosts)) {
+          <p class="iv-hosts" ivReveal="280">{{ l(e.hosts) }}</p>
+        }
+        <p class="iv-hero-date" ivReveal="340">
+          <span>{{ dateText() }}</span>
+          <span class="iv-dot" aria-hidden="true">·</span>
+          <span>{{ timeText() }}</span>
+          @if (city()) {
+            <span class="iv-dot" aria-hidden="true">·</span>
+            <span>{{ city() }}</span>
+          }
+        </p>
+        @if (nav().length) {
+          <button type="button" class="iv-scroll" (click)="scrollTo('willkommen')" [attr.aria-label]="t('nav.welcome')">
+            <span></span>
+          </button>
+        }
+      </div>
+    </header>
+
+    <!-- ── Willkommen & Geschichte ── -->
+    <section class="iv-sec" id="willkommen">
+      <div class="iv-wrap iv-narrow">
+        @if (data()?.guest) {
+          <p class="iv-greet" ivReveal>{{ greeting() }}</p>
+        }
+        @if (l(e.welcome)) {
+          <p class="iv-lead" ivReveal>{{ l(e.welcome) }}</p>
+        }
+        @if (e.sections.story && l(e.story)) {
+          <h2 class="iv-h2" ivReveal>{{ e.kind === 'corporate' ? t('sec.about') : t('sec.story') }}</h2>
+          <p class="iv-text" ivReveal="80">{{ l(e.story) }}</p>
+        }
+      </div>
+    </section>
+
+    <!-- ── Countdown ── -->
+    @if (e.sections.countdown && countdown(); as cd) {
+      <section class="iv-sec iv-alt iv-countdown" aria-labelledby="cd-title">
+        <div class="iv-wrap">
+          <h2 class="iv-h2" id="cd-title" ivReveal>{{ cd.past ? t('cd.past') : cd.today ? t('cd.today') : t('cd.title') }}</h2>
+          @if (!cd.past && !cd.today) {
+            <div class="iv-cd" role="timer" aria-live="off">
+              <div class="iv-cd-box" ivReveal="0"><strong>{{ cd.d }}</strong><span>{{ t('cd.days') }}</span></div>
+              <div class="iv-cd-box" ivReveal="80"><strong>{{ pad(cd.h) }}</strong><span>{{ t('cd.hours') }}</span></div>
+              <div class="iv-cd-box" ivReveal="160"><strong>{{ pad(cd.m) }}</strong><span>{{ t('cd.minutes') }}</span></div>
+              <div class="iv-cd-box" ivReveal="240"><strong>{{ pad(cd.s) }}</strong><span>{{ t('cd.seconds') }}</span></div>
+            </div>
+            <div class="iv-row-center" ivReveal="300">
+              <a class="iv-btn iv-btn-ghost" [href]="googleCal()" target="_blank" rel="noopener"><app-icon name="calendar" /> {{ t('cal.google') }}</a>
+              <button type="button" class="iv-btn iv-btn-ghost" (click)="ics()"><app-icon name="download" /> {{ t('cal.ics') }}</button>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Ablauf ── -->
+    @if (e.sections.schedule && e.schedule.length) {
+      <section class="iv-sec" id="ablauf" aria-labelledby="ablauf-title">
+        <div class="iv-wrap iv-narrow">
+          <h2 class="iv-h2" id="ablauf-title" ivReveal>{{ t('sec.schedule') }}</h2>
+          <div class="iv-divider" [innerHTML]="divider()" ivReveal></div>
+          <ol class="iv-timeline">
+            @for (s of e.schedule; track $index) {
+              <li class="iv-tl" [ivReveal]="$index * 70">
+                <span class="iv-tl-time">{{ s.time }}</span>
+                <span class="iv-tl-icon" [innerHTML]="icon(s.icon)"></span>
+                <span class="iv-tl-body">
+                  <strong>{{ l(s.title) }}</strong>
+                  @if (l(s.text)) {
+                    <span>{{ l(s.text) }}</span>
+                  }
+                  @if (locationOf(s.location); as loc) {
+                    <a class="iv-tl-loc" [href]="maps(loc).google" target="_blank" rel="noopener"><app-icon name="pin" /> {{ loc.name }}</a>
+                  }
+                </span>
+              </li>
+            }
+          </ol>
+          @if (e.dressCode && l(e.dressCode)) {
+            <div class="iv-card iv-dress" ivReveal>
+              <h3 class="iv-h3">{{ t('sec.dress') }}</h3>
+              <p>{{ l(e.dressCode) }}</p>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Orte ── -->
+    @if (e.sections.locations && e.locations.length) {
+      <section class="iv-sec iv-alt" id="anfahrt" aria-labelledby="anfahrt-title">
+        <div class="iv-wrap">
+          <h2 class="iv-h2" id="anfahrt-title" ivReveal>{{ t('sec.locations') }}</h2>
+          <div class="iv-grid" [class.iv-grid-1]="e.locations.length === 1">
+            @for (loc of e.locations; track loc.id) {
+              <article class="iv-card iv-loc" [ivReveal]="$index * 100">
+                <span class="iv-loc-pin" aria-hidden="true"><app-icon name="pin" /></span>
+                <p class="iv-label">{{ l(loc.label) }}</p>
+                <h3 class="iv-h3">{{ loc.name }}</h3>
+                <p class="iv-muted">{{ loc.address }}</p>
+                <div class="iv-loc-actions">
+                  <a class="iv-btn" [href]="maps(loc).google" target="_blank" rel="noopener"><app-icon name="route" /> {{ t('loc.route') }}</a>
+                  <a class="iv-btn iv-btn-ghost" [href]="maps(loc).apple" target="_blank" rel="noopener">{{ t('loc.apple') }}</a>
+                  <a class="iv-btn iv-btn-ghost" [href]="maps(loc).waze" target="_blank" rel="noopener">{{ t('loc.waze') }}</a>
+                  <button type="button" class="iv-link" (click)="copy('loc-' + loc.id, loc.name + ', ' + loc.address)">
+                    <app-icon [name]="copied() === 'loc-' + loc.id ? 'check' : 'copy'" />
+                    {{ copied() === 'loc-' + loc.id ? t('gift.copied') : t('loc.copy') }}
+                  </button>
+                </div>
+              </article>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
+    <!-- ── Zusage ── -->
+    @if (e.sections.rsvp) {
+      <section class="iv-sec" id="zusage" aria-labelledby="zusage-title">
+        <div class="iv-wrap iv-narrow">
+          <h2 class="iv-h2" id="zusage-title" ivReveal>{{ t('rsvp.title') }}</h2>
+          @if (rsvpUntilText()) {
+            <p class="iv-center iv-muted" ivReveal>{{ rsvpUntilText() }}</p>
+          }
+          @if (rState() === 'done') {
+            <div class="iv-card iv-done" ivReveal>
+              <span class="iv-done-icon"><app-icon [name]="rStatus() === 'no' ? 'heart' : 'check'" [stroke]="2.2" /></span>
+              <p class="iv-lead">{{ thanks() }}</p>
+              <button type="button" class="iv-link" (click)="rState.set('idle')">{{ t('rsvp.change') }}</button>
+            </div>
+          } @else if (!rsvpOpen()) {
+            <p class="iv-card iv-center">{{ t('rsvp.closed') }}</p>
+          } @else {
+            <form class="iv-card iv-form" (submit)="sendRsvp($event)" ivReveal novalidate>
+              <label class="iv-field">
+                <span>{{ t('rsvp.name') }}</span>
+                <input type="text" name="name" autocomplete="name" required maxlength="120" [value]="rName()" (input)="rName.set($any($event.target).value)" />
+              </label>
+
+              <fieldset class="iv-field">
+                <legend>{{ t('rsvp.coming') }}</legend>
+                <div class="iv-choice">
+                  @for (s of ['yes', 'maybe', 'no']; track s) {
+                    <button type="button" class="iv-choice-btn" [class.on]="rStatus() === s" [attr.aria-pressed]="rStatus() === s" (click)="rStatus.set($any(s))">
+                      {{ t('rsvp.' + s) }}
+                    </button>
+                  }
+                </div>
+              </fieldset>
+
+              @if (rStatus() && rStatus() !== 'no') {
+                <div class="iv-two">
+                  <label class="iv-field">
+                    <span>{{ t('rsvp.adults') }}</span>
+                    <select name="adults" (change)="rAdults.set(+$any($event.target).value)">
+                      @for (n of persons(); track n) {
+                        <option [value]="n" [selected]="n === rAdults()">{{ n }}</option>
+                      }
+                    </select>
+                  </label>
+                  <label class="iv-field">
+                    <span>{{ t('rsvp.children') }}</span>
+                    <select name="children" (change)="rChildren.set(+$any($event.target).value)">
+                      @for (n of kidsOptions(); track n) {
+                        <option [value]="n" [selected]="n === rChildren()">{{ n }}</option>
+                      }
+                    </select>
+                  </label>
+                </div>
+                @if (e.rsvp.menu) {
+                  <fieldset class="iv-field">
+                    <legend>{{ t('rsvp.menu') }}</legend>
+                    <div class="iv-chips">
+                      @for (m of menus; track m) {
+                        <button type="button" class="iv-chip" [class.on]="rMenu() === m" (click)="rMenu.set(m)">{{ t('menu.' + m) }}</button>
+                      }
+                    </div>
+                  </fieldset>
+                  <label class="iv-field">
+                    <span>{{ t('rsvp.allergies') }}</span>
+                    <input type="text" name="allergies" maxlength="200" [value]="rAllergies()" (input)="rAllergies.set($any($event.target).value)" />
+                  </label>
+                }
+                @if (e.rsvp.song) {
+                  <label class="iv-field">
+                    <span>{{ t('rsvp.song') }}</span>
+                    <input type="text" name="song" maxlength="160" [value]="rSong()" (input)="rSong.set($any($event.target).value)" />
+                  </label>
+                }
+              }
+              <label class="iv-field">
+                <span>{{ t('rsvp.message') }}</span>
+                <textarea name="message" rows="3" maxlength="1000" [value]="rMessage()" (input)="rMessage.set($any($event.target).value)"></textarea>
+              </label>
+
+              @if (rState() === 'invalid') {
+                <p class="iv-error" role="alert">{{ t('rsvp.required') }}</p>
+              }
+              @if (rState() === 'error') {
+                <p class="iv-error" role="alert">{{ t('rsvp.error') }}</p>
+              }
+              <button type="submit" class="iv-btn iv-btn-lg iv-btn-block" [disabled]="rState() === 'sending'">
+                {{ rState() === 'sending' ? t('rsvp.sending') : t('rsvp.send') }}
+              </button>
+            </form>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Geschenke ── -->
+    @if (e.sections.gifts && e.gifts; as g) {
+      <section class="iv-sec iv-alt" id="geschenke" aria-labelledby="geschenke-title">
+        <div class="iv-wrap iv-narrow">
+          <span class="iv-sec-icon" aria-hidden="true" ivReveal><app-icon name="gift" /></span>
+          <h2 class="iv-h2" id="geschenke-title" ivReveal>{{ t('gift.title') }}</h2>
+          <p class="iv-text iv-center" ivReveal>{{ l(g.text) || t('gift.default') }}</p>
+
+          @if (g.iban) {
+            <div class="iv-card iv-bank" ivReveal>
+              <div class="iv-bank-rows">
+                @if (g.accountHolder) {
+                  <div class="iv-bank-row">
+                    <span>{{ t('gift.holder') }}</span>
+                    <strong>{{ g.accountHolder }}</strong>
+                    <button type="button" class="iv-copy" (click)="copy('holder', g.accountHolder)" [attr.aria-label]="t('gift.copy')">
+                      <app-icon [name]="copied() === 'holder' ? 'check' : 'copy'" />
+                    </button>
+                  </div>
+                }
+                <div class="iv-bank-row">
+                  <span>IBAN</span>
+                  <strong class="iv-mono" dir="ltr">{{ iban(g.iban) }}</strong>
+                  <button type="button" class="iv-copy" (click)="copy('iban', g.iban.split(' ').join(''))" [attr.aria-label]="t('gift.copy')">
+                    <app-icon [name]="copied() === 'iban' ? 'check' : 'copy'" />
+                  </button>
+                </div>
+                @if (g.bic) {
+                  <div class="iv-bank-row">
+                    <span>BIC</span>
+                    <strong class="iv-mono" dir="ltr">{{ g.bic }}</strong>
+                    <button type="button" class="iv-copy" (click)="copy('bic', g.bic)" [attr.aria-label]="t('gift.copy')">
+                      <app-icon [name]="copied() === 'bic' ? 'check' : 'copy'" />
+                    </button>
+                  </div>
+                }
+                @if (g.reference) {
+                  <div class="iv-bank-row">
+                    <span>{{ t('gift.reference') }}</span>
+                    <strong>{{ g.reference }}</strong>
+                    <button type="button" class="iv-copy" (click)="copy('ref', g.reference)" [attr.aria-label]="t('gift.copy')">
+                      <app-icon [name]="copied() === 'ref' ? 'check' : 'copy'" />
+                    </button>
+                  </div>
+                }
+              </div>
+              @if (giroCode(); as qr) {
+                <figure class="iv-qr">
+                  <div class="iv-qr-code" [innerHTML]="qr"></div>
+                  <figcaption>{{ t('gift.qr') }}</figcaption>
+                </figure>
+              }
+              @if (copied()) {
+                <p class="iv-toast" role="status">{{ t('gift.copied') }}</p>
+              }
+            </div>
+          }
+          @if (g.paypal) {
+            <div class="iv-row-center" ivReveal>
+              <a class="iv-btn iv-btn-lg iv-paypal" [href]="paypal(g.paypal)" target="_blank" rel="noopener"><app-icon name="wallet" /> {{ t('gift.paypal') }}</a>
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Fotos ── -->
+    @if (e.sections.photos) {
+      <section class="iv-sec" id="fotos" aria-labelledby="fotos-title">
+        <div class="iv-wrap">
+          <h2 class="iv-h2" id="fotos-title" ivReveal>{{ t('photo.title') }}</h2>
+          <p class="iv-text iv-center iv-narrow-text" ivReveal>{{ t('photo.text') }}</p>
+
+          @if (e.guestUploads) {
+            <div class="iv-upload iv-card" ivReveal>
+              <label class="iv-field">
+                <span>{{ t('photo.by') }}</span>
+                <input type="text" maxlength="60" [value]="upBy()" (input)="upBy.set($any($event.target).value)" />
+              </label>
+              <label class="iv-btn iv-btn-lg iv-upload-btn" [class.busy]="upState() === 'busy'">
+                <app-icon name="camera" />
+                {{ upState() === 'busy' ? uploading() : t('photo.upload') }}
+                <input type="file" accept="image/*" multiple (change)="upload($any($event.target))" [disabled]="upState() === 'busy'" />
+              </label>
+              @if (upState() === 'done') {
+                <p class="iv-ok" role="status">{{ t('photo.done') }}</p>
+              }
+              @if (upState() === 'error') {
+                <p class="iv-error" role="alert">{{ t('photo.error') }}</p>
+              }
+            </div>
+          } @else {
+            <p class="iv-center iv-muted">{{ t('photo.closed') }}</p>
+          }
+
+          @if (slides().length) {
+            <div class="iv-gallery">
+              @for (src of slides().slice(0, 24); track src) {
+                <figure class="iv-ph" [ivReveal]="($index % 6) * 50"><img [src]="src" alt="" loading="lazy" /></figure>
+              }
+            </div>
+            <div class="iv-row-center">
+              <button type="button" class="iv-btn iv-btn-ghost" (click)="slideshow.set(true)"><app-icon name="play" /> {{ t('photo.show') }}</button>
+            </div>
+          } @else {
+            <p class="iv-center iv-muted iv-empty">{{ t('photo.empty') }}</p>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Infos & Kontakte ── -->
+    @if (e.sections.faq && (e.faq.length || e.contacts.length)) {
+      <section class="iv-sec iv-alt" id="infos" aria-labelledby="infos-title">
+        <div class="iv-wrap iv-narrow">
+          @if (e.faq.length) {
+            <h2 class="iv-h2" id="infos-title" ivReveal>{{ t('sec.faq') }}</h2>
+            <div class="iv-faq">
+              @for (f of e.faq; track $index) {
+                <details class="iv-card" [ivReveal]="$index * 60">
+                  <summary>{{ l(f.q) }}</summary>
+                  <p>{{ l(f.a) }}</p>
+                </details>
+              }
+            </div>
+          }
+          @if (e.contacts.length) {
+            <h2 class="iv-h2 iv-h2-sm" [attr.id]="e.faq.length ? null : 'infos-title'" ivReveal>{{ t('sec.contacts') }}</h2>
+            <div class="iv-contacts">
+              @for (c of e.contacts; track $index) {
+                <div class="iv-card iv-contact" ivReveal>
+                  <span class="iv-avatar" aria-hidden="true">{{ c.name.charAt(0) }}</span>
+                  <span class="iv-contact-who"><strong>{{ c.name }}</strong><span>{{ l(c.role) }}</span></span>
+                  @if (c.phone) {
+                    <a class="iv-icon-btn" [href]="tel(c.phone)" [attr.aria-label]="t('contact.call') + ' ' + c.name"><app-icon name="phone" /></a>
+                    <a class="iv-icon-btn" [href]="wa(c.phone)" target="_blank" rel="noopener" [attr.aria-label]="'WhatsApp ' + c.name"><app-icon name="chat" /></a>
+                  }
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
+
+    <!-- ── Fuß ── -->
+    <footer class="iv-footer">
+      <div class="iv-divider" [innerHTML]="divider()"></div>
+      <p class="iv-footer-title">{{ e.title }}</p>
+      <p class="iv-muted">{{ dateText() }}</p>
+      <p class="iv-made">
+        {{ t('footer.made') }}
+        <a routerLink="/de/digitale-einladung">Breisgau Digital</a>
+      </p>
+    </footer>
+
+    <!-- ── Leiste unten (Handy) ── -->
+    @if (nav().length) {
+      <nav class="iv-nav" aria-label="Navigation">
+        @for (n of nav(); track n.id) {
+          <button type="button" (click)="scrollTo(n.id)"><app-icon [name]="n.icon" /><span>{{ t(n.key) }}</span></button>
+        }
+      </nav>
+    }
+
+    @if (slideshow()) {
+      <app-slideshow [slides]="slides()" [label]="e.title" [empty]="t('photo.empty')" [closeLabel]="t('ui.close')" (close)="slideshow.set(false)" />
+    }
+  </div>
+}

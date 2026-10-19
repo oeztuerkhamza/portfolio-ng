@@ -106,6 +106,8 @@ export function professionalServiceSchema(): Record<string, unknown> {
       'Local SEO',
       'Web-App Entwicklung',
       'E-Commerce',
+      'Digitale Einladung',
+      'Hochzeitswebsite',
       ...(REVIEW_CARDS_ENABLED ? ['Google-Bewertungskarten'] : []),
       // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
       ...(SMART_HOME_ENABLED ? ['Smart Home Einrichtung'] : []),
@@ -128,6 +130,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
         ...(SMART_HOME_ENABLED
           ? [offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.')]
           : []),
+        offer('Digitale Einladung', 'Einladungs-Website für Hochzeit, Henna-Abend, Verlobung und Firmenevents: Online-Zusage, Gästeliste, Sitzplan, Countdown, Route, IBAN/PayPal und Fotoalbum.'),
         offer('Website-Wartung', 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis, monatlich kündbar.'),
       ],
     },

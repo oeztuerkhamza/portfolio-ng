@@ -85,6 +85,11 @@ const localeChildren: Routes = [
       ]
     : []),
   {
+    path: 'digitale-einladung',
+    loadComponent: () => import('./pages/einladung/einladung.component').then((m) => m.EinladungComponent),
+    data: { animation: 'Einladung' },
+  },
+  {
     path: 'wartung',
     loadComponent: () =>
       import('./pages/wartung/wartung.component').then((m) => m.WartungComponent),
@@ -186,6 +191,19 @@ export const routes: Routes = [
     path: 'admin',
     loadComponent: () => import('./admin/admin.component').then((m) => m.AdminComponent),
     data: { animation: 'Admin', bare: true },
+  },
+  // Digitale Einladungen: eigene Seiten ohne Navigation der Website, mit
+  // eigener Sprachwahl. Stehen vor `:locale`, sonst hielte der Guard
+  // „einladung" für ein Sprachkürzel.
+  {
+    path: 'einladung/:slug',
+    loadComponent: () => import('./einladung/invitation.component').then((m) => m.InvitationComponent),
+    data: { animation: 'Invite' },
+  },
+  {
+    path: 'einladung/:slug/planer',
+    loadComponent: () => import('./einladung/planner.component').then((m) => m.PlannerComponent),
+    data: { animation: 'InvitePlanner' },
   },
   {
     path: ':locale',

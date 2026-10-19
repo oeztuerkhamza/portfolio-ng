@@ -42,6 +42,25 @@ SUPABASE_SERVICE_ROLE_KEY=…        # nur serverseitig, nie in den Browser
 SITE_URL=http://localhost:4200
 ```
 
+## Digitale Einladungen (`/einladung/<name>`)
+
+Einladungs-Websites für Hochzeit, Kına, Verlobung, Geburtstag und Firmenevents.
+Produktseite: `/<sprache>/digitale-einladung`.
+
+- **Beispiele** `/einladung/demo-<design>` (zehn Designs) laufen ohne Server:
+  Zusagen, Fotos und Planer-Änderungen bleiben im Browser des Besuchers.
+- **Echte Einladungen** legt man im Admin-Portal unter „Davetiyeler" an. Das
+  Portal zeigt danach zwei Links für den Kunden: die Einladung und den
+  Gastgeber-Planer (`/einladung/<name>/planer#k=<schlüssel>`). Der Schlüssel
+  wird nur gehasht gespeichert und nur einmal angezeigt.
+- Tabellen: `supabase/migrations/20261020120000_invites.sql`. Fotos landen im
+  selben Supabase-Speicher wie die Kartenbilder.
+- Vercel liefert für echte Einladungen die vorgerenderte Hülle
+  `/einladung/live` aus (Rewrite in `vercel.json`); die Daten holt die Seite im
+  Browser von `/api/invites/<name>`.
+- Code: `src/app/einladung/` (Seiten, Designs, Texte in sechs Sprachen,
+  Musik), `src/server/invites.ts` (API), Tests in `invites.node-spec.ts`.
+
 ## Code scaffolding
 
 Angular CLI includes powerful code scaffolding tools. To generate a new component, run:

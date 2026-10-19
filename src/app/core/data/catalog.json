@@ -27,5 +27,8 @@
   "abo.premium.monthly": 129,
   "abo.premium.setup": 390,
   "abo.premium.term": 24,
+  "inv.basis": 79,
+  "inv.premium": 149,
+  "inv.komplett": 249,
   "shop.shipping": 0
 }

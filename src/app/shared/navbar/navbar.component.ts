@@ -32,6 +32,7 @@ export class NavbarComponent {
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/projects', key: 'nav.references' },
     { path: '/wartung', key: 'nav.wartung' },
+    { path: '/digitale-einladung', key: 'nav.invite' },
     // Kartenprodukte fehlen hier bewusst: siehe REVIEW_CARDS_ENABLED in company.data.ts.
     ...(REVIEW_CARDS_ENABLED
       ? [

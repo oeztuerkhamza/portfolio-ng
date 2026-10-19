@@ -45,6 +45,15 @@ const ICONS: Record<string, string> = {
   globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 2.5 14.7 0 17M12 3.5c-2.5 2.3-2.5 14.7 0 17"/>',
 };
 
+/**
+ * Weitere Icons nachmelden — für Seiten, die sie mit ihrem Lazy-Chunk
+ * mitbringen (z. B. die digitalen Einladungen), statt das Startbündel zu
+ * vergrößern. Vor dem ersten Zeichnen aufrufen.
+ */
+export function registerIcons(extra: Record<string, string>): void {
+  Object.assign(ICONS, extra);
+}
+
 @Component({
   selector: 'app-icon',
   standalone: true,

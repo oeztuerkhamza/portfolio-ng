@@ -31,7 +31,7 @@ function meta(path) {
   if (path === '/') return { priority: '1.0', freq: 'weekly' };
   const page = path.replace(/^\/(de|fr|en|tr|ku)(?=\/|$)/, '') || '/';
   if (page === '/') return { priority: '0.9', freq: 'weekly' };
-  if (['/leistungen', '/bewertungskarten', '/smart-home', '/wartung', '/digitale-visitenkarte', '/geschenkkarte'].includes(page)) {
+  if (['/leistungen', '/digitale-einladung', '/bewertungskarten', '/smart-home', '/wartung', '/digitale-visitenkarte', '/geschenkkarte'].includes(page)) {
     return { priority: '0.9', freq: 'monthly' };
   }
   // Produktseiten der Bewertungskarten: echte Kaufseiten, kein Beiwerk.
@@ -53,7 +53,7 @@ const urls = collect(BROWSER_DIR)
   // Admin-Portal, Bestellstrecke und Kartengestalter gehören nicht in den
   // Suchindex — die drei Seiten tragen `noindex`, und was noindex ist, darf
   // nicht in der Sitemap stehen.
-  .filter((p) => !/^\/admin|\/bestellen(\/|$)|\/karte-gestalten(\/|$)/.test(p))
+  .filter((p) => !/^\/admin|^\/einladung\/|\/bestellen(\/|$)|\/karte-gestalten(\/|$)/.test(p))
   .sort();
 
 const body = urls
