@@ -45,7 +45,7 @@
 // Die Navigation bleibt über dem hellen Papier lesbar; die Bühne ist ein
 // eingelassenes Feld, kein Vollbild. Das eine Besondere: drei echte
 // Kundenseiten stehen als Wand darin — Beweis statt Behauptung.
-$sand: #e9d7b0;
+$sand: #f0dfb8;
 
 .hero {
   padding: calc(72px + clamp(0.75rem, 2.5vw, 1.75rem)) 0 clamp(2.5rem, 6vw, 4rem);
@@ -62,9 +62,9 @@ $sand: #e9d7b0;
   color: #fff;
   overflow: hidden;
   background:
-    radial-gradient(ellipse 60% 80% at 92% 8%, rgba(47, 111, 196, 0.38), transparent 62%),
-    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(26, 75, 140, 0.35), transparent 65%),
-    $surface-ink;
+    radial-gradient(ellipse 60% 80% at 92% 6%, rgba(120, 176, 245, 0.34), transparent 62%),
+    radial-gradient(ellipse 55% 60% at 0% 100%, rgba(14, 40, 84, 0.45), transparent 65%),
+    linear-gradient(155deg, #2263b4 0%, #1a4b8c 48%, #153f78 100%);
 
   @media (min-width: $bp-desktop) {
     grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
@@ -79,10 +79,10 @@ $sand: #e9d7b0;
   gap: 0.5rem;
   padding: 0.45rem 0.9rem 0.45rem 0.7rem;
   margin-bottom: 1.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.28);
   border-radius: $radius-sm;
-  background: rgba(255, 255, 255, 0.06);
-  color: #c9d6ea;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e3ecf9;
   font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.35;
@@ -104,14 +104,14 @@ $sand: #e9d7b0;
   ::ng-deep em {
     display: block;
     font-style: normal;
-    color: #9dbbe6;
+    color: #c4d9f6;
   }
 }
 
 .hero-lede {
   font-size: clamp(1rem, 2.5vw, 1.12rem);
   line-height: 1.7;
-  color: #b9c7dc;
+  color: #dbe6f6;
   max-width: 52ch;
 }
 
@@ -136,7 +136,7 @@ $sand: #e9d7b0;
     font-size: 0.88rem;
     line-height: 1.4;
     font-weight: 500;
-    color: #dbe4f2;
+    color: #eef3fb;
   }
 
   app-icon {
@@ -607,7 +607,7 @@ $sand: #e9d7b0;
   margin-top: clamp(2rem, 5vw, 3rem);
   padding: clamp(1.5rem, 4vw, 2.5rem);
   border-radius: $radius-lg;
-  background: $surface-ink;
+  background: linear-gradient(150deg, #1f589f 0%, #174580 100%);
   color: #fff;
 
   @media (min-width: $bp-desktop) {
@@ -629,7 +629,7 @@ $sand: #e9d7b0;
 
 .update-sub {
   margin: 0;
-  color: #b9c7dc;
+  color: #dbe6f6;
   font-size: 0.95rem;
   line-height: 1.6;
   max-width: 44ch;
@@ -652,9 +652,9 @@ $sand: #e9d7b0;
   gap: 0.15rem;
   height: 100%;
   padding: 1rem 1.1rem 1.1rem;
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.26);
   border-radius: $radius;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.08);
   color: #fff;
   transition:
     background $transition-fast,
@@ -663,7 +663,7 @@ $sand: #e9d7b0;
 
   &:hover,
   &:focus-visible {
-    background: rgba(255, 255, 255, 0.09);
+    background: rgba(255, 255, 255, 0.16);
     transform: translateY(-2px);
   }
 
@@ -675,7 +675,7 @@ $sand: #e9d7b0;
 .update-name {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #c9d6ea;
+  color: #e3ecf9;
 }
 
 .update-price {
@@ -692,7 +692,7 @@ $sand: #e9d7b0;
   gap: 0.35rem;
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: #dbe4f2;
+  color: #eef3fb;
 }
 
 .update-all {
