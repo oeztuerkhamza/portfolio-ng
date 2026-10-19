@@ -31,7 +31,7 @@ export class NavbarComponent {
     ...(SMART_HOME_ENABLED ? [{ path: '/smart-home', key: 'nav.smarthome' }] : []),
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/projects', key: 'nav.references' },
-    { path: '/abo', key: 'nav.abo' },
+    { path: '/wartung', key: 'nav.wartung' },
     { path: '/bewertungskarten', key: 'nav.cards' },
     { path: '/digitale-visitenkarte', key: 'nav.nfc' },
     { path: '/ueber-uns', key: 'nav.about' },

@@ -3,6 +3,11 @@
   "buildCommand": "npm run build",
   "redirects": [
     {
+      "source": "/:locale(de|fr|en|tr|ku)/abo",
+      "destination": "/:locale/wartung",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {

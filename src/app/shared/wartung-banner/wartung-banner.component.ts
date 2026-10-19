@@ -2,26 +2,26 @@ import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
-import { SUBSCRIPTION_PRICE_FROM } from '../../core/data/subscriptions.data';
+import { MAINTENANCE_PRICE_FROM } from '../../core/data/maintenance.data';
 import { IconComponent } from '../icon/icon.component';
 
 /**
- * Hinweis auf das Digital-Abo — derselbe Streifen auf Startseite,
+ * Hinweis auf die Wartungspakete — derselbe Streifen auf Startseite,
  * Leistungen und den Produktseiten.
  */
 @Component({
-  selector: 'app-abo-banner',
+  selector: 'app-wartung-banner',
   standalone: true,
   imports: [RouterLink, LocalizePipe, IconComponent],
   template: `
     <aside class="abo-banner">
       <span class="icon-badge"><app-icon name="refresh" /></span>
       <div class="copy">
-        <p class="title">{{ i18n.t('abo.banner.title') }}</p>
-        <p class="text">{{ i18n.tp('abo.banner.text', priceFrom) }}</p>
+        <p class="title">{{ i18n.t('wart.banner.title') }}</p>
+        <p class="text">{{ i18n.tp('wart.banner.text', priceFrom) }}</p>
       </div>
-      <a [routerLink]="'/abo' | localize" class="btn btn-primary">
-        {{ i18n.t('abo.cta.view') }}
+      <a [routerLink]="'/wartung' | localize" class="btn btn-primary">
+        {{ i18n.t('wart.cta.view') }}
         <app-icon name="arrow" />
       </a>
     </aside>
@@ -72,7 +72,7 @@ import { IconComponent } from '../icon/icon.component';
     `,
   ],
 })
-export class AboBannerComponent {
+export class WartungBannerComponent {
   readonly i18n = inject(I18nService);
-  readonly priceFrom = SUBSCRIPTION_PRICE_FROM;
+  readonly priceFrom = MAINTENANCE_PRICE_FROM;
 }

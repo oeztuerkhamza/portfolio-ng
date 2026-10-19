@@ -13,14 +13,14 @@ import {
 } from '../../core/data/smart-home.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { SMART_HOME_CONTENT } from './smart-home.content';
-import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 
 const USE_ICONS = ['flame', 'key', 'bulb', 'bolt', 'bell', 'grid'];
 
 @Component({
   selector: 'app-smart-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent],
   templateUrl: './smart-home.component.html',
   styleUrl: './smart-home.component.scss',
 })

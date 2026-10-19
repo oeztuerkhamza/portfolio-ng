@@ -57,7 +57,7 @@ export const TOWNS: Town[] = [
     angles: {
       cards: 'Karte auf den Tresen, Gäste halten das Handy dran — so kommen in der Innenstadt schnell neue Google-Bewertungen zusammen.',
       web: 'Eine Website, die auf dem Handy in Sekunden lädt und bei „… in Freiburg" gefunden wird, mit Ortsbezug statt Baukasten-Vorlage.',
-      abo: 'Website, Karten und Pflege zum festen Monatspreis — ohne große Anfangsinvestition.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Heizung nach Öffnungszeiten, Self-Check-in für Ferienwohnungen, Licht fürs Schaufenster.',
     },
     faqs: [
@@ -91,7 +91,7 @@ export const TOWNS: Town[] = [
     angles: {
       cards: 'Für Handwerker als Schlüsselanhänger: nach dem Auftrag kurz hinhalten, der Kunde bewertet direkt vor Ort.',
       web: 'Eine Website, die Ihre Leistungen und Ihr Einzugsgebiet im Landkreis klar benennt — so findet Google Sie auch in Teningen oder Kenzingen.',
-      abo: 'Für Betriebe, die sich um nichts kümmern wollen: Website, Karten und Pflege in einem Monatsbetrag.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Smarte Heizung und Zutritt für Praxen und Büros, funkbasiert nachgerüstet.',
     },
     faqs: [
@@ -130,7 +130,7 @@ export const TOWNS: Town[] = [
       cards: 'Tischaufsteller im Gasthaus oder Karte an der Rezeption — Gäste bewerten noch am Tisch.',
       web: 'Eine Website, die auch Ausflügler und Wanderer abholt: Anfahrt, Öffnungszeiten und Angebote auf einen Blick.',
       sh: 'Self-Check-in und Heizung nach Belegung für Ferienwohnungen im Elztal — keine Schlüsselübergabe, keine Heizkosten für leere Zimmer.',
-      abo: 'Ein fester Monatsbetrag für Website, Karten und Pflege des Google-Profils.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
     },
     faqs: [
       {
@@ -166,7 +166,7 @@ export const TOWNS: Town[] = [
     angles: {
       web: 'Website auf Deutsch und Französisch, mit Weinverkauf, Öffnungszeiten der Straußi oder Zimmeranfrage.',
       cards: 'Bewertungskarte auf dem Probiertisch — Gäste aus dem Elsass bewerten in ihrer Sprache, das hilft bei der Suche von drüben.',
-      abo: 'Website, Karten und Pflege zum Monatspreis, gerade für die Saison planbar.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Smarte Heizung und Zutritt für Ferienwohnungen und Gästezimmer am Kaiserstuhl.',
     },
     faqs: [
@@ -200,7 +200,7 @@ export const TOWNS: Town[] = [
       cards: 'Karte am Empfang der Praxis — Patienten bewerten nach dem Termin, ohne zu suchen.',
       web: 'Eine Website mit Leistungen, Terminhinweisen und Anfahrt, barrierearm und auf dem Handy schnell.',
       sh: 'Heizung nach Sprechzeiten und Self-Check-in für Ferienwohnungen von Kurgästen.',
-      abo: 'Website, Karten und Pflege Ihres Google-Profils zum festen Monatspreis.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
     },
     faqs: [
       {
@@ -233,7 +233,7 @@ export const TOWNS: Town[] = [
       cards: 'Tischaufsteller im Café oder Weinstube — Tagesgäste bewerten, bevor sie weiterziehen.',
       web: 'Eine schlanke Website mit Öffnungszeiten, Karte und Anfahrt, die auch im Funkloch am Berg schnell lädt.',
       sh: 'Self-Check-in und Heizung nach Belegung für Ferienwohnungen im Münstertal.',
-      abo: 'Ein Monatsbetrag für Website, Karten und Google-Profil — planbar über die Saison.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
     },
     faqs: [
       {
@@ -269,7 +269,7 @@ export const TOWNS: Town[] = [
     angles: {
       web: 'Website mit Weinbestellung oder Onlineshop, auf Wunsch auf Deutsch, Französisch und Englisch.',
       cards: 'Karte im Hofladen oder auf der Weinprobe — Gäste bewerten, solange der Eindruck frisch ist.',
-      abo: 'Website, Karten und Pflege zum Monatspreis, ohne große Anfangsinvestition.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Smarte Heizung und Zutritt für Gästezimmer und Ferienwohnungen.',
     },
     faqs: [
@@ -302,7 +302,7 @@ export const TOWNS: Town[] = [
     angles: {
       web: 'Mehrsprachige Website für Kunden aus drei Ländern, mit eigener Adresse je Sprache für Google.',
       cards: 'Bewertungskarte an der Kasse — auch Schweizer und französische Kunden bewerten mit einem Handgriff.',
-      abo: 'Ein fester Monatsbetrag für Website, Karten und Pflege.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Heizung nach Öffnungszeiten und Energieübersicht für Läden und Büros.',
     },
     faqs: [
@@ -340,7 +340,7 @@ export const TOWNS: Town[] = [
     angles: {
       web: 'Relaunch der bestehenden Website: moderner, schneller, mit Ihren Referenzen — ohne Ihre bisherigen Google-Platzierungen zu verlieren.',
       cards: 'Schlüsselanhänger für Monteure und Außendienst: Bewertung direkt nach dem Auftrag.',
-      abo: 'Website, Hosting, Pflege und Bewertungskarten zum Monatspreis.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Heizung, Licht und Zutritt für Büros und Werkstätten, nachgerüstet ohne Umbau.',
     },
     faqs: [
@@ -382,7 +382,7 @@ export const TOWNS: Town[] = [
     angles: {
       cards: 'Karte oder Aufkleber an der Kasse — so wachsen Ihre Google-Bewertungen ohne Nachfragen.',
       web: 'Eine Website, die Leistungen, Öffnungszeiten und Kontakt auf dem Handy sofort zeigt.',
-      abo: 'Ein fester Monatsbetrag für Website, Karten und Pflege.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       sh: 'Smarte Heizung und Energieübersicht für Läden und Büros.',
     },
     faqs: [
@@ -425,7 +425,7 @@ export const TOWNS: Town[] = [
       sh: 'Self-Check-in per Code, Heizung nach Belegung und Meldungen bei offenem Fenster — für Ferienwohnungen ohne Anreise am Abend.',
       cards: 'Karte in der Ferienwohnung oder am Tisch — Gäste bewerten noch während des Urlaubs.',
       web: 'Eigene Website mit Zimmern, Preisen und Direktanfrage — weniger Provision an Buchungsportale.',
-      abo: 'Website, Karten und Pflege zum festen Monatspreis, auch für kleine Gastgeber.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
     },
     faqs: [
       {
@@ -456,7 +456,7 @@ export const TOWNS: Town[] = [
     focus: ['web', 'abo', 'cards'],
     angles: {
       web: 'Neue Website, Relaunch oder Online-Shop — entwickelt für Ihren Betrieb und für die Suchbegriffe, nach denen in der Ortenau tatsächlich gesucht wird.',
-      abo: 'Website, Hosting, Pflege und SEO zum festen Monatspreis — ohne große Anfangsinvestition.',
+      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
       cards: 'Bewertungskarten für Betriebe mit Kundenkontakt: Wer zufrieden ist, bewertet in 30 Sekunden, solange Sie noch vor Ort sind.',
     },
     faqs: [

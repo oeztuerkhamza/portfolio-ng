@@ -31,13 +31,13 @@ import { IconComponent } from '../../shared/icon/icon.component';
 import { HOME_CONTENT } from './home.content';
 import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
-import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent, ReviewsComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],

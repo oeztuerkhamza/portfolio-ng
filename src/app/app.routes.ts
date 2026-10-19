@@ -80,10 +80,10 @@ const localeChildren: Routes = [
       ]
     : []),
   {
-    path: 'abo',
+    path: 'wartung',
     loadComponent: () =>
-      import('./pages/abo/abo.component').then((m) => m.AboComponent),
-    data: { animation: 'Abo' },
+      import('./pages/wartung/wartung.component').then((m) => m.WartungComponent),
+    data: { animation: 'Wartung' },
   },
   {
     path: 'ueber-uns',

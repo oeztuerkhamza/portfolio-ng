@@ -8,9 +8,9 @@ import { COMPANY, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/compan
 import { IconComponent } from '../../shared/icon/icon.component';
 import { CONTACT_CONTENT } from './contact.content';
 
-type Interest = 'cards' | 'web' | 'sh' | 'abo' | 'other';
+type Interest = 'cards' | 'web' | 'sh' | 'wartung' | 'other';
 
-const PLAN_IDS = ['basis', 'business', 'premium'];
+const PLAN_IDS = ['basis', 'pflege', 'plus'];
 
 @Component({
   selector: 'app-contact',
@@ -31,7 +31,7 @@ export class ContactComponent implements OnInit {
    * anzubieten und dann abzusagen ist schlimmer, als es weglassen.
    * Der Typ behält 'sh': alte Anfragen im Portal sollen lesbar bleiben.
    */
-  readonly interests: Interest[] = (['cards', 'web', 'sh', 'abo', 'other'] as Interest[]).filter(
+  readonly interests: Interest[] = (['web', 'wartung', 'cards', 'sh', 'other'] as Interest[]).filter(
     (i) => i !== 'sh' || SMART_HOME_ENABLED,
   );
 
@@ -44,7 +44,7 @@ export class ContactComponent implements OnInit {
   readonly message = signal('');
   readonly chosen = signal<Interest[]>([]);
   readonly sent = signal(false);
-  /** Vorbelegung der Nachricht, z. B. „Digital-Abo Business (jährlich)". */
+  /** Vorbelegung der Nachricht, z. B. „Wartung Pflege". */
   readonly prefill = signal('');
 
   constructor() {
@@ -73,7 +73,7 @@ export class ContactComponent implements OnInit {
   }
 
   /**
-   * Links wie /contact?thema=abo&paket=business&zahlung=yearly wählen das
+   * Links wie /contact?thema=wartung&paket=pflege wählen das
    * Thema vor und schreiben das Paket in die Nachricht.
    */
   private applyQuery(): void {
@@ -82,12 +82,10 @@ export class ContactComponent implements OnInit {
     if (topic && this.interests.includes(topic)) this.chosen.set([topic]);
 
     const plan = q.get('paket');
-    if (topic === 'abo' && plan && PLAN_IDS.includes(plan)) {
-      const billing = q.get('zahlung') === 'yearly' ? 'yearly' : 'monthly';
+    if (topic === 'wartung' && plan && PLAN_IDS.includes(plan)) {
       const text = this.i18n
         .t('contact.f.plan.msg')
-        .replace('{plan}', this.i18n.t('abo.plan.' + plan + '.name'))
-        .replace('{billing}', this.i18n.t('contact.f.billing.' + billing));
+        .replace('{plan}', this.i18n.t('wart.plan.' + plan + '.name'));
       this.prefill.set(text);
       this.message.set(text);
     }

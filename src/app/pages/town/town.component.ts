@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { COMPANY, PRODUCTS, whatsappUrl, SMART_HOME_ENABLED } from '../../core/data/company.data';
-import { SUBSCRIPTION_PRICE_FROM } from '../../core/data/subscriptions.data';
+import { MAINTENANCE_PRICE_FROM } from '../../core/data/maintenance.data';
 import { ProductFocus, TOWNS, Town, townBySlug } from '../../core/data/towns.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 
@@ -36,10 +36,10 @@ const PRODUCT_META: Record<ProductFocus, { title: string; link: string; icon: st
     price: () => `ab ${PRODUCTS.find((p) => p.id === 'sh')!.priceFrom} €`,
   },
   abo: {
-    title: 'Digital-Abo',
-    link: '/de/abo',
+    title: 'Wartung & Pflege',
+    link: '/de/wartung',
     icon: 'refresh',
-    price: () => `ab ${SUBSCRIPTION_PRICE_FROM} € / Monat`,
+    price: () => `ab ${MAINTENANCE_PRICE_FROM} € / Monat`,
   },
 };
 
@@ -73,7 +73,7 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
                 @if (t.isRegion) { Von Kehl bis Hausach } @else if (t.km) { rund {{ t.km }} km · ca. {{ t.minutes }} Min. ab Freiburg } @else { Unser Standort }
               </li>
               <li class="chip chip-outline"><app-icon name="user" /> Termine vor Ort</li>
-              <li class="chip chip-outline"><app-icon name="euro" /> Festpreis oder Monatsabo</li>
+              <li class="chip chip-outline"><app-icon name="euro" /> Festpreis, Wartung monatlich kündbar</li>
             </ul>
             <div class="page-hero-actions">
               <a routerLink="/de/contact" fragment="anfrage" class="btn btn-primary btn-large">
@@ -170,7 +170,7 @@ export class TownComponent implements OnInit {
   readonly town: Town | undefined = townBySlug(inject(ActivatedRoute).snapshot.paramMap.get('town') ?? '');
   readonly cards: Card[] = [...(this.town?.focus ?? [])]
     .filter((id) => id !== 'sh' || SMART_HOME_ENABLED)
-    // Websites zuerst — danach das Abo, die Karten als Ergänzung.
+    // Websites zuerst — danach die Wartung, die Karten als Ergänzung.
     .sort((a, b) => FOCUS_ORDER.indexOf(a) - FOCUS_ORDER.indexOf(b))
     .map((id) => ({
     id,

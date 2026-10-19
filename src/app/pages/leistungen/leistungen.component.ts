@@ -10,7 +10,7 @@ import { UPDATE_PACKAGES } from '../../core/data/homepage-update.data';
 import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { LEISTUNGEN_CONTENT } from './leistungen.content';
-import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
+import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 
 interface ServiceDetail {
   icon: string;
@@ -32,7 +32,7 @@ interface Faq {
 @Component({
   selector: 'app-leistungen',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, AboBannerComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent],
   templateUrl: './leistungen.component.html',
   styleUrl: './leistungen.component.scss',
 })

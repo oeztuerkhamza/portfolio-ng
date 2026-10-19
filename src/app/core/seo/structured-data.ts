@@ -128,7 +128,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
         ...(SMART_HOME_ENABLED
           ? [offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.')]
           : []),
-        offer('Digital-Abo', 'Bewertungskarten, Website und laufende Pflege zum festen Monatspreis.'),
+        offer('Website-Wartung', 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis, monatlich kündbar.'),
       ],
     },
   };

@@ -1,7 +1,7 @@
 @import "../../../styles/variables";
 
-// Abo-Seite. Seitenkopf, Hinweis, Ablauf, FAQ und Abschluss-Box kommen aus
-// dem UI-Kit (src/styles/_ui.scss); hier stehen Umschalter und Pakete.
+// Wartungsseite. Seitenkopf, Hinweis, Ablauf, FAQ und Abschluss-Box kommen aus
+// dem UI-Kit (src/styles/_ui.scss); hier stehen die Pakete.
 
 :host {
   display: block;
@@ -15,54 +15,6 @@
   margin-bottom: 0;
 }
 
-// ── Monatlich / Jährlich ────────────────────────
-.billing {
-  display: inline-flex;
-  gap: 0.25rem;
-  margin-top: 1.75rem;
-  padding: 0.3rem;
-  border: 1px solid $rule;
-  border-radius: 999px;
-  background: $surface-2;
-  box-shadow: $shadow-sm;
-
-  button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 44px;
-    padding: 0.5rem 1.1rem;
-    border-radius: 999px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: $text-dim;
-    transition:
-      background $transition-fast,
-      color $transition-fast;
-
-    &.on {
-      background: $brand;
-      color: #fff;
-
-      .save {
-        background: rgba(255, 255, 255, 0.18);
-        color: #fff;
-      }
-    }
-  }
-
-  .save {
-    padding: 0.15rem 0.5rem;
-    border-radius: 999px;
-    background: #e3f4ea;
-    color: #1b7a43;
-    font-size: 0.74rem;
-    font-weight: 650;
-    white-space: nowrap;
-  }
-}
-
-// ── Pakete ──────────────────────────────────────
 .plan-grid {
   display: grid;
   gap: 1.5rem;
