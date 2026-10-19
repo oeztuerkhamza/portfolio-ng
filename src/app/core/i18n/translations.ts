@@ -51,18 +51,18 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
 
   // ---- Hero ----------------------------------------------------------------
   'home.hero.eyebrow': {
-    de: 'Digitalisierung für kleine Betriebe · Freiburg & Baden-Württemberg',
-    fr: 'Numérisation pour petites entreprises · Fribourg & Bade-Wurtemberg',
-    en: 'Digitalisation for small businesses · Freiburg & Baden-Württemberg',
-    tr: 'Küçük işletmeler için dijitalleşme · Freiburg & Baden-Württemberg',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk · Freiburg & Baden-Württemberg',
+    de: 'Webdesign & Webentwicklung · Freiburg, Ortenau & Südbaden',
+    fr: 'Webdesign & développement web · Fribourg, Ortenau & sud du Bade',
+    en: 'Web design & development · Freiburg, Ortenau & southern Baden',
+    tr: 'Web tasarım ve geliştirme · Freiburg, Ortenau ve Güney Baden',
+    ku: 'Sêwirana malperê û pêşvebirin · Freiburg, Ortenau û başûrê Badenê',
   },
   'home.hero.lede': {
-    de: 'Breisgau Digital macht kleine und mittlere Betriebe digital: NFC-Karten für mehr Google-Bewertungen, Websites, die Kunden bringen, und digitale Abläufe, die Zeit sparen. Persönlich vor Ort, zum Festpreis, aus einer Hand.',
-    fr: 'Breisgau Digital numérise les petites et moyennes entreprises : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et des processus numériques qui font gagner du temps. Sur place, à prix fixe, un seul interlocuteur.',
-    en: 'Breisgau Digital takes small and medium businesses digital: NFC cards for more Google reviews, websites that bring in customers, and digital workflows that save time. In person, at a fixed price, from one source.',
-    tr: 'Breisgau Digital küçük ve orta ölçekli işletmeleri dijitalleştirir: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve zaman kazandıran dijital iş akışları. Yerinde, sabit fiyatla, tek elden.',
-    ku: 'Breisgau Digital karsaziyên biçûk û navîn dîjîtal dike: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û pêvajoyên dîjîtal ku dem teserûf dikin. Li cih, bi bihayê sabît, ji destekî.',
+    de: 'Breisgau Digital entwirft und entwickelt Websites, Online-Shops und Web-Apps für Betriebe in Freiburg, der Ortenau und Südbaden — individuell programmiert statt Baukasten, bei Google gut auffindbar, zum Festpreis. Auf Wunsch dazu NFC-Bewertungskarten für mehr Google-Bewertungen.',
+    fr: 'Breisgau Digital conçoit et développe sites web, boutiques en ligne et applications web pour les entreprises de Fribourg, de l’Ortenau et du sud du Bade — développés sur mesure plutôt que sur kit, bien référencés sur Google, à prix fixe. En option : des cartes NFC pour plus d’avis Google.',
+    en: 'Breisgau Digital designs and builds websites, online shops and web apps for businesses in Freiburg, the Ortenau and southern Baden — custom-coded rather than template-based, easy to find on Google, at a fixed price. Optionally with NFC review cards for more Google reviews.',
+    tr: 'Breisgau Digital; Freiburg, Ortenau ve Güney Baden’deki işletmeler için web siteleri, online mağazalar ve web uygulamaları tasarlar ve geliştirir — hazır şablon değil özel kodlanmış, Google’da kolay bulunan, sabit fiyatlı. İsteğe bağlı olarak daha fazla Google yorumu için NFC kartlar.',
+    ku: 'Breisgau Digital ji bo karsaziyên li Freiburg, Ortenau û başûrê Badenê malper, firotgehên serhêl û sepanên malperê sêwirîne û pêş dixe — bi kodkirina taybet, ne bi şablon, li Google bi hêsanî tê dîtin, bi bihayê sabît. Bi daxwazê kartên NFC ji bo bêtir nirxandinên Google jî.',
   },
 
   // ---- Section: Stats ------------------------------------------------------
@@ -113,28 +113,28 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
 
   // ---- Section: CTA --------------------------------------------------------
   'home.cta.title': {
-    de: 'Wo hängt es<br /><em>in Ihrem Betrieb?</em>',
-    fr: 'Où ça coince<br /><em>dans votre entreprise ?</em>',
-    en: 'Where does it get stuck<br /><em>in your business?</em>',
-    tr: '<em>İşletmenizde</em><br />en çok nerede tıkanıyor?',
-    ku: 'Li ku derê<br /><em>di karsaziya we de asê dibe?</em>',
+    de: 'Welche Website<br /><em>braucht Ihr Betrieb?</em>',
+    fr: 'De quel site votre<br /><em>entreprise a-t-elle besoin ?</em>',
+    en: 'Which website does<br /><em>your business need?</em>',
+    tr: 'İşletmenizin<br /><em>nasıl bir web sitesine ihtiyacı var?</em>',
+    ku: 'Karsaziya we<br /><em>çi malperekê dixwaze?</em>',
   },
   'home.cta.text': {
-    de: 'Erzählen Sie uns, was im Alltag am meisten Zeit frisst. Das Erstgespräch ist unverbindlich und kostenlos — danach wissen Sie, was sich lohnt und was nicht.',
-    fr: 'Dites-nous ce qui prend le plus de temps au quotidien. Le premier échange est sans engagement et gratuit — vous saurez ensuite ce qui vaut le coup, et ce qui ne le vaut pas.',
-    en: 'Tell us what eats the most time in your day. The first conversation is free and without obligation — afterwards you’ll know what is worth doing and what isn’t.',
-    tr: 'Günlük işinizde en çok zaman alan şeyi anlatın. İlk görüşme ücretsiz ve bağlayıcı değil — sonrasında neyin değdiğini, neyin değmediğini bilirsiniz.',
-    ku: 'Ji me re bêjin çi di roja we de herî zêde wext dixwe. Axaftina yekem belaş û bê mecbûrî ye — piştî wê hûn dizanin çi hêjayî ye û çi na.',
+    de: 'Erzählen Sie uns, was Ihre Website leisten soll — mehr Anfragen, Online-Termine, ein Shop? Das Erstgespräch ist unverbindlich und kostenlos — danach wissen Sie, was sich lohnt und was nicht.',
+    fr: 'Dites-nous ce que votre site doit accomplir — plus de demandes, des rendez-vous en ligne, une boutique ? Le premier échange est gratuit et sans engagement — vous saurez ensuite ce qui vaut le coup, et ce qui ne le vaut pas.',
+    en: 'Tell us what your website should achieve — more enquiries, online appointments, a shop? The first conversation is free and without obligation — afterwards you’ll know what is worth doing and what isn’t.',
+    tr: 'Web sitenizden ne beklediğinizi anlatın — daha fazla talep, online randevu, bir mağaza? İlk görüşme ücretsiz ve bağlayıcı değil — sonrasında neyin değdiğini, neyin değmediğini bilirsiniz.',
+    ku: 'Ji me re bêjin hûn ji malpera xwe çi dixwazin — bêtir daxwaz, randevûyên serhêl, firotgeh? Axaftina yekem belaş û bê mecbûrî ye — piştî wê hûn dizanin çi hêjayî ye û çi na.',
   },
 
   // ---- Footer --------------------------------------------------------------
   'footer.col.direct': { de: 'Direkt', fr: 'Direct', en: 'Direct', tr: 'Doğrudan', ku: 'Rasterast' },
   'footer.tagline': {
-    de: 'Digitalisierung für kleine und mittlere Betriebe in Freiburg und Baden-Württemberg.<br />Bewertungskarten · Websites · Digital-Abo.',
-    fr: 'Numérisation pour les petites et moyennes entreprises à Fribourg et dans le Bade-Wurtemberg.<br />Cartes d’avis · Sites web · Abonnement numérique.',
-    en: 'Digitalisation for small and medium businesses in Freiburg and Baden-Württemberg.<br />Review cards · Websites · Digital plan.',
-    tr: 'Freiburg ve Baden-Württemberg’deki küçük ve orta ölçekli işletmeler için dijitalleşme.<br />Değerlendirme kartları · Web siteleri · Dijital abonelik.',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk û navîn li Freiburg û Baden-Württemberg.<br />Kartên nirxandinê · Malper · Abonetiya dîjîtal.',
+    de: 'Webdesign und Webentwicklung für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden.<br />Websites · Web-Apps · SEO · Bewertungskarten.',
+    fr: 'Webdesign et développement web pour les petites et moyennes entreprises à Fribourg, en Ortenau et dans le sud du Bade.<br />Sites web · Applications web · SEO · Cartes d’avis.',
+    en: 'Web design and development for small and medium businesses in Freiburg, the Ortenau and southern Baden.<br />Websites · Web apps · SEO · Review cards.',
+    tr: 'Freiburg, Ortenau ve Güney Baden’deki küçük ve orta ölçekli işletmeler için web tasarım ve geliştirme.<br />Web siteleri · Web uygulamaları · SEO · Değerlendirme kartları.',
+    ku: 'Sêwirana malperê û pêşvebirin ji bo karsaziyên biçûk û navîn li Freiburg, Ortenau û başûrê Badenê.<br />Malper · Sepanên malperê · SEO · Kartên nirxandinê.',
   },
   'footer.rights': {
     de: 'Alle Rechte vorbehalten', fr: 'Tous droits réservés', en: 'All rights reserved', tr: 'Tüm hakları saklıdır', ku: 'Hemû maf parastî ne',
@@ -493,28 +493,28 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
 
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
-    de: 'Webdesign Freiburg & Google-Bewertungskarten | Breisgau Digital',
-    fr: 'Breisgau Digital — sites web & cartes d’avis Google à Fribourg',
-    en: 'Breisgau Digital — websites & Google review cards in Freiburg',
-    tr: 'Breisgau Digital — Freiburg’da web siteleri ve Google değerlendirme kartları',
-    ku: 'Breisgau Digital — malper û kartên nirxandinê yên Google li Freiburg',
+    de: 'Webdesign & Webentwicklung Freiburg | IT-Agentur Breisgau Digital',
+    fr: 'Breisgau Digital — webdesign & développement web à Fribourg',
+    en: 'Breisgau Digital — web design & development in Freiburg',
+    tr: 'Breisgau Digital — Freiburg’da web tasarım ve geliştirme',
+    ku: 'Breisgau Digital — sêwirana malperê û pêşvebirin li Freiburg',
   },
   'seo.home.desc': {
-    de: 'Webdesign, Google-Bewertungskarten und digitale Abläufe für kleine Betriebe in Freiburg und Südbaden – persönlich vor Ort, Festpreis oder Monatsabo.',
-    fr: 'Numérisation des petites entreprises à Fribourg et dans le Bade-Wurtemberg : cartes NFC pour plus d’avis Google, sites web qui amènent des clients et processus numériques. Prix fixe, sur place.',
-    en: 'Digitalisation for small businesses in Freiburg and Baden-Württemberg: NFC review cards for more Google reviews, websites that bring in customers, and digital workflows. Fixed price, in person.',
-    tr: 'Freiburg ve Baden-Württemberg’deki küçük işletmeler için dijitalleşme: daha fazla Google yorumu için NFC kartlar, müşteri getiren web siteleri ve dijital iş akışları. Sabit fiyat, yerinde hizmet.',
-    ku: 'Dîjîtalkirin ji bo karsaziyên biçûk li Freiburg û Baden-Württemberg: kartên NFC ji bo bêtir nirxandinên Google, malperên ku xerîdaran tînin û pêvajoyên dîjîtal. Bihayê sabît, li cih.',
+    de: 'Webdesign, Webentwicklung & SEO für Betriebe in Freiburg, der Ortenau und Südbaden: individuelle Websites, Shops und Web-Apps zum Festpreis. Persönlich vor Ort.',
+    fr: 'Webdesign, développement web et SEO pour les entreprises de Fribourg, de l’Ortenau et du sud du Bade : sites sur mesure, boutiques et applications web à prix fixe. Sur place.',
+    en: 'Web design, development and SEO for businesses in Freiburg, the Ortenau and southern Baden: custom websites, shops and web apps at a fixed price. In person.',
+    tr: 'Freiburg, Ortenau ve Güney Baden’deki işletmeler için web tasarım, geliştirme ve SEO: özel web siteleri, mağazalar ve web uygulamaları, sabit fiyat. Yerinde hizmet.',
+    ku: 'Sêwirana malperê, pêşvebirin û SEO ji bo karsaziyên li Freiburg, Ortenau û başûrê Badenê: malper, firotgeh û sepanên malperê yên taybet, bi bihayê sabît. Li cih.',
   },
   'seo.leist.title': {
-    de: 'Website erstellen lassen in Freiburg | Breisgau Digital',
+    de: 'Webdesign & Website erstellen lassen in Freiburg | Breisgau Digital',
     fr: 'Services — site, processus & boutique pour PME | Breisgau Digital',
     en: 'Services — website, workflows & shop for SMEs | Breisgau Digital',
     tr: 'Hizmetler — KOBİ’ler için web sitesi, süreçler & mağaza | Breisgau Digital',
     ku: 'Xizmet — malper, pêvajo & firotgeh ji bo KOBÎyan | Breisgau Digital',
   },
   'seo.leist.desc': {
-    de: 'Website erstellen lassen in Freiburg: Webdesign, Relaunch, lokale Sichtbarkeit bei Google, Shop und Buchung – für kleine Betriebe in Südbaden, zum Festpreis.',
+    de: 'Website erstellen lassen in Freiburg: Webdesign, Webentwicklung, Relaunch, SEO, Shop und Buchung — für Betriebe in Freiburg, der Ortenau und Südbaden, zum Festpreis.',
     fr: 'Site et refonte, visibilité locale, processus numériques, boutique et réservation — prestations et déroulé pour les PME du sud du pays de Bade.',
     en: 'Website and relaunch, local visibility, digital workflows, shop and booking — services and process for small and medium businesses in southern Baden.',
     tr: 'Web sitesi ve yenileme, yerel görünürlük, dijital süreçler, mağaza ve rezervasyon — Güney Baden’deki KOBİ’ler için hizmetler ve süreç.',

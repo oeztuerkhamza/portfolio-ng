@@ -24,7 +24,7 @@ const PRODUCT_META: Record<ProductFocus, { title: string; link: string; icon: st
     price: () => `ab ${PRODUCTS.find((p) => p.id === 'cards')!.priceFrom} €`,
   },
   web: {
-    title: 'Website & Relaunch',
+    title: 'Webdesign, Entwicklung & SEO',
     link: '/de/leistungen',
     icon: 'monitor',
     price: () => `ab ${PRODUCTS.find((p) => p.id === 'web')!.priceFrom.toLocaleString('de-DE')} €`,
@@ -42,6 +42,8 @@ const PRODUCT_META: Record<ProductFocus, { title: string; link: string; icon: st
     price: () => `ab ${SUBSCRIPTION_PRICE_FROM} € / Monat`,
   },
 };
+
+const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
 
 /**
  * Ortsseite /de/webdesign/<ort>. Nur auf Deutsch, Inhalte aus towns.data.ts.
@@ -63,7 +65,7 @@ const PRODUCT_META: Record<ProductFocus, { title: string; link: string; icon: st
           <div class="sec-head town-head">
             <p class="section-label">{{ t.region }} · {{ t.district }}</p>
             <h1 class="section-title">
-              Webdesign &amp; Google-Bewertungen<br /><em>in {{ t.short }}</em>.
+              Webdesign &amp; Webentwicklung<br /><em>in {{ t.short }}</em>.
             </h1>
             <p class="section-subtitle">{{ t.intro }}</p>
             <ul class="chips town-facts">
@@ -145,7 +147,7 @@ const PRODUCT_META: Record<ProductFocus, { title: string; link: string; icon: st
           <div class="cta-box">
             <div>
               <h2 class="cta-title">Ihr Betrieb in {{ t.short }} — <em>sichtbar bei Google</em>.</h2>
-              <p class="cta-text">Rufen Sie an oder schreiben Sie uns. Im kostenlosen Erstgespräch schauen wir uns Ihr Google-Profil und Ihre Website gemeinsam an.</p>
+              <p class="cta-text">Rufen Sie an oder schreiben Sie uns. Im kostenlosen Erstgespräch schauen wir uns Ihre Website und Ihr Google-Profil gemeinsam an.</p>
             </div>
             <div class="cta-actions">
               <a routerLink="/de/contact" fragment="anfrage" class="btn btn-light btn-large">Erstgespräch anfragen <app-icon name="arrow" /></a>
@@ -166,8 +168,10 @@ export class TownComponent implements OnInit {
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
   readonly town: Town | undefined = townBySlug(inject(ActivatedRoute).snapshot.paramMap.get('town') ?? '');
-  readonly cards: Card[] = (this.town?.focus ?? [])
+  readonly cards: Card[] = [...(this.town?.focus ?? [])]
     .filter((id) => id !== 'sh' || SMART_HOME_ENABLED)
+    // Websites zuerst — danach das Abo, die Karten als Ergänzung.
+    .sort((a, b) => FOCUS_ORDER.indexOf(a) - FOCUS_ORDER.indexOf(b))
     .map((id) => ({
     id,
     title: PRODUCT_META[id].title,
@@ -186,13 +190,13 @@ export class TownComponent implements OnInit {
     }
     const path = `/webdesign/${t.slug}`;
     this.seo.update({
-      title: `Webdesign ${t.short} & Google-Bewertungen | Breisgau Digital`,
-      description: `Websites, NFC-Bewertungskarten und digitale Abläufe für Betriebe in ${t.short}${
+      title: t.seoTitle ?? `Webdesign & SEO ${t.short} – Webagentur | Breisgau Digital`,
+      description: `Webdesign, Webentwicklung und SEO für Betriebe in ${t.short}${
         t.km ? ` – persönlich vor Ort, ca. ${t.minutes} Min. ab Freiburg` : ' – persönlich vor Ort'
-      }. Festpreis oder Monatsabo, Erstgespräch kostenlos.`,
+      }. Individuelle Websites und Shops zum Festpreis, Erstgespräch kostenlos.`,
       path,
       langs: ['de'],
-      keywords: [`Webdesign ${t.short}`, `Website erstellen lassen ${t.short}`, `Google Bewertungen ${t.short}`, `Digitalagentur ${t.short}`],
+      keywords: [`Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Google Bewertungen ${t.short}`],
     });
     this.seo.setJsonLd('breadcrumb', breadcrumbSchema([
       { name: 'Start', path: '/de' },
@@ -201,10 +205,11 @@ export class TownComponent implements OnInit {
     this.seo.setJsonLd('town', {
       '@context': 'https://schema.org',
       '@type': 'Service',
-      name: `Webdesign, Google-Bewertungskarten und digitale Abläufe in ${t.name}`,
+      name: `Webdesign, Webentwicklung und SEO in ${t.name}`,
       // Smart Home nur, wenn wir es anbieten — siehe SMART_HOME_ENABLED.
       serviceType: [
         'Webdesign',
+        'Webentwicklung',
         'Google-Bewertungskarten',
         ...(SMART_HOME_ENABLED ? ['Smart Home'] : []),
         'Local SEO',

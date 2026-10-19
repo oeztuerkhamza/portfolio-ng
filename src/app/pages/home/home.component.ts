@@ -51,8 +51,10 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly stats = STATS;
   /**
    * Drei echte Kundenbetriebe aus drei Branchen — Fahrradhandel, Juwelier,
-   * Fotostudio. Alle drei laufen auf eigener Domain; Zerin Gold und Bike Haus
-   * haben ihre Bewertung öffentlich bei Google hinterlassen.
+   * Arztpraxis. Alle drei laufen auf eigener Domain; Zerin Gold und Bike Haus
+   * haben ihre Bewertung öffentlich bei Google hinterlassen. Die Referenzen
+   * stehen gleich hinter den Leistungen — bei Webentwicklung zählen
+   * Projekte, die im Betrieb laufen.
    */
   readonly references = ['bikehaus-freiburg', 'zerin-gold', 'praxis-gueltekin']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
@@ -100,11 +102,14 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
       description: this.i18n.t('seo.home.desc'),
       path: '/',
       keywords: [
-        'Digitalisierung Freiburg',
+        'Webdesign Freiburg',
+        'Webagentur Freiburg',
+        'IT-Agentur Freiburg',
+        'Webentwicklung Freiburg',
+        'Website erstellen lassen Freiburg',
+        'Webdesign Ortenau',
+        'SEO Südbaden',
         'Google Bewertungskarte Freiburg',
-        'NFC Bewertungskarte',
-        'Webseite erstellen lassen Freiburg',
-        'Digitalisierung kleine Unternehmen Baden-Württemberg',
       ],
     });
     this.seo.setJsonLd('breadcrumb', breadcrumbSchema([{ name: 'Start', path: '/' }]));

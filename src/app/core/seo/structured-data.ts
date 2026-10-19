@@ -18,7 +18,7 @@ export function personSchema(): Record<string, unknown> {
     jobTitle: 'Gründer & Full-Stack-Entwickler',
     worksFor: { '@id': `${ORIGIN}/#service` },
     description:
-      'Gründer von Breisgau Digital in Freiburg im Breisgau. Digitalisiert kleine und mittlere Betriebe: Google-Bewertungskarten, Websites und digitale Abläufe.',
+      'Gründer von Breisgau Digital in Freiburg im Breisgau. Entwirft und entwickelt Websites, Online-Shops und Web-Apps für kleine und mittlere Betriebe in Südbaden.',
     knowsAbout: [
       'Webentwicklung',
       'Webdesign',
@@ -62,7 +62,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
     url: ORIGIN,
     priceRange: '€€',
     description:
-      'Breisgau Digital digitalisiert kleine und mittlere Betriebe in Freiburg und Baden-Württemberg: NFC-Bewertungskarten für mehr Google-Bewertungen, Websites und Relaunch, digitale Abläufe sowie Shop und Buchung.',
+      'Breisgau Digital ist eine IT- und Webagentur in Freiburg: Webdesign, Webentwicklung, Relaunch und SEO, Online-Shops, Buchungssysteme und Web-Apps für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden — dazu NFC-Bewertungskarten für mehr Google-Bewertungen.',
     founder: { '@id': `${ORIGIN}/#person` },
     logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [

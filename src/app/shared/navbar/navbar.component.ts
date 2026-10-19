@@ -30,10 +30,10 @@ export class NavbarComponent {
     // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
     ...(SMART_HOME_ENABLED ? [{ path: '/smart-home', key: 'nav.smarthome' }] : []),
     { path: '/leistungen', key: 'nav.leistungen' },
+    { path: '/projects', key: 'nav.references' },
+    { path: '/abo', key: 'nav.abo' },
     { path: '/bewertungskarten', key: 'nav.cards' },
     { path: '/digitale-visitenkarte', key: 'nav.nfc' },
-    { path: '/abo', key: 'nav.abo' },
-    { path: '/projects', key: 'nav.references' },
     { path: '/ueber-uns', key: 'nav.about' },
   ];
 

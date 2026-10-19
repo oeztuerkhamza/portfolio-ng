@@ -54,25 +54,25 @@ export interface Product {
 }
 
 /**
- * Die drei Produkte der Startseite. Texte kommen aus `home.prod.<id>.*`.
+ * Die Produkte der Startseite — Websites zuerst, die Karten als Ergänzung. Texte kommen aus `home.prod.<id>.*`.
  * Die Fotos sind gerenderte Produktaufnahmen und können 1:1 durch echte
  * Fotos gleichen Namens (4:3, 1600 × 1200) ersetzt werden.
  */
 const ALL_PRODUCTS: Product[] = [
-  {
-    id: 'cards',
-    path: '/bewertungskarten',
-    image: '/assets/images/products/review-card.webp',
-    imageSmall: '/assets/images/products/review-card-800.webp',
-    priceFrom: Math.min(...REVIEW_CARD_PACKAGES.map((p) => p.price)),
-    featured: true,
-  },
   {
     id: 'web',
     path: '/leistungen',
     image: '/assets/images/products/website.webp',
     imageSmall: '/assets/images/products/website-800.webp',
     priceFrom: WEBSITE_PRICE_FROM,
+    featured: true,
+  },
+  {
+    id: 'cards',
+    path: '/bewertungskarten',
+    image: '/assets/images/products/review-card.webp',
+    imageSmall: '/assets/images/products/review-card-800.webp',
+    priceFrom: Math.min(...REVIEW_CARD_PACKAGES.map((p) => p.price)),
   },
   {
     id: 'sh',

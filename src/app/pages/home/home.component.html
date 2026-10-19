@@ -31,17 +31,17 @@
     <div class="hero-visual">
       <figure class="media-frame hero-photo">
         <img
-          src="/assets/images/products/review-card.webp"
-          srcset="/assets/images/products/review-card-800.webp 800w, /assets/images/products/review-card.webp 1600w"
+          src="/assets/images/products/website.webp"
+          srcset="/assets/images/products/website-800.webp 800w, /assets/images/products/website.webp 1600w"
           sizes="(max-width: 1024px) 100vw, 50vw"
           width="1600"
           height="1200"
           fetchpriority="high"
-          [alt]="i18n.t('home.prod.cards.alt')"
+          [alt]="i18n.t('home.prod.web.alt')"
         />
       </figure>
       <figure class="hero-thumb thumb-web">
-        <img src="/assets/images/products/website-800.webp" width="800" height="600" alt="" loading="lazy" />
+        <img src="/assets/images/products/review-card-800.webp" width="800" height="600" alt="" loading="lazy" />
       </figure>
       @if (smartHome) {
         <figure class="hero-thumb thumb-sh">
@@ -49,10 +49,10 @@
         </figure>
       }
       <p class="hero-chip">
-        <span class="chip-icon"><app-icon name="nfc" [stroke]="2" /></span>
+        <span class="chip-icon"><app-icon name="monitor" [stroke]="2" /></span>
         <span>
           <strong>{{ i18n.t('home.hero.badge') }}</strong>
-          <small>{{ i18n.t('home.prod.cards.title') }} · {{ i18n.tp('price.from', products[0].priceFrom) }}</small>
+          <small>{{ i18n.t('home.prod.web.title') }} · {{ i18n.tp('price.from', products[0].priceFrom) }}</small>
         </span>
       </p>
     </div>
@@ -124,9 +124,46 @@
 
 
 <!-- ────────────────────────────────────────────── -->
+<!-- REFERENZEN                                     -->
+<!-- ────────────────────────────────────────────── -->
+<section class="section" id="refs" data-reveal [class.in]="shown('refs')">
+  <div class="container">
+    <div class="sec-head sec-head-row">
+      <div>
+        <p class="section-label">{{ i18n.t('home.ref.label') }}</p>
+        <h2 class="section-title" [innerHTML]="i18n.t('home.ref.title')"></h2>
+      </div>
+      <a [routerLink]="'/projects' | localize" class="btn btn-secondary">
+        {{ i18n.t('home.ref.all') }}
+        <app-icon name="arrow" />
+      </a>
+    </div>
+
+    <ul class="ref-grid">
+      @for (project of references; track project.slug) {
+        <li class="reveal">
+          <a [routerLink]="['/projects', project.slug] | localize" class="ref-card">
+            <div class="ref-media">
+              <img [src]="project.image" [alt]="project.title" width="1440" height="900" loading="lazy" />
+            </div>
+            <div class="ref-body">
+              <p class="ref-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</p>
+              <h3>{{ project.title }}</h3>
+              <p class="ref-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
+              <span class="ref-more">{{ i18n.t('cta.read_case') }}</span>
+            </div>
+          </a>
+        </li>
+      }
+    </ul>
+  </div>
+</section>
+
+
+<!-- ────────────────────────────────────────────── -->
 <!-- WARUM WIR + ZAHLEN                             -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section" id="why" data-reveal [class.in]="shown('why')">
+<section class="section section-white" id="why" data-reveal [class.in]="shown('why')">
   <div class="container">
     <div class="why-layout">
       <header class="sec-head">
@@ -176,7 +213,7 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- BRANCHEN                                       -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section section-white" id="industries" data-reveal [class.in]="shown('industries')">
+<section class="section" id="industries" data-reveal [class.in]="shown('industries')">
   <div class="container">
     <header class="sec-head">
       <p class="section-label">{{ i18n.t('home.ind.label') }}</p>
@@ -198,7 +235,7 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- ABLAUF                                         -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section" id="process" data-reveal [class.in]="shown('process')">
+<section class="section section-white" id="process" data-reveal [class.in]="shown('process')">
   <div class="container">
     <header class="sec-head sec-head-center">
       <p class="section-label">{{ i18n.t('home.proc.label') }}</p>
@@ -219,43 +256,6 @@
         <app-icon name="arrow" />
       </a>
     </div>
-  </div>
-</section>
-
-
-<!-- ────────────────────────────────────────────── -->
-<!-- REFERENZEN                                     -->
-<!-- ────────────────────────────────────────────── -->
-<section class="section section-white" id="refs" data-reveal [class.in]="shown('refs')">
-  <div class="container">
-    <div class="sec-head sec-head-row">
-      <div>
-        <p class="section-label">{{ i18n.t('home.ref.label') }}</p>
-        <h2 class="section-title" [innerHTML]="i18n.t('home.ref.title')"></h2>
-      </div>
-      <a [routerLink]="'/projects' | localize" class="btn btn-secondary">
-        {{ i18n.t('home.ref.all') }}
-        <app-icon name="arrow" />
-      </a>
-    </div>
-
-    <ul class="ref-grid">
-      @for (project of references; track project.slug) {
-        <li class="reveal">
-          <a [routerLink]="['/projects', project.slug] | localize" class="ref-card">
-            <div class="ref-media">
-              <img [src]="project.image" [alt]="project.title" width="1440" height="900" loading="lazy" />
-            </div>
-            <div class="ref-body">
-              <p class="ref-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</p>
-              <h3>{{ project.title }}</h3>
-              <p class="ref-sub">{{ i18n.ptx(project.slug, 'subtitle', project.subtitle) }}</p>
-              <span class="ref-more">{{ i18n.t('cta.read_case') }}</span>
-            </div>
-          </a>
-        </li>
-      }
-    </ul>
   </div>
 </section>
 

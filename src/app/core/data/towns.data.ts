@@ -32,6 +32,8 @@ export interface Town {
   faqs: { q: string; a: string }[];
   /** Nachbarorte (Slugs) für interne Links. */
   near: string[];
+  /** Eigener <title>, wo die Suchanfragen von der Vorlage abweichen (Agentur, Region …). */
+  seoTitle?: string;
 }
 
 export const TOWNS: Town[] = [
@@ -67,6 +69,7 @@ export const TOWNS: Town[] = [
       },
     ],
     near: ['emmendingen', 'bad-krozingen', 'waldkirch', 'breisach'],
+    seoTitle: 'Webdesign & Webagentur Freiburg – Website erstellen lassen | Breisgau Digital',
   },
   {
     slug: 'emmendingen',
@@ -98,8 +101,13 @@ export const TOWNS: Town[] = [
         q: 'Lohnen sich Bewertungskarten für einen Handwerksbetrieb?',
         a: 'Gerade dort: Kunden sind nach einem guten Auftrag zufrieden, vergessen die Bewertung aber. Mit dem Schlüsselanhänger ist sie in 30 Sekunden erledigt, solange Sie noch vor Ort sind.',
       },
+      {
+        q: 'Machen Sie auch SEO in Emmendingen?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
     ],
     near: ['freiburg', 'waldkirch', 'lahr'],
+    seoTitle: 'Webdesign & SEO Emmendingen – Webagentur | Breisgau Digital',
   },
   {
     slug: 'waldkirch',
@@ -130,6 +138,10 @@ export const TOWNS: Town[] = [
       {
         q: 'Kommen Sie auch ins Simonswälder Tal oder nach Elzach?',
         a: 'Ja, das ganze Elztal gehört zu unserem Einzugsgebiet für Termine vor Ort.',
+      },
+      {
+        q: 'Machen Sie auch SEO in Waldkirch?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
     ],
     near: ['emmendingen', 'freiburg', 'titisee-neustadt'],
@@ -230,6 +242,10 @@ export const TOWNS: Town[] = [
         q: 'Kommen Sie auch ins Münstertal?',
         a: 'Ja, Staufen, Münstertal und das Umland besuchen wir regelmäßig vor Ort.',
       },
+      {
+        q: 'Machen Sie auch SEO in Staufen?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
     ],
     near: ['bad-krozingen', 'muellheim', 'freiburg'],
   },
@@ -296,8 +312,13 @@ export const TOWNS: Town[] = [
         q: 'Hilft eine französische Seite wirklich bei Kunden aus dem Elsass?',
         a: 'Ja: Google zeigt Nutzern bevorzugt Seiten in ihrer Sprache. Eine eigene französische Version mit passenden Suchbegriffen macht Sie für diese Kunden erst sichtbar.',
       },
+      {
+        q: 'Machen Sie auch SEO in Lörrach?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Wir denken dabei auch an Kundschaft aus dem Dreiländereck, etwa mit mehrsprachigen Seiten. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
     ],
     near: ['muellheim', 'bad-krozingen', 'freiburg'],
+    seoTitle: 'Webdesign & SEO Lörrach – Webdesigner | Breisgau Digital',
   },
   {
     slug: 'offenburg',
@@ -329,8 +350,17 @@ export const TOWNS: Town[] = [
         q: 'Betreuen Sie auch Lahr, Kehl oder Gengenbach?',
         a: 'Ja, die ganze Ortenau. Erstgespräche machen wir vor Ort, laufende Abstimmung meist per Video.',
       },
+      {
+        q: 'Machen Sie auch SEO in Offenburg?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Das gilt für die ganze Ortenau, von Kehl bis Hausach. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
+      {
+        q: 'Übernehmen Sie auch Hosting und Betreuung?',
+        a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
+      },
     ],
     near: ['lahr', 'emmendingen', 'freiburg'],
+    seoTitle: 'Webdesign & SEO Offenburg und Ortenau – Webagentur | Breisgau Digital',
   },
   {
     slug: 'lahr',
@@ -362,8 +392,17 @@ export const TOWNS: Town[] = [
         q: 'Machen Sie Termine vor Ort in Lahr?',
         a: 'Ja, Erstgespräch und Einrichtung gern bei Ihnen im Betrieb.',
       },
+      {
+        q: 'Machen Sie auch SEO in Lahr?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Ob Handwerk, Handel oder Dienstleistung: Gesucht wird meist „… Lahr“ oder „… Ortenau“, genau darauf bauen wir die Seiten. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
+      {
+        q: 'Übernehmen Sie auch Hosting und Betreuung?',
+        a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
+      },
     ],
     near: ['offenburg', 'emmendingen', 'freiburg'],
+    seoTitle: 'Webdesign & SEO Lahr – Webagentur mit Hosting | Breisgau Digital',
   },
   {
     slug: 'titisee-neustadt',
@@ -397,6 +436,7 @@ export const TOWNS: Town[] = [
       },
     ],
     near: ['freiburg', 'waldkirch', 'staufen'],
+    seoTitle: 'Webdesigner Titisee-Neustadt & Hochschwarzwald | Breisgau Digital',
   },
 ];
 
