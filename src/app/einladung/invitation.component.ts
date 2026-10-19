@@ -53,8 +53,11 @@ import {
 import { MusicService } from './music.service';
 import { RevealDirective } from './reveal.directive';
 import { SlideshowComponent } from './slideshow.component';
+import { registerInviteIcons } from './invite-icons';
 
 type Status = 'loading' | 'ready' | 'missing';
+
+registerInviteIcons();
 
 /**
  * Die Einladung, wie Gäste sie sehen: /einladung/<slug>.

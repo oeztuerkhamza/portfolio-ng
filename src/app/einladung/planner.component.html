@@ -1,0 +1,571 @@
+<div class="pl" [attr.lang]="hl()">
+  @switch (access()) {
+    @case ('loading') {
+      <div class="pl-state"><span class="pl-spinner" aria-hidden="true"></span></div>
+    }
+    @case ('key') {
+      <ng-container [ngTemplateOutlet]="keyForm" />
+    }
+    @case ('denied') {
+      <ng-container [ngTemplateOutlet]="keyForm" />
+    }
+    @case ('missing') {
+      <div class="pl-state">
+        <p>{{ g('ui.notfound') }}</p>
+        <a routerLink="/de/digitale-einladung" class="pl-btn">Breisgau Digital</a>
+      </div>
+    }
+    @case ('offline') {
+      <div class="pl-state">
+        <p>{{ t('h.error') }}</p>
+        <button type="button" class="pl-btn" (click)="retry()">↻</button>
+      </div>
+    }
+    @case ('ready') {
+      @let e = event()!;
+      @let p = plan()!;
+      @let s = stats();
+
+      <!-- ── Kopf ── -->
+      <header class="pl-head">
+        <div class="pl-head-title">
+          <span class="pl-swatch" [style.background]="theme().colors.accent" aria-hidden="true"></span>
+          <div>
+            <p class="pl-kicker">{{ t('h.title') }}</p>
+            <h1>{{ e.title }}</h1>
+            <p class="pl-sub">{{ date(e.date) }} · {{ t('kind.' + e.kind) }}</p>
+          </div>
+        </div>
+        <div class="pl-head-actions">
+          <span class="pl-save" [class.err]="saveState() === 'error'" aria-live="polite">
+            @switch (saveState()) {
+              @case ('saving') { {{ t('h.saving') }} }
+              @case ('saved') { <app-icon name="check" /> {{ t('h.saved') }} }
+              @case ('error') { {{ t('h.error') }} }
+            }
+          </span>
+          <div class="pl-seg" role="group" aria-label="Sprache">
+            @for (l of hostLangs; track l) {
+              <button type="button" [class.on]="hl() === l" (click)="setHostLang(l)">{{ l.toUpperCase() }}</button>
+            }
+          </div>
+          <a class="pl-btn" [routerLink]="['/einladung', slug]" target="_blank"><app-icon name="eye" /> {{ t('h.view') }}</a>
+        </div>
+      </header>
+
+      @if (demo) {
+        <div class="pl-demo">
+          <app-icon name="sparkle" /> {{ t('h.demo') }}
+          <button type="button" class="pl-link" (click)="resetDemo()">{{ t('h.reset') }}</button>
+        </div>
+      }
+
+      <!-- ── Reiter ── -->
+      <nav class="pl-tabs" role="tablist">
+        @for (tb of tabs; track tb.id) {
+          <button type="button" role="tab" [attr.aria-selected]="tab() === tb.id" [class.on]="tab() === tb.id" (click)="tab.set(tb.id)">
+            <app-icon [name]="tb.icon" /> <span>{{ t('tab.' + tb.id) }}</span>
+          </button>
+        }
+      </nav>
+
+      <main class="pl-main">
+        @switch (tab()) {
+          <!-- ══ Übersicht ══ -->
+          @case ('overview') {
+            <div class="pl-stats">
+              <div class="pl-stat pl-stat-big"><strong>{{ s.persons }}</strong><span>{{ t('s.persons') }}</span><small>{{ s.adults }} {{ t('s.adults') }} · {{ s.children }} {{ t('s.children') }}</small></div>
+              <div class="pl-stat ok"><strong>{{ s.yes }}</strong><span>{{ t('s.yes') }}</span></div>
+              <div class="pl-stat maybe"><strong>{{ s.maybe }}</strong><span>{{ t('s.maybe') }}</span></div>
+              <div class="pl-stat no"><strong>{{ s.no }}</strong><span>{{ t('s.no') }}</span></div>
+              <div class="pl-stat"><strong>{{ s.open }}</strong><span>{{ t('s.open') }}</span></div>
+              <div class="pl-stat"><strong>{{ daysLeft() }}</strong><span>{{ t('s.days') }}</span></div>
+            </div>
+
+            @if (s.total) {
+              <div class="pl-bar" aria-hidden="true">
+                <span class="ok" [style.flex]="s.yes"></span>
+                <span class="maybe" [style.flex]="s.maybe"></span>
+                <span class="no" [style.flex]="s.no"></span>
+                <span class="open" [style.flex]="s.open"></span>
+              </div>
+            }
+
+            <div class="pl-cols">
+              <section class="pl-card">
+                <h2>{{ t('s.share') }}</h2>
+                <div class="pl-share">
+                  <div class="pl-qr" [innerHTML]="shareQr()"></div>
+                  <div class="pl-share-body">
+                    <code class="pl-url">{{ inviteUrl() }}</code>
+                    <div class="pl-row">
+                      <button type="button" class="pl-btn" (click)="copy('url', inviteUrl())"><app-icon [name]="copied() === 'url' ? 'check' : 'copy'" /> {{ t('s.copylink') }}</button>
+                      <a class="pl-btn pl-btn-wa" [href]="shareWa()" target="_blank" rel="noopener"><app-icon name="chat" /> WhatsApp</a>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="pl-card">
+                <h2>{{ t('s.next') }}</h2>
+                <div class="pl-progress"><span [style.width.%]="taskStats().pct"></span></div>
+                <p class="pl-muted">{{ taskStats().done }} / {{ taskStats().total }} {{ t('s.tasks') }}</p>
+                <ul class="pl-list">
+                  @for (task of taskStats().next; track task.id) {
+                    <li><span>{{ task.title || '—' }}</span><small [class.late]="overdue(task.due)">{{ dueText(task.due) }}</small></li>
+                  } @empty {
+                    <li class="pl-muted">{{ t('s.none') }}</li>
+                  }
+                </ul>
+              </section>
+
+              <section class="pl-card">
+                <h2>{{ t('s.menu') }}</h2>
+                <ul class="pl-list">
+                  @for (m of s.menus; track m.m) {
+                    <li><span>{{ g('menu.' + m.m) }}</span><strong>{{ m.n }}</strong></li>
+                  } @empty {
+                    <li class="pl-muted">{{ t('s.none') }}</li>
+                  }
+                </ul>
+                <h3>{{ t('s.allergies') }}</h3>
+                <ul class="pl-list">
+                  @for (a of s.allergies; track $index) {
+                    <li><span>{{ a.name }}</span><small>{{ a.text }}</small></li>
+                  } @empty {
+                    <li class="pl-muted">{{ t('s.none') }}</li>
+                  }
+                </ul>
+              </section>
+
+              <section class="pl-card">
+                <h2>{{ t('s.songs') }}</h2>
+                <ul class="pl-list">
+                  @for (x of s.songs; track $index) {
+                    <li><span>{{ x.text }}</span><small>{{ x.name }}</small></li>
+                  } @empty {
+                    <li class="pl-muted">{{ t('s.none') }}</li>
+                  }
+                </ul>
+              </section>
+
+              <section class="pl-card pl-wide">
+                <h2>{{ t('s.messages') }}</h2>
+                <div class="pl-msgs">
+                  @for (m of s.messages; track $index) {
+                    <blockquote><p>„{{ m.text }}"</p><cite>{{ m.name }}</cite></blockquote>
+                  } @empty {
+                    <p class="pl-muted">{{ t('s.none') }}</p>
+                  }
+                </div>
+              </section>
+            </div>
+          }
+
+          <!-- ══ Gäste ══ -->
+          @case ('guests') {
+            <form class="pl-add" (submit)="addGuest($event)">
+              <input type="text" [placeholder]="t('g.name')" [value]="newName()" (input)="newName.set($any($event.target).value)" maxlength="120" />
+              <input type="text" [placeholder]="t('g.group')" [value]="newGroup()" (input)="newGroup.set($any($event.target).value)" maxlength="60" list="pl-groups" />
+              <datalist id="pl-groups">
+                @for (gr of groups(); track gr) {
+                  <option [value]="gr"></option>
+                }
+              </datalist>
+              <button type="submit" class="pl-btn pl-btn-primary"><app-icon name="plus" /> {{ t('g.add') }}</button>
+            </form>
+
+            <div class="pl-toolbar">
+              <input type="search" class="pl-search" [placeholder]="t('g.search')" [value]="search()" (input)="search.set($any($event.target).value)" />
+              <div class="pl-seg">
+                <button type="button" [class.on]="filter() === 'all'" (click)="filter.set('all')">{{ t('g.all') }} {{ s.total }}</button>
+                @for (st of statuses; track st) {
+                  <button type="button" [class.on]="filter() === st" (click)="filter.set(st)">{{ statusLabel(st) }}</button>
+                }
+              </div>
+              <button type="button" class="pl-btn" (click)="exportCsv()"><app-icon name="download" /> {{ t('g.csv') }}</button>
+            </div>
+
+            <div class="pl-guests">
+              @for (gu of visibleGuests(); track gu.id) {
+                <div class="pl-guest" [class.open]="openGuest() === gu.id" [attr.data-status]="gu.status">
+                  <div class="pl-guest-main">
+                    <input class="pl-guest-name" type="text" [value]="gu.name" (change)="updateGuest(gu, { name: $any($event.target).value })" [attr.aria-label]="t('g.name')" />
+                    <span class="pl-guest-group">{{ gu.group }}</span>
+                    <select [value]="gu.status" (change)="updateGuest(gu, { status: $any($event.target).value })" [attr.aria-label]="t('g.status')" class="pl-status">
+                      @for (st of statuses; track st) {
+                        <option [value]="st" [selected]="gu.status === st">{{ statusLabel(st) }}</option>
+                      }
+                    </select>
+                    <span class="pl-guest-n" [title]="t('s.adults') + ' / ' + t('s.children')">{{ gu.adults }}+{{ gu.children }}</span>
+                    <span class="pl-guest-menu">{{ menuLabel(gu.menu) }}</span>
+                    <button type="button" class="pl-icon" (click)="openGuest.set(openGuest() === gu.id ? null : gu.id)" [attr.aria-expanded]="openGuest() === gu.id" [attr.aria-label]="t('g.details')"><app-icon name="chevron" /></button>
+                  </div>
+                  @if (openGuest() === gu.id) {
+                    <div class="pl-guest-more">
+                      <label>{{ t('s.adults') }}<input type="number" min="0" max="20" [value]="gu.adults" (change)="updateGuest(gu, { adults: num($any($event.target).value) })" /></label>
+                      <label>{{ t('s.children') }}<input type="number" min="0" max="20" [value]="gu.children" (change)="updateGuest(gu, { children: num($any($event.target).value) })" /></label>
+                      <label>{{ t('g.menu') }}
+                        <select (change)="updateGuest(gu, { menu: $any($event.target).value })">
+                          <option value="" [selected]="!gu.menu">—</option>
+                          @for (m of menus; track m) {
+                            <option [value]="m" [selected]="gu.menu === m">{{ g('menu.' + m) }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label>{{ t('g.group') }}<input type="text" [value]="gu.group ?? ''" (change)="updateGuest(gu, { group: $any($event.target).value })" list="pl-groups" /></label>
+                      <label>{{ t('g.phone') }}<input type="tel" [value]="gu.phone ?? ''" (change)="updateGuest(gu, { phone: $any($event.target).value })" /></label>
+                      <label>{{ t('g.table') }}
+                        <select (change)="updateGuest(gu, { table: $any($event.target).value || undefined })">
+                          <option value="" [selected]="!gu.table">—</option>
+                          @for (tb of p.tables; track tb.id) {
+                            <option [value]="tb.id" [selected]="gu.table === tb.id">{{ tb.name }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label class="pl-span2">{{ g('rsvp.allergies') }}<input type="text" [value]="gu.allergies ?? ''" (change)="updateGuest(gu, { allergies: $any($event.target).value })" /></label>
+                      <label class="pl-span2">{{ t('g.note') }}<input type="text" [value]="gu.note ?? ''" (change)="updateGuest(gu, { note: $any($event.target).value })" /></label>
+                      @if (gu.song) {
+                        <p class="pl-span2"><strong>♪</strong> {{ gu.song }}</p>
+                      }
+                      @if (gu.message) {
+                        <p class="pl-span2 pl-quote">„{{ gu.message }}"</p>
+                      }
+                      <div class="pl-row pl-span-all">
+                        <button type="button" class="pl-btn" (click)="copy('g-' + gu.id, guestLink(gu))"><app-icon [name]="copied() === 'g-' + gu.id ? 'check' : 'link'" /> {{ t('g.link') }}</button>
+                        <a class="pl-btn pl-btn-wa" [href]="guestWa(gu)" target="_blank" rel="noopener"><app-icon name="chat" /> {{ t('g.wa') }}</a>
+                        <button type="button" class="pl-btn pl-btn-danger" (click)="removeGuest(gu)"><app-icon name="trash" /> {{ t('g.delete') }}</button>
+                      </div>
+                    </div>
+                  }
+                </div>
+              } @empty {
+                <p class="pl-empty">{{ t('g.empty') }}</p>
+              }
+            </div>
+          }
+
+          <!-- ══ Sitzplan ══ -->
+          @case ('seating') {
+            <div class="pl-toolbar">
+              <p class="pl-muted pl-grow">{{ t('seat.hint') }}</p>
+              <button type="button" class="pl-btn" (click)="print()"><app-icon name="download" /> {{ t('seat.print') }}</button>
+              <button type="button" class="pl-btn pl-btn-primary" (click)="addTable()"><app-icon name="plus" /> {{ t('seat.add') }}</button>
+            </div>
+            <div class="pl-seating">
+              <aside class="pl-card pl-unseated" (dragover)="$event.preventDefault()" (drop)="onDrop($event, undefined)">
+                <h2>{{ t('seat.unseated') }} <small>{{ unseated().length }}</small></h2>
+                <div class="pl-chips">
+                  @for (gu of unseated(); track gu.id) {
+                    <button type="button" class="pl-chip" [class.on]="picked() === gu.id" draggable="true" (dragstart)="onDragStart($event, gu)" (click)="pick(gu)">
+                      {{ gu.name }} <small>{{ gu.adults + gu.children }}</small>
+                    </button>
+                  } @empty {
+                    <p class="pl-muted">✓</p>
+                  }
+                </div>
+              </aside>
+              <div class="pl-tables">
+                @for (tb of p.tables; track tb.id) {
+                  @let n = seatCount(tb.id);
+                  <div class="pl-table" [class.full]="n >= tb.seats" [class.target]="!!picked()" (click)="picked() && seat(tb.id)" (dragover)="$event.preventDefault()" (drop)="onDrop($event, tb.id)">
+                    <div class="pl-table-head">
+                      <input type="text" [value]="tb.name" (click)="$event.stopPropagation()" (change)="setP('tables.' + $index + '.name', val($event))" />
+                      <button type="button" class="pl-icon" (click)="$event.stopPropagation(); removeTable(tb.id)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                    </div>
+                    <div class="pl-round" aria-hidden="true"><strong>{{ n }}</strong>/{{ tb.seats }}</div>
+                    <label class="pl-seats" (click)="$event.stopPropagation()">{{ t('seat.seats') }}
+                      <input type="number" min="1" max="40" [value]="tb.seats" (change)="setP('tables.' + $index + '.seats', num(val($event), 1))" />
+                    </label>
+                    <ul>
+                      @for (gu of seated(tb.id); track gu.id) {
+                        <li draggable="true" (dragstart)="onDragStart($event, gu)">
+                          <span>{{ gu.name }} <small>{{ gu.adults + gu.children }}</small></span>
+                          <button type="button" class="pl-x" (click)="$event.stopPropagation(); seat(undefined, gu.id)" [attr.aria-label]="t('seat.remove')">×</button>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+              </div>
+            </div>
+          }
+
+          <!-- ══ Checkliste ══ -->
+          @case ('tasks') {
+            <div class="pl-toolbar">
+              <div class="pl-progress pl-grow"><span [style.width.%]="taskStats().pct"></span></div>
+              <span class="pl-muted">{{ taskStats().done }} / {{ taskStats().total }}</span>
+              <button type="button" class="pl-btn" (click)="loadTemplate()"><app-icon name="list" /> {{ t('t.template') }}</button>
+              <button type="button" class="pl-btn pl-btn-primary" (click)="addTask()"><app-icon name="plus" /> {{ t('t.add') }}</button>
+            </div>
+            <ul class="pl-tasks">
+              @for (task of sortedTasks(); track task.id) {
+                <li [class.done]="task.done" [class.late]="!task.done && overdue(task.due)">
+                  <input type="checkbox" [checked]="task.done" (change)="editTask(task.id, { done: $any($event.target).checked })" [attr.aria-label]="task.title" />
+                  <input type="text" class="pl-grow" [value]="task.title" (change)="editTask(task.id, { title: $any($event.target).value })" />
+                  <input type="date" [value]="task.due ?? ''" (change)="editTask(task.id, { due: $any($event.target).value || undefined })" [attr.aria-label]="t('t.due')" />
+                  @if (!task.done && overdue(task.due)) {
+                    <small class="pl-late">{{ t('t.overdue') }}</small>
+                  }
+                  <button type="button" class="pl-icon" (click)="removeTask(task.id)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </li>
+              } @empty {
+                <li class="pl-empty">{{ t('s.none') }}</li>
+              }
+            </ul>
+          }
+
+          <!-- ══ Budget ══ -->
+          @case ('budget') {
+            @let b = budget();
+            <div class="pl-stats">
+              <label class="pl-stat pl-stat-input">
+                <span>{{ t('b.total') }}</span>
+                <input type="number" min="0" step="100" [value]="p.budgetTotal" (change)="setP('budgetTotal', num(val($event)))" />
+              </label>
+              <div class="pl-stat"><strong>{{ fmt(b.planned) }} €</strong><span>{{ t('b.planned') }}</span></div>
+              <div class="pl-stat ok"><strong>{{ fmt(b.paid) }} €</strong><span>{{ t('b.paid') }}</span></div>
+              <div class="pl-stat" [class.no]="b.left < 0"><strong>{{ fmt(b.left) }} €</strong><span>{{ t('b.left') }}</span></div>
+              <div class="pl-stat"><strong>{{ fmt(b.perGuest) }} €</strong><span>{{ t('b.perGuest') }}</span></div>
+            </div>
+            <div class="pl-progress pl-progress-lg" [class.over]="b.left < 0"><span [style.width.%]="b.pct"></span></div>
+            <div class="pl-budget">
+              <div class="pl-budget-row pl-budget-head">
+                <span>{{ t('b.item') }}</span><span>{{ t('b.planned') }}</span><span>{{ t('b.paid') }}</span><span></span>
+              </div>
+              @for (it of p.budget; track it.id) {
+                <div class="pl-budget-row">
+                  <input type="text" [value]="it.item" (change)="editBudget(it.id, { item: $any($event.target).value })" [attr.aria-label]="t('b.item')" />
+                  <input type="number" min="0" [value]="it.planned" (change)="editBudget(it.id, { planned: num($any($event.target).value) })" [attr.aria-label]="t('b.planned')" />
+                  <input type="number" min="0" [value]="it.paid" (change)="editBudget(it.id, { paid: num($any($event.target).value) })" [attr.aria-label]="t('b.paid')" />
+                  <button type="button" class="pl-icon" (click)="removeBudget(it.id)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </div>
+              }
+              <button type="button" class="pl-btn" (click)="addBudget()"><app-icon name="plus" /> {{ t('b.add') }}</button>
+            </div>
+          }
+
+          <!-- ══ Fotos ══ -->
+          @case ('photos') {
+            <div class="pl-toolbar">
+              <label class="pl-switch">
+                <input type="checkbox" [checked]="e.guestUploads" (change)="setE('guestUploads', checked($event))" />
+                <span>{{ t('p.allow') }}</span>
+              </label>
+              <span class="pl-grow"></span>
+              <button type="button" class="pl-btn" (click)="slideshow.set(true)"><app-icon name="play" /> {{ t('p.slideshow') }}</button>
+              <label class="pl-btn pl-btn-primary pl-file">
+                <app-icon name="upload" /> {{ upBusy() ? '…' : t('p.upload') }}
+                <input type="file" accept="image/*" multiple (change)="uploadOwn($any($event.target))" [disabled]="upBusy()" />
+              </label>
+            </div>
+
+            <h2 class="pl-h2">{{ t('p.own') }}</h2>
+            <div class="pl-photos">
+              @if (e.heroImage) {
+                <figure class="pl-photo is-hero">
+                  <img [src]="e.heroImage" alt="" loading="lazy" />
+                  <figcaption>★ {{ t('p.hero') }}</figcaption>
+                </figure>
+              }
+              @for (url of e.gallery; track url) {
+                <figure class="pl-photo">
+                  <img [src]="url" alt="" loading="lazy" />
+                  <figcaption>
+                    <button type="button" (click)="setHero(url)">★ {{ t('p.hero') }}</button>
+                    <button type="button" (click)="removeOwn(url)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                  </figcaption>
+                </figure>
+              }
+            </div>
+
+            <h2 class="pl-h2">{{ t('p.guests') }} <small>{{ photos().length }}</small></h2>
+            <div class="pl-photos">
+              @for (ph of guestPhotos(); track ph.id) {
+                <figure class="pl-photo" [class.hidden]="ph.hidden">
+                  <img [src]="ph.url" alt="" loading="lazy" />
+                  <figcaption>
+                    <span>{{ ph.by }}</span>
+                    <button type="button" (click)="togglePhoto(ph)">{{ ph.hidden ? t('p.show') : t('p.hide') }}</button>
+                    <button type="button" (click)="setHero(ph.url)">★</button>
+                    <button type="button" (click)="deletePhoto(ph)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                  </figcaption>
+                </figure>
+              } @empty {
+                <p class="pl-empty">{{ g('photo.empty') }}</p>
+              }
+            </div>
+            @if (slideshow()) {
+              <app-slideshow [slides]="slides()" [label]="e.title" [empty]="g('photo.empty')" [closeLabel]="g('ui.close')" (close)="slideshow.set(false)" />
+            }
+          }
+
+          <!-- ══ Einladung bearbeiten ══ -->
+          @case ('settings') {
+            <div class="pl-textlang">
+              <span>{{ t('set.textLang') }}</span>
+              <div class="pl-seg">
+                @for (l of e.langs; track l) {
+                  <button type="button" [class.on]="textLang() === l" (click)="textLang.set(l)">{{ l.toUpperCase() }}</button>
+                }
+              </div>
+            </div>
+
+            <section class="pl-card">
+              <h2>{{ t('set.basics') }}</h2>
+              <div class="pl-form">
+                <label class="pl-span2">{{ t('set.title') }}<input type="text" [value]="e.title" (change)="setE('title', val($event))" maxlength="120" /></label>
+                <label>{{ t('set.kind') }}
+                  <select (change)="setE('kind', val($event))">
+                    @for (k of kinds; track k) {
+                      <option [value]="k" [selected]="e.kind === k">{{ t('kind.' + k) }}</option>
+                    }
+                  </select>
+                </label>
+                <label>{{ t('set.date') }}<input type="datetime-local" [value]="dateInput()" (change)="setDate($any($event.target).value)" /></label>
+                <label>{{ t('set.rsvpUntil') }}<input type="date" [value]="e.rsvpUntil ?? ''" (change)="setE('rsvpUntil', val($event) || undefined)" /></label>
+                <label class="pl-span2">{{ t('set.hosts') }}<input type="text" [value]="lt(e.hosts)" [placeholder]="placeholder(e.hosts)" (change)="setLtE('hosts', val($event))" /></label>
+                <label class="pl-span-all">{{ t('set.welcome') }}<textarea rows="3" [value]="lt(e.welcome)" [placeholder]="placeholder(e.welcome)" (change)="setLtE('welcome', val($event))"></textarea></label>
+                <label class="pl-span-all">{{ t('set.story') }}<textarea rows="5" [value]="lt(e.story)" [placeholder]="placeholder(e.story)" (change)="setLtE('story', val($event))"></textarea></label>
+                <label class="pl-span-all">{{ t('set.dress') }}<input type="text" [value]="lt(e.dressCode)" [placeholder]="placeholder(e.dressCode)" (change)="setLtE('dressCode', val($event))" /></label>
+              </div>
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.look') }}</h2>
+              <div class="pl-themes">
+                @for (th of themes; track th.id) {
+                  <button type="button" class="pl-theme" [class.on]="e.theme === th.id" (click)="setTheme(th.id)" [style.--a]="th.colors.bg" [style.--b]="th.colors.accent" [style.--c]="th.colors.ink">
+                    <span class="pl-theme-prev" aria-hidden="true"><i></i></span>
+                    <strong>{{ th.name[hl()] }}</strong>
+                  </button>
+                }
+              </div>
+              <p class="pl-label">{{ g('ui.music') }}</p>
+              <div class="pl-chips">
+                @for (m of musicIds; track m) {
+                  <button type="button" class="pl-chip" [class.on]="e.music === m" (click)="previewMusic(m)">{{ g('music.' + m) }}</button>
+                }
+                @if (music.playing()) {
+                  <button type="button" class="pl-chip" (click)="music.stop()">■ {{ g('music.off') }}</button>
+                }
+              </div>
+              <label class="pl-field">{{ t('set.musicUrl') }}<input type="url" placeholder="https://…/song.mp3" [value]="e.musicUrl ?? ''" (change)="setE('musicUrl', val($event).trim() || undefined)" /></label>
+              <p class="pl-label">{{ t('set.langs') }}</p>
+              <div class="pl-chips">
+                @for (l of allLangs; track l) {
+                  <button type="button" class="pl-chip" [class.on]="e.langs.includes(l)" (click)="toggleLang(l)">{{ langNames[l] }}</button>
+                }
+              </div>
+              <p class="pl-label">{{ t('set.sections') }}</p>
+              <div class="pl-chips">
+                @for (k of sectionKeys(); track k) {
+                  <label class="pl-chip pl-check"><input type="checkbox" [checked]="e.sections[k]" (change)="setE('sections.' + k, checked($event))" /> {{ t('sec.' + k) }}</label>
+                }
+              </div>
+              <p class="pl-label">{{ t('set.rsvp') }}</p>
+              <div class="pl-chips">
+                <label class="pl-chip pl-check"><input type="checkbox" [checked]="e.rsvp.menu" (change)="setE('rsvp.menu', checked($event))" /> {{ t('set.menu') }}</label>
+                <label class="pl-chip pl-check"><input type="checkbox" [checked]="e.rsvp.song" (change)="setE('rsvp.song', checked($event))" /> {{ t('set.song') }}</label>
+                <label class="pl-chip pl-check">{{ t('set.max') }} <input type="number" min="1" max="20" class="pl-mini" [value]="e.rsvp.maxPersons" (change)="setE('rsvp.maxPersons', num(val($event), 1))" /></label>
+              </div>
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.schedule') }}</h2>
+              @for (it of e.schedule; track $index) {
+                <div class="pl-item">
+                  <input type="time" class="pl-time" [value]="it.time" (change)="setE('schedule.' + $index + '.time', val($event))" [attr.aria-label]="t('f.time')" />
+                  <input type="text" class="pl-grow" [value]="lt(it.title)" [placeholder]="placeholder(it.title) || t('f.what')" (change)="setLtE('schedule.' + $index + '.title', val($event))" />
+                  <select (change)="setE('schedule.' + $index + '.icon', val($event))">
+                    @for (ic of scheduleIcons; track ic) {
+                      <option [value]="ic" [selected]="it.icon === ic">{{ ic }}</option>
+                    }
+                  </select>
+                  <select (change)="setE('schedule.' + $index + '.location', val($event) || undefined)">
+                    <option value="">—</option>
+                    @for (loc of e.locations; track loc.id) {
+                      <option [value]="loc.id" [selected]="it.location === loc.id">{{ loc.name || placeholder(loc.label) }}</option>
+                    }
+                  </select>
+                  <button type="button" class="pl-icon" (click)="removeAt('schedule', $index)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </div>
+              }
+              <button type="button" class="pl-btn" (click)="addScheduleItem()"><app-icon name="plus" /> {{ t('set.addItem') }}</button>
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.locations') }}</h2>
+              @for (loc of e.locations; track loc.id) {
+                <div class="pl-item pl-item-wrap">
+                  <input type="text" [value]="lt(loc.label)" [placeholder]="placeholder(loc.label) || t('f.label')" (change)="setLtE('locations.' + $index + '.label', val($event))" />
+                  <input type="text" [value]="loc.name" [placeholder]="t('f.place')" (change)="setE('locations.' + $index + '.name', val($event))" />
+                  <input type="text" class="pl-grow" [value]="loc.address" [placeholder]="t('f.address')" (change)="setAddress($index, val($event))" />
+                  <button type="button" class="pl-icon" (click)="removeAt('locations', $index)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </div>
+              }
+              <button type="button" class="pl-btn" (click)="addLocation()"><app-icon name="plus" /> {{ t('set.addLoc') }}</button>
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.gifts') }}</h2>
+              <div class="pl-form">
+                <label>{{ g('gift.holder') }}<input type="text" [value]="e.gifts?.accountHolder ?? ''" (change)="setGift('accountHolder', $any($event.target).value)" /></label>
+                <label>IBAN<input type="text" dir="ltr" [value]="e.gifts?.iban ?? ''" (change)="setGift('iban', $any($event.target).value)" [class.bad]="ibanBad()" /></label>
+                <label>BIC<input type="text" dir="ltr" [value]="e.gifts?.bic ?? ''" (change)="setGift('bic', $any($event.target).value)" /></label>
+                <label>PayPal.me<input type="text" dir="ltr" placeholder="name" [value]="e.gifts?.paypal ?? ''" (change)="setGift('paypal', $any($event.target).value)" /></label>
+                <label class="pl-span2">{{ g('gift.reference') }}<input type="text" [value]="e.gifts?.reference ?? ''" (change)="setGift('reference', $any($event.target).value)" /></label>
+                <label class="pl-span-all">{{ g('gift.title') }}<textarea rows="2" [value]="lt(e.gifts?.text)" [placeholder]="g('gift.default')" (change)="setLtE('gifts.text', val($event))"></textarea></label>
+              </div>
+              @if (ibanBad()) {
+                <p class="pl-err">{{ t('set.ibanBad') }}</p>
+              }
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.contacts') }}</h2>
+              @for (c of e.contacts; track $index) {
+                <div class="pl-item">
+                  <input type="text" [value]="lt(c.role)" [placeholder]="placeholder(c.role) || t('f.role')" (change)="setLtE('contacts.' + $index + '.role', val($event))" />
+                  <input type="text" class="pl-grow" [value]="c.name" [placeholder]="t('g.name')" (change)="setE('contacts.' + $index + '.name', val($event))" />
+                  <input type="tel" [value]="c.phone ?? ''" [placeholder]="t('g.phone')" (change)="setE('contacts.' + $index + '.phone', val($event))" />
+                  <button type="button" class="pl-icon" (click)="removeAt('contacts', $index)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </div>
+              }
+              <button type="button" class="pl-btn" (click)="addContact()"><app-icon name="plus" /> {{ t('set.addContact') }}</button>
+            </section>
+
+            <section class="pl-card">
+              <h2>{{ t('set.faq') }}</h2>
+              @for (f of e.faq; track $index) {
+                <div class="pl-item pl-item-wrap">
+                  <input type="text" class="pl-grow" [value]="lt(f.q)" [placeholder]="placeholder(f.q) || t('f.question')" (change)="setLtE('faq.' + $index + '.q', val($event))" />
+                  <button type="button" class="pl-icon" (click)="removeAt('faq', $index)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                  <textarea rows="2" class="pl-full" [value]="lt(f.a)" [placeholder]="placeholder(f.a) || t('f.answer')" (change)="setLtE('faq.' + $index + '.a', val($event))"></textarea>
+                </div>
+              }
+              <button type="button" class="pl-btn" (click)="addFaq()"><app-icon name="plus" /> {{ t('set.addFaq') }}</button>
+            </section>
+          }
+        }
+      </main>
+    }
+  }
+</div>
+
+<ng-template #keyForm>
+  <div class="pl-state">
+    <form class="pl-card pl-key" (submit)="submitKey($event)">
+      <h1>{{ t('h.title') }}</h1>
+      <p class="pl-muted">{{ t('h.key.hint') }}</p>
+      <label class="pl-field">{{ t('h.key') }}
+        <input type="password" autocomplete="current-password" [value]="keyInput()" (input)="keyInput.set($any($event.target).value)" />
+      </label>
+      @if (access() === 'denied') {
+        <p class="pl-err">{{ t('h.key.wrong') }}</p>
+      }
+      <button type="submit" class="pl-btn pl-btn-primary">{{ t('h.key.go') }}</button>
+    </form>
+  </div>
+</ng-template>

@@ -4,5 +4,7 @@ Disallow: /admin
 Disallow: /api/
 Disallow: /r/
 Disallow: /*/bestellen
+# Einladungen sind private Seiten der Gastgeber (und tragen noindex).
+Disallow: /einladung/
 
 Sitemap: https://breisgau-digital.de/sitemap.xml

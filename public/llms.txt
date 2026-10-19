@@ -1,0 +1,33 @@
+# Breisgau Digital
+
+> IT- und Webagentur in Freiburg im Breisgau (Baden-Württemberg, Deutschland). Webdesign, Webentwicklung, SEO, Online-Shops, Web-Apps und digitale Einladungen für Betriebe und Privatkunden in Freiburg, der Ortenau, Südbaden und im ganzen deutschsprachigen Raum. Beratung auf Deutsch, Türkisch und Englisch.
+
+Kontakt: info@breisgau-digital.de · +49 155 66859378 · Bissierstr. 16, 79114 Freiburg im Breisgau
+
+## Leistungen
+
+- [Webdesign & Webentwicklung](https://breisgau-digital.de/de/leistungen): individuelle Websites, Shops, Buchungssysteme und Web-Apps zum Festpreis.
+- [Website-Wartung](https://breisgau-digital.de/de/wartung): Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis.
+- [Digitale Einladung](https://breisgau-digital.de/de/digitale-einladung): Einladungs-Website für Hochzeit, Kına/Henna-Abend, Verlobung (Nişan), Geburtstag und Firmenevents.
+- [Referenzen](https://breisgau-digital.de/de/projects)
+- [Kontakt & Anfrage](https://breisgau-digital.de/de/contact)
+
+## Digitale Einladung — Fakten
+
+- Eine eigene Website je Event, geteilt per Link (z. B. über WhatsApp); Gäste brauchen keine App.
+- Gäste: Countdown, Ablauf, Orte mit Routen-Knopf (Google Maps, Apple Karten, Waze), Online-Zusage mit Personenzahl, Menüwahl, Allergien und Musikwunsch, Geldgeschenk per IBAN (Kopierknopf und GiroCode) oder PayPal, Fotoalbum zum Hochladen, Diashow für Beamer.
+- Gastgeber-Planer: Gästeliste mit persönlichen Links und Excel-Export, Sitzplan, Checkliste, Budget, Moderation der Fotos, alle Texte und das Design jederzeit änderbar.
+- 10 Designs: Klassik Gold, Boho Garten, Modern Minimal, Henna-Nacht (Kına), 1001 Nacht, Romantik Rosé, Rustikal, Mediterran, Mitternacht Gala, Business Event.
+- 6 Sprachen: Deutsch, Türkisch, Englisch, Französisch, Kurdisch (Kurmancî), Arabisch (von rechts nach links).
+- Hintergrundmusik wählbar (Klavier, Streicher, Oud, Gitarre, Lounge, Ambient oder eigenes Lied).
+- Privat: nicht in Suchmaschinen, kein Tracking, Planer nur mit persönlichem Schlüssel.
+- Preise einmalig je Event (12 Monate online): Basis 79 €, Premium 149 €, Rundum 249 € (Stand siehe Seite).
+- Live-Beispiele: https://breisgau-digital.de/einladung/demo-klassik, https://breisgau-digital.de/einladung/demo-kina, https://breisgau-digital.de/einladung/demo-orient, https://breisgau-digital.de/einladung/demo-business
+
+## Sprachen der Website
+
+- Deutsch: https://breisgau-digital.de/de
+- Türkçe: https://breisgau-digital.de/tr
+- English: https://breisgau-digital.de/en
+- Français: https://breisgau-digital.de/fr
+- Kurdî: https://breisgau-digital.de/ku

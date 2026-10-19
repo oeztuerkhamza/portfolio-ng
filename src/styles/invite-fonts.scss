@@ -1,12 +1,23 @@
 // Schriften der digitalen Einladungen. Eigenes Bündel (angular.json,
 // inject: false) — die Website selbst lädt sie nie, nur die Einladungsseiten
 // hängen die Datei ein. Lokal ausgeliefert wie Inter und Fraunces: keine
-// Verbindung zu Google.
-@import "@fontsource/great-vibes/400.css";
-@import "@fontsource/cormorant-garamond/400.css";
-@import "@fontsource/cormorant-garamond/600.css";
-@import "@fontsource/cormorant-garamond/400-italic.css";
-@import "@fontsource/cinzel/400.css";
-@import "@fontsource/cinzel/600.css";
-@import "@fontsource/amiri/400.css";
-@import "@fontsource/amiri/700.css";
+// Verbindung zu Google. Nur die Zeichensätze, die die Einladungen brauchen:
+// Latein mit Erweiterung (Türkisch, Kurmancî) und Arabisch.
+@import "@fontsource/great-vibes/latin-400.css";
+@import "@fontsource/great-vibes/latin-ext-400.css";
+@import "@fontsource/cormorant-garamond/latin-400.css";
+@import "@fontsource/cormorant-garamond/latin-ext-400.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/cormorant-garamond/latin-ext-600.css";
+@import "@fontsource/cormorant-garamond/latin-400-italic.css";
+@import "@fontsource/cormorant-garamond/latin-ext-400-italic.css";
+@import "@fontsource/cinzel/latin-400.css";
+@import "@fontsource/cinzel/latin-ext-400.css";
+@import "@fontsource/cinzel/latin-600.css";
+@import "@fontsource/cinzel/latin-ext-600.css";
+@import "@fontsource/amiri/arabic-400.css";
+@import "@fontsource/amiri/latin-400.css";
+@import "@fontsource/amiri/latin-ext-400.css";
+@import "@fontsource/amiri/arabic-700.css";
+@import "@fontsource/amiri/latin-700.css";
+@import "@fontsource/amiri/latin-ext-700.css";

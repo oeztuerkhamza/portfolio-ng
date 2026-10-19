@@ -1,5 +1,8 @@
 import { Component, DestroyRef, ViewEncapsulation, ElementRef, HostListener, afterNextRender, inject, input, output, signal } from '@angular/core';
 import { IconComponent } from '../shared/icon/icon.component';
+import { registerInviteIcons } from './invite-icons';
+
+registerInviteIcons();
 
 /**
  * Diashow für Beamer und Fernseher: Vollbild, Überblendung alle sechs

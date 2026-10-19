@@ -220,7 +220,7 @@ export const HOST_TEXT: Record<string, Row> = {
   'seat.name': { de: 'Tisch {n}', tr: 'Masa {n}', en: 'Table {n}' },
   'seat.seats': { de: 'Plätze', tr: 'Sandalye', en: 'Seats' },
   'seat.unseated': { de: 'Noch ohne Platz', tr: 'Yeri belli olmayanlar', en: 'Not seated yet' },
-  'seat.hint': { de: 'Gast antippen, dann Tisch antippen — oder per Drag & Drop. Gezählt werden nur Zusagen.', tr: 'Misafire, sonra masaya dokunun — ya da sürükleyip bırakın. Yalnızca gelenler sayılır.', en: 'Tap a guest, then a table — or drag and drop. Only confirmed guests are listed.' },
+  'seat.hint': { de: 'Gast antippen, dann Tisch antippen — oder per Drag & Drop. Hier stehen Gäste mit Zusage oder „unsicher".', tr: 'Misafire, sonra masaya dokunun — ya da sürükleyip bırakın. Gelen ve kararsız misafirler listelenir.', en: 'Tap a guest, then a table — or drag and drop. Guests who said yes or maybe are listed.' },
   'seat.full': { de: 'voll', tr: 'dolu', en: 'full' },
   'seat.remove': { de: 'Vom Tisch nehmen', tr: 'Masadan kaldır', en: 'Remove from table' },
   'seat.print': { de: 'Sitzplan drucken', tr: 'Oturma planını yazdır', en: 'Print seating plan' },

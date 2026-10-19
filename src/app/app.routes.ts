@@ -85,6 +85,11 @@ const localeChildren: Routes = [
       ]
     : []),
   {
+    path: 'digitale-einladung',
+    loadComponent: () => import('./pages/einladung/einladung.component').then((m) => m.EinladungComponent),
+    data: { animation: 'Einladung' },
+  },
+  {
     path: 'wartung',
     loadComponent: () =>
       import('./pages/wartung/wartung.component').then((m) => m.WartungComponent),

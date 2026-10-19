@@ -9,7 +9,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { DOCUMENT, NgTemplateOutlet, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import qrcode from 'qrcode-generator';
@@ -42,12 +42,29 @@ import {
 } from './invite.model';
 import { MusicService } from './music.service';
 import { SlideshowComponent } from './slideshow.component';
+import { registerInviteIcons } from './invite-icons';
 
 type Tab = 'overview' | 'guests' | 'seating' | 'tasks' | 'budget' | 'photos' | 'settings';
 type HostLang = 'de' | 'tr' | 'en';
 type Access = 'loading' | 'key' | 'denied' | 'missing' | 'offline' | 'ready';
 
 const rid = () => Math.random().toString(36).slice(2, 10);
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+function getPath(obj: any, path: string): unknown {
+  return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
+}
+function setPath(obj: any, path: string, value: unknown): void {
+  const keys = path.split('.');
+  const last = keys.pop()!;
+  let o = obj;
+  for (const k of keys) {
+    o[k] ??= {};
+    o = o[k];
+  }
+  o[last] = value;
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
 
 /** Datum/Uhrzeit für <input type="datetime-local"> — immer in deutscher Zeit, wie die Einladung sie zeigt. */
 function berlinOffset(d: Date): number {
@@ -69,6 +86,8 @@ function fromLocalInput(v: string): string {
   return new Date(guess.getTime() - berlinOffset(guess) * 6e4).toISOString();
 }
 
+registerInviteIcons();
+
 /**
  * Planer des Gastgebers: /einladung/<slug>/planer
  *
@@ -80,7 +99,7 @@ function fromLocalInput(v: string): string {
 @Component({
   selector: 'app-planner',
   standalone: true,
-  imports: [RouterLink, IconComponent, SlideshowComponent],
+  imports: [RouterLink, NgTemplateOutlet, IconComponent, SlideshowComponent],
   templateUrl: './planner.component.html',
   styleUrl: './planner.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -274,6 +293,7 @@ export class PlannerComponent implements OnInit {
   }
 
   private async start(): Promise<void> {
+    this.access.set('loading');
     if (this.demo) return this.open('');
     const hash = new URLSearchParams(location.hash.slice(1));
     const fromHash = hash.get('k');
@@ -622,6 +642,48 @@ export class PlannerComponent implements OnInit {
   }
 
   // ── Einladung bearbeiten ───────────────────────────────
+  //
+  // Angular-Vorlagen kennen keine Pfeilfunktionen; darum adressieren die
+  // Felder ihren Wert über einen Pfad wie „schedule.2.time".
+
+  val(ev: Event): string {
+    return (ev.target as HTMLInputElement).value;
+  }
+
+  checked(ev: Event): boolean {
+    return (ev.target as HTMLInputElement).checked;
+  }
+
+  setE(path: string, value: unknown): void {
+    this.editEvent((e) => setPath(e, path, value));
+  }
+
+  setP(path: string, value: unknown): void {
+    this.editPlan((p) => setPath(p, path, value));
+  }
+
+  /** LocalText am Pfad in der gewählten Bearbeitungssprache setzen. */
+  setLtE(path: string, value: string): void {
+    this.editEvent((e) => setPath(e, path, this.setLt(getPath(e, path) as LocalText | undefined, value.trim())));
+  }
+
+  removeAt(list: 'schedule' | 'locations' | 'contacts' | 'faq', index: number): void {
+    this.editEvent((e) => e[list].splice(index, 1));
+  }
+
+  /** Neue Adresse: alte Koordinaten passen nicht mehr. */
+  setAddress(index: number, address: string): void {
+    this.editEvent((e) => {
+      const loc = e.locations[index];
+      loc.address = address;
+      loc.lat = undefined;
+      loc.lng = undefined;
+    });
+  }
+
+  retry(): void {
+    void this.start();
+  }
 
   lt(text: LocalText | undefined): string {
     if (!text) return '';

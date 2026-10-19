@@ -27,6 +27,7 @@ import {
 import { h, sqlOr503, str, UUID } from './http';
 import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
 import { invoices } from './invoices';
+import { adminInvites, invites } from './invites';
 import {
   PLACE_ID_SETTING,
   REVIEWS_SETTING,
@@ -718,6 +719,10 @@ api.post(
 // Der Rechnungsversand trägt das PDF im Body: erst anmelden, dann bis 4 MB lesen.
 api.post('/admin/invoices/:id/send', requireAdmin, express.json({ limit: '4mb' }));
 
+// Digitale Einladungen: eigene Körpergrenzen je Route (Fotos, große Einladung),
+// darum vor dem allgemeinen JSON-Parser.
+api.use('/invites', invites);
+
 api.use(express.json({ limit: '32kb' }));
 
 // ── Öffentlich: Anfrage speichern ──────────────────────────
@@ -1081,6 +1086,8 @@ admin.use((_req, res, next) => {
   res.set('Cache-Control', 'no-store');
   next();
 });
+
+admin.use('/invites', adminInvites);
 
 admin.get('/me', (_req, res) => {
   res.json({ email: res.locals['adminEmail'] });

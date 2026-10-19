@@ -30,7 +30,7 @@ const DE: Record<string, Record<string, string>> = {
     custom: 'Mit Shop, Buchung oder App',
     unsure: 'Weiß ich noch nicht',
   },
-  other: { shop: 'Online-Shop', app: 'Web-App oder Software', booking: 'Buchungssystem', question: 'Nur eine Frage' },
+  other: { shop: 'Online-Shop', app: 'Web-App oder Software', booking: 'Buchungssystem', invite: 'Digitale Einladung (Hochzeit, Kına, Event)', question: 'Nur eine Frage' },
 };
 const DE_SERVICE: Record<Service, string> = {
   new: 'Neue Website',
@@ -124,7 +124,7 @@ export class RequestWizardComponent implements OnInit {
           unsure,
         ];
       case 'other':
-        return ['shop', 'app', 'booking', 'question'].map((id) => ({ id, title: this.i18n.t(`rw.other.${id}`) }));
+        return ['shop', 'app', 'booking', 'invite', 'question'].map((id) => ({ id, title: this.i18n.t(`rw.other.${id}`) }));
       default:
         return [];
     }

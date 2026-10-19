@@ -1,0 +1,203 @@
+@import "../../../styles/variables";
+@import "../../../styles/product-page";
+
+// Produktseite Digitale Einladung. Pakete kommen aus _product-page.scss,
+// Seitenkopf, Karten, Ablauf, FAQ und Abschluss-Box aus dem UI-Kit.
+// Die Vorschauen tragen die Farben ihrer Gestaltung als CSS-Variablen.
+
+.per {
+  color: $text-mute;
+  font-size: 0.9rem;
+}
+
+.inv-trust {
+  margin-top: 1.5rem;
+}
+
+.pkg-per {
+  color: $text-mute;
+}
+
+// ── Drei Handys im Kopf ──
+.inv-phones {
+  position: relative;
+  height: clamp(360px, 48vw, 520px);
+  max-width: 560px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.inv-phone {
+  position: absolute;
+  top: 6%;
+  width: 46%;
+  aspect-ratio: 9 / 18.5;
+  border-radius: 28px;
+  border: 7px solid #111826;
+  background: var(--bg);
+  color: var(--ink);
+  box-shadow: 0 30px 60px rgba(14, 26, 43, 0.22);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding-bottom: 1rem;
+  transition: transform $transition-normal;
+
+  &:hover { transform: translateY(-6px) rotate(0deg) !important; z-index: 3; }
+}
+.inv-phone-0 { left: 0; transform: rotate(-7deg); z-index: 1; }
+.inv-phone-1 { left: 27%; top: 0; z-index: 2; }
+.inv-phone-2 { right: 0; transform: rotate(7deg); z-index: 1; }
+
+.inv-phone-img {
+  display: block;
+  width: 100%;
+  height: 42%;
+  background: linear-gradient(160deg, var(--line), var(--bg));
+  overflow: hidden;
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+.inv-phone-kind {
+  margin-top: 0.9rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--acc);
+  font-weight: 650;
+}
+.inv-phone-title {
+  font-size: clamp(1.3rem, 3.2vw, 1.9rem);
+  line-height: 1.15;
+  margin: 0.35rem 0.5rem 0;
+}
+.inv-phone-line {
+  width: 40%;
+  height: 1px;
+  background: var(--line);
+  margin: 0.6rem 0;
+}
+.inv-phone-date { font-size: 0.66rem; opacity: 0.8; }
+.inv-phone-btn {
+  margin-top: auto;
+  font-size: 0.62rem;
+  font-weight: 650;
+  letter-spacing: 0.1em;
+  padding: 0.45rem 1.4rem;
+  border-radius: 999px;
+  background: var(--line);
+  color: #fff;
+}
+
+// ── Designs ──
+.inv-themes {
+  display: grid;
+  gap: 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+}
+
+.inv-theme {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $rule-soft;
+  border-radius: $radius;
+  background: $surface-2;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover { transform: translateY(-3px); box-shadow: $shadow-md; }
+}
+
+.inv-theme-prev {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  aspect-ratio: 4 / 3.6;
+  padding: 1rem 0.75rem 1.1rem;
+  text-align: center;
+  background: var(--bg);
+  color: var(--ink);
+  overflow: hidden;
+  isolation: isolate;
+
+  // Unterer Verlauf: Schrift bleibt lesbar, auch über einem Foto.
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 35% 0 0;
+    z-index: -1;
+    background: linear-gradient(to bottom, transparent, var(--bg) 55%);
+  }
+}
+.inv-theme-img {
+  position: absolute;
+  inset: 0 0 30%;
+  z-index: -2;
+  background: radial-gradient(circle at 30% 20%, var(--line), transparent 70%);
+  opacity: 0.95;
+  img { width: 100%; height: 100%; object-fit: cover; }
+}
+.inv-theme-kind {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--acc);
+  font-weight: 650;
+}
+.inv-theme-title {
+  font-size: 1.85rem;
+  line-height: 1.15;
+  margin-top: 0.2rem;
+}
+.inv-theme-date { font-size: 0.75rem; opacity: 0.8; margin-top: 0.2rem; }
+
+.inv-theme-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 1.1rem 1.1rem 1.25rem;
+  flex: 1;
+
+  .card-text { flex: 1; }
+}
+.inv-theme-links {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+.inv-link {
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: $text-dim;
+  &:hover { color: $brand; }
+}
+
+// ── Funktionen ──
+.inv-features .card-title { font-size: 1.1rem; }
+
+// ── Anlässe ──
+.inv-occ-list {
+  justify-content: center;
+  max-width: 900px;
+  margin-inline: auto;
+
+  .chip {
+    font-size: 0.95rem;
+    padding: 0.6rem 1.1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    app-icon { color: $brand; }
+  }
+}
+
+.inv-theme-links {
+  flex-wrap: wrap;
+  .btn { white-space: nowrap; }
+}
