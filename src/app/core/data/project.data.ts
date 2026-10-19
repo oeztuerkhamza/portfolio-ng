@@ -80,10 +80,14 @@ Dazu kommt, was ein einzelner Laden sonst von Hand macht: Ein Hintergrunddienst 
     role: 'Full-Stack Developer & Architekt',
     duration: '2026/3 – Heute',
     demo: {
-      type: 'iframe',
+      type: 'image',
       url: 'https://bikehausfreiburg.com',
-      poster: '/assets/images/bikehaus.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
+      screens: [
+        '/assets/images/bikehaus.webp',
+        '/assets/images/bikehaus-2.webp',
+        '/assets/images/bikehaus-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
   {
@@ -130,10 +134,14 @@ Betrieben wird das Ganze auf einem eigenen Server mit Docker und nginx: API, Adm
     role: 'Full-Stack Developer & Architekt',
     duration: '2025 – Heute',
     demo: {
-      type: 'iframe',
+      type: 'image',
       url: 'https://benlirad.de',
-      poster: '/assets/images/benlirad.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
+      screens: [
+        '/assets/images/benlirad.webp',
+        '/assets/images/benlirad-2.webp',
+        '/assets/images/benlirad-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
   {
@@ -276,10 +284,14 @@ Die Besonderheit liegt hinter den Kulissen: Das Studio betreibt zwei Marken — 
     role: 'Full-Stack Developer & Designer',
     duration: '2026 – Heute',
     demo: {
-      type: 'iframe',
+      type: 'image',
       url: 'https://gknportraits.de',
-      poster: '/assets/images/gkn-portraits.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
+      screens: [
+        '/assets/images/gkn-portraits.webp',
+        '/assets/images/gkn-portraits-2.webp',
+        '/assets/images/gkn-portraits-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
   {
@@ -380,10 +392,14 @@ Darunter liegt Next.js 16 mit React Server Components und Server Actions, Prisma
     role: 'Solo Developer & Designer',
     duration: '2025 – Heute',
     demo: {
-      type: 'iframe',
+      type: 'image',
       url: 'https://zerin-gold.de',
-      poster: '/assets/images/zerin-gold.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
+      screens: [
+        '/assets/images/zerin-gold.webp',
+        '/assets/images/zerin-gold-2.webp',
+        '/assets/images/zerin-gold-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
   {
@@ -480,10 +496,14 @@ Betrieben wird das Ganze auf einem eigenen Server: Docker Compose mit SQL Server
     role: 'Full-Stack Developer',
     duration: '2025 – Heute',
     demo: {
-      type: 'iframe',
+      type: 'image',
       url: 'https://kulturplattformfreiburg.org',
-      poster: '/assets/images/kulturplattform.webp',
-      note: 'Live-System — geöffnet im eingebetteten Browser',
+      screens: [
+        '/assets/images/kulturplattform.webp',
+        '/assets/images/kulturplattform-2.webp',
+        '/assets/images/kulturplattform-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
     },
   },
 ];
