@@ -454,6 +454,52 @@ Di bin de: Next.js 16 bi React Server Components û Server Actions, Prisma 7 li 
       ],
     },
   },
+  'karaarslan-bike': {
+    en: {
+      subtitle: 'Inventory system and website for a bicycle shop in Lünen',
+      category: 'Full-stack web app',
+      description:
+        'Third shop, same platform: .NET 9 API, Angular admin and a public SSR website with live stock for a family business in Lünen — four languages, self-hosted.',
+      role: 'Full-stack developer & architect',
+      long: `Karaarslan Bike is a bicycle shop in Lünen in the Ruhr area, a family business since 2021. It gets the same platform as Bikehaus Freiburg and Benlirad — and that was exactly the test of whether it really carries over to a new business: different name, different city, different region, different range, the same core of purchase, stock, sale, return, customers, invoices, expenses and statistics.
+
+The public site runs on Angular 17 with server-side rendering in four languages (DE, EN, FR, TR). It pulls its content straight from the inventory system: the showroom shows the real stock with filters for condition, category and price, plus accessories, new bikes, guides, FAQ, warranty and city landing pages for the towns around Lünen. What is booked in at the shop is online without an intermediate step — currently around 90 bikes.
+
+Behind it sits the admin area with modules for purchases, sales, returns, customers, invoices, expenses, renovation costs, parts and statistics, plus an email campaign that asks customers for a Google review after purchase. Everything runs on its own server with Docker and nginx: API, admin interface and SSR frontend as separate services, its own mail server, automatic certificate renewal.`,
+      features: [
+        'Inventory system: purchase, stock, sale, return, customers, invoices, expenses',
+        'Public showroom with live stock and filters for condition, category and price',
+        'Four languages (DE, EN, FR, TR) with their own URLs and SSR',
+        'Accessories, new bikes, guides, FAQ and warranty page',
+        'City landing pages and structured data for local search around Lünen',
+        'Email campaign asking customers for a Google review after purchase',
+        'Renovation costs and parts per bike in the admin area',
+        'Self-hosting: Docker, nginx, own mail server, certificate automation',
+      ],
+    },
+    tr: {
+      subtitle: 'Lünen’deki bir bisiklet dükkânı için stok sistemi ve web sitesi',
+      category: 'Full-stack web uygulaması',
+      description:
+        'Üçüncü dükkân, aynı platform: Lünen’deki bir aile işletmesi için .NET 9 API, Angular yönetim paneli ve canlı stoklu herkese açık SSR web sitesi — dört dil, kendi sunucusunda.',
+      role: 'Full-stack geliştirici & mimar',
+      long: `Karaarslan Bike, Ruhr bölgesindeki Lünen’de 2021’den beri aile işletmesi olarak çalışan bir bisiklet dükkânı. Bikehaus Freiburg ve Benlirad ile aynı platformu kullanıyor — ve asıl sınav da buydu: platform gerçekten yeni bir işletmeye taşınabiliyor mu? Farklı isim, farklı şehir, farklı bölge, farklı ürün yelpazesi; ama alım, stok, satış, iade, müşteri, fatura, gider ve istatistikten oluşan aynı çekirdek.
+
+Herkese açık site, dört dilde (DE, EN, FR, TR) sunucu tarafı render’lı Angular 17 ile çalışıyor. İçeriğini doğrudan stok sisteminden çekiyor: showroom gerçek stoğu durum, kategori ve fiyat filtreleriyle gösteriyor; ayrıca aksesuar, yeni bisiklet, rehber, SSS, garanti ve Lünen çevresindeki yerler için şehir sayfaları var. Dükkânda kaydedilen şey ara adım olmadan çevrimiçi görünüyor — şu an yaklaşık 90 bisiklet.
+
+Arkasında alım, satış, iade, müşteri, fatura, gider, yenileme maliyeti, parça ve istatistik modüllerinden oluşan bir yönetim alanı ile müşterilerden alışveriş sonrası Google yorumu isteyen bir e-posta kampanyası var. Her şey kendi sunucusunda Docker ve nginx ile çalışıyor: API, yönetim arayüzü ve SSR ön yüzü ayrı servisler, kendi posta sunucusu, otomatik sertifika yenileme.`,
+      features: [
+        'Stok sistemi: alım, stok, satış, iade, müşteri, fatura, gider',
+        'Canlı stoklu, durum, kategori ve fiyat filtreli herkese açık showroom',
+        'Kendi URL’leri ve SSR ile dört dil (DE, EN, FR, TR)',
+        'Aksesuar, yeni bisiklet, rehber, SSS ve garanti sayfası',
+        'Lünen çevresinde yerel arama için şehir sayfaları ve yapılandırılmış veri',
+        'Müşterilerden alışveriş sonrası Google yorumu isteyen e-posta kampanyası',
+        'Yönetimde bisiklet başına yenileme maliyeti ve parçalar',
+        'Self-hosting: Docker, nginx, kendi posta sunucusu, sertifika otomasyonu',
+      ],
+    },
+  },
   'praxis-gueltekin': {
     en: {
       subtitle: 'Multilingual practice website for a GP in Hofheim am Taunus',

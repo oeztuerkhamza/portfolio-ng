@@ -137,6 +137,60 @@ Betrieben wird das Ganze auf einem eigenen Server mit Docker und nginx: API, Adm
     },
   },
   {
+    slug: 'karaarslan-bike',
+    title: 'Karaarslan Bike',
+    subtitle: 'Warenwirtschaft und Website für einen Fahrradladen in Lünen',
+    category: 'Full-Stack Web-App',
+    tags: ['Full-Stack', 'Angular 17', '.NET 9', 'SSR', '4 Sprachen'],
+    image: '/assets/images/karaarslan-bike.webp',
+    liveUrl: 'https://karaarslan-bike.de',
+    githubUrl: 'https://github.com/oeztuerkhamza',
+    description:
+      'Dritter Laden, dieselbe Plattform: .NET-9-API, Angular-Admin und öffentliche SSR-Website mit Live-Bestand für einen Familienbetrieb in Lünen — viersprachig, auf eigenem Server.',
+    longDescription: `Karaarslan Bike ist ein Fahrradladen in Lünen im Ruhrgebiet, ein Familienbetrieb seit 2021. Er bekommt dieselbe Plattform wie Bikehaus Freiburg und Benlirad — und genau das war der Test, ob sie sich wirklich auf einen neuen Betrieb übertragen lässt: anderer Name, andere Stadt, andere Region, anderes Sortiment, derselbe Kern aus Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben und Statistik.
+
+Die öffentliche Seite läuft auf Angular 17 mit Server-Side Rendering in vier Sprachen (DE, EN, FR, TR). Sie zieht ihre Inhalte direkt aus der Warenwirtschaft: Der Showroom zeigt den echten Bestand mit Filtern nach Zustand, Kategorie und Preis, dazu Zubehör, Neuräder, Ratgeber, FAQ, Garantie und Stadt-Landingpages für die Orte rund um Lünen. Was im Laden eingebucht wird, steht ohne Zwischenschritt online — derzeit rund 90 Räder.
+
+Dahinter liegt der Verwaltungsbereich mit Modulen für Ankauf, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben, Renovierungskosten, Teile und Statistik, dazu eine E-Mail-Kampagne, die Kunden nach dem Kauf um eine Google-Bewertung bittet. Betrieben wird alles auf einem eigenen Server mit Docker und nginx: API, Admin-Oberfläche und SSR-Frontend als getrennte Dienste, eigener Mailserver, automatische Zertifikatserneuerung.`,
+    features: [
+      'Warenwirtschaft: Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben',
+      'Öffentlicher Showroom mit Live-Bestand und Filtern nach Zustand, Kategorie und Preis',
+      'Vier Sprachen (DE, EN, FR, TR) mit eigenen URLs und SSR',
+      'Zubehör, Neuräder, Ratgeber, FAQ und Garantie-Seite',
+      'Stadt-Landingpages und strukturierte Daten für die lokale Suche rund um Lünen',
+      'E-Mail-Kampagne, die Kunden nach dem Kauf um eine Google-Bewertung bittet',
+      'Renovierungskosten und Teile pro Rad in der Verwaltung',
+      'Self-Hosting: Docker, nginx, eigener Mailserver, Zertifikats-Automatik',
+    ],
+    techStack: [
+      { name: 'Angular 17', icon: '🅰️' },
+      { name: '.NET 9', icon: '🔷' },
+      { name: 'SQLite', icon: '🗃️' },
+      { name: 'Entity Framework', icon: '📦' },
+      { name: 'Angular SSR', icon: '⚡' },
+      { name: 'Docker', icon: '🐳' },
+      { name: 'nginx', icon: '🔀' },
+      { name: 'TypeScript', icon: '📘' },
+    ],
+    screenshots: [
+      '/assets/images/karaarslan-bike.webp',
+      '/assets/images/karaarslan-bike-2.webp',
+      '/assets/images/karaarslan-bike-3.webp',
+    ],
+    role: 'Full-Stack Developer & Architekt',
+    duration: '2026 – Heute',
+    demo: {
+      type: 'image',
+      url: 'https://karaarslan-bike.de',
+      screens: [
+        '/assets/images/karaarslan-bike.webp',
+        '/assets/images/karaarslan-bike-2.webp',
+        '/assets/images/karaarslan-bike-3.webp',
+      ],
+      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
+    },
+  },
+  {
     slug: 'di-flux',
     title: 'Di-Flux',
     subtitle: 'Intelligentes Zeiterfassungssystem für Unternehmen',
