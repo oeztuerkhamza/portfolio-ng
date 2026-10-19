@@ -280,4 +280,32 @@ export const HOME_CONTENT: Record<string, Entry> = {
     ku: 'Na, em ji bo vê yekê hene. Em her tiştî bê peyvên teknîkî rave dikin, amade saz dikin û nîşanî tîma we didin. Heke paşê tiştek hebe, tenê telefon bikin.',
   },
   'home.cta.or': { de: 'oder direkt', fr: 'ou directement', en: 'or directly', tr: 'ya da doğrudan', ku: 'an rasterast' },
+  'home.hero.cta2': {
+    de: 'Referenzen ansehen',
+    fr: 'Voir les références',
+    en: 'See our work',
+    tr: 'Çalışmalarımızı gör',
+    ku: 'Xebatên me bibîne',
+  },
+  'home.price.title': {
+    de: 'Schon eine Website?<br />Ab {p} € wieder auf Stand.',
+    fr: 'Un site existe déjà ?<br />À jour dès {p} €.',
+    en: 'Already have a website?<br />Back up to date from €{p}.',
+    tr: 'Zaten bir web siteniz mi var?<br />{p} €’dan itibaren yeniden güncel.',
+    ku: 'Malperek heye jixwe?<br />Ji {p} € ve dîsa nû.',
+  },
+  'home.price.all': {
+    de: 'Alle Pakete ansehen',
+    fr: 'Voir tous les forfaits',
+    en: 'See all packages',
+    tr: 'Tüm paketleri gör',
+    ku: 'Hemû pakêtan bibîne',
+  },
+  'home.ref.live': {
+    de: 'Live ansehen',
+    fr: 'Voir en ligne',
+    en: 'View live',
+    tr: 'Canlı gör',
+    ku: 'Zindî bibîne',
+  },
 };

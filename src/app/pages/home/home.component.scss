@@ -40,23 +40,36 @@
 }
 
 // ══════════════════════════════════════════════
-// HERO
+// HERO — dunkle Bühne im hellen Seitengrund
 // ══════════════════════════════════════════════
+// Die Navigation bleibt über dem hellen Papier lesbar; die Bühne ist ein
+// eingelassenes Feld, kein Vollbild. Das eine Besondere: drei echte
+// Kundenseiten stehen als Wand darin — Beweis statt Behauptung.
+$sand: #e9d7b0;
+
 .hero {
-  padding: calc(72px + clamp(1.5rem, 5vw, 3.5rem)) 0 clamp(3rem, 8vw, 6rem);
-  background:
-    radial-gradient(ellipse 80% 60% at 85% 20%, rgba(47, 111, 196, 0.08), transparent 70%),
-    $surface;
-  overflow: hidden;
+  padding: calc(72px + clamp(0.75rem, 2.5vw, 1.75rem)) 0 clamp(2.5rem, 6vw, 4rem);
+  background: $surface;
 }
 
-.hero-grid {
+.hero-stage {
+  position: relative;
   display: grid;
-  gap: clamp(2.5rem, 6vw, 4rem);
-  align-items: center;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2.25rem, 5vw, 3.5rem);
+  padding: clamp(1.5rem, 5vw, 4rem);
+  border-radius: 28px;
+  color: #fff;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 80% at 92% 8%, rgba(47, 111, 196, 0.38), transparent 62%),
+    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(26, 75, 140, 0.35), transparent 65%),
+    $surface-ink;
 
   @media (min-width: $bp-desktop) {
-    grid-template-columns: 1.02fr 1fr;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    align-items: center;
+    gap: clamp(2rem, 4vw, 4rem);
   }
 }
 
@@ -65,115 +78,202 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.45rem 0.9rem 0.45rem 0.7rem;
-  margin-bottom: 1.25rem;
-  border: 1px solid $rule-soft;
+  margin-bottom: 1.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: $radius-sm;
-  background: $surface-2;
-  color: $text-dim;
+  background: rgba(255, 255, 255, 0.06);
+  color: #c9d6ea;
   font-size: 0.8rem;
   font-weight: 500;
   line-height: 1.35;
-  box-shadow: $shadow-sm;
 
   app-icon {
-    color: $brand;
+    color: $sand;
   }
 }
 
 .hero-title {
-  font-size: clamp(2.3rem, 8.4vw, 4.4rem);
-  font-weight: 350;
-  line-height: 1.03;
+  font-size: clamp(2.3rem, 6.4vw, 3.4rem);
+  font-weight: 340;
+  line-height: 1.02;
   letter-spacing: -0.03em;
   margin-bottom: 1.25rem;
+  color: #fff;
 
+  // Zweite Zeile als Ganzes abgesetzt, nicht ein einzelnes Wort.
   ::ng-deep em {
-    font-style: italic;
-    color: $brand;
+    display: block;
+    font-style: normal;
+    color: #9dbbe6;
   }
 }
 
 .hero-lede {
-  font-size: clamp(1.02rem, 2.6vw, 1.15rem);
+  font-size: clamp(1rem, 2.5vw, 1.12rem);
   line-height: 1.7;
-  color: $text-dim;
-  max-width: 54ch;
+  color: #b9c7dc;
+  max-width: 52ch;
 }
 
-.trust-list {
-  grid-template-columns: 1fr 1fr;
-  gap: 0.55rem 1rem;
+.hero-copy .page-hero-actions {
   margin-top: 1.75rem;
-  max-width: 520px;
+}
+
+.hero-facts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem 1.25rem;
+  margin: 1.9rem 0 0;
+  padding: 1.4rem 0 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  list-style: none;
+  max-width: 34rem;
 
   li {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
     font-size: 0.88rem;
     line-height: 1.4;
     font-weight: 500;
+    color: #dbe4f2;
+  }
+
+  app-icon {
+    flex: none;
+    margin-top: 0.1rem;
+    color: $sand;
   }
 }
 
-.hero-visual {
+// Die Wand: drei Browserfenster, leicht gestaffelt.
+.hero-wall {
   position: relative;
 
   @media (min-width: $bp-desktop) {
-    padding: 0 1.5rem 2.5rem 0;
+    min-height: 27rem;
   }
 }
 
-// Kleine Produktfotos als Collage — nur dort, wo Platz ist.
-.hero-thumb {
-  display: none;
-  position: absolute;
-  margin: 0;
-  width: 34%;
-  aspect-ratio: 4 / 3;
-  border-radius: 14px;
+.wall-frame {
+  display: block;
   overflow: hidden;
-  border: 4px solid $surface-2;
-  box-shadow: $shadow-md;
+  border-radius: 14px;
+  background: #fff;
+  color: inherit;
+  box-shadow:
+    0 30px 60px -22px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.1);
+  transition: transform $transition-normal;
 
   img {
+    display: block;
     width: 100%;
-    height: 100%;
+    aspect-ratio: 16 / 10;
     object-fit: cover;
+    object-position: top center;
+  }
+
+  // Mobil bleibt ein Fenster; Wand erst ab Desktop.
+  &.wf-2,
+  &.wf-3 {
+    display: none;
   }
 
   @media (min-width: $bp-desktop) {
-    display: block;
+    position: absolute;
+    animation: wall-in 0.9s $ease-editorial backwards;
+
+    &.wf-1 {
+      left: 0;
+      top: 9%;
+      width: 66%;
+      z-index: 2;
+      animation-delay: 0.1s;
+    }
+
+    &.wf-2 {
+      display: block;
+      right: 0;
+      top: 0;
+      width: 48%;
+      z-index: 1;
+      animation-delay: 0.3s;
+    }
+
+    &.wf-3 {
+      display: block;
+      right: 4%;
+      bottom: 3%;
+      width: 54%;
+      z-index: 3;
+      animation-delay: 0.5s;
+    }
+
+    &:hover,
+    &:focus-visible {
+      transform: translateY(-6px);
+    }
   }
 }
 
-.thumb-web {
-  left: -1.75rem;
-  bottom: 0;
+@keyframes wall-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
 }
 
-.thumb-sh {
-  right: 0;
-  top: -1.75rem;
-  width: 28%;
+@media (prefers-reduced-motion: reduce) {
+  .wall-frame {
+    animation: none;
+    transition: none;
+  }
+}
+
+.wall-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  padding: 0.5rem 0.75rem;
+  background: #eef2f8;
+
+  i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #c3ccda;
+  }
+}
+
+.wall-url {
+  margin-left: 0.55rem;
+  padding: 0.1rem 0.7rem;
+  border-radius: 999px;
+  background: #fff;
+  color: $text-mute;
+  font-size: 0.68rem;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hero-chip {
-  position: absolute;
-  right: 0.75rem;
-  bottom: 0.75rem;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  max-width: calc(100% - 1.5rem);
+  margin-top: 1rem;
   padding: 0.6rem 0.9rem 0.6rem 0.6rem;
   border-radius: 14px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.96);
   box-shadow: $shadow-md;
   line-height: 1.25;
+  color: $text;
 
   strong {
     display: block;
     font-size: 0.86rem;
-    color: $text;
     font-weight: 650;
   }
 
@@ -195,8 +295,11 @@
   }
 
   @media (min-width: $bp-desktop) {
-    right: 2.5rem;
-    bottom: 1rem;
+    position: absolute;
+    left: 2%;
+    bottom: 0;
+    z-index: 4;
+    margin-top: 0;
   }
 }
 
@@ -207,8 +310,8 @@
   display: grid;
   gap: 1.25rem;
 
-  @media (min-width: 1100px) {
-    grid-template-columns: repeat(3, 1fr);
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
     gap: 1.5rem;
   }
 }
@@ -493,4 +596,163 @@
   @media (min-width: 900px) {
     aspect-ratio: 4 / 5;
   }
+}
+
+// ══════════════════════════════════════════════
+// HOMEPAGE-UPDATE: Preisband im Produktbereich
+// ══════════════════════════════════════════════
+.update-band {
+  display: grid;
+  gap: 1.5rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  border-radius: $radius-lg;
+  background: $surface-ink;
+  color: #fff;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 1fr 1.5fr;
+    align-items: center;
+    gap: 2.5rem 3rem;
+  }
+}
+
+.update-title {
+  font-family: $font-display;
+  font-size: clamp(1.5rem, 3.4vw, 2rem);
+  font-weight: 380;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.6rem;
+  color: #fff;
+}
+
+.update-sub {
+  margin: 0;
+  color: #b9c7dc;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  max-width: 44ch;
+}
+
+.update-tiles {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  @media (min-width: 620px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.update-tile {
+  display: grid;
+  gap: 0.15rem;
+  height: 100%;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: $radius;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  transition:
+    background $transition-fast,
+    border-color $transition-fast,
+    transform $transition-fast;
+
+  &:hover,
+  &:focus-visible {
+    background: rgba(255, 255, 255, 0.09);
+    transform: translateY(-2px);
+  }
+
+  &.featured {
+    border-color: $sand;
+  }
+}
+
+.update-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #c9d6ea;
+}
+
+.update-price {
+  font-family: $font-display;
+  font-size: 2.1rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $sand;
+}
+
+.update-days {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-size: 0.8rem;
+  color: #dbe4f2;
+}
+
+.update-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #fff;
+
+  @media (min-width: $bp-desktop) {
+    grid-column: 1 / -1;
+    justify-self: end;
+  }
+
+  &:hover {
+    color: $sand;
+  }
+}
+
+// ══════════════════════════════════════════════
+// REFERENZEN: ungleich große Fallstudien-Kacheln
+// ══════════════════════════════════════════════
+.ref-showcase {
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: repeat(12, 1fr);
+
+    > li:nth-child(1) {
+      grid-column: span 7;
+    }
+
+    > li:nth-child(2) {
+      grid-column: span 5;
+    }
+
+    > li:nth-child(n + 3) {
+      grid-column: span 4;
+    }
+  }
+
+  @media (min-width: 700px) and (max-width: 1023px) {
+    > li:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .ref-media {
+    position: relative;
+  }
+}
+
+.ref-host {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(14, 26, 43, 0.82);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.5;
 }

@@ -1,60 +1,59 @@
 <!-- ────────────────────────────────────────────── -->
-<!-- HERO                                           -->
+<!-- HERO: dunkle Bühne, echte Kundenseiten als Wand   -->
 <!-- ────────────────────────────────────────────── -->
 <section class="hero">
-  <div class="container hero-grid">
-    <div class="hero-copy" @fadeIn>
-      <p class="hero-eyebrow">
-        <app-icon name="pin" />
-        {{ i18n.t('home.hero.eyebrow') }}
-      </p>
-      <h1 class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></h1>
-      <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
+  <div class="container">
+    <div class="hero-stage">
+      <div class="hero-copy" @fadeIn>
+        <p class="hero-eyebrow">
+          <app-icon name="pin" />
+          {{ i18n.t('home.hero.eyebrow') }}
+        </p>
+        <h1 class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></h1>
+        <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
-      <div class="page-hero-actions">
-        <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
-          {{ i18n.t('cta.consult') }}
-          <app-icon name="arrow" />
-        </a>
-        <button type="button" class="btn btn-secondary btn-large" (click)="scrollTo('produkte')">
-          {{ i18n.t('cta.products') }}
-        </button>
+        <div class="page-hero-actions">
+          <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+            {{ i18n.t('cta.consult') }}
+            <app-icon name="arrow" />
+          </a>
+          <a [routerLink]="'/projects' | localize" class="btn btn-outline-light btn-large">
+            {{ i18n.t('home.hero.cta2') }}
+          </a>
+        </div>
+
+        <ul class="hero-facts">
+          @for (key of trust; track key) {
+            <li><app-icon name="check" [stroke]="2.2" />{{ i18n.t(key) }}</li>
+          }
+        </ul>
       </div>
 
-      <ul class="check-list trust-list">
-        @for (key of trust; track key) {
-          <li>{{ i18n.t(key) }}</li>
+      <div class="hero-wall">
+        @for (p of wall; track p.slug; let i = $index) {
+          <a class="wall-frame" [class]="'wall-frame wf-' + (i + 1)" [routerLink]="['/projects', p.slug] | localize" [attr.aria-label]="p.title">
+            <span class="wall-bar" aria-hidden="true">
+              <i></i><i></i><i></i>
+              <span class="wall-url">{{ host(p) }}</span>
+            </span>
+            <img
+              [src]="p.image"
+              width="1440"
+              height="900"
+              [alt]="p.title"
+              [attr.fetchpriority]="i === 0 ? 'high' : null"
+              [attr.loading]="i === 0 ? null : 'lazy'"
+            />
+          </a>
         }
-      </ul>
-    </div>
-
-    <div class="hero-visual">
-      <figure class="media-frame hero-photo">
-        <img
-          src="/assets/images/products/website.webp"
-          srcset="/assets/images/products/website-800.webp 800w, /assets/images/products/website.webp 1600w"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          width="1600"
-          height="1200"
-          fetchpriority="high"
-          [alt]="i18n.t('home.prod.web.alt')"
-        />
-      </figure>
-      <figure class="hero-thumb thumb-web">
-        <img src="/assets/images/products/review-card-800.webp" width="800" height="600" alt="" loading="lazy" />
-      </figure>
-      @if (smartHome) {
-        <figure class="hero-thumb thumb-sh">
-          <img src="/assets/images/products/smart-home-800.webp" width="800" height="600" alt="" loading="lazy" />
-        </figure>
-      }
-      <p class="hero-chip">
-        <span class="chip-icon"><app-icon name="monitor" [stroke]="2" /></span>
-        <span>
-          <strong>{{ i18n.t('home.hero.badge') }}</strong>
-          <small>{{ i18n.t('home.prod.web.title') }} · {{ i18n.tp('price.from', products[0].priceFrom) }}</small>
-        </span>
-      </p>
+        <p class="hero-chip">
+          <span class="chip-icon"><app-icon name="monitor" [stroke]="2" /></span>
+          <span>
+            <strong>{{ i18n.t('home.hero.badge') }}</strong>
+            <small>{{ i18n.t('home.prod.web.title') }} · {{ i18n.tp('price.from', products[0].priceFrom) }}</small>
+          </span>
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -106,6 +105,27 @@
       }
     </div>
 
+    <div class="update-band">
+      <header class="update-head">
+        <h3 class="update-title" [innerHTML]="i18n.tp('home.price.title', updateFrom)"></h3>
+        <p class="update-sub">{{ i18n.t('upd.subtitle') }}</p>
+      </header>
+      <ul class="update-tiles">
+        @for (u of updates; track u.id) {
+          <li>
+            <a [routerLink]="'/leistungen' | localize" fragment="homepage-update" class="update-tile" [class.featured]="u.featured">
+              <span class="update-name">{{ i18n.t('upd.' + u.id + '.name') }}</span>
+              <span class="update-price">{{ fmt(u.price) }} €</span>
+              <span class="update-days"><app-icon name="bolt" /> {{ i18n.tp('upd.days', u.days) }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+      <a [routerLink]="'/leistungen' | localize" fragment="homepage-update" class="update-all">
+        {{ i18n.t('home.price.all') }} <app-icon name="arrow" />
+      </a>
+    </div>
+
     <div class="more-row">
       <p class="more-label">{{ i18n.t('home.prod.more.label') }}</p>
       <ul class="chips">
@@ -139,12 +159,15 @@
       </a>
     </div>
 
-    <ul class="ref-grid">
+    <ul class="ref-grid ref-showcase">
       @for (project of references; track project.slug) {
         <li class="reveal">
           <a [routerLink]="['/projects', project.slug] | localize" class="ref-card">
             <div class="ref-media">
               <img [src]="project.image" [alt]="project.title" width="1440" height="900" loading="lazy" />
+              @if (project.liveUrl) {
+                <span class="ref-host">{{ host(project) }}</span>
+              }
             </div>
             <div class="ref-body">
               <p class="ref-cat">{{ i18n.ptx(project.slug, 'category', project.category) }}</p>

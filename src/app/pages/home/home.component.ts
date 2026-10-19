@@ -18,6 +18,7 @@ import {
   TOWNS_ONSITE,
   TOWNS_REMOTE,
   WEBSITE_PRICE_FROM,
+  formatAmount,
   whatsappUrl,
   SMART_HOME_ENABLED,
 } from '../../core/data/company.data';
@@ -28,6 +29,8 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { HOME_CONTENT } from './home.content';
+import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
+import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
 import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
 
@@ -56,9 +59,23 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
    * stehen gleich hinter den Leistungen — bei Webentwicklung zählen
    * Projekte, die im Betrieb laufen.
    */
-  readonly references = ['bikehaus-freiburg', 'zerin-gold', 'praxis-gueltekin']
+  readonly references = ['zerin-gold', 'bikehaus-freiburg', 'praxis-gueltekin', 'karaarslan-bike', 'dj-veys']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
+  /** Drei echte Seiten als „Wand“ im Kopf der Startseite — jede führt zur Fallstudie. */
+  readonly wall = ['zerin-gold', 'praxis-gueltekin', 'bikehaus-freiburg']
+    .map((slug) => PROJECTS.find((p) => p.slug === slug))
+    .filter((p): p is Project => !!p);
+  readonly updates = UPDATE_PACKAGES;
+  readonly updateFrom = UPDATE_PRICE_FROM;
+  /** Betrag im Zahlenformat der Sprache: 1690 → „1.690“. */
+  fmt(amount: number): string {
+    return formatAmount(amount, this.i18n.lang());
+  }
+  /** Adresse ohne Protokoll, für die Browserleiste im Bild. */
+  host(p: Project): string {
+    return (p.liveUrl ?? '').replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  }
   /** Siehe SMART_HOME_ENABLED in company.data.ts. */
   readonly smartHome = SMART_HOME_ENABLED;
   readonly townsOnsite = TOWNS_ONSITE;
@@ -90,6 +107,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
 
   constructor() {
     this.i18n.register(HOME_CONTENT);
+    this.i18n.register(UPDATE_CONTENT);
   }
 
   /** Abschnitte, die beim Scrollen eingeblendet werden. */

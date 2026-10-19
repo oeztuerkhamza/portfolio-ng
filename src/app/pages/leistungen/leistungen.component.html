@@ -52,7 +52,7 @@
           }
           <h3 class="upd-name">{{ i18n.t('upd.' + u.id + '.name') }}</h3>
           <p class="upd-tag">{{ i18n.t('upd.' + u.id + '.tag') }}</p>
-          <p class="upd-price">{{ u.price }} €</p>
+          <p class="upd-price">{{ fmt(u.price) }} €</p>
           <p class="upd-days"><app-icon name="bolt" /> {{ i18n.tp('upd.days', u.days) }}</p>
           <ul class="check-list upd-points">
             @for (n of updateRows; track n) {
