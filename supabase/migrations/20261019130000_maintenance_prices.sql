@@ -1,7 +1,7 @@
 -- Preise der drei Wartungspakete (Seite /wartung). Der Build holt sie wie alle
 -- anderen Preise aus `prices`; im Admin-Portal unter „Fiyatlar" änderbar.
 insert into public.prices (key, grp, label, value, unit, sort, shop) values
-  ('wart.basis',  'Wartung', 'Wartung Basis – pro Monat',  25, '€', 120, false),
-  ('wart.pflege', 'Wartung', 'Wartung Pflege – pro Monat', 49, '€', 121, false),
-  ('wart.plus',   'Wartung', 'Wartung Plus – pro Monat',  119, '€', 122, false)
+  ('wart.basis',  'Wartung', 'Wartung Basis – pro Monat',  39, '€', 120, false),
+  ('wart.pflege', 'Wartung', 'Wartung Pflege – pro Monat', 79, '€', 121, false),
+  ('wart.plus',   'Wartung', 'Wartung Plus – pro Monat', 149, '€', 122, false)
 on conflict (key) do nothing;
