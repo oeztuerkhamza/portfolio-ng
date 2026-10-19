@@ -14,7 +14,7 @@ export const COMPANY = {
   phoneDisplay: '+49 155 66859378',
   phoneHref: 'tel:+4915566859378',
   whatsapp: '4915566859378',
-  instagram: 'https://www.instagram.com/breisgau_digital',
+  instagram: 'https://www.instagram.com/breisgaudigital',
   street: 'Bissierstr. 16',
   city: '79114 Freiburg im Breisgau',
 } as const;

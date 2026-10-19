@@ -41,7 +41,7 @@ export function personSchema(): Record<string, unknown> {
     sameAs: [
       'https://github.com/oeztuerkhamza',
       'https://www.linkedin.com/in/hamzaoeztuerk/',
-      'https://www.instagram.com/breisgau_digital',
+      'https://www.instagram.com/breisgaudigital',
     ],
   };
 }
@@ -96,7 +96,7 @@ export function professionalServiceSchema(): Record<string, unknown> {
     sameAs: [
       'https://github.com/oeztuerkhamza',
       'https://www.linkedin.com/in/hamzaoeztuerk/',
-      'https://www.instagram.com/breisgau_digital',
+      'https://www.instagram.com/breisgaudigital',
     ],
     knowsLanguage: ['de', 'en', 'tr'],
     serviceType: [
