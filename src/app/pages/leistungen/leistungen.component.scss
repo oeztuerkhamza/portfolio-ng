@@ -11,6 +11,78 @@
   @include container;
 }
 
+// ── Homepage-Update: drei Festpreis-Pakete ───────
+.upd-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  &.featured {
+    border-color: $rule-brand;
+    box-shadow: 0 0 0 1px $rule-brand, $shadow-md;
+  }
+}
+
+.upd-flag {
+  position: absolute;
+  top: -0.8rem;
+  left: 1.5rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  background: $brand;
+  color: #fff;
+  font-size: 0.74rem;
+  font-weight: 650;
+}
+
+.upd-name {
+  font-family: $font-display;
+  font-size: 1.4rem;
+  font-weight: 450;
+  margin: 0;
+}
+
+.upd-tag {
+  margin: 0 0 0.6rem;
+  color: $text-dim;
+}
+
+.upd-price {
+  margin: 0;
+  font-family: $font-display;
+  font-size: 2.4rem;
+  font-weight: 500;
+  color: $brand;
+  line-height: 1.1;
+}
+
+.upd-days {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.25rem 0 1rem;
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.upd-points {
+  margin-bottom: 1.5rem;
+}
+
+.upd-cta {
+  margin-top: auto;
+  justify-content: center;
+}
+
+.upd-note {
+  margin: 1.5rem auto 0;
+  max-width: 52rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: $text-dim;
+}
+
 // ── Fünf Leistungen als ruhige Liste ────────────
 .svc-list {
   display: grid;

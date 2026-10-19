@@ -6,6 +6,7 @@ import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { TRANSLATIONS } from '../../core/i18n/translations';
 import { COMPANY, PRODUCTS, whatsappUrl } from '../../core/data/company.data';
+import { UPDATE_PACKAGES } from '../../core/data/homepage-update.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { LEISTUNGEN_CONTENT } from './leistungen.content';
 import { AboBannerComponent } from '../../shared/abo-banner/abo-banner.component';
@@ -40,6 +41,10 @@ export class LeistungenComponent implements OnInit {
 
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
+
+  /** Die drei Homepage-Update-Pakete für bestehende Websites. */
+  readonly updates = UPDATE_PACKAGES;
+  readonly updateRows = [1, 2, 3, 4];
 
   /** Die beiden Festpreis-Produkte neben den Projektleistungen. */
   readonly products = PRODUCTS.filter((p) => p.id !== 'web');
@@ -89,6 +94,8 @@ export class LeistungenComponent implements OnInit {
         'Webseite erstellen lassen Freiburg',
         'Homepage erstellen Freiburg',
         'Webdesign Freiburg',
+        'Website Relaunch Freiburg',
+        'Homepage Update Festpreis',
         'Google Unternehmensprofil einrichten',
         'Online-Shop erstellen Freiburg',
         'Website Kosten Freiburg',

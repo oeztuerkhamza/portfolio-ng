@@ -36,6 +36,40 @@
   </div>
 </header>
 
+<!-- Homepage-Update: drei Festpreis-Pakete -->
+<section class="section" id="homepage-update">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('upd.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('upd.title')"></h2>
+      <p class="section-subtitle">{{ i18n.t('upd.subtitle') }}</p>
+    </header>
+    <div class="grid grid-3 upd-grid">
+      @for (u of updates; track u.id) {
+        <article class="card upd-card" [class.featured]="u.featured">
+          @if (u.featured) {
+            <span class="upd-flag">{{ i18n.t('upd.featured') }}</span>
+          }
+          <h3 class="upd-name">{{ i18n.t('upd.' + u.id + '.name') }}</h3>
+          <p class="upd-tag">{{ i18n.t('upd.' + u.id + '.tag') }}</p>
+          <p class="upd-price">{{ u.price }} €</p>
+          <p class="upd-days"><app-icon name="bolt" /> {{ i18n.tp('upd.days', u.days) }}</p>
+          <ul class="check-list upd-points">
+            @for (n of updateRows; track n) {
+              <li>{{ i18n.t('upd.' + u.id + '.p' + n) }}</li>
+            }
+          </ul>
+          <a [routerLink]="'/contact' | localize" class="btn upd-cta" [class.btn-primary]="u.featured" [class.btn-secondary]="!u.featured">
+            {{ i18n.t('upd.cta') }}
+            <app-icon name="arrow" />
+          </a>
+        </article>
+      }
+    </div>
+    <p class="upd-note">{{ i18n.t('upd.note') }}</p>
+  </div>
+</section>
+
 <!-- Leistungen -->
 <section class="section section-white">
   <div class="container">
