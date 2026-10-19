@@ -233,6 +233,56 @@ Das System erkennt automatisch gesetzlich vorgeschriebene Pausen, validiert maxi
     },
   },
   {
+    slug: 'gkn-portraits',
+    title: 'GKN Portraits',
+    subtitle: 'Bewerbungsfoto-Studio in Freiburg mit Online-Terminbuchung',
+    category: 'Website & Buchungssystem',
+    tags: ['Next.js 16', 'React 19', 'Buchungssystem', '15 Sprachen', 'Local SEO'],
+    image: '/assets/images/gkn-portraits.webp',
+    liveUrl: 'https://gknportraits.de',
+    githubUrl: 'https://github.com/oeztuerkhamza',
+    description:
+      'Website und Terminbuchung für ein Bewerbungsfoto-Studio in Freiburg. Next.js 16, 15 Sprachen, Buchung in drei Schritten — mit einem Studiokalender, den sich zwei Marken teilen.',
+    longDescription: `GKN Portraits ist die Website eines Fotostudios in Freiburg, das auf Bewerbungs- und Businessporträts spezialisiert ist. Der Kern ist keine Imageseite, sondern eine Buchung: Paket wählen, freien Termin im Kalender anklicken, Kontaktdaten eintragen — drei Schritte, Bestätigung per E-Mail, Stornolink inklusive. Damit fällt das Telefonieren über freie Termine weg, das bei kurzen Shootings den größten Teil des Aufwands ausmacht.
+
+Technisch läuft die Seite auf Next.js 16 mit React 19 und Tailwind 4. Fünfzehn Sprachen mit übersetzten URLs decken ab, wer in Freiburg ein Bewerbungsfoto braucht — inklusive Rechts-nach-Links-Layout für Arabisch. Preise gibt es in zwei Listen (privat und geschäftlich), weil sich nicht der Aufwand unterscheidet, sondern die Nutzung des Bildes.
+
+Die Besonderheit liegt hinter den Kulissen: Das Studio betreibt zwei Marken — Porträt und Hochzeit — aber es gibt nur einen Raum und einen Terminplan. Beide Websites buchen deshalb in denselben Kalender, und jede Buchung merkt sich, über welche Marke sie hereinkam. Ein Datenbank-Index stellt sicher, dass derselbe Slot nie zweimal bestätigt wird. Verwaltet wird alles über einen gemeinsamen Bereich mit passwortlosem Login per Einmal-Link.`,
+    features: [
+      'Online-Terminbuchung in drei Schritten mit Bestätigungsmail und Stornolink',
+      'Ein gemeinsamer Studiokalender für zwei Marken — doppelte Buchung technisch ausgeschlossen',
+      '15 Sprachen mit übersetzten URLs, inkl. RTL-Layout für Arabisch',
+      'Zwei Preislisten (privat / geschäftlich) mit drei Paketen',
+      'Lokale Landingpages für die Städte rund um Freiburg',
+      'Ratgeber-Bereich zu Kleidung, Ablauf und Bildauswahl',
+      'Passwortloses Login für den Verwaltungsbereich (Einmal-Link, JWT-Cookie)',
+      'Rund 285 indexierbare URLs mit hreflang, JSON-LD und eigener Sitemap',
+    ],
+    techStack: [
+      { name: 'Next.js 16', icon: '▲' },
+      { name: 'React 19', icon: '⚛️' },
+      { name: 'Tailwind 4', icon: '💨' },
+      { name: 'next-intl', icon: '🌍' },
+      { name: 'PostgreSQL', icon: '🐘' },
+      { name: 'Drizzle ORM', icon: '🌧️' },
+      { name: 'TypeScript', icon: '📘' },
+      { name: 'Docker', icon: '🐳' },
+    ],
+    screenshots: [
+      '/assets/images/gkn-portraits.webp',
+      '/assets/images/gkn-portraits-2.webp',
+      '/assets/images/gkn-portraits-3.webp',
+    ],
+    role: 'Full-Stack Developer & Designer',
+    duration: '2026 – Heute',
+    demo: {
+      type: 'iframe',
+      url: 'https://gknportraits.de',
+      poster: '/assets/images/gkn-portraits.webp',
+      note: 'Live-System — geöffnet im eingebetteten Browser',
+    },
+  },
+  {
     slug: 'dj-veys',
     title: 'DJ Veys',
     subtitle: 'Website und Anfragesystem für einen Hochzeits-DJ',

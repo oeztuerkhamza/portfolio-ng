@@ -98,6 +98,7 @@ export const TOWNS_ONSITE = [
   'Lörrach',
   'Offenburg',
   'Lahr',
+  'Ortenau',
   'Titisee-Neustadt',
 ];
 export const TOWNS_REMOTE = ['Karlsruhe', 'Stuttgart', 'Mannheim', 'Heidelberg', 'Ulm', 'Konstanz'];

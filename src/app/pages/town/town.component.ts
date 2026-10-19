@@ -70,7 +70,7 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
             <p class="section-subtitle">{{ t.intro }}</p>
             <ul class="chips town-facts">
               <li class="chip chip-outline"><app-icon name="pin" />
-                @if (t.km) { rund {{ t.km }} km · ca. {{ t.minutes }} Min. ab Freiburg } @else { Unser Standort }
+                @if (t.isRegion) { Von Kehl bis Hausach } @else if (t.km) { rund {{ t.km }} km · ca. {{ t.minutes }} Min. ab Freiburg } @else { Unser Standort }
               </li>
               <li class="chip chip-outline"><app-icon name="user" /> Termine vor Ort</li>
               <li class="chip chip-outline"><app-icon name="euro" /> Festpreis oder Monatsabo</li>
@@ -192,11 +192,11 @@ export class TownComponent implements OnInit {
     this.seo.update({
       title: t.seoTitle ?? `Webdesign & SEO ${t.short} – Webagentur | Breisgau Digital`,
       description: `Webdesign, Webentwicklung und SEO für Betriebe in ${t.short}${
-        t.km ? ` – persönlich vor Ort, ca. ${t.minutes} Min. ab Freiburg` : ' – persönlich vor Ort'
+        t.km && !t.isRegion ? ` – persönlich vor Ort, ca. ${t.minutes} Min. ab Freiburg` : ' – persönlich vor Ort'
       }. Individuelle Websites und Shops zum Festpreis, Erstgespräch kostenlos.`,
       path,
       langs: ['de'],
-      keywords: [`Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Google Bewertungen ${t.short}`],
+      keywords: [...(t.isRegion ? [`Webdesign ${t.district}`, `Online-Shop erstellen ${t.short}`] : []), `Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Google Bewertungen ${t.short}`],
     });
     this.seo.setJsonLd('breadcrumb', breadcrumbSchema([
       { name: 'Start', path: '/de' },
@@ -216,9 +216,9 @@ export class TownComponent implements OnInit {
       ],
       provider: { '@id': `${SeoService.ORIGIN}/#service` },
       areaServed: {
-        '@type': 'City',
+        '@type': t.isRegion ? 'AdministrativeArea' : 'City',
         name: t.name,
-        containedInPlace: { '@type': 'AdministrativeArea', name: t.district },
+        ...(t.isRegion ? {} : { containedInPlace: { '@type': 'AdministrativeArea', name: t.district } }),
         geo: { '@type': 'GeoCoordinates', latitude: t.lat, longitude: t.lng },
       },
       url: `${SeoService.ORIGIN}/de${path}`,

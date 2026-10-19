@@ -7,6 +7,17 @@
       "has": [
         {
           "type": "host",
+          "value": "www.breisgau-digital.de"
+        }
+      ],
+      "destination": "https://breisgau-digital.de/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
           "value": "(?:www\\.)?hamzaoeztuerk\\.de"
         }
       ],
@@ -30,11 +41,6 @@
     },
     {
       "source": "/:locale(de|fr|en|tr|ku)/projects/bewerbungs-manager",
-      "destination": "/:locale/projects",
-      "permanent": true
-    },
-    {
-      "source": "/:locale(de|fr|en|tr|ku)/projects/gkn-portraits",
       "destination": "/:locale/projects",
       "permanent": true
     },

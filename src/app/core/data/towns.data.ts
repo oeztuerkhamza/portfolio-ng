@@ -32,6 +32,8 @@ export interface Town {
   faqs: { q: string; a: string }[];
   /** Nachbarorte (Slugs) für interne Links. */
   near: string[];
+  /** Regionsseite (Landkreis) statt einer einzelnen Stadt. */
+  isRegion?: boolean;
   /** Eigener <title>, wo die Suchanfragen von der Vorlage abweichen (Agentur, Region …). */
   seoTitle?: string;
 }
@@ -359,7 +361,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
       },
     ],
-    near: ['lahr', 'emmendingen', 'freiburg'],
+    near: ['lahr', 'ortenau', 'emmendingen', 'freiburg'],
     seoTitle: 'Webdesign & SEO Offenburg und Ortenau – Webagentur | Breisgau Digital',
   },
   {
@@ -401,7 +403,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
       },
     ],
-    near: ['offenburg', 'emmendingen', 'freiburg'],
+    near: ['offenburg', 'ortenau', 'emmendingen', 'freiburg'],
     seoTitle: 'Webdesign & SEO Lahr – Webagentur mit Hosting | Breisgau Digital',
   },
   {
@@ -437,6 +439,46 @@ export const TOWNS: Town[] = [
     ],
     near: ['freiburg', 'waldkirch', 'staufen'],
     seoTitle: 'Webdesigner Titisee-Neustadt & Hochschwarzwald | Breisgau Digital',
+  },
+  {
+    slug: 'ortenau',
+    name: 'Ortenau',
+    short: 'Ortenau',
+    district: 'Ortenaukreis',
+    region: 'Mittelbaden',
+    isRegion: true,
+    km: 60,
+    minutes: 40,
+    lat: 48.4,
+    lng: 7.92,
+    intro: 'Webdesign, Webentwicklung und SEO für Betriebe im ganzen Ortenaukreis — von Kehl bis Hausach, von Offenburg bis Lahr. Individuelle Websites, Online-Shops und Web-Apps zum Festpreis, persönlich vor Ort.',
+    local: 'Die Ortenau ist ein Landkreis mit vielen kleinen und mittleren Betrieben: Handwerk im Kinzigtal, Handel und Dienstleister in Offenburg und Lahr, Gastronomie und Ferienunterkünfte am Schwarzwaldrand. Wer hier nach einer Webagentur sucht, findet oft Anbieter aus Stuttgart oder Freiburg, die den Landkreis nur auf dem Papier bedienen. Wir kommen für das Erstgespräch zu Ihnen, bauen die Website individuell statt aus einem Baukasten und sorgen dafür, dass sie bei Suchen wie „Webdesign Ortenau“ oder „Webagentur Lahr“ überhaupt auftaucht: mit eigener Seitenstruktur, Texten mit Ortsbezug und einem gepflegten Google-Unternehmensprofil.',
+    focus: ['web', 'abo', 'cards'],
+    angles: {
+      web: 'Neue Website, Relaunch oder Online-Shop — entwickelt für Ihren Betrieb und für die Suchbegriffe, nach denen in der Ortenau tatsächlich gesucht wird.',
+      abo: 'Website, Hosting, Pflege und SEO zum festen Monatspreis — ohne große Anfangsinvestition.',
+      cards: 'Bewertungskarten für Betriebe mit Kundenkontakt: Wer zufrieden ist, bewertet in 30 Sekunden, solange Sie noch vor Ort sind.',
+    },
+    faqs: [
+      {
+        q: 'Sind Sie eine Webagentur für die Ortenau?',
+        a: 'Wir sind ein kleines Team aus Freiburg und betreuen Betriebe in der ganzen Ortenau — Offenburg, Lahr, Kehl, Gengenbach, Hausach und Umgebung. Erstgespräche machen wir vor Ort, die laufende Abstimmung meist per Video.',
+      },
+      {
+        q: 'Machen Sie auch SEO in der Ortenau?',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+      },
+      {
+        q: 'Können Sie einen Online-Shop für meinen Betrieb bauen?',
+        a: 'Ja. Ob kleiner Shop mit wenigen Produkten oder Anbindung an Ihre Warenwirtschaft — Umfang und Festpreis nennen wir schriftlich, bevor wir anfangen.',
+      },
+      {
+        q: 'Übernehmen Sie auch Hosting und Betreuung?',
+        a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
+      },
+    ],
+    near: ['offenburg', 'lahr', 'emmendingen'],
+    seoTitle: 'Webdesign & SEO Ortenau – Webagentur & Webentwicklung | Breisgau Digital',
   },
 ];
 

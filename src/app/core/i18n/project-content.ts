@@ -274,6 +274,96 @@ Pergal bêhnvedanên qanûnî dibîne, demên kar ên herî zêde piştrast dike
       ],
     },
   },
+  'gkn-portraits': {
+    fr: {
+      subtitle: 'Studio photo pour photos de candidature à Fribourg, avec réservation en ligne',
+      category: 'Site web & système de réservation',
+      description:
+        'Site web et réservation pour un studio de photos de candidature à Fribourg. Next.js 16, 15 langues, réservation en trois étapes — et un agenda de studio partagé par deux marques.',
+      role: 'Développeur full-stack & designer',
+      long: `GKN Portraits est le site d’un studio photo de Fribourg spécialisé dans les photos de candidature et les portraits professionnels. Le cœur n’est pas une vitrine mais une réservation : choisir une formule, cliquer sur un créneau libre, laisser ses coordonnées — trois étapes, confirmation par e-mail, lien d’annulation inclus. Les appels pour connaître les disponibilités, qui représentent l’essentiel du travail administratif sur des séances courtes, disparaissent.
+
+Techniquement, le site tourne sous Next.js 16 avec React 19 et Tailwind 4. Quinze langues aux URL traduites couvrent qui, à Fribourg, a besoin d’une photo de candidature — y compris une mise en page de droite à gauche pour l’arabe. Les prix existent en deux listes (particuliers et entreprises), car ce n’est pas le travail qui diffère, mais l’usage de l’image.
+
+La particularité est en coulisses : le studio exploite deux marques — portrait et mariage — mais il n’y a qu’une salle et qu’un agenda. Les deux sites écrivent donc dans le même calendrier, et chaque réservation retient par quelle marque elle est arrivée. Un index en base garantit qu’un créneau n’est jamais confirmé deux fois. L’ensemble se gère depuis un espace commun, avec une connexion sans mot de passe par lien à usage unique.`,
+      features: [
+        'Réservation en ligne en trois étapes, e-mail de confirmation et lien d’annulation',
+        'Un agenda de studio commun à deux marques — double réservation techniquement impossible',
+        '15 langues aux URL traduites, mise en page RTL pour l’arabe incluse',
+        'Deux grilles tarifaires (particuliers / entreprises) et trois formules',
+        'Pages locales pour les villes autour de Fribourg',
+        'Guide pratique : tenue, déroulé, choix des images',
+        'Connexion sans mot de passe à l’espace d’administration (lien unique, cookie JWT)',
+        'Environ 285 URL indexables avec hreflang, JSON-LD et sitemap dédié',
+      ],
+    },
+    en: {
+      subtitle: 'Application-photo studio in Freiburg with online booking',
+      category: 'Website & booking system',
+      description:
+        'Website and booking flow for an application-photo studio in Freiburg. Next.js 16, 15 languages, booking in three steps — with one studio calendar shared by two brands.',
+      role: 'Full-stack developer & designer',
+      long: `GKN Portraits is the website of a Freiburg photo studio specialising in application and business portraits. The core isn’t a brochure page, it’s a booking: pick a package, click a free slot, leave your details — three steps, confirmation by email, cancellation link included. That removes the phone calls about open slots, which take up most of the admin work on short shoots.
+
+Technically the site runs on Next.js 16 with React 19 and Tailwind 4. Fifteen languages with translated URLs cover who actually needs an application photo in Freiburg — including a right-to-left layout for Arabic. Prices come in two lists (private and business), because what differs isn’t the work but how the picture is used.
+
+The interesting part is behind the scenes: the studio runs two brands — portrait and wedding — but there is one room and one schedule. Both websites therefore book into the same calendar, and every booking records which brand it came through. A database index makes sure the same slot is never confirmed twice. Everything is managed from a shared admin area with passwordless one-time-link login.`,
+      features: [
+        'Three-step online booking with confirmation email and cancellation link',
+        'One studio calendar for two brands — double booking ruled out at database level',
+        '15 languages with translated URLs, including RTL layout for Arabic',
+        'Two price lists (private / business) with three packages',
+        'Local landing pages for the towns around Freiburg',
+        'Guide section on clothing, process and picture selection',
+        'Passwordless login for the admin area (one-time link, JWT cookie)',
+        'Around 285 indexable URLs with hreflang, JSON-LD and its own sitemap',
+      ],
+    },
+    tr: {
+      subtitle: 'Freiburg’da online randevulu vesikalık/başvuru fotoğrafı stüdyosu',
+      category: 'Web sitesi & randevu sistemi',
+      description:
+        'Freiburg’daki bir başvuru fotoğrafı stüdyosu için web sitesi ve randevu sistemi. Next.js 16, 15 dil, üç adımda randevu — ve iki markanın paylaştığı tek bir stüdyo takvimi.',
+      role: 'Full-stack geliştirici & tasarımcı',
+      long: `GKN Portraits, Freiburg’da başvuru ve kurumsal portre fotoğrafına odaklanan bir stüdyonun web sitesidir. Merkezinde bir tanıtım sayfası değil, randevu var: paketi seç, takvimden boş saati tıkla, iletişim bilgilerini bırak — üç adım, e-posta ile onay, iptal bağlantısı dahil. Böylece kısa çekimlerde işin büyük kısmını oluşturan „boş saat var mı" telefonları ortadan kalkıyor.
+
+Teknik olarak site Next.js 16, React 19 ve Tailwind 4 üzerinde çalışıyor. URL’leri de çevrilmiş on beş dil, Freiburg’da başvuru fotoğrafına ihtiyaç duyan herkesi kapsıyor — Arapça için sağdan sola yerleşim dahil. Fiyatlar iki listede: özel ve kurumsal. Çünkü fark eden şey emek değil, fotoğrafın kullanım biçimi.
+
+Asıl mesele perde arkasında: stüdyonun iki markası var — portre ve düğün — ama tek bir mekân ve tek bir takvim. Bu yüzden iki site de aynı takvime yazıyor ve her randevu hangi marka üzerinden geldiğini saklıyor. Veritabanındaki bir indeks, aynı saatin iki kez onaylanmasını imkânsız kılıyor. Yönetim ise tek bir ortak panelden, tek kullanımlık bağlantıyla şifresiz girişle yapılıyor.`,
+      features: [
+        'Üç adımda online randevu: onay e-postası ve iptal bağlantısı',
+        'İki marka için tek stüdyo takvimi — çift rezervasyon teknik olarak imkânsız',
+        'URL’leri çevrilmiş 15 dil, Arapça için RTL yerleşim dahil',
+        'İki fiyat listesi (özel / kurumsal) ve üç paket',
+        'Freiburg çevresindeki şehirler için yerel sayfalar',
+        'Kıyafet, akış ve fotoğraf seçimi üzerine rehber bölümü',
+        'Yönetim paneline şifresiz giriş (tek kullanımlık bağlantı, JWT çerezi)',
+        'hreflang, JSON-LD ve kendi site haritasıyla yaklaşık 285 indekslenebilir URL',
+      ],
+    },
+    ku: {
+      subtitle: 'Studyoya wêneyên serîlêdanê li Freiburgê bi randevûya online',
+      category: 'Malper & pergala randevûyê',
+      description:
+        'Malper û pergala randevûyê ji bo studyoyek wêneyên serîlêdanê li Freiburgê. Next.js 16, 15 ziman, randevû di sê gavan de — û salnameyek studyoyê ya ku du marka par vedikin.',
+      role: 'Pêşvebirê full-stack & sêwirkar',
+      long: `GKN Portraits malpera studyoyek wênegiriyê ya li Freiburgê ye ku li ser wêneyên serîlêdanê û portreyên karsaziyê pispor e. Di navenda wê de ne rûpelek nasandinê, lê randevûyek heye: paketê hilbijêre, saeta vala ya salnameyê bitikîne, agahiyên têkiliyê binivîse — sê gav, erêkirin bi e-nameyê, girêdana betalkirinê jî tê de. Bi vî awayî têlefonên „saetek vala heye?" — ku di kişandinên kurt de piraniya kar in — winda dibin.
+
+Ji aliyê teknîkî ve malper li ser Next.js 16 bi React 19 û Tailwind 4 dixebite. Panzdeh ziman bi URLên wergerandî kesên ku li Freiburgê wêneyek serîlêdanê dixwazin digire nav xwe — bi rêzkirina ji rastê ber bi çepê ji bo erebî. Biha di du lîsteyan de ne (şexsî û karsazî), ji ber ku ne kar, lê bikaranîna wêneyê cuda ye.
+
+Ya taybet li paş perdeyê ye: studyo du markan dimeşîne — portre û dawet — lê tenê jûrek û tenê bernameyek heye. Ji ber vê yekê her du malper jî di heman salnameyê de tomar dikin, û her randevû tomar dike ku bi kîjan markayê hatiye. Indexek di danegehê de misoger dike ku heman saet ducar nayê erêkirin. Rêveberî ji beşek hevpar tê kirin, bi têketina bê şîfre bi girêdaneke yek-carî.`,
+      features: [
+        'Randevûya online di sê gavan de bi e-nameya erêkirinê û girêdana betalkirinê',
+        'Salnameyek studyoyê ji bo du markan — randevûya ducar bi teknîkî ne gengaz e',
+        '15 ziman bi URLên wergerandî, bi rêzkirina RTL ji bo erebî',
+        'Du lîsteyên biha (şexsî / karsazî) bi sê paketan',
+        'Rûpelên herêmî ji bo bajarên dora Freiburgê',
+        'Beşa rêbernameyê: cil, rêzik û hilbijartina wêneyan',
+        'Têketina bê şîfre ji bo beşa rêveberiyê (girêdana yek-carî, cookie ya JWT)',
+        'Nêzîkî 285 URLên indexbar bi hreflang, JSON-LD û sitemapa xwe',
+      ],
+    },
+  },
   'dj-veys': {
     fr: {
       subtitle: 'Site et système de demandes pour un DJ de mariage',
