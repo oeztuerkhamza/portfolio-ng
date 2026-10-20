@@ -18,32 +18,48 @@
     [class.iv-js]="js()"
     [class.iv-opened]="opened()"
     [class.iv-rtl]="rtl()"
-    [class.iv-demo]="demo"
+    [class.iv-demo]="demo && !embed"
+    [class.iv-foil]="theme().foil"
     [style]="vars()"
     [attr.dir]="rtl() ? 'rtl' : 'ltr'"
     [attr.lang]="lang()"
   >
     <!-- ── Umschlag ── -->
-    <div class="iv-cover" [class.gone]="opened()" [attr.aria-hidden]="opened()">
-      <div class="iv-cover-card">
-        <div class="iv-cover-seal" aria-hidden="true"><span>{{ e.title.charAt(0) }}</span></div>
-        <p class="iv-cover-for">{{ t('open.for') }}</p>
-        <p class="iv-cover-name">{{ data()?.guest?.name || t('open.you') }}</p>
-        <div class="iv-divider" [innerHTML]="divider()"></div>
-        <p class="iv-cover-eyebrow">{{ eyebrow() }}</p>
+    <div class="iv-cover" [class.opening]="opening()" [class.gone]="opened()" [attr.aria-hidden]="opened()">
+      <div class="iv-cover-stage">
+        <div class="iv-env" aria-hidden="true">
+          <div class="iv-env-back"></div>
+          <!-- Der Brief: steigt beim Öffnen aus dem Umschlag -->
+          <div class="iv-letter">
+            <p class="iv-letter-eyebrow">{{ eyebrow() }}</p>
+            <p class="iv-letter-title">{{ e.title }}</p>
+            <div class="iv-divider" [innerHTML]="divider()"></div>
+            <p class="iv-letter-date">{{ dateText() }}</p>
+          </div>
+          <div class="iv-env-front">
+            <p class="iv-env-for">{{ t('open.for') }}</p>
+            <p class="iv-env-name">{{ data()?.guest?.name || t('open.you') }}</p>
+          </div>
+          <div class="iv-env-flap"></div>
+          <div class="iv-env-seal">
+            <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+          </div>
+        </div>
         <h1 class="iv-cover-title">{{ e.title }}</h1>
-        <p class="iv-cover-date">{{ dateText() }}</p>
-        <button type="button" class="iv-btn iv-btn-lg" (click)="open(true)">
-          <app-icon name="heart" /> {{ t('open') }}
-        </button>
-        @if (hasMusic()) {
-          <button type="button" class="iv-link" (click)="open(false)">{{ t('open') }} · {{ t('music.off') }}</button>
-        }
+        <p class="iv-cover-date">{{ eyebrow() }} · {{ dateText() }}</p>
+        <div class="iv-cover-actions">
+          <button type="button" class="iv-btn iv-btn-lg iv-btn-foil" (click)="open(true)">
+            <app-icon name="heart" /> {{ t('open') }}
+          </button>
+          @if (hasMusic()) {
+            <button type="button" class="iv-link" (click)="open(false)">{{ t('open') }} · {{ t('music.off') }}</button>
+          }
+        </div>
       </div>
     </div>
 
     <!-- ── Vorschau-Leiste (nur Beispiele) ── -->
-    @if (demo) {
+    @if (demo && !embed) {
       <div class="iv-demobar">
         <span class="iv-demobar-label"><app-icon name="sparkle" /> {{ t('demo.bar') }} · {{ theme().name[lang()] }}</span>
         <a [routerLink]="['/einladung', slug, 'planer']" class="iv-demobar-link"><app-icon name="list" /> {{ t('demo.planner') }}</a>
@@ -128,8 +144,18 @@
         </div>
       }
       <div class="iv-hero-pattern" aria-hidden="true"></div>
+      @if (theme().particles !== 'none') {
+        <app-particles
+          [kind]="theme().particles"
+          [color]="theme().colors.accent"
+          [color2]="heroImage() || theme().dark ? '#ffffff' : theme().colors.accent2"
+        />
+      }
       <div class="iv-hero-inner">
-        <p class="iv-eyebrow" ivReveal>{{ eyebrow() }}</p>
+        <div class="iv-mono" ivReveal aria-hidden="true">
+          <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+        </div>
+        <p class="iv-eyebrow" ivReveal="60">{{ eyebrow() }}</p>
         <h1 class="iv-title" ivReveal="120">{{ e.title }}</h1>
         <div class="iv-divider iv-divider-lg" [innerHTML]="divider()" ivReveal="220"></div>
         @if (l(e.hosts)) {
@@ -161,11 +187,21 @@
         @if (l(e.welcome)) {
           <p class="iv-lead" ivReveal>{{ l(e.welcome) }}</p>
         }
-        @if (e.sections.story && l(e.story)) {
-          <h2 class="iv-h2" ivReveal>{{ e.kind === 'corporate' ? t('sec.about') : t('sec.story') }}</h2>
-          <p class="iv-text" ivReveal="80">{{ l(e.story) }}</p>
-        }
       </div>
+      @if (e.sections.story && l(e.story)) {
+        <div class="iv-wrap iv-story" [class.iv-story-img]="!!storyImage()">
+          @if (storyImage(); as img) {
+            <figure class="iv-arch" ivReveal>
+              <img [src]="img" alt="" loading="lazy" (error)="storyImageFailed.set(true)" />
+            </figure>
+          }
+          <div class="iv-story-text">
+            <h2 class="iv-h2" ivReveal>{{ e.kind === 'corporate' ? t('sec.about') : t('sec.story') }}</h2>
+            <div class="iv-divider" [innerHTML]="divider()" ivReveal="40"></div>
+            <p class="iv-text" ivReveal="80">{{ l(e.story) }}</p>
+          </div>
+        </div>
+      }
     </section>
 
     <!-- ── Countdown ── -->

@@ -33,11 +33,12 @@ import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
 import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
+import { InviteShowcaseComponent } from '../../shared/invite-showcase/invite-showcase.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent, InviteShowcaseComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],

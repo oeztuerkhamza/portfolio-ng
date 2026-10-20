@@ -53,6 +53,7 @@ import {
 import { MusicService } from './music.service';
 import { RevealDirective } from './reveal.directive';
 import { SlideshowComponent } from './slideshow.component';
+import { ParticlesComponent } from './particles.component';
 import { registerInviteIcons } from './invite-icons';
 
 type Status = 'loading' | 'ready' | 'missing';
@@ -72,9 +73,9 @@ registerInviteIcons();
 @Component({
   selector: 'app-invitation',
   standalone: true,
-  imports: [RouterLink, IconComponent, RevealDirective, SlideshowComponent],
+  imports: [RouterLink, IconComponent, RevealDirective, SlideshowComponent, ParticlesComponent],
   templateUrl: './invitation.component.html',
-  styleUrl: './invitation.component.scss',
+  styleUrls: ['./invitation.component.scss', './invitation-chrome.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class InvitationComponent implements OnInit {
@@ -91,6 +92,8 @@ export class InvitationComponent implements OnInit {
   readonly slug = this.route.snapshot.paramMap.get('slug') ?? '';
   private readonly guestCode = this.route.snapshot.queryParamMap.get('g');
   readonly demo = isDemoSlug(this.slug);
+  /** In einem Rahmen gezeigt (Startseite der Website): ohne Vorschau-Leiste. */
+  readonly embed = this.route.snapshot.queryParamMap.get('embed') === '1';
 
   readonly status = signal<Status>('loading');
   readonly data = signal<PublicInvite | null>(null);
@@ -99,6 +102,9 @@ export class InvitationComponent implements OnInit {
   readonly themeOverride = signal<ThemeId | null>(null);
   readonly musicOverride = signal<MusicId | null>(null);
   readonly opened = signal(false);
+  /** Der Umschlag öffnet sich gerade (Siegel, Klappe, Brief). */
+  readonly opening = signal(false);
+  readonly storyImageFailed = signal(false);
   readonly js = signal(false);
   readonly panel = signal(false);
   readonly now = signal(Date.now());
@@ -136,6 +142,21 @@ export class InvitationComponent implements OnInit {
   readonly musicId = computed<MusicId>(() => this.musicOverride() ?? this.event()?.music ?? 'none');
   readonly hasMusic = computed(() => this.musicId() !== 'none' || !!this.event()?.musicUrl);
   readonly heroImage = signal<string | null>(null);
+
+  /** Monogramm aus den Anfangsbuchstaben: „Ayşe & Daniel" → A & D. */
+  readonly monogram = computed(() => {
+    const title = this.event()?.title.trim() ?? '';
+    const parts = title.split(/\s*(?:&|\+| und | ve | and | et | û )\s*/i).filter(Boolean);
+    const first = (s: string) => s.trim().charAt(0).toLocaleUpperCase();
+    return parts.length >= 2 ? { a: first(parts[0]), b: first(parts[1]) } : { a: first(title), b: '' };
+  });
+
+  /** Foto neben der Geschichte: das erste Foto der Galerie des Gastgebers. */
+  readonly storyImage = computed(() => {
+    const e = this.event();
+    if (!e || this.storyImageFailed()) return null;
+    return e.gallery[0] ?? null;
+  });
 
   readonly eyebrow = computed(() => {
     const e = this.event();
@@ -337,10 +358,17 @@ export class InvitationComponent implements OnInit {
 
   // ── Umschlag & Musik ───────────────────────────────────
 
+  /**
+   * Umschlag öffnen: Siegel bricht, Klappe geht auf, der Brief steigt heraus —
+   * dann gibt der Umschlag die Seite frei. Die Musik startet sofort, solange
+   * der Tipp des Gastes noch als Benutzeraktion gilt.
+   */
   open(withMusic: boolean): void {
-    this.opened.set(true);
+    if (this.opening() || this.opened()) return;
     if (withMusic && this.hasMusic()) this.music.play(this.musicId(), this.musicOverride() ? undefined : this.event()?.musicUrl);
-    if (this.isBrowser) setTimeout(() => this.doc.getElementById('willkommen')?.scrollIntoView({ behavior: 'smooth' }), 650);
+    const reduced = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.opening.set(true);
+    setTimeout(() => this.opened.set(true), reduced ? 0 : 2100);
   }
 
   toggleMusic(): void {

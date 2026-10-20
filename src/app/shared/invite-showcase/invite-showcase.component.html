@@ -1,0 +1,76 @@
+<section class="isc" id="einladungen" aria-labelledby="isc-title">
+  <div class="container isc-grid">
+    <div class="isc-copy">
+      <p class="section-label isc-label">{{ i18n.t('isc.label') }}</p>
+      <h2 class="section-title isc-title" id="isc-title" [innerHTML]="i18n.t('isc.title')"></h2>
+      <p class="isc-text">{{ i18n.t('isc.text') }}</p>
+      <ul class="isc-points">
+        @for (n of [1, 2, 3, 4]; track n) {
+          <li><app-icon name="check" [stroke]="2.2" /> {{ i18n.t('isc.p' + n) }}</li>
+        }
+      </ul>
+
+      <p class="isc-pick">{{ i18n.t('isc.pick') }}</p>
+      <div class="isc-themes" role="radiogroup" [attr.aria-label]="i18n.t('isc.pick')">
+        @for (d of themes; track d.slug; let i = $index) {
+          <button
+            type="button"
+            role="radio"
+            class="isc-theme"
+            [class.on]="selected() === i"
+            [attr.aria-checked]="selected() === i"
+            (click)="pick(i)"
+            [style.--a]="d.theme.colors.bg"
+            [style.--b]="d.theme.colors.accent"
+            [style.--c]="d.theme.colors.ink"
+          >
+            <span class="isc-dot" aria-hidden="true"></span>
+            {{ themeName(i) }}
+          </button>
+        }
+      </div>
+
+      <div class="isc-actions">
+        <a [routerLink]="'/digitale-einladung' | localize" class="btn btn-light btn-large">
+          {{ i18n.t('isc.cta') }} <app-icon name="arrow" />
+        </a>
+        <span class="isc-price">{{ i18n.tp('isc.from', priceFrom) }}</span>
+      </div>
+    </div>
+
+    <div class="isc-stage">
+      <div class="isc-glow" aria-hidden="true" [style.--b]="active().theme.colors.accent"></div>
+      <div class="isc-phone">
+        <div class="isc-notch" aria-hidden="true"></div>
+        <div class="isc-screen">
+          <!-- Titelbild, bis die echte Einladung im Rahmen steht -->
+          <div
+            class="isc-poster"
+            [class.hide]="frameReady()"
+            aria-hidden="true"
+            [style.--a]="active().theme.colors.bg"
+            [style.--b]="active().theme.colors.accentText"
+            [style.--c]="active().theme.colors.ink"
+            [style.--d]="active().theme.colors.accent"
+          >
+            <span class="isc-poster-seal" [style.font-family]="active().theme.fonts.script">{{ active().title.charAt(0) }}</span>
+            <span class="isc-poster-title" [style.font-family]="active().theme.fonts.script">{{ active().title }}</span>
+            <span class="isc-poster-line"></span>
+            <span class="isc-spinner"></span>
+          </div>
+          @if (frameUrl(); as url) {
+            <iframe
+              [src]="url"
+              [title]="i18n.t('isc.frame') + ' — ' + themeName(selected())"
+              loading="lazy"
+              (load)="frameReady.set(true)"
+            ></iframe>
+          }
+        </div>
+      </div>
+      <a [href]="fullUrl()" target="_blank" rel="noopener" class="isc-full">
+        <app-icon name="arrow" /> {{ i18n.t('isc.full') }}
+      </a>
+    </div>
+  </div>
+</section>

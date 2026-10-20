@@ -1,0 +1,274 @@
+// ============================================
+// DIGITALE EINLADUNG — Umschlag, Vorschau-Leiste, schwebende Knöpfe
+// ============================================
+// Zweite Stildatei der Gästeseite (die erste hätte sonst das Stilbudget je
+// Komponente gesprengt). Ebenfalls ohne Kapselung, alles unter `.iv`.
+
+// ── Umschlag ──
+// Ein echter Umschlag: Rückseite, Brief, Vordertasche, Klappe, Wachssiegel.
+// Beim Öffnen bricht das Siegel, die Klappe klappt nach hinten auf, der
+// Brief steigt heraus — dann blendet die Bühne aus.
+.iv-cover {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: calc(var(--iv-top) + 20px) 20px 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 30%, color-mix(in srgb, var(--iv-accent) 18%, transparent), transparent 60%),
+    var(--iv-bg2);
+  transition: opacity 0.9s ease, visibility 0s linear 0.9s;
+  &.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+.iv-cover-stage {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  gap: 0.4rem;
+  width: min(440px, 100%);
+}
+
+.iv-env {
+  --env-paper: var(--iv-surface);
+  --env-inner: color-mix(in srgb, var(--iv-accent) 22%, var(--iv-bg2));
+  position: relative;
+  width: min(400px, 86vw);
+  aspect-ratio: 1.42;
+  margin: 70px 0 1.4rem;
+  perspective: 1200px;
+  filter: drop-shadow(0 26px 40px rgba(0, 0, 0, 0.22));
+  animation: iv-float 6s ease-in-out infinite;
+}
+@keyframes iv-float { 50% { transform: translateY(-6px); } }
+
+.iv-env-back {
+  position: absolute;
+  inset: 0;
+  border-radius: 8px;
+  background: linear-gradient(180deg, var(--env-inner), color-mix(in srgb, var(--env-inner) 80%, #000));
+}
+
+.iv-letter {
+  position: absolute;
+  left: 6%;
+  right: 6%;
+  top: 7%;
+  height: 86%;
+  z-index: 1;
+  border-radius: 4px;
+  background: var(--iv-surface);
+  outline: 1px solid var(--iv-line);
+  outline-offset: -8px;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  padding: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 1.1s var(--iv-ease) 0.75s, box-shadow 1s ease 0.75s;
+  .iv-divider { width: 110px; margin: 0.35rem auto; }
+}
+.iv-letter-eyebrow { font-size: 0.62rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--iv-accent-text); font-weight: 600; }
+.iv-letter-title { font-family: var(--iv-f-script); font-size: clamp(1.6rem, 7vw, 2.3rem); line-height: 1.15; color: var(--iv-ink); margin-top: 0.2rem; }
+.iv-letter-date { font-size: 0.72rem; color: var(--iv-muted); }
+
+// Vordertasche: zwei Seitenecken und der untere Keil, als ein Stück Papier.
+.iv-env-front {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: 8px;
+  background:
+    linear-gradient(to top right, transparent 49.5%, rgba(0, 0, 0, 0.06) 50%, transparent 51%) left bottom / 50% 100% no-repeat,
+    linear-gradient(to top left, transparent 49.5%, rgba(0, 0, 0, 0.06) 50%, transparent 51%) right bottom / 50% 100% no-repeat,
+    var(--env-paper);
+  clip-path: polygon(0 0, 50% 52%, 100% 0, 100% 100%, 0 100%);
+  display: grid;
+  align-content: end;
+  justify-items: center;
+  padding-bottom: 6%;
+}
+.iv-env-for { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--iv-muted); }
+.iv-env-name { font-family: var(--iv-f-script); font-size: clamp(1.5rem, 6vw, 2rem); color: var(--iv-accent-text); line-height: 1.2; }
+
+.iv-env-flap {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 50%;
+  z-index: 3;
+  transform-origin: top center;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--env-paper) 92%, #000), var(--env-paper));
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  border-radius: 8px 8px 0 0;
+  transition: transform 0.75s cubic-bezier(0.55, 0, 0.3, 1) 0.3s, z-index 0s linear 0.65s;
+}
+
+.iv-env-seal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: 74px;
+  height: 74px;
+  margin: -37px 0 0 -37px;
+  display: grid;
+  place-items: center;
+  border-radius: 46% 54% 50% 50% / 52% 48% 52% 48%;
+  background: radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--iv-accent2) 70%, #fff) 0%, var(--iv-accent2) 45%, color-mix(in srgb, var(--iv-accent2) 70%, #000) 100%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3), inset 0 0 0 5px rgba(255, 255, 255, 0.12), inset 0 -4px 8px rgba(0, 0, 0, 0.25);
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--iv-f-script);
+  font-size: 1.55rem;
+  text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.35);
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  span { display: inline-flex; align-items: baseline; gap: 1px; transform: translateY(2px); }
+  i { font-style: normal; font-size: 0.7em; margin: 0 1px; }
+}
+
+.iv-cover-title {
+  font-family: var(--iv-f-script);
+  font-size: clamp(2.2rem, 9vw, 3.2rem);
+  line-height: 1.15;
+}
+.iv-cover-date { color: var(--iv-muted); font-size: 0.92rem; margin-bottom: 0.9rem; }
+.iv-cover-actions { display: grid; justify-items: center; gap: 0.4rem; transition: opacity 0.4s ease; }
+.iv-cover .iv-link { font-size: 0.85rem; }
+
+// Öffnen
+.iv-cover.opening {
+  .iv-env { animation: none; }
+  .iv-env-seal { transform: scale(1.25) rotate(-12deg); opacity: 0; }
+  .iv-env-flap { transform: rotateX(180deg); z-index: 0; }
+  .iv-letter { transform: translateY(-62%); box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18); }
+  .iv-cover-actions, .iv-cover-title, .iv-cover-date { opacity: 0; transition: opacity 0.4s ease; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .iv-env { animation: none; }
+}
+
+// Goldknopf für die Folien-Gestaltungen
+.iv-foil .iv-btn-foil {
+  border: 0;
+  background: linear-gradient(110deg, color-mix(in srgb, var(--iv-accent) 70%, #000) 0%, var(--iv-accent) 30%, color-mix(in srgb, var(--iv-accent) 45%, #fff) 50%, var(--iv-accent) 70%, color-mix(in srgb, var(--iv-accent) 75%, #000) 100%);
+  background-size: 220% 100%;
+  animation: iv-foil 6s linear infinite;
+  color: var(--iv-on-accent);
+}
+
+// ── Vorschau-Leiste ──
+.iv-demobar {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 110;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-inline: 14px;
+  background: #0e1a2b;
+  color: #f2f5f9;
+  font-family: "Inter Variable", system-ui, sans-serif;
+  font-size: 0.85rem;
+  direction: ltr;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  a { text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+}
+.iv-demobar-label { display: inline-flex; align-items: center; gap: 6px; opacity: 0.85; }
+.iv-demobar-link { margin-inline-start: auto; color: #b7cdf0; }
+.iv-demobar-cta { background: #2f6fc4; color: #fff; border-radius: 999px; padding: 5px 14px; font-weight: 600; }
+
+// ── Schwebende Knöpfe ──
+.iv-fab {
+  position: fixed;
+  top: calc(var(--iv-top) + 14px);
+  inset-inline-end: 14px;
+  z-index: 120;
+  display: flex;
+  gap: 8px;
+}
+.iv-fab-btn {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 1px solid var(--iv-line);
+  background: color-mix(in srgb, var(--iv-surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  color: var(--iv-accent-text);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  &.on { background: var(--iv-accent); color: var(--iv-on-accent); }
+}
+.iv-eq {
+  position: absolute;
+  bottom: -4px;
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 10px;
+  i { width: 3px; background: var(--iv-accent); border-radius: 2px; animation: iv-eq 0.9s ease-in-out infinite; }
+  i:nth-child(2) { animation-delay: 0.2s; }
+  i:nth-child(3) { animation-delay: 0.4s; }
+}
+@keyframes iv-eq { 0%, 100% { height: 3px; } 50% { height: 10px; } }
+
+.iv-panel {
+  position: fixed;
+  top: calc(var(--iv-top) + 70px);
+  inset-inline-end: 14px;
+  z-index: 130;
+  width: min(360px, calc(100vw - 28px));
+  max-height: calc(100vh - var(--iv-top) - 90px);
+  overflow-y: auto;
+  background: var(--iv-surface);
+  color: var(--iv-ink);
+  border: 1px solid var(--iv-line);
+  border-radius: var(--iv-radius);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+  padding: 16px 18px 20px;
+  font-family: "Inter Variable", system-ui, sans-serif;
+  font-size: 0.92rem;
+  animation: iv-pop 0.25s var(--iv-ease);
+}
+@keyframes iv-pop { from { opacity: 0; transform: translateY(-8px) scale(0.98); } }
+.iv-panel-head { display: flex; justify-content: space-between; align-items: center; .iv-icon-btn { width: 34px; height: 34px; } }
+.iv-panel-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--iv-muted); margin: 14px 0 8px; font-weight: 600; }
+.iv-panel-note { margin-top: 14px; font-size: 0.8rem; color: var(--iv-muted); line-height: 1.5; }
+.iv-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.iv-chip {
+  border: 1px solid var(--iv-line);
+  background: transparent;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  &.on { background: var(--iv-accent); color: var(--iv-on-accent); border-color: var(--iv-accent); }
+}
+.iv-swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.iv-swatch {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 9px;
+  border-radius: 10px;
+  border: 1px solid var(--iv-line);
+  background: transparent;
+  font-size: 0.82rem;
+  text-align: start;
+  cursor: pointer;
+  &.on { border-color: var(--iv-accent); box-shadow: 0 0 0 2px var(--iv-accent) inset; }
+}
+.iv-swatch-dot {
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  background: conic-gradient(var(--sw-a) 0 50%, var(--sw-b) 0 80%, var(--sw-c) 0);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
