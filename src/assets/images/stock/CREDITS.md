@@ -39,3 +39,19 @@ Design: `imageSource` in `src/app/einladung/invite-themes.ts`.
 | Mediterran | https://www.pexels.com/photo/tables-with-flower-decors-2306281/ |
 | Mitternacht Gala | https://www.pexels.com/photo/person-holding-lighted-sparkler-450301/ |
 | Business Event | https://www.pexels.com/photo/audience-business-conference-education-207716/ |
+
+Fotos neben der Geschichte in den Beispiel-Einladungen (`STORY_PHOTOS` in
+`src/app/einladung/invite-demo.ts`), ebenfalls direkt vom Pexels-CDN:
+
+| Design | Pexels-Seite |
+| --- | --- |
+| Klassik Gold | https://www.pexels.com/photo/wedding-photography-of-a-couple-13470038/ |
+| Boho Garten | https://www.pexels.com/photo/couple-holding-flowers-and-wedding-ring-11626283/ |
+| Modern Minimal | https://www.pexels.com/photo/wedding-rings-on-a-plate-in-form-of-a-leaf-10133743/ |
+| Henna-Nacht | https://www.pexels.com/photo/wedding-couple-hand-mehndi-27164132/ |
+| 1001 Nacht | https://www.pexels.com/photo/close-up-of-mehndi-design-on-bridal-hands-32029488/ |
+| Romantik Rosé | https://www.pexels.com/photo/two-hands-with-wedding-rings-over-a-basket-with-flowers-20645194/ |
+| Rustikal | https://www.pexels.com/photo/rustic-outdoor-wedding-ceremony-setup-28834571/ |
+| Mediterran | https://www.pexels.com/photo/elegant-wedding-table-setup-with-floral-decor-34061566/ |
+| Mitternacht Gala | https://www.pexels.com/photo/black-and-white-photo-of-people-lighting-a-sparklers-9214852/ |
+| Business Event | https://www.pexels.com/photo/a-group-of-people-inside-the-conference-room-8761324/ |

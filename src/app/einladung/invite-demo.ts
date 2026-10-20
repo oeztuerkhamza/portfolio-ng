@@ -1,4 +1,5 @@
-import { INVITE_THEMES, InviteTheme } from './invite-themes';
+import { INVITE_THEMES, InviteTheme, pexels } from './invite-themes';
+import { DEMO_TITLES } from './invite-demo-titles';
 import {
   EventKind,
   InviteBudgetItem,
@@ -212,7 +213,7 @@ const GIFTS_DEMO = (holder: string, ref: string): InviteEvent['gifts'] => ({
 
 const SPECS: Record<ThemeId, DemoSpec> = {
   klassik: {
-    title: 'Ayşe & Daniel',
+    title: DEMO_TITLES.klassik,
     hosts: { de: 'Gemeinsam mit unseren Familien laden wir euch ein', tr: 'Ailelerimizle birlikte sizi davet ediyoruz', en: 'Together with our families we invite you', fr: 'Avec nos familles, nous vous invitons', ku: 'Bi malbatên xwe re em we vedixwînin', ar: 'مع عائلتينا ندعوكم' },
     date: '2027-06-12T14:00:00+02:00',
     langs: ['de', 'tr', 'en', 'fr', 'ku', 'ar'],
@@ -238,7 +239,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Ayşe Yılmaz', 'Hochzeit Ayşe & Daniel'),
   },
   garten: {
-    title: 'Lea & Can',
+    title: DEMO_TITLES.garten,
     date: '2027-05-22T15:00:00+02:00',
     langs: ['de', 'tr', 'en'],
     schedule: [
@@ -254,7 +255,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     faq: [FAQ_PARKING, FAQ_KIDS],
   },
   minimal: {
-    title: 'Sophie & Jonas',
+    title: DEMO_TITLES.minimal,
     date: '2027-04-17T11:00:00+02:00',
     langs: ['de', 'en', 'fr'],
     schedule: [
@@ -273,7 +274,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Sophie Weber', 'Hochzeit Sophie & Jonas'),
   },
   kina: {
-    title: 'Elif & Emre',
+    title: DEMO_TITLES.kina,
     hosts: { de: 'Familie Kaya lädt herzlich ein', tr: 'Kaya ailesi sizleri davet eder', en: 'The Kaya family warmly invites you', fr: 'La famille Kaya vous invite', ku: 'Malbata Kaya we vedixwîne', ar: 'تدعوكم عائلة كايا' },
     date: '2027-07-09T19:00:00+02:00',
     langs: ['tr', 'de', 'ku', 'en', 'ar'],
@@ -293,7 +294,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: { ...GIFTS_DEMO('Elif Kaya', 'Kına Elif & Emre'), paypal: undefined },
   },
   orient: {
-    title: 'Layla & Omar',
+    title: DEMO_TITLES.orient,
     hosts: { de: 'Die Familien Haddad und Nasser laden ein', tr: 'Haddad ve Nasser aileleri davet eder', en: 'The Haddad and Nasser families invite you', fr: 'Les familles Haddad et Nasser vous invitent', ku: 'Malbatên Haddad û Nasser we vedixwînin', ar: 'تتشرف عائلتا حداد وناصر بدعوتكم' },
     date: '2027-08-21T18:00:00+02:00',
     langs: ['de', 'ar', 'en', 'tr', 'fr'],
@@ -311,7 +312,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Layla Haddad', 'Hochzeit Layla & Omar'),
   },
   rosa: {
-    title: 'Marie & Luca',
+    title: DEMO_TITLES.rosa,
     date: '2027-06-26T13:30:00+02:00',
     langs: ['de', 'en', 'fr'],
     schedule: [
@@ -331,7 +332,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Marie Schneider', 'Hochzeit Marie & Luca'),
   },
   rustikal: {
-    title: 'Anna & Ben',
+    title: DEMO_TITLES.rustikal,
     date: '2027-09-04T14:00:00+02:00',
     langs: ['de', 'en'],
     schedule: [
@@ -347,7 +348,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Anna Fischer', 'Hochzeit Anna & Ben'),
   },
   mediterran: {
-    title: 'Sofia & Nikos',
+    title: DEMO_TITLES.mediterran,
     date: '2027-07-31T16:00:00+02:00',
     langs: ['de', 'en', 'fr', 'tr'],
     schedule: [
@@ -364,7 +365,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: GIFTS_DEMO('Sofia Papadopoulou', 'Hochzeit Sofia & Nikos'),
   },
   mitternacht: {
-    title: 'Selin wird 30',
+    title: DEMO_TITLES.mitternacht,
     date: '2027-03-13T20:00:00+01:00',
     langs: ['de', 'tr', 'en'],
     schedule: [
@@ -381,7 +382,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     gifts: { text: { de: 'Keine Geschenke, bitte! Wer mag, legt etwas in die Reisekasse für Japan.', tr: 'Lütfen hediye getirmeyin! İsteyen Japonya seyahat kumbarasına katkıda bulunabilir.', en: 'No presents, please! If you like, chip in to the Japan travel fund.' }, paypal: 'breisgaudigital' },
   },
   business: {
-    title: 'Jahrestagung & Sommerfest 2027',
+    title: DEMO_TITLES.business,
     hosts: { de: 'Muster Technik GmbH', tr: 'Muster Technik GmbH', en: 'Muster Technik GmbH', fr: 'Muster Technik GmbH', ku: 'Muster Technik GmbH', ar: 'Muster Technik GmbH' },
     date: '2027-06-18T09:30:00+02:00',
     langs: ['de', 'en', 'tr', 'fr'],
@@ -397,6 +398,20 @@ const SPECS: Record<ThemeId, DemoSpec> = {
     contacts: [{ role: ROLE.orga, name: 'Team Events', phone: '+49 155 66859378' }],
     faq: [FAQ_PARKING, FAQ_ACCESS],
   },
+};
+
+/** Foto neben der Geschichte, je Beispiel (Pexels, siehe CREDITS.md). */
+const STORY_PHOTOS: Record<ThemeId, number> = {
+  klassik: 13470038,
+  garten: 11626283,
+  minimal: 10133743,
+  kina: 27164132,
+  orient: 32029488,
+  rosa: 20645194,
+  rustikal: 28834571,
+  mediterran: 34061566,
+  mitternacht: 9214852,
+  business: 8761324,
 };
 
 export function demoEvent(themeId: ThemeId): InviteEvent {
@@ -423,7 +438,7 @@ export function demoEvent(themeId: ThemeId): InviteEvent {
     faq: s.faq,
     gifts: s.gifts,
     heroImage: theme.image,
-    gallery: [],
+    gallery: [pexels(STORY_PHOTOS[theme.id], 1000)],
     sections: {
       countdown: true,
       story: true,

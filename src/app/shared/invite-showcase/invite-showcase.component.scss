@@ -1,0 +1,263 @@
+@import "../../../styles/variables";
+
+// Startseite: dunkle Bühne mit Handy und lebender Einladung. Eine eigene
+// Komponente, damit die Startseite ihr Stilbudget behält.
+
+:host { display: block; }
+
+.container { @include container; }
+
+.isc {
+  position: relative;
+  overflow: hidden;
+  padding: $section-y 0;
+  background:
+    radial-gradient(ellipse 60% 70% at 85% 30%, rgba(214, 180, 106, 0.16), transparent 65%),
+    radial-gradient(ellipse 50% 60% at 0% 100%, rgba(91, 147, 214, 0.18), transparent 60%),
+    linear-gradient(160deg, #0f1b2e, $surface-ink 55%, #0b1422);
+  color: $text-on-ink;
+}
+
+.isc-grid {
+  display: grid;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+  align-items: center;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 1.1fr 0.9fr;
+  }
+}
+
+.isc-label {
+  color: #e2c98f;
+  &::before { background: #d6b46a; }
+}
+
+.isc-title { color: #fff; }
+// Das <em> kommt aus der Übersetzung (innerHTML) und trägt kein Kapselungsattribut.
+:host ::ng-deep .isc-title em {
+  font-style: italic;
+  background: linear-gradient(110deg, #b8924f, #f3dfae 45%, #c9a35f 70%, #f3dfae);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: isc-foil 8s linear infinite;
+}
+@keyframes isc-foil { to { background-position: -200% 0; } }
+@media (prefers-reduced-motion: reduce) {
+  :host ::ng-deep .isc-title em { animation: none; }
+}
+
+.isc-text {
+  color: rgba(242, 245, 249, 0.78);
+  font-size: clamp(1rem, 2.2vw, 1.12rem);
+  line-height: 1.7;
+  max-width: 56ch;
+  margin-top: 1.25rem;
+}
+
+.isc-points {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.75rem 0 2rem;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: rgba(242, 245, 249, 0.9);
+    app-icon {
+      color: #e2c98f;
+      width: 1.1em;
+      height: 1.1em;
+    }
+  }
+}
+
+.isc-pick {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(242, 245, 249, 0.6);
+  margin-bottom: 0.75rem;
+}
+
+.isc-themes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-width: 620px;
+}
+
+.isc-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.45rem 0.85rem 0.45rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(242, 245, 249, 0.88);
+  font-size: 0.86rem;
+  cursor: pointer;
+  transition: background $transition-fast, border-color $transition-fast, transform $transition-fast;
+
+  &:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-1px); }
+  &.on {
+    background: #fff;
+    color: $text;
+    border-color: #fff;
+  }
+  &:focus-visible { outline: 2px solid #e2c98f; outline-offset: 2px; }
+}
+
+.isc-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex: none;
+  background: conic-gradient(var(--a) 0 50%, var(--b) 0 80%, var(--c) 0);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.isc-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.5rem;
+  margin-top: 2.25rem;
+}
+
+.isc-price {
+  font-family: $font-display;
+  font-size: 1.3rem;
+  color: #e2c98f;
+}
+
+// ── Handy ──
+.isc-stage {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+}
+
+.isc-glow {
+  position: absolute;
+  top: 8%;
+  left: 50%;
+  width: 420px;
+  height: 420px;
+  max-width: 100%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--b) 45%, transparent), transparent 70%);
+  filter: blur(30px);
+  transition: background 0.6s ease;
+}
+
+.isc-phone {
+  --w: 320px;
+  --h: 660px;
+  --scale: 0.8205; // 320 / 390
+  position: relative;
+  width: calc(var(--w) + 24px);
+  height: calc(var(--h) + 24px);
+  padding: 12px;
+  border-radius: 52px;
+  background: linear-gradient(145deg, #2a3446, #0b111b);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.06),
+    0 40px 80px rgba(0, 0, 0, 0.55);
+
+  @media (max-width: 420px) {
+    --w: 280px;
+    --h: 578px;
+    --scale: 0.718; // 280 / 390
+  }
+}
+
+.isc-notch {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  z-index: 3;
+  width: 96px;
+  height: 26px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #05080d;
+}
+
+.isc-screen {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  border-radius: 40px;
+  overflow: hidden;
+  background: #fff;
+
+  iframe {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 390px;
+    height: calc(var(--h) / var(--scale));
+    border: 0;
+    transform: scale(var(--scale));
+    transform-origin: 0 0;
+  }
+}
+
+.isc-poster {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 2rem;
+  text-align: center;
+  background:
+    radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--d) 25%, transparent), transparent 60%),
+    var(--a);
+  color: var(--c);
+  transition: opacity 0.6s ease, visibility 0s linear 0.6s;
+
+  &.hide { opacity: 0; visibility: hidden; }
+}
+.isc-poster-seal {
+  width: 70px;
+  height: 70px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--d);
+  color: var(--b);
+  font-size: 2rem;
+}
+.isc-poster-title { font-size: 2.2rem; line-height: 1.15; color: var(--c); }
+.isc-poster-line { width: 80px; height: 1px; background: var(--d); }
+.isc-spinner {
+  margin-top: 1.5rem;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, var(--d) 30%, transparent);
+  border-top-color: var(--d);
+  animation: isc-spin 0.9s linear infinite;
+}
+@keyframes isc-spin { to { transform: rotate(360deg); } }
+
+.isc-full {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: rgba(242, 245, 249, 0.8);
+  &:hover { color: #fff; }
+}

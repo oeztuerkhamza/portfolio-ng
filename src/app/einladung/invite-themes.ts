@@ -54,9 +54,13 @@ export interface InviteTheme {
   fonts: { display: string; script: string; body: string };
   /** Überschriften in Versalien mit Sperrung (Cinzel, Minimal, Business). */
   caps: boolean;
+  /** Titel mit Goldfolien-Schimmer statt flacher Farbe. */
+  foil: boolean;
+  /** Was im Kopf schwebt: Blütenblätter, Goldfunken oder nichts. */
+  particles: 'petals' | 'sparkle' | 'none';
 }
 
-const pexels = (id: number, w = 1600) =>
+export const pexels = (id: number, w = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
 
 const SERIF = '"Cormorant Garamond", "Cormorant", Georgia, serif';
@@ -90,6 +94,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: SERIF, script: SCRIPT, body: SANS },
     caps: false,
+    foil: true,
+    particles: 'sparkle',
   },
   {
     id: 'garten',
@@ -114,6 +120,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: SERIF, script: SCRIPT, body: SANS },
     caps: false,
+    foil: false,
+    particles: 'petals',
   },
   {
     id: 'minimal',
@@ -138,6 +146,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: SERIF, script: SERIF, body: SANS },
     caps: true,
+    foil: false,
+    particles: 'none',
   },
   {
     id: 'kina',
@@ -162,6 +172,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: CINZEL, script: SCRIPT, body: SANS },
     caps: true,
+    foil: true,
+    particles: 'sparkle',
   },
   {
     id: 'orient',
@@ -186,6 +198,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: AMIRI, script: SCRIPT, body: SANS },
     caps: false,
+    foil: true,
+    particles: 'sparkle',
   },
   {
     id: 'rosa',
@@ -210,6 +224,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: SERIF, script: SCRIPT, body: SANS },
     caps: false,
+    foil: false,
+    particles: 'petals',
   },
   {
     id: 'rustikal',
@@ -234,6 +250,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: FRAUNCES, script: SCRIPT, body: SANS },
     caps: false,
+    foil: false,
+    particles: 'petals',
   },
   {
     id: 'mediterran',
@@ -258,6 +276,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: SERIF, script: SCRIPT, body: SANS },
     caps: false,
+    foil: false,
+    particles: 'petals',
   },
   {
     id: 'mitternacht',
@@ -282,6 +302,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: CINZEL, script: SCRIPT, body: SANS },
     caps: true,
+    foil: true,
+    particles: 'sparkle',
   },
   {
     id: 'business',
@@ -306,6 +328,8 @@ export const INVITE_THEMES: InviteTheme[] = [
     },
     fonts: { display: FRAUNCES, script: FRAUNCES, body: SANS },
     caps: false,
+    foil: false,
+    particles: 'none',
   },
 ];
 
