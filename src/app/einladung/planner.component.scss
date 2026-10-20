@@ -181,6 +181,25 @@
 .pl-h2 { margin-top: 10px; }
 
 // ── Übersicht ──
+.pl-wz-teaser {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  background: linear-gradient(135deg, #fff, #f3f6fb);
+  border-color: rgba(26, 75, 140, 0.25);
+  h2 { margin-bottom: 4px; }
+}
+.pl-wz-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  font-size: 1.3rem;
+  color: #fff;
+  background: linear-gradient(135deg, #2f6fc4, #1a4b8c);
+}
 .pl-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
 .pl-stat {
   background: var(--pl-surface);

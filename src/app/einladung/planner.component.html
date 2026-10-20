@@ -49,6 +49,7 @@
               <button type="button" [class.on]="hl() === l" (click)="setHostLang(l)">{{ l.toUpperCase() }}</button>
             }
           </div>
+          <button type="button" class="pl-btn" (click)="wizard.set(true)"><app-icon name="sparkle" /> {{ t('wz.open') }}</button>
           <a class="pl-btn" [routerLink]="['/einladung', slug]" target="_blank"><app-icon name="eye" /> {{ t('h.view') }}</a>
         </div>
       </header>
@@ -73,6 +74,16 @@
         @switch (tab()) {
           <!-- ══ Übersicht ══ -->
           @case ('overview') {
+            @if (demo || !p.setupDone) {
+              <section class="pl-card pl-wz-teaser">
+                <span class="pl-wz-icon"><app-icon name="sparkle" /></span>
+                <div class="pl-grow">
+                  <h2>{{ t('wz.demo.h') }}</h2>
+                  <p class="pl-muted">{{ t('wz.demo.p') }}</p>
+                </div>
+                <button type="button" class="pl-btn pl-btn-primary" (click)="wizard.set(true)">{{ t('wz.start') }} →</button>
+              </section>
+            }
             <div class="pl-stats">
               <div class="pl-stat pl-stat-big"><strong>{{ s.persons }}</strong><span>{{ t('s.persons') }}</span><small>{{ s.adults }} {{ t('s.adults') }} · {{ s.children }} {{ t('s.children') }}</small></div>
               <div class="pl-stat ok"><strong>{{ s.yes }}</strong><span>{{ t('s.yes') }}</span></div>
@@ -580,6 +591,10 @@
           }
         }
       </main>
+
+      @if (wizard()) {
+        <app-setup-wizard />
+      }
     }
   }
 </div>

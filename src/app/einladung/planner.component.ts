@@ -6,6 +6,7 @@ import {
   ViewEncapsulation,
   afterNextRender,
   computed,
+  forwardRef,
   inject,
   signal,
 } from '@angular/core';
@@ -43,6 +44,8 @@ import {
 } from './invite.model';
 import { MusicService } from './music.service';
 import { SlideshowComponent } from './slideshow.component';
+import { SetupWizardComponent } from './setup-wizard.component';
+import { PLANNER } from './planner.token';
 import { registerInviteIcons } from './invite-icons';
 
 type Tab = 'overview' | 'guests' | 'seating' | 'tasks' | 'budget' | 'photos' | 'settings';
@@ -100,7 +103,8 @@ registerInviteIcons();
 @Component({
   selector: 'app-planner',
   standalone: true,
-  imports: [RouterLink, NgTemplateOutlet, IconComponent, SlideshowComponent],
+  imports: [RouterLink, NgTemplateOutlet, IconComponent, SlideshowComponent, SetupWizardComponent],
+  providers: [{ provide: PLANNER, useExisting: forwardRef(() => PlannerComponent) }],
   templateUrl: './planner.component.html',
   styleUrl: './planner.component.scss',
   encapsulation: ViewEncapsulation.None,
@@ -120,6 +124,8 @@ export class PlannerComponent implements OnInit {
   readonly access = signal<Access>('loading');
   readonly hl = signal<HostLang>('de');
   readonly tab = signal<Tab>('overview');
+  /** Einrichtungsassistent: öffnet sich bei echten Einladungen, bis er einmal abgeschlossen ist. */
+  readonly wizard = signal(false);
   readonly keyInput = signal('');
   private key = '';
 
@@ -350,6 +356,20 @@ export class PlannerComponent implements OnInit {
     this.photos.set(res.photos);
     this.textLang.set(res.event.langs[0] ?? 'de');
     this.access.set('ready');
+    if (!this.demo && !res.plan.setupDone) this.wizard.set(true);
+  }
+
+  /** Assistent abschließen: Haken im Plan, dann zurück zur Übersicht. */
+  finishSetup(): void {
+    this.editPlan((p) => (p.setupDone = true));
+    this.wizard.set(false);
+    this.tab.set('overview');
+  }
+
+  /** Ausstehende Änderungen sofort speichern (Assistent, vor der Vorschau). */
+  async saveNow(): Promise<void> {
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    if (this.pending.event || this.pending.plan) await this.flush();
   }
 
   // ── Texte ──────────────────────────────────────────────
@@ -611,6 +631,21 @@ export class PlannerComponent implements OnInit {
       } catch {
         this.saveState.set('error');
       }
+    }
+    this.upBusy.set(false);
+  }
+
+  /** Eigenes Titelbild hochladen und gleich verwenden. */
+  async uploadHero(input: HTMLInputElement): Promise<void> {
+    const file = Array.from(input.files ?? []).find((f) => f.type.startsWith('image/'));
+    input.value = '';
+    if (!file) return;
+    this.upBusy.set(true);
+    try {
+      const url = await this.store.ownerUpload(this.slug, this.key, file);
+      this.editEvent((e) => (e.heroImage = url));
+    } catch {
+      this.saveState.set('error');
     }
     this.upBusy.set(false);
   }

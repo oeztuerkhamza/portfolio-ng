@@ -1,0 +1,317 @@
+@let ev = e();
+<div class="wz" role="dialog" aria-modal="true" [attr.aria-label]="t('wz.title')">
+  <!-- Kopf: Fortschritt -->
+  <header class="wz-head">
+    <div class="wz-head-row">
+      <div>
+        <p class="pl-kicker">{{ t('wz.title') }}</p>
+        <p class="wz-step-name">{{ step() + 1 }} / {{ steps.length }} · {{ t('wz.s.' + current()) }}</p>
+      </div>
+      <div class="wz-head-actions">
+        <button type="button" class="pl-link wz-preview-toggle" (click)="showPreview.set(!showPreview())">
+          <app-icon name="eye" /> {{ t('wz.preview') }}
+        </button>
+        @if (current() !== 'done') {
+          <button type="button" class="pl-btn" (click)="later()">{{ t('wz.later') }}</button>
+        }
+      </div>
+    </div>
+    <div class="wz-bar" aria-hidden="true"><span [style.width.%]="progress()"></span></div>
+    <ol class="wz-dots">
+      @for (s of steps; track s; let i = $index) {
+        <li>
+          <button type="button" [class.on]="i === step()" [class.done]="i < step()" (click)="go(i)" [attr.aria-current]="i === step() ? 'step' : null">
+            <span class="wz-dot">
+              @if (i < step()) {
+                <app-icon name="check" [stroke]="2.4" />
+              } @else {
+                {{ i + 1 }}
+              }
+            </span>
+            <span class="wz-dot-label">{{ t('wz.s.' + s) }}</span>
+          </button>
+        </li>
+      }
+    </ol>
+  </header>
+
+  <div class="wz-body" [class.with-preview]="showPreview()">
+    <main class="wz-main">
+      <section class="wz-card">
+        @switch (current()) {
+          <!-- ── 1. Anlass & Namen ── -->
+          @case ('basics') {
+            <h2>{{ t('wz.basics.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.basics.p') }}</p>
+            <p class="pl-label">{{ t('set.kind') }}</p>
+            <div class="wz-kinds">
+              @for (k of p.kinds; track k) {
+                <button type="button" class="wz-kind" [class.on]="ev.kind === k" (click)="setKind(k)">{{ t('kind.' + k) }}</button>
+              }
+            </div>
+            @if (couple()) {
+              <div class="pl-form wz-form">
+                <label>{{ t('wz.name1') }}<input type="text" maxlength="50" [value]="nameA()" (input)="setName('a', p.val($event))" /></label>
+                <label>{{ t('wz.name2') }}<input type="text" maxlength="50" [value]="nameB()" (input)="setName('b', p.val($event))" /></label>
+              </div>
+            } @else {
+              <div class="pl-form wz-form">
+                <label class="pl-span-all">{{ t('set.title') }}<input type="text" maxlength="120" [value]="ev.title" (change)="p.setE('title', p.val($event))" /></label>
+              </div>
+            }
+            <div class="pl-form wz-form">
+              <label class="pl-span-all">{{ t('set.hosts') }} <small class="pl-muted">{{ t('wz.optional') }}</small>
+                <input type="text" [value]="p.lt(ev.hosts)" [placeholder]="t('wz.hosts.ph')" (change)="p.setLtE('hosts', p.val($event))" />
+              </label>
+            </div>
+            <p class="wz-preview-line" aria-live="polite">
+              <span>{{ t('kind.' + ev.kind) }}</span>
+              <strong>{{ ev.title }}</strong>
+            </p>
+          }
+
+          <!-- ── 2. Datum & Orte ── -->
+          @case ('when') {
+            <h2>{{ t('wz.when.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.when.p') }}</p>
+            <div class="pl-form wz-form">
+              <label>{{ t('set.date') }}<input type="datetime-local" [value]="p.dateInput()" (change)="p.setDate(p.val($event))" /></label>
+              <label>{{ t('set.rsvpUntil') }}<input type="date" [value]="ev.rsvpUntil ?? ''" (change)="p.setE('rsvpUntil', p.val($event) || undefined)" /></label>
+            </div>
+            <p class="pl-label">{{ t('set.locations') }}</p>
+            @for (loc of ev.locations; track loc.id; let i = $index) {
+              <div class="wz-loc">
+                <div class="pl-form">
+                  <label>{{ t('f.label') }}<input type="text" [value]="p.lt(loc.label)" [placeholder]="t('wz.loc.label.ph')" (change)="p.setLtE('locations.' + i + '.label', p.val($event))" /></label>
+                  <label>{{ t('f.place') }}<input type="text" [value]="loc.name" (change)="p.setE('locations.' + i + '.name', p.val($event))" /></label>
+                  <label class="pl-span-all">{{ t('f.address') }}<input type="text" [value]="loc.address" [placeholder]="t('wz.address.ph')" (change)="p.setAddress(i, p.val($event))" /></label>
+                </div>
+                @if (ev.locations.length > 1) {
+                  <button type="button" class="pl-icon" (click)="p.removeAt('locations', i)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                }
+              </div>
+            }
+            @if (ev.locations.length < 3) {
+              <button type="button" class="pl-btn" (click)="addLocation()"><app-icon name="plus" /> {{ t('set.addLoc') }}</button>
+            }
+            <p class="wz-tip"><app-icon name="route" /> {{ t('wz.when.tip') }}</p>
+          }
+
+          <!-- ── 3. Design ── -->
+          @case ('design') {
+            <h2>{{ t('wz.design.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.design.p') }}</p>
+            <div class="wz-themes">
+              @for (th of p.themes; track th.id) {
+                <button type="button" class="wz-theme" [class.on]="ev.theme === th.id" (click)="p.setTheme(th.id); previewVersion.set(previewVersion() + 1)"
+                  [style.--a]="th.colors.bg" [style.--b]="th.colors.accent" [style.--c]="th.colors.ink" [style.--d]="th.colors.accentText">
+                  <span class="wz-theme-card" aria-hidden="true">
+                    <span class="wz-theme-mono" [style.font-family]="th.fonts.script">{{ (nameA() || ev.title).charAt(0) }}@if (nameB()) {<i>&amp;</i>{{ nameB().charAt(0) }}}</span>
+                    <span class="wz-theme-title" [style.font-family]="th.fonts.script">{{ ev.title }}</span>
+                    <span class="wz-theme-line"></span>
+                  </span>
+                  <strong>{{ th.name[p.hl()] }}</strong>
+                  <small>{{ th.mood[p.hl()] }}</small>
+                </button>
+              }
+            </div>
+          }
+
+          <!-- ── 4. Sprachen & Musik ── -->
+          @case ('lang') {
+            <h2>{{ t('wz.lang.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.lang.p') }}</p>
+            <div class="pl-chips">
+              @for (l of p.allLangs; track l) {
+                <button type="button" class="pl-chip" [class.on]="ev.langs.includes(l)" (click)="p.toggleLang(l)">
+                  @if (ev.langs.includes(l)) {<app-icon name="check" [stroke]="2.4" />}
+                  {{ p.langNames[l] }}
+                </button>
+              }
+            </div>
+            @if (ev.langs.length > 1) {
+              <p class="pl-label">{{ t('wz.lang.first') }}</p>
+              <div class="pl-seg">
+                @for (l of ev.langs; track l) {
+                  <button type="button" [class.on]="baseLang() === l" (click)="makeFirst(l)">{{ p.langNames[l] }}</button>
+                }
+              </div>
+              <p class="wz-tip"><app-icon name="globe" /> {{ t('wz.lang.tip').replace('{lang}', p.langNames[baseLang()]) }}</p>
+            }
+            <p class="pl-label">{{ p.g('ui.music') }}</p>
+            <div class="pl-chips">
+              @for (m of p.musicIds; track m) {
+                <button type="button" class="pl-chip" [class.on]="ev.music === m" (click)="p.previewMusic(m)">
+                  @if (ev.music === m && p.music.playing()) {<app-icon name="music" />}
+                  {{ p.g('music.' + m) }}
+                </button>
+              }
+              @if (p.music.playing()) {
+                <button type="button" class="pl-chip" (click)="p.music.stop()">■ {{ p.g('music.off') }}</button>
+              }
+            </div>
+            <p class="wz-tip"><app-icon name="music" /> {{ t('wz.music.tip') }}</p>
+          }
+
+          <!-- ── 5. Texte ── -->
+          @case ('texts') {
+            <h2>{{ t('wz.texts.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.texts.p').replace('{lang}', p.langNames[baseLang()]) }}</p>
+            <div class="pl-form wz-form">
+              <label class="pl-span-all">{{ t('set.welcome') }}
+                <textarea rows="3" [value]="p.lt(ev.welcome)" [placeholder]="p.placeholder(ev.welcome)" (change)="p.setLtE('welcome', p.val($event))"></textarea>
+              </label>
+              <label class="pl-span-all">{{ t('set.story') }} <small class="pl-muted">{{ t('wz.optional') }}</small>
+                <textarea rows="5" [value]="p.lt(ev.story)" [placeholder]="p.placeholder(ev.story)" (change)="p.setLtE('story', p.val($event))"></textarea>
+              </label>
+              <label class="pl-span-all">{{ t('set.dress') }} <small class="pl-muted">{{ t('wz.optional') }}</small>
+                <input type="text" [value]="p.lt(ev.dressCode)" [placeholder]="p.placeholder(ev.dressCode)" (change)="p.setLtE('dressCode', p.val($event))" />
+              </label>
+            </div>
+            @if (ev.langs.length > 1) {
+              <p class="wz-tip"><app-icon name="globe" /> {{ t('wz.texts.tip').replace('{langs}', p.langList()) }}</p>
+            }
+          }
+
+          <!-- ── 6. Ablauf ── -->
+          @case ('schedule') {
+            <h2>{{ t('wz.schedule.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.schedule.p') }}</p>
+            <button type="button" class="pl-btn" (click)="applyTemplate()"><app-icon name="list" /> {{ t('wz.schedule.tpl').replace('{kind}', t('kind.' + ev.kind)) }}</button>
+            <div class="wz-schedule">
+              @for (it of ev.schedule; track $index; let i = $index) {
+                <div class="pl-item">
+                  <input type="time" class="pl-time" [value]="it.time" (change)="p.setE('schedule.' + i + '.time', p.val($event))" [attr.aria-label]="t('f.time')" />
+                  <input type="text" class="pl-grow" [value]="p.lt(it.title)" [placeholder]="p.placeholder(it.title) || t('f.what')" (change)="p.setLtE('schedule.' + i + '.title', p.val($event))" />
+                  <select (change)="p.setE('schedule.' + i + '.location', p.val($event) || undefined)" [attr.aria-label]="t('set.locations')">
+                    <option value="">—</option>
+                    @for (loc of ev.locations; track loc.id) {
+                      <option [value]="loc.id" [selected]="it.location === loc.id">{{ loc.name || text(loc.label) }}</option>
+                    }
+                  </select>
+                  <button type="button" class="pl-icon" (click)="p.removeAt('schedule', i)" [attr.aria-label]="t('f.remove')"><app-icon name="trash" /></button>
+                </div>
+              }
+            </div>
+            <button type="button" class="pl-link" (click)="p.addScheduleItem()"><app-icon name="plus" /> {{ t('set.addItem') }}</button>
+          }
+
+          <!-- ── 7. Geschenke ── -->
+          @case ('gifts') {
+            <h2>{{ t('wz.gifts.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.gifts.p') }}</p>
+            <div class="pl-seg wz-yesno">
+              <button type="button" [class.on]="ev.sections.gifts" (click)="setGiftsOn(true)">{{ t('wz.yes') }}</button>
+              <button type="button" [class.on]="!ev.sections.gifts" (click)="setGiftsOn(false)">{{ t('wz.no') }}</button>
+            </div>
+            @if (ev.sections.gifts) {
+              <div class="pl-form wz-form">
+                <label>{{ p.g('gift.holder') }}<input type="text" [value]="ev.gifts?.accountHolder ?? ''" (change)="p.setGift('accountHolder', p.val($event))" /></label>
+                <label>IBAN<input type="text" dir="ltr" inputmode="text" autocomplete="off" [value]="ev.gifts?.iban ?? ''" [class.bad]="p.ibanBad()" (change)="p.setGift('iban', p.val($event))" /></label>
+                <label>BIC <small class="pl-muted">{{ t('wz.optional') }}</small><input type="text" dir="ltr" [value]="ev.gifts?.bic ?? ''" (change)="p.setGift('bic', p.val($event))" /></label>
+                <label>PayPal.me <small class="pl-muted">{{ t('wz.optional') }}</small><input type="text" dir="ltr" placeholder="name" [value]="ev.gifts?.paypal ?? ''" (change)="p.setGift('paypal', p.val($event))" /></label>
+                <label class="pl-span-all">{{ p.g('gift.reference') }}<input type="text" [value]="ev.gifts?.reference ?? ''" [placeholder]="ev.title" (change)="p.setGift('reference', p.val($event))" /></label>
+              </div>
+              @if (p.ibanBad()) {
+                <p class="pl-err">{{ t('set.ibanBad') }}</p>
+              }
+              <p class="wz-tip"><app-icon name="shield" /> {{ t('wz.gifts.tip') }}</p>
+            }
+          }
+
+          <!-- ── 8. Fotos ── -->
+          @case ('photos') {
+            <h2>{{ t('wz.photos.h') }}</h2>
+            <p class="pl-muted">{{ t('wz.photos.p') }}</p>
+            <div class="wz-hero" [style.background-image]="ev.heroImage ? 'url(' + ev.heroImage + ')' : null">
+              @if (!ev.heroImage) {
+                <span class="pl-muted">{{ t('wz.photos.none') }}</span>
+              }
+            </div>
+            <div class="pl-row">
+              <label class="pl-btn pl-btn-primary pl-file">
+                <app-icon name="upload" /> {{ p.upBusy() ? '…' : t('wz.photos.hero') }}
+                <input type="file" accept="image/*" (change)="p.uploadHero($any($event.target))" [disabled]="p.upBusy()" />
+              </label>
+              <label class="pl-btn pl-file">
+                <app-icon name="image" /> {{ t('wz.photos.gallery') }}
+                <input type="file" accept="image/*" multiple (change)="p.uploadOwn($any($event.target))" [disabled]="p.upBusy()" />
+              </label>
+            </div>
+            @if (ev.gallery.length) {
+              <div class="wz-thumbs">
+                @for (url of ev.gallery; track url) {
+                  <figure><img [src]="url" alt="" loading="lazy" /><button type="button" (click)="p.removeOwn(url)" [attr.aria-label]="t('f.remove')">×</button></figure>
+                }
+              </div>
+            }
+            <label class="pl-switch wz-switch">
+              <input type="checkbox" [checked]="ev.guestUploads" (change)="p.setE('guestUploads', p.checked($event))" />
+              <span>{{ t('p.allow') }}</span>
+            </label>
+          }
+
+          <!-- ── 9. Fertig ── -->
+          @case ('done') {
+            <div class="wz-done">
+              <span class="wz-done-icon"><app-icon name="heart" [stroke]="2" /></span>
+              <h2>{{ t('wz.done.h') }}</h2>
+              <p class="pl-muted">{{ t('wz.done.p') }}</p>
+              @if (ev.langs.length > 1) {
+                <p class="wz-translate" [class.pl-err]="p.translateState() === 'error' || p.translateState() === 'nokey'">
+                  @switch (p.translateState()) {
+                    @case ('busy') { <span class="pl-spinner wz-mini-spin"></span> {{ t('tr.busy') }} }
+                    @case ('done') { <app-icon name="check" /> {{ t('tr.done').replace('{n}', '' + (ev.langs.length - 1)) }} }
+                    @case ('nokey') { {{ t('tr.nokey') }} }
+                    @case ('error') { {{ t('tr.error') }} }
+                    @default { }
+                  }
+                </p>
+              }
+              <div class="wz-share">
+                <div class="pl-qr" [innerHTML]="p.shareQr()"></div>
+                <div class="wz-share-body">
+                  <code class="pl-url">{{ p.inviteUrl() }}</code>
+                  <div class="pl-row">
+                    <button type="button" class="pl-btn" (click)="p.copy('url', p.inviteUrl())"><app-icon [name]="p.copied() === 'url' ? 'check' : 'copy'" /> {{ t('s.copylink') }}</button>
+                    <a class="pl-btn pl-btn-wa" [href]="p.shareWa()" target="_blank" rel="noopener"><app-icon name="chat" /> WhatsApp</a>
+                    <a class="pl-btn" [href]="'/einladung/' + p.slug" target="_blank" rel="noopener"><app-icon name="eye" /> {{ t('h.view') }}</a>
+                  </div>
+                </div>
+              </div>
+              <ul class="wz-next">
+                <li><app-icon name="users" /> {{ t('wz.done.n1') }}</li>
+                <li><app-icon name="layers" /> {{ t('wz.done.n2') }}</li>
+                <li><app-icon name="list" /> {{ t('wz.done.n3') }}</li>
+              </ul>
+            </div>
+          }
+        }
+      </section>
+
+      <!-- Fuß: Zurück / Weiter -->
+      <footer class="wz-foot">
+        @if (step() > 0) {
+          <button type="button" class="pl-btn" (click)="back()" [disabled]="busy()">← {{ t('wz.back') }}</button>
+        } @else {
+          <span></span>
+        }
+        @if (current() === 'done') {
+          <button type="button" class="pl-btn pl-btn-primary wz-next-btn" (click)="finish()">{{ t('wz.finish') }} →</button>
+        } @else {
+          <button type="button" class="pl-btn pl-btn-primary wz-next-btn" (click)="next()" [disabled]="busy()">
+            {{ step() === steps.length - 2 ? t('wz.complete') : t('wz.next') }} →
+          </button>
+        }
+      </footer>
+    </main>
+
+    <!-- Live-Vorschau im Handy -->
+    <aside class="wz-preview" [attr.aria-label]="t('wz.preview')">
+      <div class="wz-phone">
+        <iframe [src]="previewUrl()" [title]="t('wz.preview')" loading="lazy"></iframe>
+      </div>
+      <p class="pl-muted">{{ t('wz.preview.note') }}</p>
+    </aside>
+  </div>
+</div>
