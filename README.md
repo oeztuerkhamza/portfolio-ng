@@ -40,6 +40,7 @@ DATABASE_URL=postgres://…          # Bestellungen, Karten, Preise
 SUPABASE_URL=https://….supabase.co # Speicher für hochgeladene Bilder
 SUPABASE_SERVICE_ROLE_KEY=…        # nur serverseitig, nie in den Browser
 SITE_URL=http://localhost:4200
+ANTHROPIC_API_KEY=…               # Übersetzung der Einladungstexte (Claude)
 ```
 
 ## Digitale Einladungen (`/einladung/<name>`)
@@ -58,6 +59,10 @@ Produktseite: `/<sprache>/digitale-einladung`.
 - Vercel liefert für echte Einladungen die vorgerenderte Hülle
   `/einladung/live` aus (Rewrite in `vercel.json`); die Daten holt die Seite im
   Browser von `/api/invites/<name>`.
+- **Speichern & übersetzen** im Planer (Reiter „Einladung"): Texte, die der
+  Gastgeber in einer Sprache ändert, überträgt Claude in die übrigen Sprachen
+  der Einladung (`src/server/translate.ts`). Braucht `ANTHROPIC_API_KEY` in den
+  Umgebungsvariablen; ohne ihn wird nur gespeichert und der Planer sagt das.
 - Code: `src/app/einladung/` (Seiten, Designs, Texte in sechs Sprachen,
   Musik), `src/server/invites.ts` (API), Tests in `invites.node-spec.ts`.
 
