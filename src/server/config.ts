@@ -87,4 +87,12 @@ export const config = {
   get cronSecret() {
     return env('CRON_SECRET');
   },
+  /**
+   * Claude-API-Schlüssel für die automatische Übersetzung der Einladungstexte
+   * (src/server/translate.ts). Nur serverseitig. Fehlt er, bleibt der Knopf
+   * „Speichern & übersetzen" ohne Übersetzung und meldet das.
+   */
+  get anthropicApiKey() {
+    return env('ANTHROPIC_API_KEY');
+  },
 };

@@ -4,6 +4,7 @@ import { db } from './db';
 import { h, sqlOr503, str } from './http';
 import { sameHash, sha256Hex } from './maintenance';
 import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
+import { TranslateFailure, parseTranslateRequest, translateTexts } from './translate';
 import { demoEvent } from '../app/einladung/invite-demo';
 import { THEME_IDS } from '../app/einladung/invite-themes';
 import {
@@ -555,6 +556,50 @@ invites.delete(
       returning path`;
     if (p?.['path']) await deleteImage(String(p['path']));
     return res.status(204).end();
+  }),
+);
+
+// ── Übersetzen ──────────────────────────────────────────
+
+const TRANSLATE_STATUS: Record<string, number> = {
+  translate_not_configured: 503,
+  invalid: 400,
+  too_long: 413,
+  translate_failed: 502,
+};
+
+async function translate(req: Request, res: Response, limits?: { items: number; chars: number }) {
+  try {
+    const { source, targets, items } = parseTranslateRequest(req.body, limits);
+    const translations = await translateTexts(source, targets, items);
+    return res.json({ translations });
+  } catch (err) {
+    if (err instanceof TranslateFailure) return res.status(TRANSLATE_STATUS[err.code] ?? 500).json({ error: err.code });
+    throw err;
+  }
+}
+
+/**
+ * Für die Beispiel-Einladungen: deren Planer läuft ohne Schlüssel im
+ * Browser. Darum hier enge Grenzen — wenige, kurze Texte, wenige Aufrufe.
+ */
+invites.post(
+  '/demo-translate',
+  express.json({ limit: '32kb' }),
+  h(async (req, res) => {
+    res.set('Cache-Control', 'no-store');
+    if (limited(`trd:${ip(req)}`, 8, 60 * 60_000)) return res.status(429).json({ error: 'too_many' });
+    return translate(req, res, { items: 30, chars: 3000 });
+  }),
+);
+
+invites.post(
+  '/:slug/owner/translate',
+  express.json({ limit: '128kb' }),
+  requireOwner,
+  h(async (req, res) => {
+    if (limited(`tr:${String(req.params['slug'])}`, 60, 60 * 60_000)) return res.status(429).json({ error: 'too_many' });
+    return translate(req, res);
   }),
 );
 

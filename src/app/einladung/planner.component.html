@@ -403,13 +403,43 @@
 
           <!-- ══ Einladung bearbeiten ══ -->
           @case ('settings') {
-            <div class="pl-textlang">
-              <span>{{ t('set.textLang') }}</span>
-              <div class="pl-seg">
-                @for (l of e.langs; track l) {
-                  <button type="button" [class.on]="textLang() === l" (click)="textLang.set(l)">{{ l.toUpperCase() }}</button>
+            <div class="pl-card pl-translate">
+              <div class="pl-textlang">
+                <span>{{ t('set.textLang') }}</span>
+                <div class="pl-seg">
+                  @for (l of e.langs; track l) {
+                    <button type="button" [class.on]="textLang() === l" (click)="textLang.set(l); translateState.set('idle')">{{ l.toUpperCase() }}</button>
+                  }
+                </div>
+              </div>
+              <div class="pl-translate-row">
+                <button type="button" class="pl-btn pl-btn-primary" (click)="saveAndTranslate()" [disabled]="translateState() === 'busy'">
+                  <app-icon [name]="translateState() === 'busy' ? 'refresh' : 'globe'" />
+                  {{ translateState() === 'busy' ? t('tr.busy') : t('tr.save') }}
+                  @if (changedCount()) {
+                    <span class="pl-badge">{{ changedCount() }}</span>
+                  }
+                </button>
+                @if (e.langs.length > 1) {
+                  <button type="button" class="pl-link" (click)="saveAndTranslate(true)" [disabled]="translateState() === 'busy'">
+                    {{ t('tr.all').replace('{lang}', textLang().toUpperCase()) }}
+                  </button>
                 }
               </div>
+              <p class="pl-muted pl-translate-msg" aria-live="polite" [class.pl-err]="translateState() === 'error' || translateState() === 'nokey' || translateState() === 'limit'">
+                @switch (translateState()) {
+                  @case ('done') { <app-icon name="check" /> {{ t('tr.done').replace('{n}', '' + translatedInto()) }} }
+                  @case ('nothing') { {{ e.langs.length > 1 ? t('tr.nothing') : t('tr.single') }} }
+                  @case ('nokey') { {{ t('tr.nokey') }} }
+                  @case ('limit') { {{ t('tr.limit') }} }
+                  @case ('error') { {{ t('tr.error') }} }
+                  @default {
+                    @if (e.langs.length > 1) {
+                      {{ t('tr.hint').replace('{langs}', langList()) }}
+                    }
+                  }
+                }
+              </p>
             </div>
 
             <section class="pl-card">

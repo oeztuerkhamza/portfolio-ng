@@ -5,12 +5,14 @@ import { THEME_IDS } from './invite-themes';
 import {
   InviteEvent,
   InviteGuest,
+  InviteLang,
   InvitePhoto,
   InvitePlan,
   OwnerInvite,
   PublicInvite,
   RsvpInput,
   ThemeId,
+  Translations,
 } from './invite.model';
 
 /**
@@ -171,6 +173,27 @@ export class InviteStore {
       return;
     }
     await this.ok(fetch(`${this.ownerUrl(slug)}/photos/${id}`, { method: 'PATCH', headers: this.ownerHeaders(key, true), body: JSON.stringify({ hidden }) }));
+  }
+
+  /**
+   * Texte in andere Sprachen übersetzen lassen (Claude über unseren Server).
+   * Gespeichert wird danach wie jede andere Änderung. Wirft einen Fehler mit
+   * dem Code des Servers, z. B. `translate_not_configured`.
+   */
+  async translate(
+    slug: string,
+    key: string,
+    body: { source: InviteLang; targets: InviteLang[]; items: { id: string; text: string }[] },
+  ): Promise<Translations> {
+    const url = isDemoSlug(slug) ? '/api/invites/demo-translate' : `${this.ownerUrl(slug)}/translate`;
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: isDemoSlug(slug) ? { 'Content-Type': 'application/json' } : this.ownerHeaders(key, true),
+      body: JSON.stringify(body),
+    });
+    const data = (await res.json().catch(() => ({}))) as { translations?: Translations; error?: string };
+    if (!res.ok || !data.translations) throw new Error(data.error ?? `HTTP ${res.status}`);
+    return data.translations;
   }
 
   async deletePhoto(slug: string, key: string, id: string): Promise<void> {

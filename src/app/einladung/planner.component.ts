@@ -38,6 +38,7 @@ import {
   ScheduleItem,
   ThemeId,
   localText,
+  localTextPaths,
   validIban,
 } from './invite.model';
 import { MusicService } from './music.service';
@@ -143,6 +144,12 @@ export class PlannerComponent implements OnInit {
 
   // Einstellungen
   readonly textLang = signal<InviteLang>('de');
+  /** Geänderte Texte seit dem letzten Übersetzen: Pfad → Sprache, in der geschrieben wurde. */
+  readonly changed = signal<Map<string, InviteLang>>(new Map());
+  readonly translateState = signal<'idle' | 'busy' | 'done' | 'nothing' | 'nokey' | 'limit' | 'error'>('idle');
+  readonly translatedInto = signal(0);
+  /** Geänderte Texte in der gerade gewählten Sprache — die übersetzt „Speichern & übersetzen". */
+  readonly changedCount = computed(() => [...this.changed().values()].filter((l) => l === this.textLang()).length);
   readonly upBusy = signal(false);
   readonly slideshow = signal(false);
 
@@ -665,10 +672,70 @@ export class PlannerComponent implements OnInit {
   /** LocalText am Pfad in der gewählten Bearbeitungssprache setzen. */
   setLtE(path: string, value: string): void {
     this.editEvent((e) => setPath(e, path, this.setLt(getPath(e, path) as LocalText | undefined, value.trim())));
+    this.changed.update((m) => new Map(m).set(path, this.textLang()));
   }
 
   removeAt(list: 'schedule' | 'locations' | 'contacts' | 'faq', index: number): void {
     this.editEvent((e) => e[list].splice(index, 1));
+    // Die Pfade dahinter verschieben sich; ihre Markierung gilt nicht mehr.
+    this.changed.update((m) => new Map([...m].filter(([p]) => !p.startsWith(`${list}.`))));
+  }
+
+  /**
+   * „Speichern & übersetzen": speichert und überträgt die Texte, die in der
+   * gewählten Sprache geändert wurden, in alle anderen Sprachen der
+   * Einladung. Mit `all` werden alle Texte dieser Sprache neu übersetzt.
+   * Schlägt die Übersetzung fehl, ist trotzdem alles gespeichert.
+   */
+  async saveAndTranslate(all = false): Promise<void> {
+    const e = this.event();
+    if (!e || this.translateState() === 'busy') return;
+    const source = this.textLang();
+    const targets = e.langs.filter((l) => l !== source);
+    const paths = all ? localTextPaths(e) : [...this.changed()].filter(([, l]) => l === source).map(([p]) => p);
+    const items = paths
+      .map((id) => ({ id, text: this.textIn(getPath(e, id) as LocalText | undefined, source) }))
+      .filter((it) => it.text);
+
+    if (this.saveTimer) clearTimeout(this.saveTimer);
+    if (!targets.length || !items.length) {
+      await this.flush();
+      this.translateState.set('nothing');
+      return;
+    }
+
+    this.translateState.set('busy');
+    try {
+      const tr = await this.store.translate(this.slug, this.key, { source, targets, items });
+      this.editEvent((ev) => {
+        for (const [path, texts] of Object.entries(tr)) {
+          const cur = getPath(ev, path) as LocalText | undefined;
+          if (!items.some((i) => i.id === path)) continue;
+          const obj: Partial<Record<InviteLang, string>> = typeof cur === 'string' ? { [source]: cur } : { ...(cur ?? {}) };
+          setPath(ev, path, { ...obj, ...texts });
+        }
+      });
+      if (this.saveTimer) clearTimeout(this.saveTimer);
+      await this.flush();
+      this.changed.update((m) => new Map([...m].filter(([p, l]) => !(l === source && paths.includes(p)))));
+      this.translatedInto.set(targets.length);
+      this.translateState.set(this.saveState() === 'error' ? 'error' : 'done');
+    } catch (err) {
+      await this.flush();
+      const code = err instanceof Error ? err.message : '';
+      this.translateState.set(code === 'translate_not_configured' ? 'nokey' : code === 'too_many' ? 'limit' : 'error');
+    }
+  }
+
+  /** Text einer Sprache; ein einfacher String gilt für alle Sprachen. */
+  private textIn(text: LocalText | undefined, lang: InviteLang): string {
+    if (!text) return '';
+    return (typeof text === 'string' ? text : (text[lang] ?? '')).trim();
+  }
+
+  langList(): string {
+    const e = this.event();
+    return e ? e.langs.filter((l) => l !== this.textLang()).map((l) => this.langNames[l]).join(', ') : '';
   }
 
   /** Neue Adresse: alte Koordinaten passen nicht mehr. */

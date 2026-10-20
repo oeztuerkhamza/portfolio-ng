@@ -227,6 +227,19 @@ export interface RsvpInput {
   message?: string;
 }
 
+/** Antwort der Übersetzung: je Text-Pfad die Texte in den Zielsprachen. */
+export type Translations = Record<string, Partial<Record<InviteLang, string>>>;
+
+/** Alle Pfade einer Einladung, an denen ein Text je Sprache steht (für „alles übersetzen"). */
+export function localTextPaths(e: InviteEvent): string[] {
+  const paths = ['eyebrow', 'hosts', 'welcome', 'story', 'dressCode', 'gifts.text'];
+  e.schedule.forEach((_, i) => paths.push(`schedule.${i}.title`, `schedule.${i}.text`));
+  e.locations.forEach((_, i) => paths.push(`locations.${i}.label`));
+  e.contacts.forEach((_, i) => paths.push(`contacts.${i}.role`));
+  e.faq.forEach((_, i) => paths.push(`faq.${i}.q`, `faq.${i}.a`));
+  return paths;
+}
+
 /** Text in der gewünschten Sprache, sonst in der ersten vorhandenen. */
 export function localText(t: LocalText | undefined, lang: InviteLang, fallback: InviteLang = 'de'): string {
   if (!t) return '';
