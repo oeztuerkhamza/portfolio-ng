@@ -14,10 +14,10 @@ export const EINLADUNG_CONTENT: Record<string, Entry> = {
     ku: 'Vexwendina Dîjîtal û Malpera Dawetê ji {p} € | Breisgau Digital',
   },
   'seo.inv.desc': {
-    de: 'Online-Einladung für Hochzeit, Henna-Abend, Verlobung & Firmenevent: Zusagen, Gästeliste, Sitzplan, Countdown, Route, IBAN/PayPal und Fotoalbum — 10 Designs, 6 Sprachen.',
+    de: 'Online-Einladung für Hochzeit, Henna-Abend, Verlobung & Firmenevent: Zusagen, Gästeliste, Sitzplan, Countdown, Route, IBAN/PayPal und Fotoalbum — 11 Designs, 6 Sprachen.',
     fr: 'Invitation en ligne pour mariage, henné, fiançailles et événement d’entreprise : réponses, liste d’invités, plan de table, compte à rebours, itinéraire, IBAN/PayPal et album photo.',
-    en: 'Online invitation for weddings, henna nights, engagements and company events: RSVPs, guest list, seating plan, countdown, directions, IBAN/PayPal and photo album — 10 designs, 6 languages.',
-    tr: 'Düğün, kına gecesi, nişan ve kurumsal etkinlikler için online davetiye: LCV, misafir listesi, oturma planı, geri sayım, yol tarifi, IBAN/PayPal ve fotoğraf albümü — 10 tasarım, 6 dil.',
+    en: 'Online invitation for weddings, henna nights, engagements and company events: RSVPs, guest list, seating plan, countdown, directions, IBAN/PayPal and photo album — 11 designs, 6 languages.',
+    tr: 'Düğün, kına gecesi, nişan ve kurumsal etkinlikler için online davetiye: LCV, misafir listesi, oturma planı, geri sayım, yol tarifi, IBAN/PayPal ve fotoğraf albümü — 11 tasarım, 6 dil.',
     ku: 'Vexwendina serhêl ji bo dawet, şeva hineyê, nîşan û bûyerên fîrmayan: bersiv, lîsteya mêvanan, plana rûniştinê, jimartina paşve, rê, IBAN/PayPal û albûma wêneyan.',
   },
 
@@ -40,13 +40,13 @@ export const EINLADUNG_CONTENT: Record<string, Entry> = {
   'inv.from': { de: 'ab {p} € einmalig — kein Abo', fr: 'dès {p} € une fois — sans abonnement', en: 'from €{p} one-off — no subscription', tr: '{p} €’dan başlayan tek seferlik fiyat — abonelik yok', ku: 'ji {p} € yek car — bê abone' },
   'inv.cta.demos': { de: 'Beispiele ansehen', fr: 'Voir les exemples', en: 'See the examples', tr: 'Örnekleri gör', ku: 'Mînakan bibîne' },
   'inv.cta.request': { de: 'Einladung anfragen', fr: 'Demander une invitation', en: 'Request an invitation', tr: 'Davetiye talep et', ku: 'Vexwendinê bipirse' },
-  'inv.trust1': { de: '10 Designs', fr: '10 designs', en: '10 designs', tr: '10 tasarım', ku: '10 dîzayn' },
+  'inv.trust1': { de: '11 Designs', fr: '11 designs', en: '11 designs', tr: '11 tasarım', ku: '11 dîzayn' },
   'inv.trust2': { de: '6 Sprachen inkl. Arabisch', fr: '6 langues dont l’arabe', en: '6 languages incl. Arabic', tr: 'Arapça dahil 6 dil', ku: '6 ziman bi Erebî re' },
   'inv.trust3': { de: 'Keine App nötig', fr: 'Aucune appli', en: 'No app needed', tr: 'Uygulama gerekmez', ku: 'Sepan ne pêwîst e' },
   'inv.trust4': { de: 'Ohne Tracking', fr: 'Sans pistage', en: 'No tracking', tr: 'Takip yok', ku: 'Bê şopandin' },
 
   // ── Designs ──
-  'inv.themes.label': { de: '10 Designs, live zum Ausprobieren', fr: '10 designs à essayer en direct', en: '10 designs to try live', tr: 'Canlı deneyebileceğiniz 10 tasarım', ku: '10 dîzayn ji bo ceribandinê' },
+  'inv.themes.label': { de: '11 Designs, live zum Ausprobieren', fr: '11 designs à essayer en direct', en: '11 designs to try live', tr: 'Canlı deneyebileceğiniz 11 tasarım', ku: '11 dîzayn ji bo ceribandinê' },
   'inv.themes.title': {
     de: 'Für jede Feier<br /><em>und jede Kultur</em>.',
     fr: 'Pour chaque fête<br /><em>et chaque culture</em>.',
@@ -94,7 +94,7 @@ export const EINLADUNG_CONTENT: Record<string, Entry> = {
   'inv.f.plan.t': { de: 'Checkliste & Budget', fr: 'Check-list & budget', en: 'Checklist & budget', tr: 'Yapılacaklar ve bütçe', ku: 'Lîsteya karan û budce' },
   'inv.f.plan.d': { de: 'Fertige Checkliste vom Location-Termin bis zum Diashow-Test, dazu Budget mit Kosten pro Gast.', fr: 'Check-list prête à l’emploi et budget avec coût par invité.', en: 'A ready-made checklist from venue booking to slideshow test, plus a budget with cost per guest.', tr: 'Mekân rezervasyonundan slayt testine hazır yapılacaklar listesi; misafir başı maliyetli bütçe.', ku: 'Lîsteya amade û budce bi lêçûna her mêvanekî.' },
   'inv.f.theme.t': { de: 'Design jederzeit wechseln', fr: 'Changer de design à tout moment', en: 'Switch design anytime', tr: 'Temayı istediğiniz an değiştirin', ku: 'Dîzaynê her dem biguherînin' },
-  'inv.f.theme.d': { de: 'Zehn Designs mit Animationen beim Scrollen — der Inhalt bleibt, nur das Kleid wechselt.', fr: 'Dix designs animés — le contenu reste, seul l’habit change.', en: 'Ten designs with scroll animations — the content stays, only the look changes.', tr: 'Kaydırma animasyonlu on tasarım — içerik kalır, sadece görünüm değişir.', ku: 'Deh dîzayn bi anîmasyon — naverok dimîne.' },
+  'inv.f.theme.d': { de: 'Elf Designs, jedes mit eigener Öffnung (Umschlag, Tauben, Samtvorhang, Flügeltür), gezeichneten Ornamenten und Animationen — der Inhalt bleibt, nur das Kleid wechselt.', fr: 'Onze designs, chacun avec sa propre ouverture (enveloppe, colombes, rideau, portes), des ornements dessinés et des animations — le contenu reste, seul l’habit change.', en: 'Eleven designs, each with its own opening (envelope, doves, velvet curtain, carved doors), hand-drawn ornaments and animations — the content stays, only the look changes.', tr: 'On bir tasarım; her birinin kendi açılışı (zarf, güvercinler, kadife perde, oymalı kapı), çizim süslemeleri ve animasyonları var — içerik kalır, sadece görünüm değişir.', ku: 'Yanzdeh dîzayn, her yek bi vekirina xwe — naverok dimîne.' },
   'inv.f.privacy.t': { de: 'Privat & datensparsam', fr: 'Privé & sobre en données', en: 'Private & data-minimal', tr: 'Gizli ve veri dostu', ku: 'Taybet û bi daneyên kêm' },
   'inv.f.privacy.d': { de: 'Nicht in Suchmaschinen, kein Tracking, Planer nur mit eurem Schlüssel. Die Gästeliste sieht niemand außer euch.', fr: 'Non indexé, sans pistage, planificateur protégé par clé.', en: 'Not in search engines, no tracking, planner only with your key. Nobody but you sees the guest list.', tr: 'Arama motorlarında görünmez, takip yok, panel sadece size özel anahtarla. Misafir listesini sizden başkası göremez.', ku: 'Ne di motorên lêgerînê de, bê şopandin.' },
 

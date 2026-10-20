@@ -1,7 +1,7 @@
 import { EventKind, InviteLang, MusicId, ThemeId } from './invite.model';
 
 /**
- * Die zehn Gestaltungen der Einladungsseiten.
+ * Die elf Gestaltungen der Einladungsseiten.
  *
  * Eine Gestaltung ist nur Farbe, Schrift, Ornament und Titelbild — der Aufbau
  * der Seite ist überall derselbe. Darum lässt sich die Gestaltung jederzeit
@@ -14,6 +14,7 @@ import { EventKind, InviteLang, MusicId, ThemeId } from './invite.model';
  */
 
 export type Ornament =
+  | 'tiles'
   | 'flourish'
   | 'leaves'
   | 'line'
@@ -58,7 +59,24 @@ export interface InviteTheme {
   foil: boolean;
   /** Was im Kopf schwebt: Blütenblätter, Goldfunken oder nichts. */
   particles: 'petals' | 'sparkle' | 'none';
+  /**
+   * Die Eigenheit der Gestaltung — damit jede ihr eigenes Gesicht hat und
+   * nicht nur eine andere Farbe:
+   *   intro  — wie die Einladung sich öffnet,
+   *   hero   — Foto über die ganze Fläche oder gerahmt im Bogen,
+   *   art    — gezeichnete Ecken (Zitronen, Olivenzweig, Rosen …),
+   *   player — Musik als Schallplatte oder als schlichter Knopf.
+   */
+  intro: InviteIntro;
+  hero: 'cover' | 'framed';
+  art: ArtId | null;
+  /** Farben der Zeichnung: Frucht/Blüte, Blatt, Akzent. */
+  artColors: [string, string, string];
+  player: 'vinyl' | 'button';
 }
+
+export type InviteIntro = 'envelope' | 'doves' | 'curtain' | 'doors';
+export type ArtId = 'lemons' | 'olive' | 'eucalyptus' | 'roses' | 'tulips' | 'wheat' | 'laurel' | 'arabesque' | 'deco';
 
 export const pexels = (id: number, w = 1600) =>
   `https://images.pexels.com/photos/${id}/pexels-photo-${id}.jpeg?auto=compress&cs=tinysrgb&w=${w}`;
@@ -68,9 +86,42 @@ const SCRIPT = '"Great Vibes", "Snell Roundhand", cursive';
 const CINZEL = '"Cinzel", "Trajan Pro", Georgia, serif';
 const AMIRI = '"Amiri", "Noto Naskh Arabic", Georgia, serif';
 const FRAUNCES = '"Fraunces Variable", "Fraunces", Georgia, serif';
+const ITALIANA = '"Italiana", "Cormorant Garamond", Georgia, serif';
+const PINYON = '"Pinyon Script", "Great Vibes", cursive';
 const SANS = '"Inter Variable", "Inter", -apple-system, "Segoe UI", sans-serif';
 
 export const INVITE_THEMES: InviteTheme[] = [
+  {
+    id: 'dolcevita',
+    name: { de: 'Dolce Vita', tr: 'Dolce Vita', en: 'Dolce Vita', fr: 'Dolce Vita', ku: 'Dolce Vita', ar: 'دولتشي فيتا' },
+    mood: {
+      de: 'Amalfi-Zitronen, blaue Majolika und Sommerlicht — italienische Leichtigkeit für Hochzeiten am Meer.',
+      tr: 'Amalfi limonları, mavi majolika çinileri ve yaz ışığı — deniz kenarı düğünler için İtalyan zarafeti.',
+      en: 'Amalfi lemons, blue majolica and summer light — Italian ease for weddings by the sea.',
+      fr: 'Citrons d’Amalfi, majolique bleue et lumière d’été — la légèreté italienne pour un mariage au bord de la mer.',
+      ku: 'Lîmonên Amalfî, kaşiyên şîn û ronahiya havînê — xweşiya Îtalî.',
+      ar: 'ليمون أمالفي وبلاط الماجوليكا الأزرق وضوء الصيف — أناقة إيطالية لأعراس البحر.',
+    },
+    demoKind: 'wedding',
+    music: 'guitar',
+    ornament: 'tiles',
+    dark: false,
+    image: pexels(2306281),
+    imageSource: 'https://www.pexels.com/photo/tables-with-flower-decors-2306281/',
+    colors: {
+      bg: '#fbf6e9', bg2: '#f1ead6', surface: '#fffdf6', ink: '#1f3352', muted: '#4f5d72',
+      accent: '#1f4e8c', accentText: '#1f4e8c', accent2: '#e0a91b', onAccent: '#ffffff', line: 'rgba(31,78,140,.22)',
+    },
+    fonts: { display: ITALIANA, script: PINYON, body: SANS },
+    caps: true,
+    foil: false,
+    particles: 'none',
+    intro: 'doves',
+    hero: 'framed',
+    art: 'lemons',
+    artColors: ['#f2c230', '#4f7a34', '#1f4e8c'],
+    player: 'vinyl',
+  },
   {
     id: 'klassik',
     name: { de: 'Klassik Gold', tr: 'Klasik Altın', en: 'Classic Gold', fr: 'Classique or', ku: 'Klasîk Zêr', ar: 'كلاسيك ذهبي' },
@@ -96,6 +147,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: true,
     particles: 'sparkle',
+    intro: 'envelope',
+    hero: 'cover',
+    art: 'laurel',
+    artColors: ['#c9a35f', '#b08d57', '#8a6d3b'],
+    player: 'vinyl',
   },
   {
     id: 'garten',
@@ -122,6 +178,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: false,
     particles: 'petals',
+    intro: 'doves',
+    hero: 'framed',
+    art: 'eucalyptus',
+    artColors: ['#c0714f', '#7d8f69', '#a3b08f'],
+    player: 'vinyl',
   },
   {
     id: 'minimal',
@@ -148,6 +209,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: true,
     foil: false,
     particles: 'none',
+    intro: 'envelope',
+    hero: 'framed',
+    art: null,
+    artColors: ['#141414', '#8a8a8a', '#141414'],
+    player: 'button',
   },
   {
     id: 'kina',
@@ -174,6 +240,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: true,
     foil: true,
     particles: 'sparkle',
+    intro: 'doors',
+    hero: 'cover',
+    art: 'tulips',
+    artColors: ['#c52a35', '#d9a84e', '#e6bd6c'],
+    player: 'vinyl',
   },
   {
     id: 'orient',
@@ -200,6 +271,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: true,
     particles: 'sparkle',
+    intro: 'doors',
+    hero: 'cover',
+    art: 'arabesque',
+    artColors: ['#d8b25a', '#4a9c8c', '#e2c070'],
+    player: 'vinyl',
   },
   {
     id: 'rosa',
@@ -226,6 +302,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: false,
     particles: 'petals',
+    intro: 'doves',
+    hero: 'framed',
+    art: 'roses',
+    artColors: ['#d98f9b', '#8fa58a', '#c9848f'],
+    player: 'vinyl',
   },
   {
     id: 'rustikal',
@@ -252,6 +333,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: false,
     particles: 'petals',
+    intro: 'envelope',
+    hero: 'framed',
+    art: 'wheat',
+    artColors: ['#c9a46a', '#8a9a6f', '#8b5e3c'],
+    player: 'vinyl',
   },
   {
     id: 'mediterran',
@@ -278,6 +364,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: false,
     particles: 'petals',
+    intro: 'doves',
+    hero: 'framed',
+    art: 'olive',
+    artColors: ['#4d5b2e', '#7d8f55', '#2f5d8a'],
+    player: 'vinyl',
   },
   {
     id: 'mitternacht',
@@ -304,6 +395,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: true,
     foil: true,
     particles: 'sparkle',
+    intro: 'curtain',
+    hero: 'cover',
+    art: 'deco',
+    artColors: ['#d6b46a', '#8ea4d2', '#e0c07a'],
+    player: 'vinyl',
   },
   {
     id: 'business',
@@ -330,6 +426,11 @@ export const INVITE_THEMES: InviteTheme[] = [
     caps: false,
     foil: false,
     particles: 'none',
+    intro: 'envelope',
+    hero: 'cover',
+    art: null,
+    artColors: ['#0f766e', '#1a4b8c', '#0f766e'],
+    player: 'button',
   },
 ];
 
@@ -356,5 +457,23 @@ export function themeVars(t: InviteTheme): Record<string, string> {
     '--iv-f-display': t.fonts.display,
     '--iv-f-script': t.fonts.script,
     '--iv-f-body': t.fonts.body,
+    '--iv-art1': t.artColors[0],
+    '--iv-art2': t.artColors[1],
+    '--iv-art3': t.artColors[2],
+    ...(t.ornament === 'tiles' ? { '--iv-tile': tileUrl(c.accent, c.accent2, c.surface) } : {}),
   };
+}
+
+/**
+ * Majolika-Fliese (Amalfi): Vierpass in Blau, gelbe Mitte, Viertelkreise an
+ * den Ecken — aneinandergereiht ergibt das die typische Bordüre.
+ */
+function tileUrl(blue: string, yellow: string, white: string): string {
+  const svg =
+    `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40"><rect width="40" height="40" fill="${white}"/>` +
+    `<path d="M0 0h9a9 9 0 0 1-9 9zM40 0v9a9 9 0 0 1-9-9zM0 40v-9a9 9 0 0 1 9 9zM40 40h-9a9 9 0 0 1 9-9z" fill="${blue}"/>` +
+    `<circle cx="20" cy="20" r="12" fill="none" stroke="${yellow}" stroke-width="1.2"/>` +
+    `<path d="M20 5c5 5 5 10 0 15-5-5-5-10 0-15zM20 35c-5-5-5-10 0-15 5 5 5 10 0 15zM5 20c5-5 10-5 15 0-5 5-10 5-15 0zM35 20c-5 5-10 5-15 0 5-5 10-5 15 0z" fill="${blue}"/>` +
+    `<circle cx="20" cy="20" r="3.2" fill="${yellow}"/><g fill="${yellow}"><circle cx="20" cy="1.5" r="1.3"/><circle cx="20" cy="38.5" r="1.3"/><circle cx="1.5" cy="20" r="1.3"/><circle cx="38.5" cy="20" r="1.3"/></g></svg>`;
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }

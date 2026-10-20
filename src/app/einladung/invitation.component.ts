@@ -28,9 +28,10 @@ import {
   phoneDigits,
   whatsappLink,
 } from './invite-links';
+import { DOVE_SVG, artSvg } from './invite-art';
 import { dividerSvg, scheduleIcon } from './invite-ornaments';
 import { InviteStore } from './invite-store.service';
-import { INVITE_THEMES, inviteTheme, themeVars } from './invite-themes';
+import { INVITE_THEMES, InviteIntro, inviteTheme, themeVars } from './invite-themes';
 import {
   INVITE_LANG_NAMES,
   InviteLang,
@@ -58,6 +59,9 @@ import { registerInviteIcons } from './invite-icons';
 
 type Status = 'loading' | 'ready' | 'missing';
 
+/** So lange spielt die Öffnung, bevor die Seite frei wird (siehe invitation-intros.scss). */
+const INTRO_MS: Record<InviteIntro, number> = { envelope: 2100, doves: 1900, curtain: 2000, doors: 2300 };
+
 registerInviteIcons();
 
 /**
@@ -75,7 +79,7 @@ registerInviteIcons();
   standalone: true,
   imports: [RouterLink, IconComponent, RevealDirective, SlideshowComponent, ParticlesComponent],
   templateUrl: './invitation.component.html',
-  styleUrls: ['./invitation.component.scss', './invitation-chrome.scss'],
+  styleUrls: ['./invitation.component.scss', './invitation-chrome.scss', './invitation-intros.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class InvitationComponent implements OnInit {
@@ -140,6 +144,14 @@ export class InvitationComponent implements OnInit {
   readonly vars = computed(() => themeVars(this.theme()));
   readonly rtl = computed(() => RTL_LANGS.includes(this.lang()));
   readonly divider = computed<SafeHtml>(() => this.sanitizer.bypassSecurityTrustHtml(dividerSvg(this.theme().ornament)));
+  /** Gezeichnete Ecken der Gestaltung (statisch, siehe invite-art.ts). */
+  readonly art = computed<SafeHtml | null>(() => {
+    const id = this.theme().art;
+    return id ? this.sanitizer.bypassSecurityTrustHtml(artSvg(id)) : null;
+  });
+  readonly dove: SafeHtml = this.sanitizer.bypassSecurityTrustHtml(DOVE_SVG);
+  /** Titelbild im Bogen statt über die ganze Fläche. */
+  readonly framed = computed(() => this.theme().hero === 'framed');
   readonly musicId = computed<MusicId>(() => this.musicOverride() ?? this.event()?.music ?? 'none');
   readonly hasMusic = computed(() => this.musicId() !== 'none' || !!this.event()?.musicUrl);
   readonly heroImage = signal<string | null>(null);
@@ -369,7 +381,7 @@ export class InvitationComponent implements OnInit {
     if (withMusic && this.hasMusic()) this.music.play(this.musicId(), this.musicOverride() ? undefined : this.event()?.musicUrl);
     const reduced = this.isBrowser && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     this.opening.set(true);
-    setTimeout(() => this.opened.set(true), reduced ? 0 : 2100);
+    setTimeout(() => this.opened.set(true), reduced ? 0 : INTRO_MS[this.theme().intro]);
   }
 
   toggleMusic(): void {

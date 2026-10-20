@@ -1,0 +1,407 @@
+// ============================================
+// DIGITALE EINLADUNG — Eigenheiten der Gestaltungen
+// ============================================
+// Dritte Stildatei der Gästeseite: was eine Gestaltung von der anderen
+// unterscheidet, über Farbe und Schrift hinaus.
+//   · Öffnungen: Tauben, Samtvorhang, Flügeltür (der Umschlag steht in
+//     invitation-chrome.scss)
+//   · Titelbild im Bogen, gezeichnete Ecken, Majolika-Bordüre
+//   · Schallplatte als Musikknopf
+// Ohne Kapselung, alles unter `.iv`. Zeitpunkte passen zu INTRO_MS in
+// invitation.component.ts.
+
+// ── Gezeichnete Ecken ──
+.iv-art {
+  position: absolute;
+  z-index: 0;
+  width: clamp(130px, 32vw, 300px);
+  pointer-events: none;
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+}
+.iv-art-tl { top: 0; inset-inline-start: 0; }
+.iv-art-tr { top: 0; inset-inline-end: 0; transform: scaleX(-1); }
+.iv-art-br { bottom: 0; inset-inline-end: 0; transform: scale(-1, -1); }
+.iv-hero .iv-art-tl { top: var(--iv-top); }
+
+.iv-art-svg {
+  transform-origin: 0 0;
+  animation: iv-art-in 1.8s var(--iv-ease) both, iv-sway 9s ease-in-out 1.8s infinite alternate;
+  .a1 { fill: var(--iv-art1); }
+  .a2 { fill: var(--iv-art2); }
+  .a3 { fill: var(--iv-art3); }
+  .lt { fill: #fff; opacity: 0.28; }
+  .dk { fill: #000; opacity: 0.14; }
+  .fa { opacity: 0.25; }
+  .rib { fill: none; stroke: rgba(0, 0, 0, 0.22); stroke-width: 0.7; }
+  .st { fill: none; stroke: var(--iv-art2); stroke-width: 1.6; stroke-linecap: round; }
+  .pw { fill: #fffdf8; stroke: var(--iv-art2); stroke-width: 0.5; }
+  .sp { fill: none; stroke: rgba(0, 0, 0, 0.25); stroke-width: 1; }
+  .awn { fill: none; stroke: var(--iv-art1); stroke-width: 0.6; }
+  .ln { fill: none; stroke: var(--iv-art1); stroke-width: 1.2; }
+}
+@keyframes iv-art-in { from { opacity: 0; transform: scale(0.82) rotate(-5deg); } }
+@keyframes iv-sway { to { transform: rotate(1.6deg); } }
+// Über einem Foto: etwas Schatten, damit Gold und Grün sich abheben.
+.iv-hero:not(.iv-hero--framed) .iv-art svg { filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35)); }
+
+// Zweig am Fuß des Bogens neben der Geschichte
+.iv-arch { overflow: visible; }
+.iv-art-sprig {
+  width: 62%;
+  bottom: -8%;
+  inset-inline-start: -14%;
+  transform: scaleY(-1);
+  z-index: 2;
+}
+.iv-footer { position: relative; overflow: hidden; }
+.iv-footer .iv-art { width: clamp(110px, 24vw, 220px); opacity: 0.9; }
+
+// ── Titelbild im Bogen ──
+.iv-hero--framed {
+  background: radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--iv-accent) 10%, transparent), transparent 65%), var(--iv-bg);
+  padding-top: calc(var(--iv-top) + 70px);
+}
+.iv-frame {
+  position: relative;
+  width: min(62vw, 300px);
+  margin: 0 auto 1.4rem;
+}
+.iv-frame-arch {
+  aspect-ratio: 3 / 4;
+  border-radius: 999px 999px 18px 18px;
+  overflow: hidden;
+  outline: 1px solid var(--iv-accent);
+  outline-offset: 9px;
+  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.35);
+  background: var(--iv-bg2);
+  img { width: 100%; height: 100%; object-fit: cover; animation: iv-kenburns 18s ease-out both; }
+}
+.iv-frame-mono {
+  position: absolute;
+  left: 50%;
+  bottom: -40px;
+  width: 84px;
+  height: 84px;
+  margin: 0 0 0 -42px;
+  background: var(--iv-bg);
+  font-size: 1.9rem;
+}
+.iv-hero--framed .iv-eyebrow { margin-top: 3.2rem; }
+// Zweige ranken sich um den Bogen
+.iv-frame .iv-art { width: 78%; z-index: 2; }
+.iv-frame .iv-art-tl { top: -9%; inset-inline-start: -24%; }
+.iv-frame .iv-art-br { bottom: -7%; inset-inline-end: -24%; }
+
+// ── Majolika (Dolce Vita) ──
+.iv-o--tiles {
+  .iv-alt {
+    background-image: var(--iv-tile), var(--iv-tile);
+    background-repeat: repeat-x;
+    background-size: 28px 28px;
+    background-position: top, bottom;
+  }
+  .iv-footer {
+    background-image: var(--iv-tile);
+    background-repeat: repeat-x;
+    background-size: 28px 28px;
+    background-position: bottom;
+  }
+  // Fliesenrahmen um den Bogen
+  .iv-frame-arch { outline: 0; }
+  .iv-frame::before {
+    content: "";
+    position: absolute;
+    inset: -14px -14px -14px;
+    border-radius: 999px 999px 26px 26px;
+    padding: 12px;
+    background: var(--iv-tile) 0 0 / 24px 24px;
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+    box-shadow: 0 0 0 1px var(--iv-accent);
+  }
+  .iv-dcard::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 22px;
+    background: var(--iv-tile) 0 0 / 22px 22px repeat-x;
+  }
+  .iv-title { letter-spacing: 0.02em; }
+  .iv-cover {
+    background-image: var(--iv-tile), var(--iv-tile);
+    background-repeat: repeat-x;
+    background-size: 30px 30px;
+    background-position: 0 var(--iv-top), bottom;
+  }
+}
+
+// ── Öffnung: Tauben bringen die Karte ──
+.iv-cover[data-intro="doves"] {
+  .iv-cover-title { display: none; }
+  .iv-cover-date { display: none; }
+}
+.iv-dwrap {
+  position: relative;
+  margin: 60px 0 1.6rem;
+}
+.iv-dcard {
+  position: relative;
+  width: min(330px, 80vw);
+  aspect-ratio: 0.74;
+  border-radius: 6px;
+  background: var(--iv-surface);
+  outline: 1px solid var(--iv-line);
+  outline-offset: -10px;
+  box-shadow: 0 30px 60px -18px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  animation: iv-card-in 1.4s var(--iv-ease) 0.5s backwards;
+  transition: transform 0.9s var(--iv-ease) 0.6s, opacity 0.7s ease 0.9s;
+  .iv-art { width: 46%; overflow: hidden; }
+  .iv-art-tl { top: 0; }
+  .iv-divider { width: 110px; margin: 0.4rem auto; }
+  .iv-env-for { margin-top: 1rem; }
+}
+.iv-dcard-body { position: relative; z-index: 1; display: grid; justify-items: center; text-align: center; padding: 1.4rem; }
+@keyframes iv-card-in { from { opacity: 0; transform: translateY(40px) scale(0.94); } }
+
+.iv-dove {
+  position: absolute;
+  top: -52px;
+  width: 104px;
+  z-index: 3;
+  svg { display: block; width: 100%; height: auto; overflow: visible; filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.18)); }
+  .body, .iv-wing path:not(.fe) { fill: #fdfdfb; stroke: rgba(40, 50, 60, 0.28); stroke-width: 0.8; }
+  .iv-wing-b path:not(.fe) { fill: #e9ebee; }
+  .fe { fill: none; stroke: rgba(40, 50, 60, 0.22); stroke-width: 0.8; }
+  .beak { fill: #e3a33a; }
+  .eye { fill: #2a2f36; }
+  .iv-wing { transform-box: fill-box; transform-origin: 50% 100%; animation: iv-flap 0.32s ease-in-out 5 alternate, iv-flap-slow 2.6s ease-in-out 1.6s infinite; }
+}
+.iv-dove-l { left: clamp(-38px, -4vw, -14px); animation: iv-fly-in-l 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) both, iv-hover 3.4s ease-in-out 1.6s infinite; }
+.iv-dove-r { right: clamp(-38px, -4vw, -14px); animation: iv-fly-in-r 1.6s cubic-bezier(0.2, 0.7, 0.3, 1) 0.15s both, iv-hover 3.4s ease-in-out 1.9s infinite; svg { transform: scaleX(-1); } }
+@keyframes iv-flap { to { transform: scaleY(-0.55); } }
+@keyframes iv-flap-slow { 0%, 70%, 100% { transform: none; } 80% { transform: scaleY(-0.4); } 90% { transform: none; } }
+@keyframes iv-hover { 50% { transform: translateY(-7px); } }
+@keyframes iv-fly-in-l { from { transform: translate(-60vw, -40vh) rotate(-14deg); } }
+@keyframes iv-fly-in-r { from { transform: translate(60vw, -46vh) rotate(14deg); } }
+
+.iv-cover.opening[data-intro="doves"] {
+  .iv-dcard { transform: translateY(-14px) scale(1.06); opacity: 0; }
+  .iv-dove-l { animation: iv-fly-out-l 1.5s cubic-bezier(0.5, 0, 0.7, 0.4) forwards; }
+  .iv-dove-r { animation: iv-fly-out-r 1.5s cubic-bezier(0.5, 0, 0.7, 0.4) 0.1s forwards; }
+  .iv-wing { animation: iv-flap 0.24s ease-in-out infinite alternate; }
+}
+@keyframes iv-fly-out-l { to { transform: translate(70vw, -80vh) rotate(-18deg) scale(0.7); } }
+@keyframes iv-fly-out-r { to { transform: translate(-70vw, -84vh) rotate(18deg) scale(0.7); } }
+
+// ── Öffnung: Samtvorhang (Gala) ──
+.iv-cover[data-intro="curtain"] {
+  --velvet: #6a0f24;
+  background: radial-gradient(ellipse at 50% 40%, color-mix(in srgb, var(--iv-accent) 22%, var(--iv-bg)), var(--iv-bg) 70%);
+  .iv-cover-stage {
+    position: relative;
+    z-index: 2;
+    padding: 2.2rem 1.6rem 1.8rem;
+    border: 1px solid color-mix(in srgb, var(--iv-accent) 60%, transparent);
+    outline: 1px solid color-mix(in srgb, var(--iv-accent) 35%, transparent);
+    outline-offset: 5px;
+    border-radius: 4px;
+    background: color-mix(in srgb, #000 55%, transparent);
+    backdrop-filter: blur(3px);
+    width: min(400px, 86vw);
+    color: #fff;
+    transition: opacity 0.5s ease, transform 0.6s ease;
+  }
+  .iv-cover-date, .iv-env-for { color: color-mix(in srgb, #fff 75%, var(--iv-accent)); }
+}
+.iv-stage-mono {
+  width: 74px;
+  height: 74px;
+  border-radius: 50%;
+  border: 1px solid var(--iv-accent);
+  display: grid;
+  place-items: center;
+  color: var(--iv-accent);
+  font-family: var(--iv-f-script);
+  font-size: 1.7rem;
+  margin-bottom: 0.6rem;
+  i { font-style: normal; font-size: 0.6em; margin: 0 2px; }
+}
+.iv-curtain { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+.iv-curtain-side {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 51%;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 30%, rgba(0, 0, 0, 0.35)),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0, rgba(255, 255, 255, 0.07) 3.2%, rgba(0, 0, 0, 0.18) 5.4%, rgba(0, 0, 0, 0.5) 8%),
+    var(--velvet);
+  box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+  transition: transform 1.7s cubic-bezier(0.7, 0, 0.25, 1) 0.15s;
+  // Goldfransen unten
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 18px;
+    background:
+      linear-gradient(var(--iv-accent), var(--iv-accent)) top / 100% 3px no-repeat,
+      repeating-linear-gradient(90deg, var(--iv-accent) 0 2px, transparent 2px 5px);
+    opacity: 0.9;
+  }
+}
+.iv-curtain-l { left: 0; transform-origin: 0 0; }
+.iv-curtain-r { right: 0; transform-origin: 100% 0; }
+.iv-valance {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 56px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.35) 0 1px, transparent 1px 34px),
+    linear-gradient(180deg, color-mix(in srgb, var(--velvet) 70%, #fff), var(--velvet));
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  transition: transform 0.9s ease 1s;
+  // Bögen und Goldkante am Volant
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 22px;
+    background: radial-gradient(circle at 50% 0, var(--velvet) 0 19px, var(--iv-accent) 19px 22px, transparent 22px) 0 0 / 44px 22px repeat-x;
+  }
+}
+.iv-cover.opening[data-intro="curtain"] {
+  .iv-cover-stage { opacity: 0; transform: scale(0.96); }
+  .iv-curtain-l { transform: scaleX(0.12); }
+  .iv-curtain-r { transform: scaleX(0.12); }
+  .iv-valance { transform: translateY(-140%); }
+}
+
+// ── Öffnung: Flügeltür unter dem Bogen (Kına, 1001 Nacht) ──
+.iv-doors {
+  --door: color-mix(in srgb, var(--iv-accent2) 55%, #140805);
+  position: relative;
+  width: min(260px, 64vw);
+  aspect-ratio: 0.66;
+  margin: 24px 0 1.2rem;
+  padding: 9px;
+  border-radius: 999px 999px 6px 6px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--iv-accent) 60%, #fff), var(--iv-accent) 40%, color-mix(in srgb, var(--iv-accent) 60%, #000));
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+  transition: transform 1s cubic-bezier(0.6, 0, 0.4, 1) 1.2s, opacity 0.8s ease 1.4s;
+}
+.iv-doors-in {
+  position: relative;
+  height: 100%;
+  border-radius: 999px 999px 2px 2px;
+  overflow: hidden;
+  background: #000;
+}
+.iv-doors-light {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 70%, #fff6d8, color-mix(in srgb, var(--iv-accent) 80%, #fff) 30%, var(--iv-accent2) 75%);
+  opacity: 0.25;
+  transition: opacity 1.2s ease 0.4s;
+}
+.iv-door {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background:
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--iv-accent) 55%, transparent) 0 1px, transparent 1px 16px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--iv-accent) 55%, transparent) 0 1px, transparent 1px 16px),
+    radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--door) 70%, #fff), var(--door) 70%);
+  box-shadow: inset 0 0 0 6px color-mix(in srgb, var(--door) 80%, #000), inset 0 0 0 7px color-mix(in srgb, var(--iv-accent) 60%, transparent), inset 0 0 40px rgba(0, 0, 0, 0.45);
+  transition: transform 1.5s cubic-bezier(0.6, 0, 0.3, 1) 0.15s;
+  // Messingring als Türklopfer
+  i {
+    position: absolute;
+    top: 56%;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--iv-accent);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  }
+}
+.iv-door-l { left: 0; transform-origin: 0 50%; i { right: 8px; } }
+.iv-door-r { right: 0; transform-origin: 100% 50%; i { left: 8px; } }
+// Schweben über `translate`, damit `transform` frei für das Hineinzoomen bleibt.
+.iv-cover[data-intro="doors"] .iv-doors { animation: iv-drift 6s ease-in-out infinite; }
+@keyframes iv-drift { 50% { translate: 0 -6px; } }
+.iv-cover.opening[data-intro="doors"] {
+  .iv-doors { transform: scale(1.8); opacity: 0; }
+  .iv-door-l { transform: perspective(700px) rotateY(-100deg); }
+  .iv-door-r { transform: perspective(700px) rotateY(100deg); }
+  .iv-doors-light { opacity: 1; }
+  .iv-cover-actions, .iv-cover-title, .iv-cover-date, .iv-env-for { opacity: 0; transition: opacity 0.4s ease; }
+}
+
+// ── Schallplatte ──
+// Erst nach dem Öffnen: auf dem Umschlag steht der Knopf „Öffnen" im Mittelpunkt.
+.iv-js:not(.iv-opened) .iv-vinyl { opacity: 0; pointer-events: none; }
+.iv-vinyl {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.3));
+  transition: opacity 0.6s ease 0.4s;
+}
+.iv-vinyl-disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle, transparent 0 30%, rgba(255, 255, 255, 0.05) 31%, transparent 33%),
+    conic-gradient(from 30deg, rgba(255, 255, 255, 0.16), transparent 18%, rgba(255, 255, 255, 0.12) 50%, transparent 68%, rgba(255, 255, 255, 0.16)),
+    repeating-radial-gradient(circle, #141414 0 1.2px, #232323 1.2px 2.4px);
+  animation: iv-spin 2.4s linear infinite;
+  animation-play-state: paused;
+  .on & { animation-play-state: running; }
+}
+.iv-vinyl-label {
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle, #111 0 9%, var(--iv-accent) 10%);
+  color: var(--iv-on-accent);
+  font-family: var(--iv-f-script);
+  font-size: 0.85rem;
+  line-height: 1;
+}
+.iv-vinyl-arm {
+  position: absolute;
+  top: -4px;
+  right: -6px;
+  width: 4px;
+  height: 34px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #d9d9d9, #8f8f8f);
+  transform-origin: 50% 4px;
+  transform: rotate(-38deg);
+  transition: transform 0.6s var(--iv-ease);
+  &::before { content: ""; position: absolute; top: -3px; left: -3px; width: 10px; height: 10px; border-radius: 50%; background: radial-gradient(circle, #eee, #888); }
+  &::after { content: ""; position: absolute; bottom: -3px; left: -2px; width: 8px; height: 6px; border-radius: 2px; background: #555; }
+  .on & { transform: rotate(14deg); }
+}
+@keyframes iv-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-art-svg, .iv-dove, .iv-dove .iv-wing, .iv-dcard, .iv-cover[data-intro="doors"] .iv-doors, .iv-vinyl-disc { animation: none; }
+}

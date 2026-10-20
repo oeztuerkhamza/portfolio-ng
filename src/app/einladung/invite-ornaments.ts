@@ -21,6 +21,8 @@ const DIVIDERS: Record<Ornament, string> = {
   waves: '<path d="M10 16c12-8 24 8 36 0s24 8 36 0 24 8 36 0 24 8 36 0 24 8 36 0 24 8 36 0"/><path d="M28 26c12-8 24 8 36 0s24 8 36 0 24 8 36 0 24 8 36 0 24 8 36 0" opacity=".5"/>',
   deco:
     '<path d="M20 20h70M150 20h70M30 25h60M150 25h60"/><path d="M120 34L100 14M120 34l-10-22M120 34V10M120 34l10-22M120 34l20-20"/><path d="M98 34h44"/>',
+  tiles:
+    '<path d="M16 20h44M180 20h44"/><g transform="rotate(45 74 20)"><rect x="68" y="14" width="12" height="12"/><circle cx="74" cy="20" r="2" fill="currentColor"/></g><g transform="rotate(45 166 20)"><rect x="160" y="14" width="12" height="12"/><circle cx="166" cy="20" r="2" fill="currentColor"/></g><circle cx="92" cy="20" r="1.6" fill="currentColor"/><circle cx="148" cy="20" r="1.6" fill="currentColor"/><path d="M120 31c-8 0-13-5-13-11s5-11 13-11 13 5 13 11-5 11-13 11z" fill="currentColor" fill-opacity=".18"/><path d="M120 9c1-3 4-5 8-5-1 3-4 5-8 5zM120 9c-2-2-6-3-9-1 2 2 6 2 9 1z" fill="currentColor" fill-opacity=".45"/><path d="M113 20c2-4 5-6 9-6"/>',
   grid: '<path d="M40 20h60M140 20h60"/><rect x="112" y="12" width="16" height="16" rx="3"/><rect x="117" y="17" width="6" height="6" fill="currentColor"/>',
 };
 
