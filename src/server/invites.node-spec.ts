@@ -135,6 +135,11 @@ describe('sanitizePlan', () => {
     assert.equal(p.tables[0].seats, 100);
     assert.equal(p.budgetTotal, 0);
     assert.ok(p.tasks[0].id.length > 0);
+    assert.equal(p.setupDone, false);
+  });
+  test('merkt sich den abgeschlossenen Einrichtungsassistenten', () => {
+    assert.equal(sanitizePlan({ setupDone: true }).setupDone, true);
+    assert.equal(sanitizePlan({ setupDone: 'ja' }).setupDone, false);
   });
 });
 

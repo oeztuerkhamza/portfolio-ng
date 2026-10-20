@@ -197,6 +197,8 @@ export interface InvitePlan {
   budgetTotal: number;
   tables: InviteTable[];
   notes: string;
+  /** Der Einrichtungsassistent wurde einmal abgeschlossen. */
+  setupDone?: boolean;
 }
 
 /** Was die öffentliche Seite bekommt: Konfiguration und sichtbare Fotos, keine Gästeliste. */

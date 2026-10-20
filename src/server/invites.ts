@@ -191,6 +191,7 @@ export function sanitizePlan(input: any): InvitePlan {
     budgetTotal: num(p.budgetTotal, 0, 100_000_000, 0),
     tables: list(p.tables, 200).map((t: any) => ({ id: id(t?.id), name: text(t?.name, 60) ?? '', seats: num(t?.seats, 1, 100, 8) })),
     notes: text(p.notes, 10_000) ?? '',
+    setupDone: p.setupDone === true,
   };
 }
 

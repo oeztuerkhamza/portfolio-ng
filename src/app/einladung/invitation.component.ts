@@ -101,7 +101,8 @@ export class InvitationComponent implements OnInit {
   /** Nur in Beispielen: Gestaltung zur Ansicht wechseln, ohne etwas zu speichern. */
   readonly themeOverride = signal<ThemeId | null>(null);
   readonly musicOverride = signal<MusicId | null>(null);
-  readonly opened = signal(false);
+  /** ?open=1 (Vorschau im Einrichtungsassistenten): ohne Umschlag, gleich die Seite. */
+  readonly opened = signal(this.route.snapshot.queryParamMap.get('open') === '1');
   /** Der Umschlag öffnet sich gerade (Siegel, Klappe, Brief). */
   readonly opening = signal(false);
   readonly storyImageFailed = signal(false);
