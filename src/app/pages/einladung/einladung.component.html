@@ -27,7 +27,7 @@
 
     <!-- Drei Handys mit Beispielen -->
     <div class="inv-phones" aria-hidden="true">
-      @for (d of [themes[0], themes[3], themes[8]]; track d.slug; let i = $index) {
+      @for (d of [themes[0], themes[4], themes[9]]; track d.slug; let i = $index) {
         <a class="inv-phone" [class]="'inv-phone inv-phone-' + i" [routerLink]="['/einladung', d.slug]" tabindex="-1"
            [style.--bg]="d.theme.colors.bg" [style.--ink]="d.theme.colors.ink" [style.--acc]="d.theme.colors.accentText" [style.--line]="d.theme.colors.accent">
           <span class="inv-phone-img"><img [src]="d.theme.image" alt="" loading="eager" (error)="hideImage($event)" /></span>

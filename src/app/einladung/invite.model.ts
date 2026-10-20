@@ -28,6 +28,7 @@ export type EventKind = 'wedding' | 'henna' | 'engagement' | 'birthday' | 'corpo
 export const EVENT_KINDS: EventKind[] = ['wedding', 'henna', 'engagement', 'birthday', 'corporate', 'other'];
 
 export type ThemeId =
+  | 'dolcevita'
   | 'klassik'
   | 'garten'
   | 'minimal'

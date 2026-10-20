@@ -5,6 +5,7 @@ import { ThemeId } from './invite.model';
  * zeigen kann, ohne alle Beispieltexte mitzuladen.
  */
 export const DEMO_TITLES: Record<ThemeId, string> = {
+  dolcevita: 'Giulia & Marco',
   klassik: 'Ayşe & Daniel',
   garten: 'Lea & Can',
   minimal: 'Sophie & Jonas',

@@ -13,6 +13,8 @@ import {
 } from './invites';
 import { demoEvent } from '../app/einladung/invite-demo';
 import { epcPayload, validIban } from '../app/einladung/invite.model';
+import { INVITE_THEMES, themeVars } from '../app/einladung/invite-themes';
+import { artSvg } from '../app/einladung/invite-art';
 
 /**
  * Tests der digitalen Einladungen.
@@ -194,5 +196,25 @@ describe('Geschenke', () => {
     assert.equal(lines[6], 'DE02120300000000202051');
     assert.equal(lines[10], 'Hochzeit');
     assert.equal(epcPayload({ paypal: 'x' }), null);
+  });
+});
+
+describe('Gestaltungen', () => {
+  test('jede Gestaltung hat ein Beispiel', () => {
+    for (const t of INVITE_THEMES) assert.equal(demoEvent(t.id).theme, t.id);
+  });
+  test('Zeichnungen sind fest gesät: beim Vorrendern und im Browser gleich', () => {
+    for (const t of INVITE_THEMES) {
+      if (!t.art) continue;
+      const svg = artSvg(t.art);
+      assert.match(svg, /^<svg [^>]*>.+<\/svg>$/);
+      assert.doesNotMatch(svg, /NaN|undefined|<script/);
+      assert.equal(artSvg(t.art), svg);
+    }
+  });
+  test('nur die Majolika-Gestaltung bekommt die Fliese', () => {
+    const vars = INVITE_THEMES.map((t) => [t.ornament, themeVars(t)['--iv-tile']] as const);
+    for (const [o, tile] of vars) assert.equal(!!tile, o === 'tiles');
+    assert.match(themeVars(INVITE_THEMES[0])['--iv-tile'], /^url\("data:image\/svg\+xml,/);
   });
 });

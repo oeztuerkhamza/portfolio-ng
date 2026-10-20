@@ -212,6 +212,31 @@ const GIFTS_DEMO = (holder: string, ref: string): InviteEvent['gifts'] => ({
 });
 
 const SPECS: Record<ThemeId, DemoSpec> = {
+  dolcevita: {
+    title: DEMO_TITLES.dolcevita,
+    hosts: { de: 'Mit Liebe und Limoncello laden wir euch ein', tr: 'Sevgiyle ve limoncello eşliğinde sizi davet ediyoruz', en: 'With love and limoncello we invite you', fr: 'Avec amour et limoncello, nous vous invitons', ku: 'Bi evîn û limoncello em we vedixwînin', ar: 'بكل الحب ندعوكم' },
+    date: '2027-06-19T16:00:00+02:00',
+    langs: ['de', 'en', 'tr', 'fr'],
+    schedule: [
+      item('16:00', P.ceremony, 'ring', 'ceremony'),
+      item('17:00', P.reception, 'glass', 'ceremony'),
+      item('19:00', P.dinner, 'dinner', 'party'),
+      item('21:30', P.dance, 'heart', 'party'),
+      item('22:00', P.cake, 'cake', 'party'),
+      item('22:30', P.party, 'music', 'party'),
+    ],
+    locations: [
+      { id: 'ceremony', label: LOC.ceremony, name: 'Freiburger Münster', address: 'Münsterplatz, 79098 Freiburg im Breisgau', lat: 47.9955, lng: 7.8529 },
+      { id: 'party', label: LOC.party, ...KAUFHAUS },
+    ],
+    dress: 'garden',
+    contacts: [
+      { role: ROLE.witness, name: 'Chiara', phone: '+49 155 66859378' },
+      { role: ROLE.witnessM, name: 'Luca', phone: '+49 155 66859378' },
+    ],
+    faq: [FAQ_PARKING, FAQ_KIDS, FAQ_HOTEL],
+    gifts: GIFTS_DEMO('Giulia Romano', 'Hochzeit Giulia & Marco'),
+  },
   klassik: {
     title: DEMO_TITLES.klassik,
     hosts: { de: 'Gemeinsam mit unseren Familien laden wir euch ein', tr: 'Ailelerimizle birlikte sizi davet ediyoruz', en: 'Together with our families we invite you', fr: 'Avec nos familles, nous vous invitons', ku: 'Bi malbatên xwe re em we vedixwînin', ar: 'مع عائلتينا ندعوكم' },
@@ -402,6 +427,7 @@ const SPECS: Record<ThemeId, DemoSpec> = {
 
 /** Foto neben der Geschichte, je Beispiel (Pexels, siehe CREDITS.md). */
 const STORY_PHOTOS: Record<ThemeId, number> = {
+  dolcevita: 34061566,
   klassik: 13470038,
   garten: 11626283,
   minimal: 10133743,

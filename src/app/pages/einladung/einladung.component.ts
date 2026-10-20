@@ -21,7 +21,7 @@ registerInviteIcons();
 /**
  * Produktseite /digitale-einladung — die Einladungs-Websites als Leistung.
  *
- * Zeigt die zehn Gestaltungen mit Link auf das lebende Beispiel, die
+ * Zeigt die elf Gestaltungen mit Link auf das lebende Beispiel, die
  * Funktionen, Anlässe, drei Pakete und häufige Fragen. Die Suchbegriffe sind
  * die, unter denen Brautpaare suchen („digitale Einladung", „Hochzeitswebsite",
  * „Online Einladung Hochzeit", „dijital davetiye"); dazu Service-, Angebots- und

@@ -48,7 +48,7 @@ ANTHROPIC_API_KEY=…               # Übersetzung der Einladungstexte (Claude)
 Einladungs-Websites für Hochzeit, Kına, Verlobung, Geburtstag und Firmenevents.
 Produktseite: `/<sprache>/digitale-einladung`.
 
-- **Beispiele** `/einladung/demo-<design>` (zehn Designs) laufen ohne Server:
+- **Beispiele** `/einladung/demo-<design>` (elf Designs) laufen ohne Server:
   Zusagen, Fotos und Planer-Änderungen bleiben im Browser des Besuchers.
 - **Echte Einladungen** legt man im Admin-Portal unter „Davetiyeler" an. Das
   Portal zeigt danach zwei Links für den Kunden: die Einladung und den

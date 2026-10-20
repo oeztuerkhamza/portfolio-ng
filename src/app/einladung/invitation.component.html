@@ -25,26 +25,77 @@
     [attr.lang]="lang()"
   >
     <!-- ── Umschlag ── -->
-    <div class="iv-cover" [class.opening]="opening()" [class.gone]="opened()" [attr.aria-hidden]="opened()">
-      <div class="iv-cover-stage">
-        <div class="iv-env" aria-hidden="true">
-          <div class="iv-env-back"></div>
-          <!-- Der Brief: steigt beim Öffnen aus dem Umschlag -->
-          <div class="iv-letter">
-            <p class="iv-letter-eyebrow">{{ eyebrow() }}</p>
-            <p class="iv-letter-title">{{ e.title }}</p>
-            <div class="iv-divider" [innerHTML]="divider()"></div>
-            <p class="iv-letter-date">{{ dateText() }}</p>
-          </div>
-          <div class="iv-env-front">
-            <p class="iv-env-for">{{ t('open.for') }}</p>
-            <p class="iv-env-name">{{ data()?.guest?.name || t('open.you') }}</p>
-          </div>
-          <div class="iv-env-flap"></div>
-          <div class="iv-env-seal">
-            <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
-          </div>
+    <div class="iv-cover" [class.opening]="opening()" [class.gone]="opened()" [attr.data-intro]="theme().intro" [attr.aria-hidden]="opened()">
+      @if (theme().intro === 'curtain') {
+        <!-- Samtvorhang: zwei Bahnen, Volant mit Fransen -->
+        <div class="iv-curtain" aria-hidden="true">
+          <div class="iv-curtain-side iv-curtain-l"></div>
+          <div class="iv-curtain-side iv-curtain-r"></div>
+          <div class="iv-valance"></div>
         </div>
+      }
+      <div class="iv-cover-stage">
+        @switch (theme().intro) {
+          @case ('doves') {
+            <!-- Karte, von zwei Tauben gebracht -->
+            <div class="iv-dwrap" aria-hidden="true">
+              <div class="iv-dcard">
+                @if (art(); as a) {
+                  <div class="iv-art iv-art-tl" [innerHTML]="a"></div>
+                  <div class="iv-art iv-art-br" [innerHTML]="a"></div>
+                }
+                <div class="iv-dcard-body">
+                  <p class="iv-letter-eyebrow">{{ eyebrow() }}</p>
+                  <p class="iv-letter-title">{{ e.title }}</p>
+                  <div class="iv-divider" [innerHTML]="divider()"></div>
+                  <p class="iv-letter-date">{{ dateText() }}</p>
+                  <p class="iv-env-for">{{ t('open.for') }}</p>
+                  <p class="iv-env-name">{{ data()?.guest?.name || t('open.you') }}</p>
+                </div>
+              </div>
+              <div class="iv-dove iv-dove-l" [innerHTML]="dove"></div>
+              <div class="iv-dove iv-dove-r" [innerHTML]="dove"></div>
+            </div>
+          }
+          @case ('doors') {
+            <!-- Geschnitzte Flügeltür unter einem Bogen -->
+            <div class="iv-doors" aria-hidden="true">
+              <div class="iv-doors-in">
+                <div class="iv-doors-light"></div>
+                <div class="iv-door iv-door-l"><i></i></div>
+                <div class="iv-door iv-door-r"><i></i></div>
+              </div>
+            </div>
+          }
+          @case ('curtain') {
+            <div class="iv-stage-mono" aria-hidden="true">
+              <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+            </div>
+          }
+          @default {
+            <div class="iv-env" aria-hidden="true">
+              <div class="iv-env-back"></div>
+              <!-- Der Brief: steigt beim Öffnen aus dem Umschlag -->
+              <div class="iv-letter">
+                <p class="iv-letter-eyebrow">{{ eyebrow() }}</p>
+                <p class="iv-letter-title">{{ e.title }}</p>
+                <div class="iv-divider" [innerHTML]="divider()"></div>
+                <p class="iv-letter-date">{{ dateText() }}</p>
+              </div>
+              <div class="iv-env-front">
+                <p class="iv-env-for">{{ t('open.for') }}</p>
+                <p class="iv-env-name">{{ data()?.guest?.name || t('open.you') }}</p>
+              </div>
+              <div class="iv-env-flap"></div>
+              <div class="iv-env-seal">
+                <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+              </div>
+            </div>
+          }
+        }
+        @if (theme().intro === 'doors' || theme().intro === 'curtain') {
+          <p class="iv-env-for">{{ t('open.for') }} {{ data()?.guest?.name || t('open.you') }}</p>
+        }
         <h1 class="iv-cover-title">{{ e.title }}</h1>
         <p class="iv-cover-date">{{ eyebrow() }} · {{ dateText() }}</p>
         <div class="iv-cover-actions">
@@ -69,7 +120,19 @@
 
     <!-- ── Schwebende Knöpfe: Musik, Sprache, Gestaltung ── -->
     <div class="iv-fab">
-      @if (hasMusic() || demo) {
+      @if ((hasMusic() || demo) && theme().player === 'vinyl') {
+        <button
+          type="button"
+          class="iv-vinyl"
+          [class.on]="music.playing()"
+          (click)="toggleMusic()"
+          [attr.aria-label]="music.playing() ? t('music.off') : t('music.on')"
+          [attr.aria-pressed]="music.playing()"
+        >
+          <span class="iv-vinyl-disc" aria-hidden="true"><span class="iv-vinyl-label">{{ monogram().a }}</span></span>
+          <span class="iv-vinyl-arm" aria-hidden="true"></span>
+        </button>
+      } @else if (hasMusic() || demo) {
         <button
           type="button"
           class="iv-fab-btn"
@@ -137,8 +200,12 @@
     }
 
     <!-- ── Kopf ── -->
-    <header class="iv-hero" id="start">
-      @if (heroImage()) {
+    <header class="iv-hero" id="start" [class.iv-hero--framed]="framed()">
+      @if (art() && !(framed() && heroImage())) {
+        <div class="iv-art iv-art-tl" [innerHTML]="art()"></div>
+        <div class="iv-art iv-art-br" [innerHTML]="art()"></div>
+      }
+      @if (heroImage() && !framed()) {
         <div class="iv-hero-media" aria-hidden="true">
           <img class="iv-hero-img" [src]="heroImage()" alt="" (error)="heroFailed()" fetchpriority="high" />
         </div>
@@ -152,9 +219,23 @@
         />
       }
       <div class="iv-hero-inner">
-        <div class="iv-mono" ivReveal aria-hidden="true">
-          <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
-        </div>
+        @if (framed() && heroImage()) {
+          <!-- Foto im Bogen, das Monogramm als Siegel darauf -->
+          <figure class="iv-frame" ivReveal aria-hidden="true">
+            <div class="iv-frame-arch"><img [src]="heroImage()" alt="" (error)="heroFailed()" fetchpriority="high" /></div>
+            @if (art(); as a) {
+              <div class="iv-art iv-art-tl" [innerHTML]="a"></div>
+              <div class="iv-art iv-art-br" [innerHTML]="a"></div>
+            }
+            <div class="iv-mono iv-frame-mono">
+              <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+            </div>
+          </figure>
+        } @else {
+          <div class="iv-mono" ivReveal aria-hidden="true">
+            <span>{{ monogram().a }}@if (monogram().b) {<i>&amp;</i>{{ monogram().b }}}</span>
+          </div>
+        }
         <p class="iv-eyebrow" ivReveal="60">{{ eyebrow() }}</p>
         <h1 class="iv-title" ivReveal="120">{{ e.title }}</h1>
         <div class="iv-divider iv-divider-lg" [innerHTML]="divider()" ivReveal="220"></div>
@@ -193,6 +274,9 @@
           @if (storyImage(); as img) {
             <figure class="iv-arch" ivReveal>
               <img [src]="img" alt="" loading="lazy" (error)="storyImageFailed.set(true)" />
+              @if (art(); as a) {
+                <div class="iv-art iv-art-sprig" [innerHTML]="a"></div>
+              }
             </figure>
           }
           <div class="iv-story-text">
@@ -527,6 +611,10 @@
 
     <!-- ── Fuß ── -->
     <footer class="iv-footer">
+      @if (art(); as a) {
+        <div class="iv-art iv-art-tl" [innerHTML]="a"></div>
+        <div class="iv-art iv-art-tr" [innerHTML]="a"></div>
+      }
       <div class="iv-divider" [innerHTML]="divider()"></div>
       <p class="iv-footer-title">{{ e.title }}</p>
       <p class="iv-muted">{{ dateText() }}</p>
