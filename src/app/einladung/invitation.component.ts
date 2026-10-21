@@ -53,11 +53,14 @@ import {
 } from './invite.model';
 import { MusicService } from './music.service';
 import { RevealDirective } from './reveal.directive';
+import { PointerFxDirective, ScrollFxDirective } from './scroll-fx.directive';
 import { SlideshowComponent } from './slideshow.component';
 import { ParticlesComponent } from './particles.component';
 import { registerInviteIcons } from './invite-icons';
 
 type Status = 'loading' | 'ready' | 'missing';
+
+const words = (text: string) => text.split(/\s+/).filter(Boolean);
 
 /** So lange spielt die Öffnung, bevor die Seite frei wird (siehe invitation-intros.scss). */
 const INTRO_MS: Record<InviteIntro, number> = { envelope: 2100, doves: 1900, curtain: 2000, doors: 2300 };
@@ -77,9 +80,9 @@ registerInviteIcons();
 @Component({
   selector: 'app-invitation',
   standalone: true,
-  imports: [RouterLink, IconComponent, RevealDirective, SlideshowComponent, ParticlesComponent],
+  imports: [RouterLink, IconComponent, RevealDirective, ScrollFxDirective, PointerFxDirective, SlideshowComponent, ParticlesComponent],
   templateUrl: './invitation.component.html',
-  styleUrls: ['./invitation.component.scss', './invitation-chrome.scss', './invitation-intros.scss'],
+  styleUrls: ['./invitation.component.scss', './invitation-chrome.scss', './invitation-intros.scss', './invitation-scroll.scss'],
   encapsulation: ViewEncapsulation.None,
 })
 export class InvitationComponent implements OnInit {
@@ -163,6 +166,15 @@ export class InvitationComponent implements OnInit {
     const first = (s: string) => s.trim().charAt(0).toLocaleUpperCase();
     return parts.length >= 2 ? { a: first(parts[0]), b: first(parts[1]) } : { a: first(title), b: '' };
   });
+
+  /** „Giulia & Marco" → zwei Namen, die beim Scrollen auseinander- und am Ende wieder zusammengehen. */
+  readonly titleParts = computed(() => {
+    const m = /^(.+?)\s*([&+])\s*(.+)$/.exec(this.event()?.title.trim() ?? '');
+    return m ? { a: m[1], amp: m[2], b: m[3] } : null;
+  });
+  /** Wörter für das Aufleuchten beim Lesen. */
+  readonly welcomeWords = computed(() => words(this.l(this.event()?.welcome)));
+  readonly storyWords = computed(() => words(this.l(this.event()?.story)));
 
   /** Foto neben der Geschichte: das erste Foto der Galerie des Gastgebers. */
   readonly storyImage = computed(() => {

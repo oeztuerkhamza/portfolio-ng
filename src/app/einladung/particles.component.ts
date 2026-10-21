@@ -43,6 +43,8 @@ export class ParticlesComponent {
   private ctx: CanvasRenderingContext2D | null = null;
   private w = 0;
   private h = 0;
+  /** Rückenwind vom Scrollen: Blätter wirbeln mit und beruhigen sich wieder. */
+  private wind = 0;
 
   constructor() {
     if (!isPlatformBrowser(inject(PLATFORM_ID))) return;
@@ -67,12 +69,20 @@ export class ParticlesComponent {
       });
       io.observe(this.host.nativeElement);
       const onVis = () => this.toggle();
+      let lastY = window.scrollY;
+      const onScroll = () => {
+        const y = window.scrollY;
+        this.wind = Math.max(-14, Math.min(14, this.wind + (y - lastY) * 0.06));
+        lastY = y;
+      };
       document.addEventListener('visibilitychange', onVis);
       window.addEventListener('resize', resize);
+      this.zone.runOutsideAngular(() => window.addEventListener('scroll', onScroll, { passive: true }));
       destroyRef.onDestroy(() => {
         io.disconnect();
         document.removeEventListener('visibilitychange', onVis);
         window.removeEventListener('resize', resize);
+        window.removeEventListener('scroll', onScroll);
         cancelAnimationFrame(this.frame);
       });
       this.seed();
@@ -127,11 +137,19 @@ export class ParticlesComponent {
     const petal = this.kind() === 'petals';
     ctx.clearRect(0, 0, this.w, this.h);
     const t = performance.now() / 1000;
+    this.wind *= 0.93;
+    const wind = Math.abs(this.wind) < 0.01 ? 0 : this.wind;
     for (let i = 0; i < this.particles.length; i++) {
       const p = this.particles[i];
-      p.y += p.vy;
-      p.x += p.vx + Math.sin(t + p.phase) * (petal ? 0.4 : 0.15);
-      p.rot += p.vr;
+      // Beim Scrollen nach unten steigen die Teilchen auf und drehen sich schneller.
+      const gust = wind * (petal ? 0.5 + p.r / 12 : 0.4);
+      p.y += p.vy - gust;
+      p.x += p.vx + Math.sin(t + p.phase) * (petal ? 0.4 : 0.15) + gust * 0.35 * Math.sin(p.phase);
+      p.rot += p.vr + gust * 0.01;
+      if (p.y < -40) {
+        p.y = this.h + 10;
+        p.x = Math.random() * this.w;
+      }
       if (p.y > this.h + 20 || p.x < -30 || p.x > this.w + 30) this.particles[i] = this.make(false);
       ctx.save();
       ctx.translate(p.x, p.y);

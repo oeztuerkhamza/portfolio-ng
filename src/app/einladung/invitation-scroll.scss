@@ -1,0 +1,186 @@
+// ============================================
+// DIGITALE EINLADUNG — Bewegung, die dem Scrollen folgt
+// ============================================
+// Vierte Stildatei der Gästeseite. `--p` setzt ScrollFxDirective
+// (scroll-fx.directive.ts), `--mx`/`--my` PointerFxDirective. Jeder Wert hat
+// einen Ersatz in `var(--p, …)`, der dem ruhenden Bild entspricht — ohne
+// Skript, beim Vorrendern und bei „Bewegung reduzieren" steht die Seite
+// einfach still und vollständig da.
+
+// ── Lesefortschritt ──
+.iv-progress {
+  position: fixed;
+  top: var(--iv-top);
+  inset-inline: 0;
+  z-index: 115;
+  height: 2px;
+  background: linear-gradient(90deg, var(--iv-accent), var(--iv-accent2));
+  transform: scaleX(var(--p, 0));
+  transform-origin: 0 50%;
+  pointer-events: none;
+  [dir="rtl"] & { transform-origin: 100% 50%; }
+}
+.iv-js:not(.iv-opened) .iv-progress { opacity: 0; }
+
+// ── Kopf: erst nach dem Öffnen einblenden, dann beim Hinausscrollen auflösen ──
+// Die Einblendungen im Kopf warten, bis der Umschlag (Tauben, Tür …) weg ist —
+// sonst wären sie hinter ihm längst vorbei.
+.iv-js:not(.iv-opened) .iv-hero .ivr { opacity: 0; transform: translateY(26px); }
+
+.iv-rtl { --dir: -1; }
+.iv-tn, .iv-tn-amp { display: inline-block; will-change: transform; }
+.iv-tn-amp { margin-inline: 0.18em; font-size: 0.7em; vertical-align: 0.12em; }
+// Goldfolie liegt auf dem Titel; die Namen erben sie, weil sie sich einzeln bewegen.
+.iv-title > span, .iv-footer-title > span, .iv-cd-box strong > span {
+  background: inherit;
+  -webkit-background-clip: inherit;
+  background-clip: inherit;
+  color: inherit;
+  animation: inherit;
+}
+
+.iv-hero {
+  --q: var(--p, 0);
+  // Namen gehen auseinander, das „&" wächst und verblasst.
+  .iv-tn-a { transform: translateX(calc(var(--q) * -34vw * var(--dir, 1))); }
+  .iv-tn-b { transform: translateX(calc(var(--q) * 34vw * var(--dir, 1))); }
+  .iv-tn-amp { transform: scale(calc(1 + var(--q) * 1.4)); opacity: calc(1 - var(--q) * 1.6); }
+  .iv-tn-solo { transform: translateY(calc(var(--q) * -6vh)) scale(calc(1 + var(--q) * 0.12)); }
+  // Alles andere löst sich etwas später auf.
+  .iv-hero-inner { opacity: calc(1 - (var(--q) - 0.3) * 1.8); }
+  // Foto: zoomt mit, der Bogen kommt dem Gast entgegen.
+  .iv-hero-media { transform: scale(calc(1 + var(--q) * 0.18)); transform-origin: 50% 40%; }
+  // Einzelne Eigenschaften (translate/scale), weil `transform` dem Einblenden gehört.
+  .iv-frame { translate: 0 calc(var(--q) * 14vh); scale: calc(1 + var(--q) * 0.32); }
+  // Ecken weichen nach außen wie ein Vorhang — und dem Mauszeiger ein wenig.
+  > .iv-art-tl {
+    transform: translate(calc(var(--q) * -16vw + var(--mx, 0) * -10px), calc(var(--q) * -8vh + var(--my, 0) * -8px));
+  }
+  > .iv-art-br {
+    transform: scale(-1, -1) translate(calc(var(--q) * -16vw + var(--mx, 0) * 10px), calc(var(--q) * -8vh + var(--my, 0) * 8px));
+  }
+}
+.iv-frame .iv-art-tl {
+  transform: translate(calc(var(--p, 0) * -40px + var(--mx, 0) * -12px), calc(var(--p, 0) * -30px + var(--my, 0) * -10px)) rotate(calc(var(--p, 0) * -10deg));
+}
+.iv-frame .iv-art-br {
+  transform: scale(-1, -1) translate(calc(var(--p, 0) * -40px + var(--mx, 0) * 12px), calc(var(--p, 0) * -30px + var(--my, 0) * 10px)) rotate(calc(var(--p, 0) * -10deg));
+}
+// Mit der Maus kippt der Bogen leicht, als hinge er im Raum.
+.iv-frame-arch {
+  transform: perspective(900px) rotateY(calc(var(--mx, 0) * 5deg)) rotateX(calc(var(--my, 0) * -5deg));
+  transition: transform 0.4s ease-out;
+}
+.iv-hero .iv-mono:not(.iv-frame-mono) {
+  rotate: calc(var(--p, 0) * 60deg);
+  scale: calc(1 - var(--p, 0) * 0.3);
+}
+
+// ── Wörter leuchten beim Lesen auf ──
+.iv-words .w {
+  --o: clamp(0.16, calc(var(--p, 1) * (var(--n) + 8) - var(--i)), 1);
+  opacity: var(--o);
+  transition: opacity 0.25s linear;
+}
+.iv-dark .iv-words .w { --o: clamp(0.22, calc(var(--p, 1) * (var(--n) + 8) - var(--i)), 1); }
+
+// ── Foto im Bogen: öffnet sich von unten, wandert dann langsamer als die Seite ──
+.iv-arch img {
+  border-radius: inherit;
+  translate: 0 calc((var(--p, 0.5) - 0.5) * -10%);
+  scale: 1.14;
+}
+.iv-js .iv-arch.ivr img {
+  clip-path: inset(100% 0 0 0 round 999px 999px 22px 22px);
+  transition: clip-path 1.6s var(--iv-ease) 0.1s, scale 2.2s var(--iv-ease);
+  scale: 1.35;
+}
+.iv-js .iv-arch.ivr-in img { clip-path: inset(0 0 0 0 round 999px 999px 22px 22px); scale: 1.14; }
+.iv-js .iv-arch.ivr { opacity: 1; transform: none; }
+
+// ── Überschriften kommen aus der Unschärfe ──
+.iv-js .iv-h2.ivr {
+  transition: opacity 1s var(--iv-ease) var(--ivr-delay, 0ms), transform 1s var(--iv-ease) var(--ivr-delay, 0ms), filter 1.2s var(--iv-ease) var(--ivr-delay, 0ms);
+}
+.iv-js .iv-h2.ivr:not(.ivr-in) { filter: blur(12px); transform: translateY(18px) scale(0.97); }
+
+// ── Countdown: Ziffern rollen ──
+.iv-roll { display: inline-block; animation: iv-roll 0.55s cubic-bezier(0.2, 0.8, 0.2, 1); }
+@keyframes iv-roll {
+  from { transform: translateY(-55%) rotateX(70deg); opacity: 0; filter: blur(2px); }
+}
+.iv-cd-box { perspective: 400px; }
+.iv-cd-box strong { overflow: hidden; }
+
+// ── Ablauf: die Linie füllt sich mit dem Scrollen, ein Funke wandert mit ──
+.iv-tl-wrap {
+  --line-x: calc(76px + 26px);
+  position: relative;
+}
+.iv-tl-fill,
+.iv-tl-spark {
+  position: absolute;
+  inset-inline-start: var(--line-x);
+  pointer-events: none;
+  z-index: 0;
+}
+.iv-tl-fill {
+  top: 1rem;
+  bottom: 10px;
+  width: 2px;
+  margin-inline-start: -0.5px;
+  background: linear-gradient(180deg, var(--iv-accent), var(--iv-accent2));
+  transform: scaleY(var(--p, 1));
+  transform-origin: 50% 0;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--iv-accent) 60%, transparent);
+}
+.iv-tl-spark {
+  top: calc(1rem + var(--p, 1) * (100% - 1rem - 10px));
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -6.5px;
+  [dir="rtl"] & { margin: -7px -6.5px 0 0; }
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 0 25%, var(--iv-accent) 45%, transparent 70%);
+  box-shadow: 0 0 16px 4px color-mix(in srgb, var(--iv-accent) 55%, transparent);
+  opacity: calc(min(var(--p, 1), 1 - var(--p, 1)) * 12);
+  animation: iv-spark 1.6s ease-in-out infinite;
+}
+@keyframes iv-spark { 50% { box-shadow: 0 0 26px 8px color-mix(in srgb, var(--iv-accent) 45%, transparent); } }
+.iv-timeline { z-index: 1; }
+// Ein Punkt leuchtet auf, sobald der Funke ihn erreicht.
+.iv-tl {
+  --lit: clamp(0, calc((var(--p, 1) * var(--n) - var(--i)) * 2.5), 1);
+}
+.iv-tl-wrap .iv-tl-icon {
+  background: color-mix(in srgb, var(--iv-accent) calc(var(--lit) * 100%), var(--iv-surface));
+  color: color-mix(in srgb, var(--iv-on-accent) calc(var(--lit) * 100%), var(--iv-accent-text));
+  transform: scale(calc(0.88 + var(--lit) * 0.12));
+  box-shadow: 0 0 0 calc(var(--lit) * 6px) color-mix(in srgb, var(--iv-accent) 18%, transparent);
+  transition: background 0.3s, color 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.iv-tl-wrap .iv-tl-body strong { opacity: calc(0.45 + var(--lit) * 0.55); }
+@media (max-width: 640px) {
+  .iv-tl-wrap { --line-x: calc(54px + 10px + 22px); }
+}
+@media (min-width: 900px) {
+  .iv-tl-wrap { --line-x: 50%; }
+}
+
+// ── Fuß: die Namen kommen von beiden Seiten und treffen sich ──
+.iv-footer {
+  --q: clamp(0, calc(var(--p, 1) * 1.6), 1);
+  .iv-tn-a { transform: translateX(calc((1 - var(--q)) * -38vw * var(--dir, 1))); opacity: var(--q); }
+  .iv-tn-b { transform: translateX(calc((1 - var(--q)) * 38vw * var(--dir, 1))); opacity: var(--q); }
+  .iv-tn-amp { transform: scale(calc(0.4 + var(--q) * 0.6)) rotate(calc((1 - var(--q)) * -90deg)); opacity: var(--q); }
+  .iv-tn-solo { transform: translateY(calc((1 - var(--q)) * 30px)); opacity: var(--q); }
+  > .iv-art-tl { transform: translate(calc((1 - var(--q)) * -60px), calc((1 - var(--q)) * -40px)); }
+  > .iv-art-tr { transform: scaleX(-1) translate(calc((1 - var(--q)) * -60px), calc((1 - var(--q)) * -40px)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .iv-js .iv-arch.ivr img { clip-path: none; transition: none; }
+  .iv-js .iv-h2.ivr:not(.ivr-in) { filter: none; }
+  .iv-roll, .iv-tl-spark { animation: none; }
+  .iv-frame-arch { transform: none; }
+}
