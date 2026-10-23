@@ -505,22 +505,25 @@
 // Stelle, an der vorher die Zahlen begannen.
 .home-promise {
   display: grid;
-  gap: 0.3rem;
-  margin: clamp(2.5rem, 7vw, 4.5rem) 0 0;
-  max-width: 54ch;
+  gap: 0.75rem;
+  margin: clamp(3rem, 8vw, 6rem) 0 0;
 
   strong {
-    font-family: $font-heading;
-    font-size: clamp(1.05rem, 2.4vw, 1.25rem);
-    font-weight: 600;
+    @include small-caps;
     color: $text;
   }
+}
 
-  span {
-    color: $text-dim;
-    font-size: 0.95rem;
-    line-height: 1.6;
-  }
+// Der Satz selbst groß gesetzt; beim Scrollen leuchtet er Wort für Wort auf
+// (siehe SCROLL-BEWEGUNG unten).
+.promise-words {
+  max-width: 30ch;
+  font-family: $font-display;
+  font-size: clamp(1.6rem, 3.6vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  color: $text;
 }
 
 // Die Zahlen sind jetzt die Begründung der Zeile darüber und rücken näher —
@@ -855,7 +858,6 @@
   margin: 0;
   overflow: hidden;
   border-radius: $radius-lg;
-  box-shadow: $shadow-md;
 
   img {
     display: block;
@@ -901,4 +903,116 @@
     aspect-ratio: 3 / 2;
     object-position: 50% 35%;
   }
+}
+
+
+// ══════════════════════════════════════════════
+// SCROLL-BEWEGUNG
+// ══════════════════════════════════════════════
+// --p (0…1) setzt ScrollFxDirective im Browser. Ohne Skript, beim
+// Vorrendern und bei „Bewegung reduzieren" fehlt --p; dann greift der
+// Ersatzwert in var(--p, …) — und der ist immer der ruhige Zustand.
+// Bewegt wird nur über translate/scale, nie über Layout-Eigenschaften.
+
+// 1. Collage: beim Wegscrollen driften die Kacheln auseinander, jede in
+//    ihre Richtung und mit eigenem Zoom. Fortschritt misst der ganze Hero.
+@media (min-width: $bp-desktop) {
+  .hero-wall .wall-frame {
+    translate: calc(var(--p, 0) * var(--dx, 0px)) calc(var(--p, 0) * var(--dy, 0px));
+    scale: calc(1 + var(--p, 0) * var(--ds, 0));
+  }
+
+  .wall-frame.wf-1 { --dx: -70px; --dy: -50px; --ds: 0.06; }
+  .wall-frame.wf-2 { --dx: 80px;  --dy: -130px; --ds: 0.1; }
+  .wall-frame.wf-3 { --dx: 110px; --dy: 20px;  --ds: 0.04; }
+  .wall-frame.wf-4 { --dx: -90px; --dy: 110px; --ds: 0.12; }
+  .wall-frame.wf-5 { --dx: 70px;  --dy: 160px; --ds: 0.08; }
+
+  .hero-wall .hero-chip {
+    translate: 0 calc(var(--p, 0) * 70px);
+  }
+
+  .hero-copy {
+    translate: 0 calc(var(--p, 0) * -40px);
+  }
+}
+
+// 2. Versprechen: Wort für Wort von Hellgrau zu Tinte, während man liest.
+//    Ohne --p ist alles Tinte.
+.promise-words .w {
+  --lit: clamp(0, calc(var(--p, 1) * (var(--n) + 6) - var(--i)), 1);
+  color: color-mix(in srgb, #{$text} calc(var(--lit) * 100%), #c4c4c4);
+}
+
+// 3. Referenzen: auf dem Desktop bleibt der Abschnitt stehen, und die
+//    Kacheln laufen seitwärts durch, solange man nach unten scrollt. Die
+//    Höhe des Abschnitts ist genau so viel länger, wie die Reihe breiter ist
+//    — ein Pixel Scrollen, ein Pixel seitwärts. Die Klasse .h-scroll setzt
+//    die Komponente nur im Browser; im HTML steht das normale Raster.
+@media (min-width: $bp-desktop) and (min-height: 700px) {
+  #refs.h-scroll {
+    --card: min(30vw, 440px);
+    --gap: 1.25rem;
+    --view: calc(min(100vw, 1320px) - 2 * clamp(1.25rem, 5vw, 4rem));
+    --dist: max(0px, calc(var(--count, 5) * var(--card) + (var(--count, 5) - 1) * var(--gap) - var(--view)));
+    height: calc(100vh + var(--dist));
+    padding-block: 0;
+
+    .refs-stage {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-top: 72px;
+      overflow-x: clip;
+    }
+
+    .ref-showcase {
+      display: flex;
+      gap: var(--gap);
+      width: max-content;
+      translate: calc(var(--p, 0) * -1 * var(--dist)) 0;
+
+      > li {
+        flex: 0 0 var(--card);
+        grid-column: auto;
+      }
+    }
+  }
+}
+
+// 4. Laufband: zwei Zeilen, die gegeneinander laufen — oben die Branchen in
+//    Tinte, unten die Orte in Grau. Ohne --p stehen beide still.
+.ticker {
+  overflow: hidden;
+  padding-top: clamp(3rem, 7vw, 5.5rem);
+  background: $surface;
+}
+
+.ticker-row {
+  display: flex;
+  gap: 0.35em;
+  width: max-content;
+  margin: 0;
+  white-space: nowrap;
+  font-family: $font-display;
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: $tracking-display;
+  line-height: 1.08;
+  color: $text;
+  // 10 % der dreifachen Zeile ≈ so weit, wie man dabei scrollt.
+  translate: calc(-10% - (var(--p, 0.5) - 0.5) * 10%) 0;
+}
+
+.ticker-row-rev {
+  color: #bdbdbd;
+  translate: calc(-30% + (var(--p, 0.5) - 0.5) * 10%) 0;
+}
+
+.ticker-sep {
+  color: $text-faint;
+  font-weight: 400;
 }
