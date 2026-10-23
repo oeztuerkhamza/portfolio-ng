@@ -19,6 +19,18 @@ export const COMPANY = {
   city: '79114 Freiburg im Breisgau',
 } as const;
 
+/**
+ * Erreichbarkeit. Muss Wort für Wort zu den Öffnungszeiten im
+ * Google-Unternehmensprofil passen — weichen beide ab, glaubt Google keinem.
+ * Die Anzeige steht in den Übersetzungen (`company.hours`), das Schema liest
+ * diese Werte.
+ */
+export const OPENING_HOURS = {
+  days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  opens: '09:00',
+  closes: '18:00',
+} as const;
+
 export function whatsappUrl(text?: string): string {
   const base = `https://wa.me/${COMPANY.whatsapp}`;
   return text ? `${base}?text=${encodeURIComponent(text)}` : base;
@@ -124,10 +136,8 @@ export const TOWNS_REMOTE = ['Karlsruhe', 'Stuttgart', 'Mannheim', 'Heidelberg',
 
 const NUMBER_LOCALE: Record<Lang, string> = {
   de: 'de-DE',
-  fr: 'fr-FR',
   en: 'en-GB',
   tr: 'tr-TR',
-  ku: 'de-DE',
 };
 
 /** Betrag ohne Nachkommastellen im Zahlenformat der Sprache: 1290 → „1.290" / „1,290". */

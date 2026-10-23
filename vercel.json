@@ -3,37 +3,52 @@
   "buildCommand": "npm run build",
   "redirects": [
     {
-      "source": "/:locale(de|fr|en|tr|ku)/bewertungskarten/:path*",
+      "source": "/:locale(fr|ku)",
+      "destination": "/de",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(fr|ku)/:path*",
+      "destination": "/de/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/de/webdesign/freiburg",
+      "destination": "/de",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|en|tr)/bewertungskarten/:path*",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/bewertungskarten",
+      "source": "/:locale(de|en|tr)/bewertungskarten",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/(digitale-visitenkarte|geschenkkarte)",
+      "source": "/:locale(de|en|tr)/(digitale-visitenkarte|geschenkkarte)",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/karte-gestalten/:path*",
+      "source": "/:locale(de|en|tr)/karte-gestalten/:path*",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/bestellen/:path*",
+      "source": "/:locale(de|en|tr)/bestellen/:path*",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/bestellen",
+      "source": "/:locale(de|en|tr)/bestellen",
       "destination": "/:locale/leistungen",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/abo",
+      "source": "/:locale(de|en|tr)/abo",
       "destination": "/:locale/wartung",
       "permanent": true
     },
@@ -60,32 +75,32 @@
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/experience",
+      "source": "/:locale(de|en|tr)/experience",
       "destination": "/:locale/ueber-uns",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/lebenslauf",
+      "source": "/:locale(de|en|tr)/lebenslauf",
       "destination": "/:locale/ueber-uns",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/projects/hochzeitseinladung",
+      "source": "/:locale(de|en|tr)/projects/hochzeitseinladung",
       "destination": "/:locale/projects",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/projects/bewerbungs-manager",
+      "source": "/:locale(de|en|tr)/projects/bewerbungs-manager",
       "destination": "/:locale/projects",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/projects/hotel-bergfrieden",
+      "source": "/:locale(de|en|tr)/projects/hotel-bergfrieden",
       "destination": "/:locale/projects",
       "permanent": true
     },
     {
-      "source": "/:locale(de|fr|en|tr|ku)/smart-home",
+      "source": "/:locale(de|en|tr)/smart-home",
       "destination": "/:locale/leistungen",
       "permanent": false
     }

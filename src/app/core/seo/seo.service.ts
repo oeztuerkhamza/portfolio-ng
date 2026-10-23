@@ -107,7 +107,7 @@ export class SeoService {
     this.meta.updateTag({ property, content });
   }
   private ogLocale(locale: Lang): string {
-    return { de: 'de_DE', fr: 'fr_FR', en: 'en_US', tr: 'tr_TR', ku: 'ku_TR' }[locale];
+    return { de: 'de_DE', en: 'en_US', tr: 'tr_TR' }[locale];
   }
 
   private setCanonical(url: string): void {

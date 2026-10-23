@@ -144,12 +144,6 @@
 
 
 <!-- ────────────────────────────────────────────── -->
-<!-- DIGITALE EINLADUNG: lebende Vorschau im Handy   -->
-<!-- ────────────────────────────────────────────── -->
-<app-invite-showcase />
-
-
-<!-- ────────────────────────────────────────────── -->
 <!-- REFERENZEN                                     -->
 <!-- ────────────────────────────────────────────── -->
 <section class="section" id="refs" data-reveal [class.in]="shown('refs')">
@@ -313,6 +307,7 @@
       <p class="section-label">{{ i18n.t('home.region.label') }}</p>
       <h2 class="section-title" [innerHTML]="i18n.t('home.region.title')"></h2>
       <p class="section-subtitle">{{ i18n.t('home.region.text') }}</p>
+      <p class="section-subtitle">{{ i18n.t('home.region.city') }}</p>
       <figure class="region-photo">
         <img src="/assets/images/stock/freiburg-muenster.webp" alt="Das Freiburger Münster" width="1400" height="934" loading="lazy" />
       </figure>

@@ -17,28 +17,6 @@ export interface ProjectTx {
 
 export const PROJECT_CONTENT: Record<string, Partial<Record<Lang, ProjectTx>>> = {
   'bikehaus-freiburg': {
-    fr: {
-      subtitle: 'Gestion commerciale, site web et location en ligne pour un magasin de vélos',
-      category: 'Plateforme full-stack',
-      description:
-        'Gestion commerciale, site public et location en ligne pour un magasin de vélos à Fribourg. API .NET, deux front-ends Angular, extension Chrome et application Windows — auto-hébergé.',
-      role: 'Développeur full-stack & architecte',
-      long: `Bikehaus Freiburg n’est pas un modèle de boutique, c’est l’atelier lui-même : un vélo est racheté, entre en stock, puis est vendu, loué ou repris — et chacune de ces étapes a son numéro de pièce, sa signature et, au bout, un PDF. L’interface d’administration couvre cela en près de 28 modules, des clients et factures aux dépenses et coûts de remise en état, jusqu’aux statistiques, exports et sauvegardes.
-
-Côté public : Angular 17 avec rendu serveur, douze langues aux URL dédiées et une centaine de routes pré-rendues au build — showroom, vélos électriques, vélos neufs, accessoires, service, guides et pages locales pour les communes alentour. La location se fait entièrement en ligne : vérifier la disponibilité, choisir les accessoires, payer via Mollie. La réservation arrive dans l’administration pour validation et devient un contrat de location.
-
-S’y ajoute tout ce qu’un magasin ferait autrement à la main : un service de fond synchronise les annonces Kleinanzeigen toutes les quatre heures, une extension Chrome les modifie en masse, les demandes clients arrivent sous forme de conversation depuis une boîte mail connectée. Le tout tourne sur un serveur dédié : Docker Compose avec cinq services, nginx devant, certificats renouvelés automatiquement et surveillés chaque jour par GitHub Actions. Pour le comptoir, il existe en plus une version Windows qui embarque l’API.`,
-      features: [
-        'Flux complet : rachat → stock → vente → reprise, avec numéros de pièce et signature',
-        'Location en ligne avec vérification de disponibilité et paiement (Mollie)',
-        '12 langues aux URL dédiées, environ 100 routes pré-rendues (Angular SSR)',
-        'Synchronisation Kleinanzeigen toutes les 4 h et extension Chrome pour l’édition en masse',
-        'Administration en ~28 modules : clients, factures, dépenses, statistiques, export, sauvegarde',
-        'Génération de PDF pour contrats de location, factures et justificatifs',
-        'Version Windows (Electron) avec API embarquée pour le magasin',
-        'Auto-hébergement : Docker Compose à cinq services, nginx, TLS automatique, serveur mail propre',
-      ],
-    },
     en: {
       subtitle: 'Inventory management, website and online rental for a bicycle shop',
       category: 'Full-stack platform',
@@ -83,52 +61,8 @@ Dışarıya bakan yüz ise halka açık site: sunucu taraflı render’lı Angul
         'Kendi sunucusu: beş servisli Docker Compose, nginx, otomatik TLS, kendi mail sunucusu',
       ],
     },
-    ku: {
-      subtitle: 'Rêveberiya stokê, malper û kirêkirina online ji bo firotgehek bisîkletan',
-      category: 'Platforma full-stack',
-      description:
-        'Rêveberiya stokê, malpera giştî û kirêkirina online ji bo firotgehek bisîkletan li Freiburgê. API ya .NET, du navrûyên Angular, dirêjkirina Chrome û sepanek Windows — li ser servera xwe.',
-      role: 'Pêşvebirê full-stack & mîmar',
-      long: `Bikehaus Freiburg ne şablonek firotgehê ye, kar bi xwe ye: Bisîklet tê kirîn, dikeve stokê, tê firotin, kirê kirin an vegerandin — û her gaveke wan hejmara xwe ya belgeyê, îmzeya xwe û di dawiyê de PDFek xwe heye. Navrûya rêveberiyê vê yekê di nêzîkî 28 beşan de dide: ji xerîdar û fatûreyan heta lêçûn û mesrefên nûkirinê, û heta amar, derxistin û paşekêş.
-
-Berbi derve rûpela giştî ye: Angular 17 bi renderkirina aliyê serverê, donzdeh ziman bi URLên xwe û nêzîkî 100 rêyên ku di dema avakirinê de hatine amadekirin — showroom, e-bike, bisîkletên nû, alav, servis, rêbername û rûpelên herêmî ji bo bajarên dorûberê. Kirêkirin bi tevahî online e: vebûnê kontrol bike, alavan hilbijêre, bi Mollie bide. Rezervasyon ji bo pejirandinê dikeve beşa rêveberiyê û li wir dibe peymana kirêyê.
-
-Li ser vê yekê tiştê ku firotgehek bi destan dikira tê: Karûbarek paşperdeyê her çar saetan îlanên Kleinanzeigen hevaheng dike, dirêjkirineke Chrome wan bi komî diguherîne, daxwazên xerîdaran ji qutîkeke e-nameyê ya girêdayî wek sohbet tên. Her tişt li ser servereke xwe dixebite: Docker Compose bi pênc karûbaran, nginx li pêş, sertîfîkayên ku bixweber nû dibin û bi GitHub Actions rojane têne şopandin. Ji bo ser masê guhertoyeke Windows jî heye ku API bi xwe re tîne.`,
-      features: [
-        'Herikîna tevahî: kirîn → stok → firotin → vegerandin, bi hejmarên belgeyê û îmze',
-        'Kirêkirina giştî bi kontrola vebûnê û dayîna online (Mollie)',
-        '12 ziman bi URLên xwe, nêzîkî 100 rêyên pêş-amadekirî (Angular SSR)',
-        'Hevahengiya Kleinanzeigen her çar saetan û dirêjkirina Chrome ji bo guhertina komî',
-        'Beşa rêveberiyê bi ~28 modulan: xerîdar, fatûre, lêçûn, amar, derxistin, paşekêş',
-        'Çêkirina PDF ji bo peymanên kirêyê, fatûre û belgeyan',
-        'Guhertoya Windows (Electron) bi API ya tê de ji bo firotgehê',
-        'Hilanîna xwe: Docker Compose bi pênc karûbaran, nginx, TLS ya otomatîk, servera e-nameyê ya xwe',
-      ],
-    },
   },
   'benlirad': {
-    fr: {
-      subtitle: 'Gestion commerciale et site web pour un magasin de vélos à Lahr',
-      category: 'Application web full-stack',
-      description:
-        'Deuxième magasin, même plateforme : API .NET 9, administration Angular et site public en SSR avec showroom, accessoires et service réparation — en quatre langues, sur serveur dédié.',
-      role: 'Développeur full-stack & architecte',
-      long: `Benlirad est un magasin de vélos à Lahr, en Forêt-Noire. La plateforme née pour Bikehaus Freiburg tourne ici dans sa propre déclinaison : même noyau — rachat, stock, vente, reprise, clients, factures, dépenses et statistiques — mais taillé pour un magasin qui vend et répare plutôt qu’il ne loue. C’est précisément là qu’était le travail : qu’est-ce qui appartient vraiment au noyau, et qu’est-ce qui n’existait que pour le premier client ?
-
-Le site public tourne sous Angular 17 avec rendu serveur, en quatre langues (DE, EN, FR, TR). Il tire son contenu directement de la gestion commerciale : le showroom affiche le stock réel avec le compteur de vélos disponibles, à quoi s’ajoutent les vélos neufs, les accessoires, le service réparation, les guides, la FAQ, la garantie et des pages locales pour la région. Ce qui est saisi en magasin est en ligne sans étape intermédiaire.
-
-L’ensemble tourne sur un serveur dédié avec Docker et nginx : API, interface d’administration et front SSR comme services séparés, SQLite comme base, JWT pour la connexion. S’y ajoutent les mêmes outils que dans le projet frère — synchronisation Kleinanzeigen, extension Chrome et une version Windows pour le poste du magasin.`,
-      features: [
-        'Gestion commerciale : rachat, stock, vente, reprise, clients, factures, dépenses',
-        'Site public alimenté en direct par la même base de données',
-        'Quatre langues (DE, EN, FR, TR) aux URL dédiées, avec SSR',
-        'Showroom, vélos neufs, accessoires, service réparation, guides et FAQ',
-        'Pages locales pour la recherche autour de Lahr',
-        'Synchronisation Kleinanzeigen et extension Chrome pour les annonces',
-        'Version Windows avec API embarquée',
-        'Auto-hébergement : Docker, nginx, TLS automatique',
-      ],
-    },
     en: {
       subtitle: 'Inventory management and website for a bicycle shop in Lahr',
       category: 'Full-stack web app',
@@ -173,49 +107,8 @@ Tamamı kendi sunucusunda, Docker ve nginx ile çalışıyor: API, yönetim aray
         'Kendi sunucusu: Docker, nginx, otomatik TLS',
       ],
     },
-    ku: {
-      subtitle: 'Rêveberiya stokê û malper ji bo firotgehek bisîkletan li Lahrê',
-      category: 'Sepana webê ya full-stack',
-      description:
-        'Firotgeha duyem, heman platform: API ya .NET 9, panela rêveberiyê ya Angular û malpera giştî ya bi SSR bi showroom, alav û servisa tamîrê — çar ziman, li ser servera xwe.',
-      role: 'Pêşvebirê full-stack & mîmar',
-      long: `Benlirad firotgehek bisîkletan e li Lahra Daristana Reş. Platforma ku ji bo Bikehaus Freiburg hatibû afirandin li vir bi birrîna xwe dixebite: heman navend — kirîn, stok, firotin, vegerandin, xerîdar, fatûre, lêçûn û amar — lê li gorî firotgehek ku difiroşe û tamîr dike, ne ku kirê dide. Kar jî tam li vir bû: Bi rastî çi ya navendê ye û çi tenê ji bo xerîdarê yekem hebû?
-
-Rûpela giştî bi Angular 17 û renderkirina aliyê serverê di çar zimanan de dixebite (DE, EN, FR, TR). Naveroka xwe rasterast ji pergala stokê digire: Showroom stoka rastîn bi jimarvana bisîkletên berdest nîşan dide, li kêleka wê bisîkletên nû, alav, servisa tamîrê, rêbername, FAQ, garantî û rûpelên herêmî yên herêmê. Tiştê ku li firotgehê tê tomarkirin, bê gavek navber li ser înternetê ye.
-
-Her tişt li ser servereke xwe bi Docker û nginx dixebite: API, navrûya rêveberiyê û frontenda SSR wek karûbarên cuda, SQLite wek danegeh, JWT ji bo têketinê. Li ser wan heman amûrên projeya xwişkê tên — hevahengiya Kleinanzeigen, dirêjkirina Chrome û guhertoyeke Windows ji bo komputera firotgehê.`,
-      features: [
-        'Rêveberiya stokê: kirîn, stok, firotin, vegerandin, xerîdar, fatûre, lêçûn',
-        'Malpera giştî bi stoka zindî ji heman danegehê',
-        'Çar ziman (DE, EN, FR, TR) bi URLên xwe û SSR',
-        'Showroom, bisîkletên nû, alav, servisa tamîrê, rêbername û FAQ',
-        'Rûpelên herêmî ji bo lêgerîna li dora Lahrê',
-        'Hevahengiya Kleinanzeigen û dirêjkirina Chrome ji bo îlanan',
-        'Guhertoya Windows bi API ya tê de',
-        'Hilanîna xwe: Docker, nginx, TLS ya otomatîk',
-      ],
-    },
   },
   'di-flux': {
-    fr: {
-      subtitle: 'Système intelligent de suivi du temps pour entreprises',
-      category: 'Logiciel d’entreprise',
-      description: 'Système de pointage intelligent avec calcul automatique des pauses, conformité au droit du travail et gestion des employés. Développé chez Dicom GmbH.',
-      role: 'Développeur full-stack',
-      long: `Di-Flux est un système de pointage d’entreprise développé chez Dicom GmbH. Il numérise toute la saisie du temps de travail, de la pointeuse au reporting des heures supplémentaires, et garantit automatiquement le respect du droit du travail allemand (ArbZG).
-
-Le système détecte les pauses légales, valide les durées de travail maximales et gère la protection liée à l’âge. Le front-end Angular 19 offre un tableau de bord intuitif ; le back-end .NET suit une Clean Architecture entièrement testée.`,
-      features: [
-        'Calcul automatique des pauses selon l’ArbZG',
-        'Conformité à la protection liée à l’âge (JArbSchG)',
-        'Gestion des congés et absences avec calendrier',
-        'Suivi des heures supplémentaires et statistiques',
-        'Opérations en masse pour saisies groupées',
-        'Gestion des employés et des rôles',
-        'Authentification JWT avec intercepteur',
-        'Système de notifications en temps réel',
-      ],
-    },
     en: {
       subtitle: 'Intelligent time-tracking system for companies',
       category: 'Enterprise software',
@@ -254,49 +147,8 @@ Sistem yasal molaları algılar, azami çalışma sürelerini doğrular ve yaşa
         'Gerçek zamanlı bildirim sistemi',
       ],
     },
-    ku: {
-      subtitle: 'Pergala şehreza ya şopandina demê ji bo pargîdaniyan',
-      category: 'Nermalava pargîdanî',
-      description: 'Şopandina demê ya şehreza bi hesabê bêhnvedanê yê xweber, lihevhatina qanûna kar û rêveberiya karmendan. Li Dicom GmbH hatiye çêkirin.',
-      role: 'Pêşvebirê full-stack',
-      long: `Di-Flux pergalek pargîdanî ya şopandina demê ye ku li Dicom GmbH hatiye pêşxistin. Ew tevahiya tomarkirina dema karê, ji saeta mohrê heta raporkirina demê zêde, dîjîtal dike û bi awayekî xweber lihevhatina bi qanûna kar a Almanyayê (ArbZG) misoger dike.
-
-Pergal bêhnvedanên qanûnî dibîne, demên kar ên herî zêde piştrast dike û parastina kar a li gorî temenî piştgirî dike. Frontenda Angular 19 daşboardek hêsan pêşkêş dike; backenda .NET Clean Architecture ya bi tevahî test-kirî dişopîne.`,
-      features: [
-        'Hesabê bêhnvedanê yê xweber li gorî ArbZG',
-        'Lihevhatina parastina kar a li gorî temenî (JArbSchG)',
-        'Rêveberiya betlane û tunebûnê bi salname',
-        'Şopandina demê zêde û statîstîk',
-        'Operasyonên komî ji bo têketinên gelemperî',
-        'Rêveberiya karmend û rolan',
-        'Erêkirina JWT bi interceptor',
-        'Pergala agahdariyê ya demreal',
-      ],
-    },
   },
   'gkn-portraits': {
-    fr: {
-      subtitle: 'Studio photo pour photos de candidature à Fribourg, avec réservation en ligne',
-      category: 'Site web & système de réservation',
-      description:
-        'Site web et réservation pour un studio de photos de candidature à Fribourg. Next.js 16, 15 langues, réservation en trois étapes — et un agenda de studio partagé par deux marques.',
-      role: 'Développeur full-stack & designer',
-      long: `GKN Portraits est le site d’un studio photo de Fribourg spécialisé dans les photos de candidature et les portraits professionnels. Le cœur n’est pas une vitrine mais une réservation : choisir une formule, cliquer sur un créneau libre, laisser ses coordonnées — trois étapes, confirmation par e-mail, lien d’annulation inclus. Les appels pour connaître les disponibilités, qui représentent l’essentiel du travail administratif sur des séances courtes, disparaissent.
-
-Techniquement, le site tourne sous Next.js 16 avec React 19 et Tailwind 4. Quinze langues aux URL traduites couvrent qui, à Fribourg, a besoin d’une photo de candidature — y compris une mise en page de droite à gauche pour l’arabe. Les prix existent en deux listes (particuliers et entreprises), car ce n’est pas le travail qui diffère, mais l’usage de l’image.
-
-La particularité est en coulisses : le studio exploite deux marques — portrait et mariage — mais il n’y a qu’une salle et qu’un agenda. Les deux sites écrivent donc dans le même calendrier, et chaque réservation retient par quelle marque elle est arrivée. Un index en base garantit qu’un créneau n’est jamais confirmé deux fois. L’ensemble se gère depuis un espace commun, avec une connexion sans mot de passe par lien à usage unique.`,
-      features: [
-        'Réservation en ligne en trois étapes, e-mail de confirmation et lien d’annulation',
-        'Un agenda de studio commun à deux marques — double réservation techniquement impossible',
-        '15 langues aux URL traduites, mise en page RTL pour l’arabe incluse',
-        'Deux grilles tarifaires (particuliers / entreprises) et trois formules',
-        'Pages locales pour les villes autour de Fribourg',
-        'Guide pratique : tenue, déroulé, choix des images',
-        'Connexion sans mot de passe à l’espace d’administration (lien unique, cookie JWT)',
-        'Environ 285 URL indexables avec hreflang, JSON-LD et sitemap dédié',
-      ],
-    },
     en: {
       subtitle: 'Application-photo studio in Freiburg with online booking',
       category: 'Website & booking system',
@@ -341,52 +193,8 @@ Asıl mesele perde arkasında: stüdyonun iki markası var — portre ve düğü
         'hreflang, JSON-LD ve kendi site haritasıyla yaklaşık 285 indekslenebilir URL',
       ],
     },
-    ku: {
-      subtitle: 'Studyoya wêneyên serîlêdanê li Freiburgê bi randevûya online',
-      category: 'Malper & pergala randevûyê',
-      description:
-        'Malper û pergala randevûyê ji bo studyoyek wêneyên serîlêdanê li Freiburgê. Next.js 16, 15 ziman, randevû di sê gavan de — û salnameyek studyoyê ya ku du marka par vedikin.',
-      role: 'Pêşvebirê full-stack & sêwirkar',
-      long: `GKN Portraits malpera studyoyek wênegiriyê ya li Freiburgê ye ku li ser wêneyên serîlêdanê û portreyên karsaziyê pispor e. Di navenda wê de ne rûpelek nasandinê, lê randevûyek heye: paketê hilbijêre, saeta vala ya salnameyê bitikîne, agahiyên têkiliyê binivîse — sê gav, erêkirin bi e-nameyê, girêdana betalkirinê jî tê de. Bi vî awayî têlefonên „saetek vala heye?" — ku di kişandinên kurt de piraniya kar in — winda dibin.
-
-Ji aliyê teknîkî ve malper li ser Next.js 16 bi React 19 û Tailwind 4 dixebite. Panzdeh ziman bi URLên wergerandî kesên ku li Freiburgê wêneyek serîlêdanê dixwazin digire nav xwe — bi rêzkirina ji rastê ber bi çepê ji bo erebî. Biha di du lîsteyan de ne (şexsî û karsazî), ji ber ku ne kar, lê bikaranîna wêneyê cuda ye.
-
-Ya taybet li paş perdeyê ye: studyo du markan dimeşîne — portre û dawet — lê tenê jûrek û tenê bernameyek heye. Ji ber vê yekê her du malper jî di heman salnameyê de tomar dikin, û her randevû tomar dike ku bi kîjan markayê hatiye. Indexek di danegehê de misoger dike ku heman saet ducar nayê erêkirin. Rêveberî ji beşek hevpar tê kirin, bi têketina bê şîfre bi girêdaneke yek-carî.`,
-      features: [
-        'Randevûya online di sê gavan de bi e-nameya erêkirinê û girêdana betalkirinê',
-        'Salnameyek studyoyê ji bo du markan — randevûya ducar bi teknîkî ne gengaz e',
-        '15 ziman bi URLên wergerandî, bi rêzkirina RTL ji bo erebî',
-        'Du lîsteyên biha (şexsî / karsazî) bi sê paketan',
-        'Rûpelên herêmî ji bo bajarên dora Freiburgê',
-        'Beşa rêbernameyê: cil, rêzik û hilbijartina wêneyan',
-        'Têketina bê şîfre ji bo beşa rêveberiyê (girêdana yek-carî, cookie ya JWT)',
-        'Nêzîkî 285 URLên indexbar bi hreflang, JSON-LD û sitemapa xwe',
-      ],
-    },
   },
   'dj-veys': {
-    fr: {
-      subtitle: 'Site et système de demandes pour un DJ de mariage',
-      category: 'Site web & CMS',
-      description:
-        'Site pour un DJ de mariage de Stuttgart : Next.js 16 avec Payload CMS, huit langues, environ 270 pages pour la recherche locale — hébergé sur son propre serveur.',
-      role: 'Développeur full-stack & designer',
-      long: `DJ Veys est un DJ de mariage de Stuttgart qui anime la soirée en allemand, en turc et en anglais et joue en live du saz et de la guitare. Le site remplace l’ancien domaine et est conçu pour être trouvé dans un marché où la concurrence achète de la publicité depuis des années : environ 270 pages, huit langues aux URL traduites, des pages dédiées aux villes du Bade-Wurtemberg ainsi qu’aux mariages turcs et musulmans.
-
-Côté contenu, le client gère tout lui-même. Payload CMS tourne dans le même processus Next.js sous /admin et pilote la galerie, les mariages réalisés, les avis, les articles de conseils et les emplacements d’images du site. Demandes, contacts WhatsApp et souhaits de date arrivent dans la même interface : aucune demande ne se perd dans une boîte mail. Un lecteur à forme d’onde permet d’écouter les mixes directement sur le site.
-
-Le tout tourne sur un serveur dédié : Docker Compose avec nginx et certificat renouvelé automatiquement, SQLite sur un volume persistant, déploiement par GitHub Actions — avec une politique de sécurité de contenu stricte et un envoi d’e-mails autonome. Les prix restent volontairement sur demande, et aucun chiffre d’avis n’est publié tant qu’il n’est pas vérifiable.`,
-      features: [
-        'Huit langues (DE, TR, KU, AR, EN, NL, FR, ES) avec des URL traduites par langue',
-        'Environ 270 pages : villes du Bade-Wurtemberg, pages européennes, pages thématiques',
-        'Payload CMS sous /admin — galerie, références, avis et blog gérés par le client',
-        'Parcours de demande et de disponibilité avec calendrier et raccourci WhatsApp',
-        'Lecteur à forme d’onde pour les mixes (wavesurfer.js)',
-        'Page EPK pour la presse et les organisateurs, remise de photos privée par lien',
-        'Auto-hébergement : Docker Compose, nginx, TLS renouvelé, déploiement GitHub Actions',
-        'Content-Security-Policy stricte et envoi d’e-mails autonome',
-      ],
-    },
     en: {
       subtitle: 'Website and enquiry system for a wedding DJ',
       category: 'Website & CMS',
@@ -431,52 +239,8 @@ Her şey kendi sunucusunda çalışıyor: nginx ve otomatik yenilenen sertifikay
         'Sıkı içerik güvenlik politikası ve kendi mail sunucusu',
       ],
     },
-    ku: {
-      subtitle: 'Malper û pergala daxwazê ji bo DJ-yekî daweta',
-      category: 'Malper & CMS',
-      description:
-        'Malper ji bo DJ-yekî daweta ji Stuttgartê: Next.js 16 bi Payload CMS, heşt ziman, nêzîkî 270 rûpel ji bo lêgerîna herêmî — li ser servera wî ya xwe tê hilanîn.',
-      role: 'Pêşvebirê full-stack & sêwirkar',
-      long: `DJ Veys DJ-yekî daweta ye ji Stuttgartê; êvarê bi almanî, tirkî û îngilîzî pêşkêş dike û saz û gîtarê jî zindî lê dixe. Malper cihê navparêza kevn digire û wisa hatiye avakirin ku di bazarek ku pêşbazî salan e reklamê dikire de were dîtin: nêzîkî 270 rûpel, heşt ziman bi URLên wergerandî, rûpelên taybet ji bo bajarên Baden-Württembergê û herwiha ji bo dawetên tirkî û îslamî.
-
-Naverokê xerîdar bi xwe birêve dibe. Payload CMS di heman pêvajoya Next.js de li binê /admin dixebite û galerî, dawetên rastîn, nirxandin, gotarên rêbernameyê û cihên wêneyan ên malperê birêve dibe. Daxwaz, têkiliyên WhatsAppê û pirsên dîrokê jî têne heman panelê — bi vî awayî tu daxwaz di qutîka e-nameyê de winda nabe. Lêdana wave-formê dihêle ku mîks rasterast li ser rûpelê bêne guhdarîkirin.
-
-Her tişt li ser servereke xwe dixebite: Docker Compose bi nginx û sertîfîkaya ku bixweber nû dibe, SQLite li ser cildeke mayînde, belavkirin bi GitHub Actions — digel polîtîkayeke hişk a ewlehiya naverokê û şandina e-nameyê ya serbixwe. Biha bi zanetî „li ser daxwazê" ne, û hejmarên nirxandinê heta ku nebin belgekirî nayên weşandin.`,
-      features: [
-        'Heşt ziman (DE, TR, KU, AR, EN, NL, FR, ES) bi URLên wergerandî ji bo her zimanî',
-        'Nêzîkî 270 rûpel: bajarên Baden-Württembergê, rûpelên Ewropayê, rûpelên mijarê',
-        'Payload CMS li binê /admin — galerî, referans, nirxandin û blog ji aliyê xerîdar ve',
-        'Rêça daxwaz û vebûnê bi salname û kurteriya WhatsAppê',
-        'Lêdana wave-formê ji bo mîksan (wavesurfer.js)',
-        'Rûpela EPK ji bo çapemenî û organîzatoran, radestkirina wêneyan a taybet bi girêdanê',
-        'Hilanîna xwe: Docker Compose, nginx, TLS ya otomatîk, belavkirin bi GitHub Actions',
-        'Polîtîkayeke hişk a ewlehiya naverokê û şandina e-nameyê ya serbixwe',
-      ],
-    },
   },
   'zerin-gold': {
-    fr: {
-      subtitle: 'Site premium avec cours des métaux en direct pour un bijoutier',
-      category: 'Site premium',
-      description:
-        'Site pour un négociant en or, bijoutier et atelier à Fribourg : cours des métaux en direct, calculateurs et catalogue. Next.js 16, sept langues dont l’arabe en RTL.',
-      role: 'Développeur & designer (solo)',
-      long: `Zerin Gold est négociant en or, bijoutier et atelier de joaillerie à Fribourg-en-Brisgau. Le site adopte une esthétique noir et or posée, avec une typographie à empattements fine et des animations de défilement discrètes — pour l’or, ce n’est pas le volume sonore qui vend, mais l’impression de solidité. Sept langues couvrent la clientèle, l’arabe avec une mise en page de droite à gauche.
-
-La partie techniquement intéressante, c’est le prix. Un provider maison lit les cotations des métaux chez Kitco, convertit le bid/ask à l’once troy via le taux de change BCE en centimes par gramme de métal fin, et met le résultat en cache deux minutes — le site affiche donc des chiffres fiables sans solliciter la source à chaque visite. Là-dessus reposent un moteur de marges que le commerçant pilote depuis l’administration et quatre calculateurs : valeur de l’or usagé, convertisseur de carats, Krugerrand et plan d’épargne. Le bandeau en haut de page vient de la même source.
-
-En dessous : Next.js 16 avec React Server Components et Server Actions, Prisma 7 sur PostgreSQL, Redis en cache, Auth.js v5 avec Argon2 et second facteur TOTP pour l’administration, Resend pour les e-mails et Cloudflare Turnstile contre le spam. Environ 290 URL avec des pages dédiées aux requêtes réellement recherchées — de « gram altın » aux alliances — plus des tests Vitest et Playwright, hébergé en Allemagne derrière Cloudflare.`,
-      features: [
-        'Cours en direct : cotations Kitco + taux BCE → centimes par gramme fin, cache de 2 minutes',
-        'Quatre calculateurs : or usagé, convertisseur de carats, Krugerrand, plan d’épargne',
-        'Moteur de marges — le commerçant règle lui-même ses marges dans l’administration',
-        '7 langues dont l’arabe en RTL, architecture white-label',
-        'Next.js 16 avec Server Components, Prisma 7/PostgreSQL et Redis',
-        'Connexion admin avec Argon2 et second facteur TOTP (Auth.js v5)',
-        'Formulaires protégés par Cloudflare Turnstile, sans énigmes de captcha',
-        'Environ 290 URL avec pages de destination ciblées, tests Vitest et Playwright',
-      ],
-    },
     en: {
       subtitle: 'Premium website with live metal prices for a jeweller',
       category: 'Premium website',
@@ -519,28 +283,6 @@ Altında ise: React Server Components ve Server Actions ile Next.js 16, PostgreS
         'Argon2 ve TOTP ikinci faktörlü yönetici girişi (Auth.js v5)',
         'Captcha bulmacası yerine Cloudflare Turnstile korumalı formlar',
         'Anahtar kelime açılış sayfalarıyla ~290 URL, Vitest ve Playwright testleri',
-      ],
-    },
-    ku: {
-      subtitle: 'Malpera premium bi bihayên madenan ên zindî ji bo zêrkerekî',
-      category: 'Malpera premium',
-      description:
-        'Malper ji bo bazirganê zêr, zêrker û atolyeyê li Freiburgê: bihayên madenên hêja yên zindî, hesabker û katalog. Next.js 16, heft ziman bi erebiya RTL.',
-      role: 'Pêşvebir & sêwirkar (solo)',
-      long: `Zerin Gold li Freiburg im Breisgau bazirganê zêr, zêrker û atolyeya xemlan e. Malper li ser estetîkeke aram a reş-zêrîn, tîpografiyeke serif a nazik û anîmasyonên hûrgilî yên scrollê ava ye — li cem zêr ne dengbilindî difiroşe, lê bandora saxlemiyê. Heft ziman xerîdaran digire nav xwe, erebî bi rêzkirina ji rastê ber bi çepê.
-
-Beşa ku ji aliyê teknîkî ve balkêş e biha ye. Pêşkêşkerekî taybet bihayên madenên hêja ji Kitco dixwîne, bid/ask ya her onsê bi kursa Banka Navendî ya Ewropî dizivirîne sent li ser her gramê madenê safî, û encamê du deqîqeyan di cacheyê de digire — malper bêyî ku her carê serî li çavkaniyê bide jimareyên pêbawer nîşan dide. Li ser vê yekê motorek marjê heye ku bazirgan bi xwe ji beşa rêveberiyê birêve dibe, û çar hesabker: nirxa zêrê kevn, veguhêzerê karatê, Krugerrand û plana teserûfê. Rêzika li serê rûpelê jî ji heman çavkaniyê tê.
-
-Di bin de: Next.js 16 bi React Server Components û Server Actions, Prisma 7 li ser PostgreSQL, Redis wek cache, Auth.js v5 bi Argon2 û faktora duyem a TOTP ji bo rêveberiyê, Resend ji bo e-nameyan û Cloudflare Turnstile li dijî spama formê. Nêzîkî 290 URL bi rûpelên taybet ji bo peyvên ku bi rastî têne lêgerîn — ji „gram altın" heta gustîlkên zewacê — û testên Vitest û Playwright, li Almanyayê li pişt Cloudflare.`,
-      features: [
-        'Bihayên zindî: quoteên Kitco + kursa BNE → sent li ser gramê safî, cache ya 2 deqîqeyan',
-        'Çar hesabker: nirxa zêrê kevn, veguhêzerê karatê, Krugerrand, plana teserûfê',
-        'Motora marjê — bazirgan marjên xwe bi xwe di beşa rêveberiyê de diyar dike',
-        '7 ziman bi erebiya RTL, avahiyeke white-label',
-        'Next.js 16 bi Server Components, Prisma 7/PostgreSQL û Redis',
-        'Têketina rêveber bi Argon2 û faktora duyem a TOTP (Auth.js v5)',
-        'Form bi Cloudflare Turnstile têne parastin, ne bi mamikên captcha',
-        'Nêzîkî 290 URL bi rûpelên peyvên mifteyî, test bi Vitest û Playwright',
       ],
     },
   },
@@ -637,28 +379,6 @@ Teknik olarak site bilinçli olarak sade: Astro, derleme sırasında asgari Java
     },
   },
   'kulturplattform-freiburg': {
-    fr: {
-      subtitle: 'Plateforme associative avec CMS, cours et newsletter',
-      category: 'Application web / CMS',
-      description:
-        'Plateforme pour une association culturelle à Fribourg : événements, cours, bénévolat et newsletter en double opt-in. Back-end .NET 10 en CQRS, front React, bilingue.',
-      role: 'Développeur full-stack',
-      long: `La Kulturplattform Freiburg e. V. organise des événements, des cours et des formats de rencontre à Fribourg. La plateforme reflète ce que l’association fait réellement : des activités avec catégories, recherche et pages de détail, des cours, des partenaires, les statuts, les dons et un formulaire pour les bénévoles. Tout est maintenu par le bureau lui-même — y compris les traductions, stockées comme ressources en base et modifiables depuis l’administration. Un nouveau texte en allemand et en turc ne demande donc aucun déploiement.
-
-Le back-end est un service .NET 10 en Clean Architecture avec CQRS via MediatR, FluentValidation pour les entrées, JWT et BCrypt pour la connexion et Entity Framework Core sur SQL Server — environ 22 contrôleurs, avec des tests aux niveaux domaine, application et intégration. La newsletter n’est pas un lien mailto mais un vrai parcours : double opt-in avec lien de confirmation, jeton de désinscription dans chaque message, campagnes par langue et envoi par lots, via Azure Communication Services avec SMTP en repli.
-
-Le tout tourne sur un serveur dédié : Docker Compose avec SQL Server, l’API et nginx, des boîtes mail propres pour l’envoi et, à côté, des scripts de sauvegarde et de restauration. Le front est une application React monopage qui attaque la même API.`,
-      features: [
-        'Activités avec filtre par catégorie, recherche et pages de détail',
-        'Cours, partenaires, statuts, dons et formulaire de bénévolat',
-        'Bilingue (DE/TR) — les traductions sont en base, pas dans le code',
-        'Newsletter en double opt-in, jeton de désinscription et campagnes par langue',
-        'Envoi via Azure Communication Services avec SMTP en repli',
-        'Clean Architecture avec CQRS (MediatR) et FluentValidation',
-        'Tests aux niveaux domaine, application et intégration',
-        'Auto-hébergement : Docker Compose avec SQL Server, API et nginx, boîtes mail propres',
-      ],
-    },
     en: {
       subtitle: 'Association platform with CMS, courses and newsletter',
       category: 'Web app / CMS',
@@ -701,28 +421,6 @@ Tamamı kendi sunucusunda çalışıyor: SQL Server, API ve nginx içeren Docker
         'CQRS (MediatR) ve FluentValidation ile Clean Architecture',
         'Alan, uygulama ve entegrasyon düzeyinde testler',
         'Kendi sunucusu: SQL Server, API ve nginx’li Docker Compose, kendi posta kutuları',
-      ],
-    },
-    ku: {
-      subtitle: 'Platforma komeleyê bi CMS, kurs û nûçenameyê',
-      category: 'Sepana webê / CMS',
-      description:
-        'Platform ji bo komeleyeke çandî li Freiburgê: çalakî, kurs, dilxwazî û nûçenameya bi opt-ina ducar. Backenda .NET 10 bi CQRS, frontenda React, du zimanî.',
-      role: 'Pêşvebirê full-stack',
-      long: `Kulturplattform Freiburg e. V. li Freiburgê çalakî, kurs û bernameyên hevdîtinê organîze dike. Platform tiştê ku komele bi rastî dike nîşan dide: çalakî bi kategorî, lêgerîn û rûpelên hûrgilî, bernameyên kursan, hevkar, rêzikname, bexşîn û formek ji bo dilxwazan. Her tiştî desteya rêveber bi xwe diparêze — wergerî jî tê de; werger wek çavkanî di danegehê de ne û di beşa rêveberiyê de têne guhertin. Nivîseke nû bi almanî û tirkî loma ti belavkirinê naxwaze.
-
-Backend karûbarekî .NET 10 e bi Clean Architecture û CQRS bi MediatR: FluentValidation ji bo têketinan, JWT û BCrypt ji bo têketinê, Entity Framework Core li ser SQL Server — nêzîkî 22 controller, û test li asta domain, sepanê û entegrasyonê. Nûçename ne girêdanek mailto ye, lê rêçeke rastîn e: opt-ina ducar bi girêdana erêkirinê, tokena derketinê di her peyamê de, kampanya li gorî zimanan û şandin bi koman, bi Azure Communication Services û SMTP wek paşxan.
-
-Her tişt li ser servereke xwe dixebite: Docker Compose bi SQL Server, API û nginx, qutîkên e-nameyê yên xwe ji bo şandinê, û li kêleka wan skrîptên paşekêş û vegerandinê. Frontend sepanek React a yek-rûpelî ye ku bi heman API re dipeyive.`,
-      features: [
-        'Çalakî bi parzûna kategoriyê, lêgerîn û rûpelên hûrgilî',
-        'Bernameyên kursan, hevkar, rêzikname, bexşîn û forma dilxwaziyê',
-        'Du zimanî (DE/TR) — werger di danegehê de ne, ne di kodê de',
-        'Nûçename bi opt-ina ducar, tokena derketinê û kampanya li gorî zimanan',
-        'Şandin bi Azure Communication Services, bi SMTP wek paşxan',
-        'Clean Architecture bi CQRS (MediatR) û FluentValidation',
-        'Test li asta domain, sepanê û entegrasyonê',
-        'Hilanîna xwe: Docker Compose bi SQL Server, API û nginx, qutîkên e-nameyê yên xwe',
       ],
     },
   },

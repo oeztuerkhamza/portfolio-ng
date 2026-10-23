@@ -553,6 +553,11 @@ $sand: #f0dfb8;
     gap: 4rem;
     align-items: center;
   }
+
+  // Region und Freiburger Stadtteile: zwei Absätze, nicht ein Block.
+  .section-subtitle + .section-subtitle {
+    margin-top: 1rem;
+  }
 }
 
 .town-head {

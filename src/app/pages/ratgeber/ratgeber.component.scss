@@ -1,0 +1,83 @@
+@import "../../../styles/variables";
+
+.rg-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rg-card {
+  display: grid;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.rg-body {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+  padding: 1.25rem 1.4rem 1.5rem;
+}
+
+.rg-meta {
+  margin: 0;
+  font-size: 0.88rem;
+  color: $text-soft;
+}
+
+.rg-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: $brand;
+}
+
+.rg-head { max-width: 820px; }
+
+.rg-prose {
+  margin: 0 auto;
+
+  h2 { margin-top: 2.2rem; }
+}
+
+.rg-lead {
+  font-size: 1.15rem !important;
+  color: $text !important;
+}
+
+.rg-figure {
+  margin: 1.5rem 0 0.5rem;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.rg-links {
+  display: grid;
+  gap: 1rem;
+  max-width: 68ch;
+  margin: 2.5rem auto 0;
+
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .card {
+    display: grid;
+    gap: 0.5rem;
+    align-content: start;
+  }
+}

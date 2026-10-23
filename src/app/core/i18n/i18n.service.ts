@@ -7,7 +7,7 @@ import { PROJECT_CONTENT, ProjectTx } from './project-content';
 import { EXPERIENCE_CONTENT, ExperienceTx } from './experience-content';
 import { formatAmount } from '../data/company.data';
 
-export type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku';
+export type Lang = 'de' | 'en' | 'tr';
 
 export interface LangOption {
   code: Lang;
@@ -17,10 +17,8 @@ export interface LangOption {
 
 export const LANGS: LangOption[] = [
   { code: 'de', label: 'DE', native: 'Deutsch' },
-  { code: 'fr', label: 'FR', native: 'Français' },
   { code: 'en', label: 'EN', native: 'English' },
   { code: 'tr', label: 'TR', native: 'Türkçe' },
-  { code: 'ku', label: 'KU', native: 'Kurdî' },
 ];
 
 export const DEFAULT_LANG: Lang = 'de';
@@ -28,7 +26,7 @@ export const LANG_CODES = LANGS.map((l) => l.code);
 
 /**
  * URL-driven i18n. The active language is the first path segment
- * (`/de/...`, `/fr/...`). Because the locale lives in the URL, each language
+ * (`/de/...`, `/en/...`). Because the locale lives in the URL, each language
  * is a distinct, server-rendered/prerendered page — fully crawlable per locale.
  *
  * On the server a fresh instance is created per request, so reading the URL at

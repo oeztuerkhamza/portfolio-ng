@@ -97,9 +97,6 @@ export class LeistungenComponent implements OnInit {
       description: this.i18n.t('seo.leist.desc'),
       path: '/leistungen',
       keywords: [
-        'Webseite erstellen lassen Freiburg',
-        'Homepage erstellen Freiburg',
-        'Webdesign Freiburg',
         'Website Relaunch Freiburg',
         'Homepage Update Festpreis',
         'Google Unternehmensprofil einrichten',

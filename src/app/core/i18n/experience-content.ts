@@ -10,18 +10,6 @@ export interface ExperienceTx {
 
 export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceTx>>> = {
   1: {
-    fr: {
-      title: 'Développeur full-stack & informaticien (IHK)',
-      description:
-        'Responsabilité de bout en bout sur des API C#/.NET 10 et des front-ends Angular. Migration d’un ERP de bureau hérité vers une solution web via Clean Architecture. Mise en place de l’infrastructure cloud Azure et des pipelines CI/CD.',
-      highlights: [
-        'Migration de l’ERP de bureau hérité vers une app web',
-        'Construction de l’infrastructure cloud Azure',
-        'Pipelines CI/CD : temps de déploiement réduit de 40 %',
-        'Clean Architecture avec .NET 10 & Angular 19',
-        'Examen IHK d’informaticien réussi',
-      ],
-    },
     en: {
       title: 'Full-Stack Developer & IT Specialist (IHK)',
       description:
@@ -46,26 +34,8 @@ export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceT
         'IHK Bilişim Uzmanı sınavı geçildi',
       ],
     },
-    ku: {
-      title: 'Pêşvebirê Full-Stack & Pisporê IT (IHK)',
-      description:
-        'Berpirsyariya ji destpêkê heta dawiyê ji bo API yên C#/.NET 10 û front-endên Angular. Veguhastina ERP ya kevn a sermasîyê bo çareseriyek webî bi Clean Architecture. Avakirina binesaziya ewr a Azure û xetên CI/CD.',
-      highlights: [
-        'ERP ya kevn a sermasîyê bo sepana webê hat veguhastin',
-        'Binesaziya ewr a Azure hat avakirin',
-        'Xetên CI/CD: dema deployê %40 kurt bû',
-        'Clean Architecture bi .NET 10 & Angular 19',
-        'Îmtîhana IHK ya pisporê IT hat derbaskirin',
-      ],
-    },
   },
   2: {
-    fr: {
-      title: 'Certificat : Data Analytics',
-      description:
-        'Formation complète en analyse de données, Python et technologies cloud, en préparation au traitement de données et au développement logiciel modernes.',
-      highlights: ['Fondamentaux Python & data science', 'SQL & gestion de bases de données', 'Bases du machine learning', 'Cloud computing avec AWS'],
-    },
     en: {
       title: 'Certificate: Data Analytics',
       description:
@@ -78,20 +48,8 @@ export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceT
         'Modern veri işleme ve yazılım geliştirmeye hazırlık için veri analizi, Python ve bulut teknolojilerinde kapsamlı eğitim.',
       highlights: ['Python & veri bilimi temelleri', 'SQL & veritabanı yönetimi', 'Makine öğrenmesi temelleri', 'AWS ile bulut bilişim'],
     },
-    ku: {
-      title: 'Sertîfîka: Analîtîka Daneyan',
-      description:
-        'Perwerdehiyek berfireh di analîza daneyan, Python û teknolojiyên ewr de, ji bo amadekirina hilberandina daneyan û pêşxistina nermalavê ya nûjen.',
-      highlights: ['Bingehên Python & zanista daneyan', 'SQL & rêveberiya danegehan', 'Bingehên fêrbûna makîneyê', 'Hesabkirina ewr bi AWS'],
-    },
   },
   3: {
-    fr: {
-      title: 'Génie industriel',
-      description:
-        'Études dans l’une des universités techniques les plus réputées, axées sur la résolution interdisciplinaire de problèmes, l’efficacité des processus et l’architecture des systèmes.',
-      highlights: ['Top 3 des universités techniques de Turquie', 'Résolution de problèmes interdisciplinaire', 'Recherche opérationnelle & optimisation', 'Planification de production & architecture système'],
-    },
     en: {
       title: 'Industrial Engineering',
       description:
@@ -104,20 +62,8 @@ export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceT
         'Disiplinler arası problem çözme, süreç verimliliği ve sistem mimarisine odaklanan, en saygın teknik üniversitelerden birinde eğitim.',
       highlights: ['Türkiye’nin ilk 3 teknik üniversitesi', 'Disiplinler arası problem çözme', 'Yöneylem araştırması & optimizasyon', 'Üretim planlama & sistem mimarisi'],
     },
-    ku: {
-      title: 'Endezyariya Pîşesaziyê',
-      description:
-        'Xwendin li yek ji zanîngehên teknîkî yên herî navdar, bi balkişandina li ser çareserkirina pirsgirêkan a navdîsîplînî, kêrhatîbûna pêvajoyê û mîmariya pergalan.',
-      highlights: ['Di nav 3 zanîngehên teknîkî yên herî baş ên Tirkiyê de', 'Çareserkirina pirsgirêkan a navdîsîplînî', 'Lêkolîna operasyonan & xweşkirin', 'Plansaziya hilberînê & mîmariya pergalê'],
-    },
   },
   5: {
-    fr: {
-      title: 'Le début de mon parcours',
-      description:
-        'Tout a commencé ici. Ma curiosité constante et mon envie de comprendre le fonctionnement des choses ont très tôt posé les bases de mon approche analytique.',
-      highlights: ['Curiosité & pensée analytique', 'Bases de la compréhension technique'],
-    },
     en: {
       title: 'The beginning of my journey',
       description:
@@ -129,12 +75,6 @@ export const EXPERIENCE_CONTENT: Record<number, Partial<Record<Lang, ExperienceT
       description:
         'Her şey burada başladı. Sürekli merakım ve işlerin nasıl yürüdüğünü anlama isteğim, analitik düşünce yapımın temelini erken yaşta attı.',
       highlights: ['Merak & analitik düşünme', 'Teknik anlayışın temeli'],
-    },
-    ku: {
-      title: 'Destpêka rêwîtiya min',
-      description:
-        'Her tişt li vir dest pê kir. Meraqa min a domdar û daxwaza fêmkirina ka tişt çawa dixebitin ji zû ve bingeha ramana min a analîtîk danî.',
-      highlights: ['Meraq & ramana analîtîk', 'Bingeha têgihiştina teknîkî'],
     },
   },
 };

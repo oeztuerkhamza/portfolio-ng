@@ -5,6 +5,7 @@ import { breadcrumbSchema } from '../../core/seo/structured-data';
 import { COMPANY, PRODUCTS, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { MAINTENANCE_PRICE_FROM } from '../../core/data/maintenance.data';
 import { ProductFocus, TOWNS, Town, townBySlug } from '../../core/data/towns.data';
+import { RATGEBER } from '../../core/data/ratgeber.data';
 import { IconComponent } from '../../shared/icon/icon.component';
 
 interface Card {
@@ -114,6 +115,21 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
         </div>
       </section>
 
+      @for (s of stories; track s.slug) {
+        <section class="section section-white">
+          <div class="container town-local">
+            <div>
+              <p class="section-label">Aus {{ t.short }}</p>
+              <h2 class="section-title">{{ s.title }}</h2>
+            </div>
+            <div>
+              <p class="town-text">{{ s.lead }}</p>
+              <p><a [routerLink]="'/de/ratgeber/' + s.slug" class="btn btn-secondary">Fallstudie lesen <app-icon name="arrow" /></a></p>
+            </div>
+          </div>
+        </section>
+      }
+
       <section class="section section-white">
         <div class="container faq-layout">
           <header class="sec-head">
@@ -180,6 +196,8 @@ export class TownComponent implements OnInit {
     price: PRODUCT_META[id].price(),
     text: this.town!.angles[id] ?? '',
   }));
+  /** Ratgeber-Artikel aus diesem Ort — echte Arbeit vor Ort statt Vorlagentext. */
+  readonly stories = RATGEBER.filter((a) => a.town === this.town?.slug);
   readonly near: Town[] = (this.town?.near ?? []).map((s) => townBySlug(s)!).filter(Boolean);
 
   ngOnInit(): void {
