@@ -62,8 +62,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly references = ['zerin-gold', 'bikehaus-freiburg', 'praxis-gueltekin', 'karaarslan-bike', 'dj-veys']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
-  /** Drei echte Seiten als „Wand“ im Kopf der Startseite — jede führt zur Fallstudie. */
-  readonly wall = ['zerin-gold', 'praxis-gueltekin', 'bikehaus-freiburg']
+  /**
+   * Fünf echte Seiten als Collage im Kopf der Startseite — jede führt zur
+   * Fallstudie. Die Farbe der Startseite kommt aus diesen Bildern; die
+   * Oberfläche drumherum bleibt unbunt.
+   */
+  readonly wall = ['zerin-gold', 'praxis-gueltekin', 'bikehaus-freiburg', 'karaarslan-bike', 'dj-veys']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
   readonly updates = UPDATE_PACKAGES;

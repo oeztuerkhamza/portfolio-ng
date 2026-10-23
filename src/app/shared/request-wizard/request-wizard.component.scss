@@ -233,7 +233,7 @@
     min-height: 44px;
     padding: 0.5rem 1rem;
     border: 1px solid $rule-strong;
-    border-radius: 999px;
+    border-radius: $radius;
     background: $surface-2;
     font-weight: 500;
     cursor: pointer;

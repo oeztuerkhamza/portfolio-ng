@@ -1,5 +1,5 @@
 <!-- ────────────────────────────────────────────── -->
-<!-- HERO: dunkle Bühne, echte Kundenseiten als Wand   -->
+<!-- HERO: helle Wand, echte Kundenseiten als Collage -->
 <!-- ────────────────────────────────────────────── -->
 <section class="hero">
   <div class="container">
@@ -13,11 +13,11 @@
         <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
         <div class="page-hero-actions">
-          <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+          <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
             {{ i18n.t('cta.consult') }}
             <app-icon name="arrow" />
           </a>
-          <a [routerLink]="'/projects' | localize" class="btn btn-outline-light btn-large">
+          <a [routerLink]="'/projects' | localize" class="btn btn-secondary btn-large">
             {{ i18n.t('home.hero.cta2') }}
           </a>
         </div>
@@ -32,10 +32,6 @@
       <div class="hero-wall">
         @for (p of wall; track p.slug; let i = $index) {
           <a class="wall-frame" [class]="'wall-frame wf-' + (i + 1)" [routerLink]="['/projects', p.slug] | localize" [attr.aria-label]="p.title">
-            <span class="wall-bar" aria-hidden="true">
-              <i></i><i></i><i></i>
-              <span class="wall-url">{{ host(p) }}</span>
-            </span>
             <img
               [src]="p.image"
               width="1440"

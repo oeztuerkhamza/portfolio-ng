@@ -40,15 +40,14 @@
 }
 
 // ══════════════════════════════════════════════
-// HERO — dunkle Bühne im hellen Seitengrund
+// HERO — Galeriewand
 // ══════════════════════════════════════════════
-// Die Navigation bleibt über dem hellen Papier lesbar; die Bühne ist ein
-// eingelassenes Feld, kein Vollbild. Das eine Besondere: drei echte
-// Kundenseiten stehen als Wand darin — Beweis statt Behauptung.
-$sand: #f0dfb8;
+// Links eine große, eng gesetzte Aussage, rechts eine Collage aus echten
+// Kundenseiten in ungleichen Größen, die sich überlappen. Die Oberfläche
+// bleibt unbunt; die Farbe kommt aus den Projekten — Beweis statt Behauptung.
 
 .hero {
-  padding: calc(72px + clamp(0.75rem, 2.5vw, 1.75rem)) 0 clamp(2.5rem, 6vw, 4rem);
+  padding: calc(72px + clamp(1.5rem, 4vw, 3rem)) 0 clamp(3rem, 7vw, 5rem);
   background: $surface;
 }
 
@@ -56,18 +55,10 @@ $sand: #f0dfb8;
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(2.25rem, 5vw, 3.5rem);
-  padding: clamp(1.5rem, 5vw, 4rem);
-  border-radius: 28px;
-  color: #fff;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse 60% 80% at 92% 6%, rgba(120, 176, 245, 0.34), transparent 62%),
-    radial-gradient(ellipse 55% 60% at 0% 100%, rgba(14, 40, 84, 0.45), transparent 65%),
-    linear-gradient(155deg, #2263b4 0%, #1a4b8c 48%, #153f78 100%);
+  gap: clamp(2.5rem, 5vw, 3.5rem);
 
   @media (min-width: $bp-desktop) {
-    grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
     align-items: center;
     gap: clamp(2rem, 4vw, 4rem);
   }
@@ -76,56 +67,52 @@ $sand: #f0dfb8;
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.45rem 0.9rem 0.45rem 0.7rem;
-  margin-bottom: 1.4rem;
-  border: 1px solid rgba(255, 255, 255, 0.28);
-  border-radius: $radius-sm;
-  background: rgba(255, 255, 255, 0.1);
-  color: #e3ecf9;
-  font-size: 0.8rem;
+  gap: 0.45rem;
+  margin-bottom: 1.5rem;
+  color: $text-dim;
+  font-size: 0.86rem;
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.4;
 
   app-icon {
-    color: $sand;
+    color: $text;
   }
 }
 
 .hero-title {
-  font-size: clamp(2.3rem, 6.4vw, 3.4rem);
-  font-weight: 340;
-  line-height: 1.02;
-  letter-spacing: -0.03em;
-  margin-bottom: 1.25rem;
-  color: #fff;
+  font-size: clamp(2.75rem, 7.2vw, 5rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: $tracking-display;
+  margin-bottom: 1.5rem;
+  color: $text;
 
-  // Zweite Zeile als Ganzes abgesetzt, nicht ein einzelnes Wort.
+  // Zweite Zeile als Ganzes abgesetzt: dieselbe Schrift, eine Tonstufe heller.
   ::ng-deep em {
     display: block;
     font-style: normal;
-    color: #c4d9f6;
+    color: $text-dim;
   }
 }
 
 .hero-lede {
   font-size: clamp(1rem, 2.5vw, 1.12rem);
-  line-height: 1.7;
-  color: #dbe6f6;
-  max-width: 52ch;
+  line-height: 1.65;
+  color: $text-dim;
+  max-width: 48ch;
 }
 
 .hero-copy .page-hero-actions {
-  margin-top: 1.75rem;
+  margin-top: 2rem;
 }
 
 .hero-facts {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.6rem 1.25rem;
-  margin: 1.9rem 0 0;
+  margin: 2rem 0 0;
   padding: 1.4rem 0 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid $rule;
   list-style: none;
   max-width: 34rem;
 
@@ -133,37 +120,42 @@ $sand: #f0dfb8;
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.4;
     font-weight: 500;
-    color: #eef3fb;
+    color: $text-soft;
   }
 
   app-icon {
     flex: none;
     margin-top: 0.1rem;
-    color: $sand;
+    color: $text;
   }
 }
 
-// Die Wand: drei Browserfenster, leicht gestaffelt.
+// Die Collage. Mobil zwei Kacheln, ab Desktop fünf, frei übereinander.
 .hero-wall {
   position: relative;
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 0.6rem;
+  align-items: start;
 
   @media (min-width: $bp-desktop) {
-    min-height: 27rem;
+    display: block;
+    min-height: 34rem;
   }
 }
 
 .wall-frame {
   display: block;
   overflow: hidden;
-  border-radius: 14px;
-  background: #fff;
+  border-radius: $radius-sm;
+  background: $surface-2;
   color: inherit;
-  box-shadow:
-    0 30px 60px -22px rgba(0, 0, 0, 0.6),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
+  // Ein Rand in Wandfarbe trennt die Kacheln, wo sie sich überlappen —
+  // wie ausgeschnittene Abzüge, nicht wie schwebende Fenster.
+  box-shadow: 0 0 0 4px $surface;
   transition: transform $transition-normal;
 
   img {
@@ -174,45 +166,78 @@ $sand: #f0dfb8;
     object-position: top center;
   }
 
-  // Mobil bleibt ein Fenster; Wand erst ab Desktop.
-  &.wf-2,
-  &.wf-3 {
+  &.wf-2 {
+    margin-top: 2.5rem;
+    border-radius: $radius;
+  }
+
+  &.wf-3,
+  &.wf-4,
+  &.wf-5 {
     display: none;
   }
 
   @media (min-width: $bp-desktop) {
     position: absolute;
+    margin: 0;
     animation: wall-in 0.9s $ease-editorial backwards;
 
     &.wf-1 {
       left: 0;
-      top: 9%;
-      width: 66%;
+      top: 8%;
+      width: 64%;
       z-index: 2;
-      animation-delay: 0.1s;
+      animation-delay: 0.05s;
     }
 
     &.wf-2 {
-      display: block;
+      margin: 0;
       right: 0;
       top: 0;
-      width: 48%;
+      width: 44%;
       z-index: 1;
-      animation-delay: 0.3s;
+      animation-delay: 0.2s;
+
+      img { aspect-ratio: 4 / 3; }
     }
 
     &.wf-3 {
       display: block;
-      right: 4%;
-      bottom: 3%;
-      width: 54%;
+      right: 3%;
+      top: 44%;
+      width: 52%;
       z-index: 3;
+      animation-delay: 0.35s;
+    }
+
+    &.wf-4 {
+      display: block;
+      left: 6%;
+      bottom: 0;
+      width: 36%;
+      z-index: 4;
+      border-radius: $radius;
       animation-delay: 0.5s;
+
+      img { aspect-ratio: 1 / 1; }
+    }
+
+    &.wf-5 {
+      display: block;
+      right: 0;
+      bottom: -2%;
+      width: 26%;
+      z-index: 4;
+      border-radius: $radius;
+      animation-delay: 0.65s;
+
+      img { aspect-ratio: 3 / 4; }
     }
 
     &:hover,
     &:focus-visible {
       transform: translateY(-6px);
+      z-index: 5;
     }
   }
 }
@@ -231,56 +256,29 @@ $sand: #f0dfb8;
   }
 }
 
-.wall-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.32rem;
-  padding: 0.5rem 0.75rem;
-  background: #eef2f8;
-
-  i {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #c3ccda;
-  }
-}
-
-.wall-url {
-  margin-left: 0.55rem;
-  padding: 0.1rem 0.7rem;
-  border-radius: 999px;
-  background: #fff;
-  color: $text-mute;
-  font-size: 0.68rem;
-  line-height: 1.5;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .hero-chip {
+  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   gap: 0.7rem;
-  margin-top: 1rem;
   padding: 0.6rem 0.9rem 0.6rem 0.6rem;
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.96);
-  box-shadow: $shadow-md;
+  border-radius: $radius;
+  background: $surface-2;
   line-height: 1.25;
   color: $text;
 
   strong {
     display: block;
     font-size: 0.86rem;
-    font-weight: 650;
+    font-weight: 700;
+    letter-spacing: -0.02em;
   }
 
   small {
     display: block;
     font-size: 0.75rem;
     color: $text-mute;
+    white-space: nowrap;
   }
 
   .chip-icon {
@@ -288,7 +286,7 @@ $sand: #f0dfb8;
     place-items: center;
     width: 38px;
     height: 38px;
-    border-radius: 10px;
+    border-radius: $radius-sm;
     background: $brand;
     color: #fff;
     flex: none;
@@ -296,10 +294,10 @@ $sand: #f0dfb8;
 
   @media (min-width: $bp-desktop) {
     position: absolute;
-    left: 2%;
-    bottom: 0;
-    z-index: 4;
-    margin-top: 0;
+    left: 46%;
+    bottom: 4%;
+    z-index: 6;
+    box-shadow: 0 0 0 4px $surface;
   }
 }
 
@@ -355,8 +353,7 @@ $sand: #f0dfb8;
 
   &.featured {
     background: $surface-2;
-    border-color: $rule-brand;
-    box-shadow: 0 0 0 1px $rule-brand, $shadow-md;
+    border-color: $brand;
   }
 
   // Tablet: Bild links, Text rechts — sonst stünde die dritte Karte allein.
@@ -387,10 +384,10 @@ $sand: #f0dfb8;
   position: absolute;
   top: 0.9rem;
   left: 0.9rem;
-  padding: 0.3rem 0.75rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.95);
-  color: $brand-deep;
+  padding: 0.3rem 0.65rem;
+  border-radius: $radius-sm;
+  background: $surface-2;
+  color: $text;
   font-size: 0.74rem;
   font-weight: 650;
   letter-spacing: 0.02em;
@@ -411,7 +408,8 @@ $sand: #f0dfb8;
 
 .prod-title {
   font-size: clamp(1.35rem, 3vw, 1.55rem);
-  font-weight: 450;
+  font-weight: 650;
+  letter-spacing: -0.03em;
   margin-bottom: 0.6rem;
 }
 
@@ -442,7 +440,8 @@ $sand: #f0dfb8;
 .prod-price {
   font-family: $font-display;
   font-size: 1.4rem;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: -0.03em;
   color: $brand;
   white-space: nowrap;
 }
@@ -633,7 +632,9 @@ $sand: #f0dfb8;
   margin-top: clamp(2rem, 5vw, 3rem);
   padding: clamp(1.5rem, 4vw, 2.5rem);
   border-radius: $radius-lg;
-  background: linear-gradient(150deg, #1f589f 0%, #174580 100%);
+  // Eines der wenigen dunklen Bänder der Seite: Kontrast durch Fläche,
+  // nicht durch Farbe.
+  background: $surface-ink;
   color: #fff;
 
   @media (min-width: $bp-desktop) {
@@ -645,17 +646,22 @@ $sand: #f0dfb8;
 
 .update-title {
   font-family: $font-display;
-  font-size: clamp(1.5rem, 3.4vw, 2rem);
-  font-weight: 380;
-  line-height: 1.15;
-  letter-spacing: -0.02em;
+  font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: $tracking-display;
   margin: 0 0 0.6rem;
   color: #fff;
+
+  ::ng-deep em {
+    font-style: normal;
+    color: #a3a3a3;
+  }
 }
 
 .update-sub {
   margin: 0;
-  color: #dbe6f6;
+  color: #bdbdbd;
   font-size: 0.95rem;
   line-height: 1.6;
   max-width: 44ch;
@@ -678,9 +684,9 @@ $sand: #f0dfb8;
   gap: 0.15rem;
   height: 100%;
   padding: 1rem 1.1rem 1.1rem;
-  border: 1px solid rgba(255, 255, 255, 0.26);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: $radius;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.05);
   color: #fff;
   transition:
     background $transition-fast,
@@ -694,22 +700,31 @@ $sand: #f0dfb8;
   }
 
   &.featured {
-    border-color: $sand;
+    background: #fff;
+    border-color: #fff;
+    color: $text;
+
+    .update-name,
+    .update-days,
+    .update-price {
+      color: $text;
+    }
   }
 }
 
 .update-name {
   font-size: 0.82rem;
   font-weight: 600;
-  color: #e3ecf9;
+  color: #d6d6d6;
 }
 
 .update-price {
   font-family: $font-display;
   font-size: 2.1rem;
-  font-weight: 400;
+  font-weight: 600;
+  letter-spacing: $tracking-display;
   line-height: 1.1;
-  color: $sand;
+  color: #fff;
 }
 
 .update-days {
@@ -718,7 +733,7 @@ $sand: #f0dfb8;
   gap: 0.35rem;
   margin-top: 0.35rem;
   font-size: 0.8rem;
-  color: #eef3fb;
+  color: #d6d6d6;
 }
 
 .update-all {
@@ -735,7 +750,7 @@ $sand: #f0dfb8;
   }
 
   &:hover {
-    color: $sand;
+    color: #bdbdbd;
   }
 }
 
@@ -774,9 +789,9 @@ $sand: #f0dfb8;
   position: absolute;
   left: 0.75rem;
   bottom: 0.75rem;
-  padding: 0.25rem 0.7rem;
-  border-radius: 999px;
-  background: rgba(14, 26, 43, 0.82);
+  padding: 0.25rem 0.6rem;
+  border-radius: $radius-sm;
+  background: rgba(0, 0, 0, 0.8);
   color: #fff;
   font-size: 0.72rem;
   font-weight: 500;
