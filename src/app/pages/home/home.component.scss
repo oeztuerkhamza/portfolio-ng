@@ -278,7 +278,11 @@
     display: block;
     font-size: 0.75rem;
     color: $text-mute;
-    white-space: nowrap;
+
+    // Nur am Desktop in einer Zeile — mobil darf der Preis umbrechen.
+    @media (min-width: $bp-desktop) {
+      white-space: nowrap;
+    }
   }
 
   .chip-icon {

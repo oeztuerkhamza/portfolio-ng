@@ -666,8 +666,14 @@ a.card,
 
   .cta-direct {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    // minmax(0, …), sonst schiebt „WhatsApp" die Box auf kleinen Handys
+    // über den Rand. Unter 360 px untereinander.
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
+
+    @media (max-width: 359.98px) {
+      grid-template-columns: minmax(0, 1fr);
+    }
   }
 }
 
