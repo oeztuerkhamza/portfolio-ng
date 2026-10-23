@@ -73,6 +73,12 @@
 }
 
 .rv-track {
+  // Bezugsrahmen für absolut positionierte Kinder (der Vorlesetext „4 von 5
+  // Sternen" ist .visually-hidden = position: absolute). Ohne ihn hängt sich
+  // dieser Text an einen Vorfahren außerhalb der Liste, wird nicht mit
+  // abgeschnitten und macht die Seite hinter der letzten Karte breiter —
+  // auf dem iPhone ließ sich die ganze Seite dadurch seitwärts schieben.
+  position: relative;
   list-style: none;
   margin: 2rem 0 0;
   padding: 0 0 1rem;

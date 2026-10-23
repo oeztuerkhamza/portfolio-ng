@@ -16,6 +16,10 @@ html {
   scroll-behavior: smooth;
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  // Zweite Sicherung gegen seitliches Verschieben auf iOS: Safari lässt die
+  // Seite trotz overflow-x: hidden auf body wackeln, wenn etwas übersteht.
+  // clip statt hidden, damit kein Scroll-Container entsteht (sticky bleibt).
+  overflow-x: clip;
 }
 
 body {
@@ -26,7 +30,8 @@ body {
   line-height: 1.7;
   font-weight: 400;
   font-feature-settings: "ss01", "cv11";
-  overflow-x: hidden;
+  overflow-x: hidden; // Rückfall für Browser ohne clip
+  overflow-x: clip;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -59,6 +64,20 @@ h2 {
 h3 {
   font-size: clamp(1.4rem, 2.5vw, 1.75rem);
   letter-spacing: -0.025em;
+}
+
+// Deutsche Wörter wie „zusammenarbeiten" sind in großen Überschriften auf
+// schmalen Handys breiter als die Spalte. Dort darf getrennt werden — aber
+// nur lange Wörter (ab 12 Zeichen, mindestens 5 vor und nach dem Strich).
+@media (max-width: 480px) {
+  h1, h2, h3, .section-title, .cta-title {
+    -webkit-hyphens: auto; // Safari braucht das Präfix
+    hyphens: auto;
+    hyphenate-limit-chars: 12 5 5;
+    // anywhere statt break-word: nur so schrumpft auch die Mindestbreite,
+    // die eine Grid-Spalte für die Überschrift reserviert.
+    overflow-wrap: anywhere;
+  }
 }
 
 h4 {
