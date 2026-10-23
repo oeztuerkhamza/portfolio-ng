@@ -1,7 +1,7 @@
 <!-- ────────────────────────────────────────────── -->
-<!-- HERO: dunkle Bühne, echte Kundenseiten als Wand   -->
+<!-- HERO: helle Wand, echte Kundenseiten als Collage -->
 <!-- ────────────────────────────────────────────── -->
-<section class="hero">
+<section class="hero" ivScroll="leave">
   <div class="container">
     <div class="hero-stage">
       <div class="hero-copy" @fadeIn>
@@ -13,11 +13,11 @@
         <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
         <div class="page-hero-actions">
-          <a [routerLink]="'/contact' | localize" class="btn btn-light btn-large">
+          <a [routerLink]="'/contact' | localize" class="btn btn-primary btn-large">
             {{ i18n.t('cta.consult') }}
             <app-icon name="arrow" />
           </a>
-          <a [routerLink]="'/projects' | localize" class="btn btn-outline-light btn-large">
+          <a [routerLink]="'/projects' | localize" class="btn btn-secondary btn-large">
             {{ i18n.t('home.hero.cta2') }}
           </a>
         </div>
@@ -32,10 +32,6 @@
       <div class="hero-wall">
         @for (p of wall; track p.slug; let i = $index) {
           <a class="wall-frame" [class]="'wall-frame wf-' + (i + 1)" [routerLink]="['/projects', p.slug] | localize" [attr.aria-label]="p.title">
-            <span class="wall-bar" aria-hidden="true">
-              <i></i><i></i><i></i>
-              <span class="wall-url">{{ host(p) }}</span>
-            </span>
             <img
               [src]="p.image"
               width="1440"
@@ -146,8 +142,8 @@
 <!-- ────────────────────────────────────────────── -->
 <!-- REFERENZEN                                     -->
 <!-- ────────────────────────────────────────────── -->
-<section class="section" id="refs" data-reveal [class.in]="shown('refs')">
-  <div class="container">
+<section class="section" id="refs" data-reveal [class.in]="shown('refs')" [class.h-scroll]="hscroll" ivScroll="pin" [style.--count]="references.length">
+  <div class="container refs-stage">
     <div class="sec-head sec-head-row">
       <div>
         <p class="section-label">{{ i18n.t('home.ref.label') }}</p>
@@ -221,7 +217,11 @@
          als § 5 der AGB für Projektarbeit deckt. -->
     <p class="home-promise">
       <strong>{{ i18n.t('about.pr1.t') }}</strong>
-      <span>{{ i18n.t('about.pr1.d') }}</span>
+      <span class="promise-words" ivScroll="enter" [style.--n]="promiseWords().length">
+        @for (w of promiseWords(); track $index) {
+          <span class="w" [style.--i]="$index">{{ w }} </span>
+        }
+      </span>
     </p>
 
     <ul class="stats home-stats">
@@ -234,6 +234,23 @@
     </ul>
   </div>
 </section>
+
+
+<!-- ────────────────────────────────────────────── -->
+<!-- LAUFBAND: Branchen und Orte, laufen mit dem Scrollen -->
+<!-- ────────────────────────────────────────────── -->
+<div class="ticker" ivScroll="through" aria-hidden="true">
+  <p class="ticker-row">
+    @for (t of tickerTrades(); track $index) {
+      <span>{{ t }}</span><span class="ticker-sep">/</span>
+    }
+  </p>
+  <p class="ticker-row ticker-row-rev">
+    @for (t of tickerTowns; track $index) {
+      <span>{{ t }}</span><span class="ticker-sep">/</span>
+    }
+  </p>
+</div>
 
 
 <!-- ────────────────────────────────────────────── -->

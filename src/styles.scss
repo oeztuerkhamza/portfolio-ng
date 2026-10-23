@@ -31,34 +31,34 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-// --- Headings — Fraunces Editorial ---
+// --- Headings — Inter, groß und eng ---
+// Große Stufen mit -0,04 em, damit sie wie Beschriftungen wirken; kleine
+// Stufen lockerer, sonst kleben die Buchstaben.
 h1, h2, h3, h4, h5, h6 {
   font-family: $font-display;
   color: $text;
-  line-height: 1.05;
-  font-weight: 400;
+  line-height: 1.1;
+  font-weight: 600;
   letter-spacing: -0.02em;
-  font-feature-settings: "ss01", "lnum";
+  font-feature-settings: "ss01", "cv11";
 }
 
 h1 {
-  font-size: clamp(2.75rem, 7vw, 6rem);
-  font-weight: 300;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
-}
-
-h2 {
-  font-size: clamp(2rem, 4.5vw, 3.5rem);
-  font-weight: 300;
-  letter-spacing: -0.025em;
+  font-size: clamp(2.75rem, 7vw, 5rem);
+  letter-spacing: $tracking-display;
   line-height: 1;
 }
 
+h2 {
+  font-size: clamp(2rem, 4.5vw, 3rem);
+  font-weight: 700;
+  letter-spacing: $tracking-display;
+  line-height: 1.1;
+}
+
 h3 {
-  font-size: clamp(1.5rem, 2.5vw, 2rem);
-  font-weight: 400;
-  letter-spacing: -0.015em;
+  font-size: clamp(1.4rem, 2.5vw, 1.75rem);
+  letter-spacing: -0.025em;
 }
 
 h4 {
@@ -75,6 +75,14 @@ p {
 em, .italic {
   font-style: italic;
   color: $text;
+}
+
+// In Überschriften ist <em> kein Kursiv, sondern die zweite Tonstufe:
+// dieselbe Schrift in Grau statt in Tinte.
+h1, h2, h3, .section-title, .cta-title {
+  em {
+    font-style: normal;
+  }
 }
 
 a {
@@ -135,8 +143,9 @@ button {
 
   &::before {
     content: "";
-    width: 24px;
-    height: 1px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
     background: $brand;
   }
 }
@@ -154,17 +163,16 @@ button {
 
 .section-title {
   font-family: $font-display;
-  font-size: clamp(2rem, 5.2vw, 3.3rem);
-  font-weight: 350;
-  letter-spacing: -0.025em;
-  line-height: 1.06;
+  font-size: clamp(2rem, 5.2vw, 3rem);
+  font-weight: 700;
+  letter-spacing: $tracking-display;
+  line-height: 1.1;
   color: $text;
   margin-bottom: 1rem;
 
   em {
-    font-style: italic;
-    color: $brand;
-    font-weight: 300;
+    font-style: normal;
+    color: $text-dim;
   }
 }
 
@@ -183,8 +191,7 @@ button {
 }
 
 .accent-dot {
-  color: $brand;
-  font-style: italic;
+  color: $text-dim;
   font-family: $font-display;
 }
 
@@ -206,8 +213,9 @@ button {
 }
 
 // --- Buttons ---
-// Firmenauftritt: klare, gut tippbare Flächen (min. 48 px hoch), keine
-// Versalien. Primär ist das Markenblau, sekundär eine helle Fläche.
+// Klare, gut tippbare Flächen (min. 48 px hoch), 8 px Radius, keine Pillen.
+// Primär Tinte mit weißer Schrift, sekundär weiß mit Tintenrand. Beim Hover
+// hebt sich der Knopf mit dem einen Schatten der Seite.
 .btn {
   display: inline-flex;
   align-items: center;
@@ -216,12 +224,12 @@ button {
   padding: 13px 22px;
   font-family: $font-body;
   font-weight: 600;
-  font-size: 0.95rem;
-  line-height: 1.2;
-  letter-spacing: 0;
+  font-size: 1rem;
+  line-height: 1.4;
+  letter-spacing: -0.04em;
   text-align: center;
   border: 1px solid transparent;
-  border-radius: 12px;
+  border-radius: $radius;
   cursor: pointer;
   transition:
     background $transition-fast,
@@ -251,23 +259,23 @@ button {
     background: $brand;
     color: #fff;
     border-color: $brand;
-    box-shadow: 0 1px 2px rgba(18, 55, 106, 0.2), 0 6px 16px -6px rgba(18, 55, 106, 0.45);
 
     &:hover {
       background: $brand-deep;
       border-color: $brand-deep;
       color: #fff;
+      box-shadow: $shadow-md;
     }
   }
 
   &-secondary {
     background: $surface-2;
-    color: $text;
-    border: 1px solid $rule-strong;
+    color: $text-soft;
+    border: 1px solid $brand;
 
     &:hover {
-      border-color: $brand;
-      color: $brand;
+      color: $text;
+      box-shadow: $shadow-md;
     }
   }
 
@@ -285,24 +293,24 @@ button {
   // Auf dunklem Grund (Abschluss-CTA)
   &-light {
     background: #fff;
-    color: $brand-deep;
+    color: $text-soft;
     border-color: #fff;
 
     &:hover {
-      background: $surface-3;
-      border-color: $surface-3;
-      color: $brand-deep;
+      background: $surface;
+      border-color: $surface;
+      color: $text;
     }
   }
 
   &-outline-light {
-    background: rgba(255, 255, 255, 0.06);
+    background: transparent;
     color: #fff;
-    border-color: rgba(255, 255, 255, 0.35);
+    border-color: rgba(255, 255, 255, 0.4);
 
     &:hover {
-      background: rgba(255, 255, 255, 0.14);
-      border-color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #fff;
       color: #fff;
     }
   }
@@ -323,8 +331,8 @@ button {
   }
 
   &-large {
-    padding: 15px 26px;
-    font-size: 1rem;
+    padding: 14px 26px;
+    font-size: 1.02rem;
     min-height: 54px;
   }
 
@@ -362,9 +370,9 @@ button {
   background: $surface;
 }
 ::-webkit-scrollbar-thumb {
-  background: $surface-3;
+  background: #c8c8c8;
   &:hover {
-    background: $brand-deep;
+    background: $text-dim;
   }
 }
 

@@ -3,6 +3,7 @@ import {
   OnInit,
   OnDestroy,
   signal,
+  computed,
   AfterViewInit,
   PLATFORM_ID,
   inject,
@@ -33,11 +34,14 @@ import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
 import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
+// Dieselbe Scroll-Mechanik wie in den Einladungen: --p (0…1) am Element,
+// die Bewegung steht im CSS. Ohne Skript bleibt die Seite im Endzustand.
+import { ScrollFxDirective } from '../../einladung/scroll-fx.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent, ScrollFxDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],
@@ -62,8 +66,12 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
   readonly references = ['zerin-gold', 'bikehaus-freiburg', 'praxis-gueltekin', 'karaarslan-bike', 'dj-veys']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
-  /** Drei echte Seiten als „Wand“ im Kopf der Startseite — jede führt zur Fallstudie. */
-  readonly wall = ['zerin-gold', 'praxis-gueltekin', 'bikehaus-freiburg']
+  /**
+   * Fünf echte Seiten als Collage im Kopf der Startseite — jede führt zur
+   * Fallstudie. Die Farbe der Startseite kommt aus diesen Bildern; die
+   * Oberfläche drumherum bleibt unbunt.
+   */
+  readonly wall = ['zerin-gold', 'praxis-gueltekin', 'bikehaus-freiburg', 'karaarslan-bike', 'dj-veys']
     .map((slug) => PROJECTS.find((p) => p.slug === slug))
     .filter((p): p is Project => !!p);
   readonly updates = UPDATE_PACKAGES;
@@ -108,6 +116,28 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     { n: 6, img: 'ferien', pos: '50% 55%' },
   ];
   readonly steps = [1, 2, 3, 4];
+
+  /** Das Versprechen unter „Warum wir", Wort für Wort — es leuchtet beim Lesen auf. */
+  readonly promiseWords = computed(() => this.i18n.t('about.pr1.d').split(/\s+/));
+
+  /**
+   * Laufband vor den Branchen: oben die Branchen, unten die Orte. Reine
+   * Dekoration (aria-hidden) — beides steht darunter noch einmal als Text.
+   * Dreifach, damit die Zeile beim Verschieben nie leer ausläuft.
+   */
+  readonly tickerTrades = computed(() => {
+    const row = this.industries.map((ind) => this.i18n.t('home.ind' + ind.n + '.t'));
+    return [...row, ...row, ...row];
+  });
+  readonly tickerTowns = [...TOWNS_ONSITE, ...TOWNS_ONSITE, ...TOWNS_ONSITE];
+
+  /**
+   * Referenzen laufen auf dem Desktop seitwärts, solange man durch den
+   * Abschnitt scrollt. Nur im Browser und ohne „Bewegung reduzieren" — sonst
+   * (und im vorgerenderten HTML) bleibt das normale Raster stehen.
+   */
+  readonly hscroll =
+    this.isBrowser && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   readonly faqs = [1, 2, 3, 4, 5, 6];
 
   constructor() {

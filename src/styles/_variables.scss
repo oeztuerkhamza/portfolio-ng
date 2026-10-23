@@ -1,49 +1,52 @@
 // ============================================
 // BREISGAU DIGITAL — DESIGN TOKENS
-// Helles Papier, tiefes Marineblau. Editorial, nicht Start-up-bunt.
+// Galeriewand: helles Grau, fast schwarze Schrift, die Farbe kommt aus den
+// Kundenprojekten. Die Oberfläche selbst bleibt unbunt.
 // ============================================
 //
 // Die Namen sagen die Rolle, nicht die Farbe: $surface ist der Grund,
 // $text die Schrift darauf, $brand der einzige Akzent. Wer die Palette
 // tauscht, ändert nur diese Datei — in den Komponenten steht kein Hexwert.
 //
-// Kontrastwerte sind gegen $surface (#f6f8fb) gemessen und im Kommentar
+// Kontrastwerte sind gegen $surface (#eeeeee) gemessen und im Kommentar
 // vermerkt. Alles, was Fließtext trägt, liegt über 4,5:1 (WCAG AA).
 
 // --- Flächen ---
-$surface:         #f6f8fb;        // Seitengrund — kühles Papier
-$surface-2:       #ffffff;        // erhobene Fläche, Karten
-$surface-3:       #eaeff6;        // ruhige Zone, Tabellenkopf, Code
-$surface-ink:     #0e1a2b;        // dunkle Sektion (Footer, Demo-Rahmen)
-$surface-overlay: rgba(14, 26, 43, 0.55);
+$surface:         #eeeeee;        // Seitengrund — Galeriewand
+$surface-2:       #ffffff;        // eingelassene helle Fläche, Karten
+$surface-3:       #e2e2e2;        // ruhige Zone, Tabellenkopf, Code
+$surface-ink:     #222222;        // dunkles Band (Abschluss-Box, Demo-Rahmen)
+$surface-overlay: rgba(0, 0, 0, 0.55);
 
 // --- Schrift ---
-$text:            #0e1a2b;        // 16,43:1
-$text-soft:       #1f3349;        // 12,12:1
-$text-dim:        #48586e;        // 6,81:1
-$text-mute:       #5d6d85;        // 4,95:1 — kleinste Größe für Fließtext
-$text-faint:      #93a1b3;        // 2,47:1 — NUR Dekor (Trennzeichen, Linien)
-$text-on-ink:     #f2f5f9;        // Schrift auf $surface-ink — 15,1:1
+$text:            #222222;        // 13,3:1
+$text-soft:       #333333;        // 10,9:1
+$text-dim:        #555555;        // 6,3:1
+$text-mute:       #616161;        // 5,2:1 — kleinste Größe für Fließtext
+$text-faint:      #9a9a9a;        // 2,3:1 — NUR Dekor (Trennzeichen, Linien)
+$text-on-ink:     #f7f7f7;        // Schrift auf $surface-ink — 14,9:1
 
-// --- Marke (sparsam, nur Akzent) ---
-$brand:           #1a4b8c;        // 8,13:1 — Links, Zahlen, Akzentflächen
-$brand-deep:      #12376a;        // 11,09:1 — Hover, gedrückt
-$brand-light:     #2f6fc4;        // 4,71:1 — auf dunklem Grund, Hervorhebung
-$brand-pale:      #5b93d6;        // Dekor auf Dunkel, nie für Text auf Hell
-$brand-glow:      rgba(26, 75, 140, 0.16);
-$brand-tint:      rgba(26, 75, 140, 0.07);
+// --- Akzent ---
+// Bewusst unbunt: Knöpfe, Links und Zahlen in Tinte. Farbe auf der Seite
+// liefern die Screenshots der Kundenprojekte, nicht die Bedienelemente.
+$brand:           #222222;        // 13,3:1 — Knöpfe, Links, Zahlen
+$brand-deep:      #000000;        // Hover, gedrückt
+$brand-light:     #d6d6d6;        // Hervorhebung auf dunklem Grund
+$brand-pale:      #9a9a9a;        // Dekor auf Dunkel, nie für Text auf Hell
+$brand-glow:      rgba(0, 0, 0, 0.12);
+$brand-tint:      rgba(0, 0, 0, 0.05);
 
 // --- Haarlinien ---
-$rule-soft:       rgba(14, 26, 43, 0.08);   // Kartenrand — sichtbar, aber ruhig
-$rule:            rgba(14, 26, 43, 0.12);
-$rule-strong:     rgba(14, 26, 43, 0.24);
-$rule-brand:      rgba(26, 75, 140, 0.38);
+$rule-soft:       rgba(0, 0, 0, 0.07);
+$rule:            rgba(0, 0, 0, 0.12);
+$rule-strong:     rgba(0, 0, 0, 0.26);
+$rule-brand:      rgba(0, 0, 0, 0.4);
 
 // --- Erhebung ---
-// Auf hellem Grund trägt nicht die Linie allein, sondern ein sehr flacher
-// Schatten. Mehr als diese zwei Stufen braucht die Seite nicht.
-$shadow-sm:       0 1px 2px rgba(14, 26, 43, 0.05), 0 2px 8px rgba(14, 26, 43, 0.04);
-$shadow-md:       0 2px 4px rgba(14, 26, 43, 0.06), 0 12px 32px rgba(14, 26, 43, 0.08);
+// Flächen liegen flach auf der Wand. Schatten gibt es nur als Hover-Hebung
+// von Knöpfen und anklickbaren Karten.
+$shadow-sm:       none;
+$shadow-md:       0 2px 15px rgba(0, 0, 0, 0.1);
 
 // --- Semantische Aliase (Altbestand, wird nicht erweitert) ---
 $glass-bg:          $surface-2;
@@ -51,11 +54,11 @@ $glass-border:      $rule;
 $glass-border-hover: $rule-strong;
 
 // --- Radien & Rhythmus ---
-// Überall dieselben drei Radien und derselbe Abschnittsabstand — das ist
-// der größte Teil dessen, was die Seiten „aus einem Guss" wirken lässt.
-$radius-lg:       22px;   // Fotos, große Flächen, CTA-Box
-$radius:          18px;   // Karten
-$radius-sm:       12px;   // Buttons, Icon-Flächen, Eingabefelder
+// Kleine, gleichmäßige Radien: 8 px für Karten, Knöpfe und große Flächen,
+// 4 px für kompakte Knöpfe, Chips und Bildkacheln. Keine Pillen.
+$radius-lg:       8px;    // Fotos, große Flächen, CTA-Box
+$radius:          8px;    // Karten, Knöpfe
+$radius-sm:       4px;    // kompakte Knöpfe, Chips, Eingabefelder
 $section-y:       clamp(72px, 10vw, 128px);
 
 // --- Transitions ---
@@ -67,8 +70,11 @@ $ease-editorial:    cubic-bezier(0.16, 1, 0.3, 1);
 // --- Typografie ---
 // Schriften liegen lokal (@fontsource, siehe angular.json) — keine Verbindung
 // zu Google, keine IP-Übertragung, kein Datenschutz-Hinweis nötig.
-$font-display:  "Fraunces Variable", "Fraunces", Georgia, serif;
-$font-heading:  "Fraunces Variable", "Fraunces", Georgia, serif;
+// Eine Familie für alles: Inter, groß und eng gesetzt (-0,04 em) wirkt wie
+// eine redaktionelle Beschriftung statt wie ein Plakat.
+$font-display:  "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+$font-heading:  $font-display;
+$tracking-display: -0.04em;
 $font-body:     "Inter Variable", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 $font-mono:     "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 
@@ -114,9 +120,9 @@ $bp-mega:     1440px;
 @mixin small-caps {
   font-family: $font-body;
   font-size: 0.72rem;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.14em;
   color: $text-dim;
 }
 
@@ -133,8 +139,8 @@ $bp-mega:     1440px;
 @mixin numeral {
   font-family: $font-display;
   font-feature-settings: "lnum", "tnum";
-  font-weight: 300;
-  font-style: italic;
+  font-weight: 600;
+  letter-spacing: $tracking-display;
   color: $brand;
 }
 

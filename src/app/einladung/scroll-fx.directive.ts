@@ -19,10 +19,13 @@ import { isPlatformBrowser } from '@angular/common';
  *   through — 0 unten herein, 1 oben hinaus (Parallaxe)
  *   line    — die Bildmitte wandert durch das Element (Ablauf)
  *   page    — Fortschritt der ganzen Seite
+ *   pin     — Fortschritt durch ein hohes Element mit angeheftetem Inhalt:
+ *             0 wenn es oben anstößt, 1 wenn sein Ende unten ankommt
+ *             (Startseite: Referenzen, die seitwärts laufen)
  *
  * Bei „Bewegung reduzieren" läuft nur `page`; alles andere bleibt in Ruhe.
  */
-export type ScrollFxMode = 'leave' | 'enter' | 'through' | 'line' | 'page';
+export type ScrollFxMode = 'leave' | 'enter' | 'through' | 'line' | 'page' | 'pin';
 
 interface Entry {
   el: HTMLElement;
@@ -50,6 +53,8 @@ function measure(e: Entry, vh: number): number {
       return (vh - r.top) / (vh + r.height);
     case 'line':
       return (vh * 0.6 - r.top) / Math.max(1, r.height);
+    case 'pin':
+      return -r.top / Math.max(1, r.height - vh);
   }
 }
 
