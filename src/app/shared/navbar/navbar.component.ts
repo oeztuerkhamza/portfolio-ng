@@ -32,7 +32,9 @@ export class NavbarComponent {
     { path: '/leistungen', key: 'nav.leistungen' },
     { path: '/projects', key: 'nav.references' },
     { path: '/wartung', key: 'nav.wartung' },
-    { path: '/digitale-einladung', key: 'nav.invite' },
+    // Die digitale Einladung fehlt hier bewusst: ein Angebot für Privatleute
+    // verwässert im Menü einer Agentur für Betriebe das Thema der Website.
+    // Die Seite bleibt, erreichbar über den Footer und die Werbung.
     // Kartenprodukte fehlen hier bewusst: siehe REVIEW_CARDS_ENABLED in company.data.ts.
     ...(REVIEW_CARDS_ENABLED
       ? [

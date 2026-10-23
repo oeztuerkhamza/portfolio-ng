@@ -1,6 +1,8 @@
 import { TOWNS } from '../data/towns.data';
 import { SeoService } from './seo.service';
-import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../data/company.data';
+import { OPENING_HOURS, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED, WEBSITE_PRICE_FROM } from '../data/company.data';
+import { UPDATE_PACKAGES } from '../data/homepage-update.data';
+import { MAINTENANCE_PRICE_FROM } from '../data/maintenance.data';
 
 const ORIGIN = SeoService.ORIGIN;
 
@@ -17,6 +19,16 @@ export function personSchema(): Record<string, unknown> {
     image: `${ORIGIN}/assets/images/profile.jpg`,
     jobTitle: 'Gründer & Full-Stack-Entwickler',
     worksFor: { '@id': `${ORIGIN}/#service` },
+    hasCredential: {
+      '@type': 'EducationalOccupationalCredential',
+      credentialCategory: 'Berufsabschluss',
+      name: 'Fachinformatiker (IHK)',
+      recognizedBy: { '@type': 'Organization', name: 'Industrie- und Handelskammer (IHK)' },
+    },
+    alumniOf: [
+      { '@type': 'EducationalOrganization', name: 'Walther-Rathenau-Gewerbeschule Freiburg' },
+      { '@type': 'CollegeOrUniversity', name: 'Technische Universität Istanbul (İTÜ)' },
+    ],
     description:
       'Gründer von Breisgau Digital in Freiburg im Breisgau. Entwirft und entwickelt Websites, Online-Shops und Web-Apps für kleine und mittlere Betriebe in Südbaden.',
     knowsAbout: [
@@ -60,18 +72,20 @@ export function professionalServiceSchema(): Record<string, unknown> {
     alternateName: 'Breisgau Digital — Digitalisierung für den Mittelstand',
     image: `${ORIGIN}/assets/images/og-cover.jpg`,
     url: ORIGIN,
-    priceRange: '€€',
+    // Echte Spanne statt „€€": vom kleinsten Homepage-Update bis zur neuen Website.
+    priceRange: `${eur(Math.min(...UPDATE_PACKAGES.map((u) => u.price)))}–${eur(Math.max(WEBSITE_PRICE_FROM, ...UPDATE_PACKAGES.map((u) => u.price)))} €`,
     description:
       'Breisgau Digital ist eine IT- und Webagentur in Freiburg: Webdesign, Webentwicklung, Relaunch und SEO, Online-Shops, Buchungssysteme und Web-Apps für kleine und mittlere Betriebe in Freiburg, der Ortenau und Südbaden.',
     founder: { '@id': `${ORIGIN}/#person` },
     logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [
+      // Freiburg hat keine Ortsseite — die Startseite ist die Freiburg-Seite.
+      { '@type': 'City', name: 'Freiburg im Breisgau', url: `${ORIGIN}/de` },
       ...TOWNS.filter((t) => !t.isRegion).map((t) => ({ '@type': 'City', name: t.name, url: `${ORIGIN}/de/webdesign/${t.slug}` })),
       { '@type': 'AdministrativeArea', name: 'Landkreis Breisgau-Hochschwarzwald' },
       { '@type': 'AdministrativeArea', name: 'Ortenaukreis', url: `${ORIGIN}/de/webdesign/ortenau` },
       { '@type': 'AdministrativeArea', name: 'Landkreis Emmendingen' },
       { '@type': 'AdministrativeArea', name: 'Landkreis Lörrach' },
-      { '@type': 'AdministrativeArea', name: 'Ortenaukreis' },
       {
         '@type': 'GeoCircle',
         geoMidpoint: { '@type': 'GeoCoordinates', latitude: 47.999, longitude: 7.842 },
@@ -92,6 +106,12 @@ export function professionalServiceSchema(): Record<string, unknown> {
       longitude: 7.842,
     },
     telephone: '+49 155 66859378',
+    openingHoursSpecification: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: [...OPENING_HOURS.days],
+      opens: OPENING_HOURS.opens,
+      closes: OPENING_HOURS.closes,
+    },
     email: 'info@breisgau-digital.de',
     sameAs: [
       'https://github.com/oeztuerkhamza',
@@ -106,8 +126,6 @@ export function professionalServiceSchema(): Record<string, unknown> {
       'Local SEO',
       'Web-App Entwicklung',
       'E-Commerce',
-      'Digitale Einladung',
-      'Hochzeitswebsite',
       ...(REVIEW_CARDS_ENABLED ? ['Google-Bewertungskarten'] : []),
       // Smart Home fehlt hier bewusst: siehe SMART_HOME_ENABLED in company.data.ts.
       ...(SMART_HOME_ENABLED ? ['Smart Home Einrichtung'] : []),
@@ -116,7 +134,8 @@ export function professionalServiceSchema(): Record<string, unknown> {
       '@type': 'OfferCatalog',
       name: 'Leistungen',
       itemListElement: [
-        offer('Website & Relaunch', 'Website, die den Betrieb erklärt, auf dem Handy funktioniert und bei Google gefunden wird.'),
+        offer('Neue Website', 'Firmen-Website zum Festpreis: erklärt den Betrieb, funktioniert auf dem Handy und wird bei Google gefunden.', WEBSITE_PRICE_FROM),
+        ...UPDATE_PACKAGES.map((u) => offer(`Homepage-Update ${u.id[0].toUpperCase()}${u.id.slice(1)}`, `Überarbeitung einer bestehenden Website, fertig in ${u.days} Werktagen.`, u.price)),
         offer('Lokal gefunden werden', 'Google-Unternehmensprofil, Ortsseiten und Bewertungen für die Suche in der Umgebung.'),
         offer('Abläufe digitalisieren', 'Bestand, Termine, Angebote und Rechnungen in einer Oberfläche, die das Team bedienen kann.'),
         offer('Shop, Buchung & Verleih', 'Online verkaufen, vermieten oder Termine vergeben — inklusive Bezahlung und Verwaltung.'),
@@ -130,17 +149,29 @@ export function professionalServiceSchema(): Record<string, unknown> {
         ...(SMART_HOME_ENABLED
           ? [offer('Smart Home & Automatisierung', 'Heizung, Licht und Zutritt für Läden, Praxen, Büros und Ferienwohnungen — funkbasiert und lokal gesteuert.')]
           : []),
-        offer('Digitale Einladung', 'Einladungs-Website für Hochzeit, Henna-Abend, Verlobung und Firmenevents: Online-Zusage, Gästeliste, Sitzplan, Countdown, Route, IBAN/PayPal und Fotoalbum.'),
-        offer('Website-Wartung', 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis, monatlich kündbar.'),
+        offer('Website-Wartung', 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis, monatlich kündbar.', MAINTENANCE_PRICE_FROM, 'MON'),
       ],
     },
   };
 }
 
-function offer(name: string, description: string): Record<string, unknown> {
+const eur = (n: number) => n.toLocaleString('de-DE');
+
+/** Mit Preis wird es ein „ab"-Preis in Euro; mit Einheit (MON) ein Monatspreis. */
+function offer(name: string, description: string, from?: number, unit?: 'MON'): Record<string, unknown> {
   return {
     '@type': 'Offer',
     itemOffered: { '@type': 'Service', name, description },
+    ...(from
+      ? {
+          priceSpecification: {
+            '@type': 'UnitPriceSpecification',
+            minPrice: from,
+            priceCurrency: 'EUR',
+            ...(unit ? { unitCode: unit } : {}),
+          },
+        }
+      : {}),
   };
 }
 

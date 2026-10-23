@@ -33,12 +33,11 @@ import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
 import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
-import { InviteShowcaseComponent } from '../../shared/invite-showcase/invite-showcase.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent, InviteShowcaseComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],
@@ -109,7 +108,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
     { n: 6, img: 'ferien', pos: '50% 55%' },
   ];
   readonly steps = [1, 2, 3, 4];
-  readonly faqs = [1, 2, 3, 4, 5];
+  readonly faqs = [1, 2, 3, 4, 5, 6];
 
   constructor() {
     this.i18n.register(HOME_CONTENT);

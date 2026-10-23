@@ -33,6 +33,8 @@
         <ul>
           <li><a [routerLink]="'/ueber-uns' | localize">{{ i18n.t('nav.about') }}</a></li>
           <li><a [routerLink]="'/projects' | localize">{{ i18n.t('nav.references') }}</a></li>
+          <!-- Der Ratgeber ist nur auf Deutsch, darum fest auf /de. -->
+          <li><a routerLink="/de/ratgeber">Ratgeber</a></li>
           <li><a [routerLink]="'/contact' | localize">{{ i18n.t('nav.contact') }}</a></li>
           <li><a [routerLink]="'/impressum' | localize">{{ i18n.t('nav.impressum') }}</a></li>
           <li><a [routerLink]="'/datenschutz' | localize">{{ i18n.t('nav.datenschutz') }}</a></li>
@@ -46,6 +48,7 @@
           <li><a [href]="whatsapp" target="_blank" rel="noopener"><app-icon name="chat" /> WhatsApp</a></li>
           <li><a [href]="'mailto:' + company.email"><app-icon name="mail" /> {{ company.email }}</a></li>
           <li><a [href]="company.instagram" target="_blank" rel="noopener"><app-icon name="instagram" /> Instagram</a></li>
+          <li class="addr"><app-icon name="clock" /> <span>{{ i18n.t('company.hours') }}</span></li>
           <li class="addr"><app-icon name="pin" /> <span>{{ company.street }}<br />{{ company.city }}</span></li>
         </ul>
       </div>

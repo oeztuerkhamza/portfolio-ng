@@ -29,14 +29,15 @@ const today = new Date().toISOString().slice(0, 10);
 // after it decides the weight.
 function meta(path) {
   if (path === '/') return { priority: '1.0', freq: 'weekly' };
-  const page = path.replace(/^\/(de|fr|en|tr|ku)(?=\/|$)/, '') || '/';
+  const page = path.replace(/^\/(de|en|tr)(?=\/|$)/, '') || '/';
   if (page === '/') return { priority: '0.9', freq: 'weekly' };
   if (['/leistungen', '/digitale-einladung', '/bewertungskarten', '/smart-home', '/wartung', '/digitale-visitenkarte', '/geschenkkarte'].includes(page)) {
     return { priority: '0.9', freq: 'monthly' };
   }
   // Produktseiten der Bewertungskarten: echte Kaufseiten, kein Beiwerk.
   if (page.startsWith('/bewertungskarten/')) return { priority: '0.8', freq: 'monthly' };
-  if (page.startsWith('/webdesign/')) return { priority: page === '/webdesign/freiburg' ? '0.9' : '0.8', freq: 'monthly' };
+  if (page.startsWith('/webdesign/')) return { priority: '0.8', freq: 'monthly' };
+  if (page === '/ratgeber' || page.startsWith('/ratgeber/')) return { priority: '0.8', freq: 'monthly' };
   if (page === '/projects') return { priority: '0.7', freq: 'monthly' };
   if (page.startsWith('/projects/')) return { priority: '0.6', freq: 'monthly' };
   if (page === '/contact' || page === '/ueber-uns') return { priority: '0.7', freq: 'yearly' };

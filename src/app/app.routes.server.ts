@@ -3,6 +3,7 @@ import { PROJECTS } from './core/data/project.data';
 import { LANG_CODES } from './core/i18n/i18n.service';
 import { REVIEW_CARD_PRODUCTS } from './core/data/review-cards.data';
 import { TOWNS } from './core/data/towns.data';
+import { RATGEBER } from './core/data/ratgeber.data';
 import { REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from './core/data/company.data';
 import { INVITE_THEMES } from './einladung/invite-themes';
 import { demoSlug } from './einladung/invite-demo';
@@ -30,7 +31,7 @@ export const serverRoutes: ServerRoute[] = [
   ...(REVIEW_CARDS_ENABLED
     ? ([
   { path: ':locale/bewertungskarten', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
-  // Sieben Produkte × fünf Sprachen, alle fertig ausgeliefert.
+  // Sieben Produkte × drei Sprachen, alle fertig ausgeliefert.
   {
     path: ':locale/bewertungskarten/:produkt',
     renderMode: RenderMode.Prerender,
@@ -61,7 +62,13 @@ export const serverRoutes: ServerRoute[] = [
       ),
   },
   { path: ':locale/contact', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
-  // Ortsseiten gibt es nur auf Deutsch.
+  // Ratgeber und Ortsseiten gibt es nur auf Deutsch.
+  { path: ':locale/ratgeber', renderMode: RenderMode.Prerender, getPrerenderParams: async () => [{ locale: 'de' }] },
+  {
+    path: ':locale/ratgeber/:slug',
+    renderMode: RenderMode.Prerender,
+    getPrerenderParams: async () => RATGEBER.map((a) => ({ locale: 'de', slug: a.slug })),
+  },
   {
     path: ':locale/webdesign/:town',
     renderMode: RenderMode.Prerender,

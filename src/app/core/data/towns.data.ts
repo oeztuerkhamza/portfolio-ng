@@ -38,41 +38,12 @@ export interface Town {
   seoTitle?: string;
 }
 
+/**
+ * Freiburg hat keine eigene Ortsseite: der Betrieb sitzt dort, die Startseite
+ * ist die Freiburg-Seite. Eine zweite Seite für „Webdesign Freiburg" nahm ihr
+ * nur Rang weg; /de/webdesign/freiburg leitet per 301 auf /de (vercel.json).
+ */
 export const TOWNS: Town[] = [
-  {
-    slug: 'freiburg',
-    name: 'Freiburg im Breisgau',
-    short: 'Freiburg',
-    district: 'Stadtkreis Freiburg',
-    region: 'Breisgau',
-    km: 0,
-    minutes: 0,
-    lat: 47.999,
-    lng: 7.842,
-    intro:
-      'Breisgau Digital sitzt in Freiburg. Wir bauen Websites für Betriebe aus der Stadt, sorgen dafür, dass sie bei Google gefunden werden, und halten sie aktuell — persönlich, meist direkt bei Ihnen im Laden, in der Praxis oder im Büro.',
-    local:
-      'Ob Café in der Altstadt, Friseur in der Wiehre, Physiopraxis in Herdern, Werkstatt in Haslach oder Ferienwohnung in St. Georgen: In Freiburg entscheidet Google oft darüber, wer angerufen wird. Viele Suchen enden in der Karte mit drei Einträgen — dort stehen die Betriebe mit gepflegtem Profil, aktuellen Fotos und vielen frischen Bewertungen. Genau da setzen wir an. Termine vor Ort machen wir im ganzen Stadtgebiet, von Zähringen bis Vauban, von Littenweiler bis Landwasser.',
-    focus: ['cards', 'web', 'abo', 'sh'],
-    angles: {
-      cards: 'Karte auf den Tresen, Gäste halten das Handy dran — so kommen in der Innenstadt schnell neue Google-Bewertungen zusammen.',
-      web: 'Eine Website, die auf dem Handy in Sekunden lädt und bei „… in Freiburg" gefunden wird, mit Ortsbezug statt Baukasten-Vorlage.',
-      abo: 'Hosting, Updates, Backups und kleine Änderungen zum festen Monatspreis — Ihre Website bleibt aktuell und sicher.',
-      sh: 'Heizung nach Öffnungszeiten, Self-Check-in für Ferienwohnungen, Licht fürs Schaufenster.',
-    },
-    faqs: [
-      {
-        q: 'Kommen Sie für ein Gespräch zu uns in den Betrieb?',
-        a: 'Ja. In Freiburg kommen wir grundsätzlich vorbei — das Erstgespräch ist kostenlos und dauert meist 30 bis 45 Minuten.',
-      },
-      {
-        q: 'Wie schnell steht eine Website für einen Freiburger Betrieb?',
-        a: 'Eine übersichtliche Website mit bis zu fünf Seiten ist in der Regel in drei bis vier Wochen online, abhängig davon, wie schnell Texte und Fotos vorliegen.',
-      },
-    ],
-    near: ['emmendingen', 'bad-krozingen', 'waldkirch', 'breisach'],
-    seoTitle: 'Webdesign & Webagentur Freiburg – Website erstellen lassen | Breisgau Digital',
-  },
   {
     slug: 'emmendingen',
     name: 'Emmendingen',
@@ -104,7 +75,7 @@ export const TOWNS: Town[] = [
         a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
     ],
-    near: ['freiburg', 'waldkirch', 'lahr'],
+    near: ['waldkirch', 'lahr'],
     seoTitle: 'Webdesign & SEO Emmendingen – Webagentur | Breisgau Digital',
   },
   {
@@ -142,7 +113,7 @@ export const TOWNS: Town[] = [
         a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
     ],
-    near: ['emmendingen', 'freiburg', 'titisee-neustadt'],
+    near: ['emmendingen', 'titisee-neustadt'],
   },
   {
     slug: 'breisach',
@@ -175,7 +146,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, von Ihringen und Vogtsburg bis Endingen und Sasbach — Termine vor Ort sind kein Problem.',
       },
     ],
-    near: ['freiburg', 'bad-krozingen', 'emmendingen'],
+    near: ['bad-krozingen', 'emmendingen'],
   },
   {
     slug: 'bad-krozingen',
@@ -204,7 +175,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, das ganze südliche Breisgau und das Markgräflerland gehören zu unserem Gebiet.',
       },
     ],
-    near: ['staufen', 'muellheim', 'freiburg', 'breisach'],
+    near: ['staufen', 'muellheim', 'breisach'],
   },
   {
     slug: 'staufen',
@@ -237,7 +208,7 @@ export const TOWNS: Town[] = [
         a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
     ],
-    near: ['bad-krozingen', 'muellheim', 'freiburg'],
+    near: ['bad-krozingen', 'muellheim'],
   },
   {
     slug: 'muellheim',
@@ -307,7 +278,7 @@ export const TOWNS: Town[] = [
         a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Wir denken dabei auch an Kundschaft aus dem Dreiländereck, etwa mit mehrsprachigen Seiten. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
     ],
-    near: ['muellheim', 'bad-krozingen', 'freiburg'],
+    near: ['muellheim', 'bad-krozingen'],
     seoTitle: 'Webdesign & SEO Lörrach – Webdesigner | Breisgau Digital',
   },
   {
@@ -349,7 +320,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
       },
     ],
-    near: ['lahr', 'ortenau', 'emmendingen', 'freiburg'],
+    near: ['lahr', 'ortenau', 'emmendingen'],
     seoTitle: 'Webdesign & SEO Offenburg und Ortenau – Webagentur | Breisgau Digital',
   },
   {
@@ -376,7 +347,7 @@ export const TOWNS: Town[] = [
     faqs: [
       {
         q: 'Wie viel kostet eine Website für einen kleinen Betrieb in Lahr?',
-        a: 'Eine Firmen-Website gibt es bei uns zum Festpreis; alternativ im Digital-Abo zum Monatspreis, dann ohne große Anfangsinvestition.',
+        a: 'Eine Firmen-Website gibt es bei uns zum Festpreis, schriftlich vor Projektstart. Hosting, Updates und kleine Änderungen übernehmen wir danach auf Wunsch zum festen Monatspreis — monatlich kündbar.',
       },
       {
         q: 'Machen Sie Termine vor Ort in Lahr?',
@@ -391,7 +362,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, auf Wunsch. Domain, Hosting und laufende Pflege kommen aus einer Hand — Domain und Zugänge laufen aber auf Ihren Namen, damit Sie unabhängig bleiben.',
       },
     ],
-    near: ['offenburg', 'ortenau', 'emmendingen', 'freiburg'],
+    near: ['offenburg', 'ortenau', 'emmendingen'],
     seoTitle: 'Webdesign & SEO Lahr – Webagentur mit Hosting | Breisgau Digital',
   },
   {
@@ -425,7 +396,7 @@ export const TOWNS: Town[] = [
         a: 'Ja, der Hochschwarzwald gehört zu unserem Gebiet für Termine vor Ort.',
       },
     ],
-    near: ['freiburg', 'waldkirch', 'staufen'],
+    near: ['waldkirch', 'staufen'],
     seoTitle: 'Webdesigner Titisee-Neustadt & Hochschwarzwald | Breisgau Digital',
   },
   {

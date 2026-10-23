@@ -119,6 +119,18 @@ const localeChildren: Routes = [
       ),
     data: { animation: 'ProjectDetail' },
   },
+  // Ratgeber: nur auf Deutsch, wie die Ortsseiten.
+  {
+    path: 'ratgeber',
+    loadComponent: () => import('./pages/ratgeber/ratgeber.component').then((m) => m.RatgeberComponent),
+    data: { animation: 'Ratgeber' },
+  },
+  {
+    path: 'ratgeber/:slug',
+    loadComponent: () =>
+      import('./pages/ratgeber/ratgeber-article.component').then((m) => m.RatgeberArticleComponent),
+    data: { animation: 'RatgeberArticle' },
+  },
   {
     path: 'webdesign/:town',
     loadComponent: () => import('./pages/town/town.component').then((m) => m.TownComponent),

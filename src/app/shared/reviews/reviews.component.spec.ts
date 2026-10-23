@@ -389,9 +389,9 @@ describe('ReviewsComponent', () => {
   });
 
   describe('Sprachen', () => {
-    const LANGS: Lang[] = ['de', 'fr', 'en', 'tr', 'ku'];
+    const LANGS: Lang[] = ['de', 'en', 'tr'];
 
-    it('hat jeden Text in allen fünf Sprachen', () => {
+    it('hat jeden Text in allen drei Sprachen', () => {
       // Der Typ Entry verlangt alle Sprachen — hier zählt, dass keine leer ist.
       for (const [key, entry] of Object.entries(REVIEWS_CONTENT))
         for (const lang of LANGS) expect(entry[lang]?.trim().length).toBeGreaterThan(0, `${key}/${lang}`);
