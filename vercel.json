@@ -123,6 +123,10 @@
       "destination": "/api"
     },
     {
+      "source": "/m/:slug",
+      "destination": "/api"
+    },
+    {
       "source": "/k/:slug",
       "destination": "/api"
     },

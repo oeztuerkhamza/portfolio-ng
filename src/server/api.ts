@@ -25,6 +25,7 @@ import {
   vcard,
 } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
+import { DEMO_SLUG, MENU_LANGS, MENU_THEMES, type Menu, demoMenu, menuData, menuText, parseMenuText, renderMenu } from './menus';
 import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
 import { invoices } from './invoices';
 import { adminInvites, invites } from './invites';
@@ -314,6 +315,44 @@ export async function cardVcard(req: Request, res: Response) {
     return res.type('text/vcard; charset=utf-8').send(body);
   } catch (err) {
     console.error('[k.vcf]', err);
+    return res.redirect(302, '/');
+  }
+}
+
+/**
+ * Speisekarte eines Kunden: /m/<slug>. Zählt den Aufruf in derselben Abfrage.
+ * Unbekannt oder abgeschaltet → Startseite. Mit dem Vorschau-Schlüssel (der id
+ * der Karte, wie bei den NFC-Karten) sieht man auch den Entwurf, ungezählt.
+ */
+export async function menuPage(req: Request, res: Response) {
+  res.set('Cache-Control', 'no-store');
+  res.set('Referrer-Policy', 'no-referrer');
+  res.set('X-Content-Type-Options', 'nosniff');
+  const slug = String(req.params['slug'] ?? '').toLowerCase();
+  if (slug === DEMO_SLUG) return res.type('html').send(renderMenu(demoMenu(origin(req)), origin(req)));
+  const sql = db();
+  if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
+  const token = str(req.query['vorschau'], 40);
+  try {
+    const [row] = token
+      ? await sql`select id, slug, lang, theme, data, active from menus where slug = ${slug}`
+      : await sql`
+          with m as (select id, slug, lang, theme, data, active from menus where slug = ${slug} and active),
+               s as (insert into scans (menu_id, device) select id, ${deviceOf(req)} from m)
+          select id, slug, lang, theme, data, active from m`;
+    if (!row || !cardVisible(row['active'], token, row['id'])) return res.redirect(302, '/');
+    const data = menuData(row['data']);
+    if (!data) return res.redirect(302, '/');
+    const menu: Menu = {
+      slug: String(row['slug']),
+      lang: row['lang'] as Menu['lang'],
+      theme: row['theme'] as Menu['theme'],
+      preview: row['active'] !== true,
+      data,
+    };
+    return res.type('html').send(renderMenu(menu, origin(req)));
+  } catch (err) {
+    console.error('[m]', err);
     return res.redirect(302, '/');
   }
 }
@@ -1446,6 +1485,93 @@ admin.delete(
     if (!sql) return;
     if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
     await sql`delete from cards where id = ${req.params['id']}`;
+    return res.status(204).end();
+  }),
+);
+
+// Speisekarten der Kunden (/m/<slug>)
+admin.get(
+  '/menus',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const rows = await sql`
+      select m.*, c.name as customer_name,
+        count(s.id)::int as scans_total,
+        (count(s.id) filter (where s.scanned_at > now() - interval '30 days'))::int as scans_30d,
+        max(s.scanned_at) as last_scan
+      from menus m
+      left join scans s on s.menu_id = m.id
+      left join customers c on c.id = m.customer_id
+      group by m.id, c.name
+      order by m.created_at desc`;
+    // Das Portal bearbeitet die Rubriken als Text (siehe parseMenuText).
+    res.json(rows.map((r) => ({ ...r, text: menuText(menuData(r['data'])?.categories ?? []) })));
+  }),
+);
+
+/** Eingabe des Portals → geprüfte Felder; null, wenn der Name fehlt. */
+function menuFields(body: any) {
+  const data = menuData({ ...(body?.data ?? {}), categories: parseMenuText(body?.text) });
+  if (!data) return null;
+  const theme = (MENU_THEMES as readonly string[]).includes(body?.theme) ? body.theme : 'warm';
+  const lang = (MENU_LANGS as readonly string[]).includes(body?.lang) ? body.lang : 'de';
+  return { data, theme: theme as string, lang: lang as string };
+}
+
+admin.post(
+  '/menus',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const fields = menuFields(req.body);
+    if (!fields) return res.status(400).json({ error: 'invalid_menu' });
+    const slug = String(req.body?.slug ?? '').toLowerCase().trim();
+    if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(slug) || slug === DEMO_SLUG) return res.status(400).json({ error: 'invalid_slug' });
+    try {
+      const [row] = await sql`
+        insert into menus (slug, lang, theme, data, label, customer_id, active)
+        values (${slug}, ${fields.lang}, ${fields.theme}, ${sql.json(fields.data as any)},
+                ${str(req.body?.label, 200)}, ${req.body?.customer_id || null}, false)
+        returning *`;
+      return res.status(201).json(row);
+    } catch (err) {
+      if ((err as { code?: string }).code === '23505') return res.status(409).json({ error: 'slug_taken' });
+      throw err;
+    }
+  }),
+);
+
+admin.patch(
+  '/menus/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const b = req.body ?? {};
+    if (Object.keys(b).length === 1 && typeof b.active === 'boolean') {
+      const [row] = await sql`update menus set active = ${b.active} where id = ${req.params['id']} returning *`;
+      return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+    }
+    const fields = menuFields(b);
+    if (!fields) return res.status(400).json({ error: 'invalid_menu' });
+    const [row] = await sql`
+      update menus set lang = ${fields.lang}, theme = ${fields.theme}, data = ${sql.json(fields.data as any)},
+        label = ${str(b.label, 200)}, customer_id = ${b.customer_id || null},
+        active = ${typeof b.active === 'boolean' ? b.active : true}
+      where id = ${req.params['id']}
+      returning *`;
+    return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+  }),
+);
+
+admin.delete(
+  '/menus/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    await sql`delete from menus where id = ${req.params['id']}`;
     return res.status(204).end();
   }),
 );

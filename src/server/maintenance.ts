@@ -108,7 +108,7 @@ export function alwaysOpen(pathname: string): boolean {
 
   if (p === '/api' || p.startsWith('/api/')) return true;
   if (p === '/admin' || p.startsWith('/admin/')) return true;
-  if (p.startsWith('/k/') || p.startsWith('/r/')) return true;
+  if (p.startsWith('/k/') || p.startsWith('/r/') || p.startsWith('/m/')) return true;
   if (p.startsWith('/assets/') || p.startsWith('/.well-known/')) return true;
 
   // Dateien: eine Endung im letzten Abschnitt der Adresse. Seiten haben keine.

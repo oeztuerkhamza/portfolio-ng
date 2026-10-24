@@ -32,7 +32,7 @@ describe('alwaysOpen — was trotz Wartung durchkommt', () => {
   });
 
   test('lässt die Seiten verkaufter NFC-Karten durch', () => {
-    for (const p of ['/k/cafe-krone', '/k/cafe-krone/kontakt', '/k/cafe-krone/kontakt.vcf', '/r/cafe-muster'])
+    for (const p of ['/k/cafe-krone', '/k/cafe-krone/kontakt', '/k/cafe-krone/kontakt.vcf', '/r/cafe-muster', '/m/sichelschmiede'])
       assert.equal(alwaysOpen(p), true, p);
   });
 

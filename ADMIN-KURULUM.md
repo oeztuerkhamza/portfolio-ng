@@ -13,6 +13,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Faturalar** | Logolu Rechnung: taslak → kesinleştir (RE-2026-0001 …) → PDF → ödendi. GiroCode QR, Storno, kopyala. |
 | **NFC linkleri** | Kartlara yazılan kısa linkler (`/r/cafe-muster`). Hedefi istediğiniz an değiştirin, okutma sayısını görün, QR kodu SVG olarak indirin. |
 | **NFC kartları** | Kendi alan adımızda kart sayfaları (`/k/cafe-krone`): firma kartı ya da özel gün kartı. Kart dili, tema, logo/fotoğraf yükleme, ziyaretçi bilgi formu, okutma sayısı, QR. |
+| **Menüler** | Müşteriye özel menü sayfaları (`/m/sichelschmiede`): yemekler düz metinle girilir (`# Rubrik`, altında `Ad \| Fiyat \| Açıklama`). Taslak → önizleme → aktif. Okutma sayısı, QR, isteğe bağlı “Google’da değerlendirin” düğmesi (`/r/…` linkine). |
 | **Google yorumları** | Google'daki yorumlarınız sitede döner. Place ID'yi girip “Şimdi al”a basın; sonra günde bir kez kendi yenilenir. İstemediğiniz yorumu gizleyebilirsiniz. |
 | **Fiyatlar** | Sitedeki tüm fiyatlar. Değiştirip **Siteyi güncelle**'ye basınca 2–4 dakikada sitede. |
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
@@ -36,6 +37,7 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260926180000_maintenance.sql` (bakım modu) ve
    `20260929120000_card_designs.sql` (müşterinin kart tasarlayıcıda doldurduğu taslak) ve
    `20260930120000_card_uploads.sql` (tasarlayıcıya yüklenen görsellerin kaydı; siparişe bağlanmayanlar iki hafta sonra otomatik silinir).
+   `20261024120000_menus.sql` (müşteri menüleri; Sichelschmiede taslak olarak hazır gelir).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).
