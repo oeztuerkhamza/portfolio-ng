@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { menuData, menuText, parseMenuText, renderMenu, type Menu } from './menus';
+import { demoMenu, menuData, menuText, parseMenuText, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -115,5 +115,15 @@ describe('renderMenu', () => {
 
   test('noindex', () => {
     assert.ok(renderMenu(menu()).includes('noindex'));
+  });
+});
+
+describe('demoMenu', () => {
+  test('Beispielkarte ist gültig, mit Fotos auf der eigenen Domain', () => {
+    const m = demoMenu('https://breisgau-digital.de');
+    assert.equal(menuData(m.data)?.categories.length, m.data.categories.length);
+    const html = renderMenu(m, 'https://breisgau-digital.de');
+    assert.ok(html.includes('src="https://breisgau-digital.de/demo-menu/suppe.svg"'));
+    assert.ok(html.includes('alle Gerichte und Preise sind erfunden'));
   });
 });

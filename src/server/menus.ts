@@ -247,3 +247,50 @@ ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 </main>
 </body></html>`;
 }
+
+/**
+ * Beispielkarte für Interessenten: /m/demo. Sie steht im Code und nicht in der
+ * Datenbank, damit sie sofort nach dem Ausliefern da ist und kein Kunde
+ * versehentlich mit ihr verwechselt wird. Name, Gerichte und Preise sind
+ * erfunden; die Bilder sind eigene Zeichnungen (public/demo-menu).
+ */
+export const DEMO_SLUG = 'demo';
+
+export function demoMenu(base: string): Menu {
+  const site = base.replace(/\/+$/, '');
+  const img = (n: string) => (site ? `${site}/demo-menu/${n}.svg` : undefined);
+  const data = menuData({
+    name: 'Gasthaus Beispiel',
+    tagline: 'Beispielkarte · so sieht Ihre digitale Speisekarte aus',
+    footnote:
+      'Dies ist eine Demo von Breisgau Digital — alle Gerichte und Preise sind erfunden.\nIhre Karte pflegen Sie selbst: Gerichte, Preise und Fotos ändern sich sofort, ohne dass der NFC-Aufsteller oder QR-Code neu gedruckt werden muss.\nAllergene und Zusatzstoffe erfragen Sie bitte beim Service.',
+    categories: [
+      {
+        title: 'Vorspeisen',
+        items: [
+          { name: 'Tomatencremesuppe', price: '5,50', desc: 'mit Basilikum und Croutons', img: img('suppe') },
+          { name: 'Gemischter Blattsalat', price: '6,90', desc: 'Hausdressing, geröstete Kerne' },
+        ],
+      },
+      {
+        title: 'Hauptgerichte',
+        note: 'Vegetarische Gerichte sind gekennzeichnet.',
+        items: [
+          { name: 'Käsespätzle', price: '12,90', desc: 'mit Röstzwiebeln und Salat (vegetarisch)', img: img('spaetzle') },
+          { name: 'Schäufele', price: '16,90', desc: 'mit Kartoffelsalat und Sauerkraut', img: img('schaeufele') },
+          { name: 'Gemüsepfanne', price: '11,50', desc: 'saisonales Gemüse, Kräuterquark (vegetarisch)' },
+        ],
+      },
+      { title: 'Dessert', items: [{ name: 'Schwarzwälder Kirsch', price: '5,90', desc: 'Stück vom Blech, mit Sahne', img: img('dessert') }] },
+      {
+        title: 'Getränke',
+        items: [
+          { name: 'Hauswein, weiß oder rot', price: '0,2 l 4,80', img: img('wein') },
+          { name: 'Mineralwasser', price: '0,75 l 4,20' },
+          { name: 'Apfelschorle', price: '0,3 l 3,40' },
+        ],
+      },
+    ],
+  })!;
+  return { slug: DEMO_SLUG, lang: 'de', theme: 'warm', preview: false, data };
+}

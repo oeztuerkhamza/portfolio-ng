@@ -25,7 +25,7 @@ import {
   vcard,
 } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
-import { MENU_LANGS, MENU_THEMES, type Menu, menuData, menuText, parseMenuText, renderMenu } from './menus';
+import { DEMO_SLUG, MENU_LANGS, MENU_THEMES, type Menu, demoMenu, menuData, menuText, parseMenuText, renderMenu } from './menus';
 import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
 import { invoices } from './invoices';
 import { adminInvites, invites } from './invites';
@@ -329,10 +329,10 @@ export async function menuPage(req: Request, res: Response) {
   res.set('Referrer-Policy', 'no-referrer');
   res.set('X-Content-Type-Options', 'nosniff');
   const slug = String(req.params['slug'] ?? '').toLowerCase();
+  if (slug === DEMO_SLUG) return res.type('html').send(renderMenu(demoMenu(origin(req)), origin(req)));
   const sql = db();
   if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
   const token = str(req.query['vorschau'], 40);
-
   try {
     const [row] = token
       ? await sql`select id, slug, lang, theme, data, active from menus where slug = ${slug}`
@@ -1527,7 +1527,7 @@ admin.post(
     const fields = menuFields(req.body);
     if (!fields) return res.status(400).json({ error: 'invalid_menu' });
     const slug = String(req.body?.slug ?? '').toLowerCase().trim();
-    if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(slug)) return res.status(400).json({ error: 'invalid_slug' });
+    if (!/^[a-z0-9][a-z0-9-]{1,48}[a-z0-9]$/.test(slug) || slug === DEMO_SLUG) return res.status(400).json({ error: 'invalid_slug' });
     try {
       const [row] = await sql`
         insert into menus (slug, lang, theme, data, label, customer_id, active)
