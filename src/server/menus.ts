@@ -276,9 +276,9 @@ h2{margin:26px 0 2px;font-size:1.15rem;color:${t.accent};text-transform:uppercas
 ul{list-style:none;margin:0;padding:0}
 li{padding:12px 0;border-bottom:1px solid rgba(147,161,179,.28)}
 li:last-child{border-bottom:0}
-.row{display:flex;gap:12px;justify-content:space-between;align-items:baseline}
+.row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:baseline}
 .name{font-weight:600}
-.price{flex:0 0 auto;font-weight:600;white-space:nowrap}
+.price{font-weight:600;white-space:nowrap;text-align:right}
 .dish{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;margin:0 0 10px;background:rgba(147,161,179,.2)}
 .desc{margin:2px 0 0;color:${t.dim};font-size:.9rem}
 .empty{margin:20px 0;text-align:center;color:${t.dim}}
@@ -305,7 +305,8 @@ const ORDER_LABELS: Record<CardLang, { add: string; cart: string; table: string;
 };
 
 const ORDER_STYLES = `
-.add{flex:0 0 auto;margin-left:10px;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:5px 14px;font:inherit;font-size:.82rem;font-weight:600;cursor:pointer}
+.ordering .row{grid-template-columns:minmax(0,1fr) 4.4rem 2.3rem;align-items:center}
+.add{width:2.3rem;height:2.3rem;padding:0;line-height:1;font-size:1.3rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:50%;font-family:inherit;font-weight:500;cursor:pointer}
 .add:active{opacity:.7}
 .langs{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin:0 0 14px}
 .langs a{padding:4px 11px;border-radius:999px;border:1px solid transparent;color:var(--dim);text-decoration:none;font-size:.8rem}
@@ -396,9 +397,9 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
         .map((it, j) => {
           const o = orig.items[j]!;
           const add = ordering
-            ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}">${esc(ol.add)}</button>`
+            ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
-          return `<li>${httpsUrl(it.img) ? `<img class="dish" src="${esc(httpsUrl(it.img))}" alt="${esc(it.name)}" loading="lazy" />` : ''}<div class="row"><span class="name">${esc(it.name)}</span>${it.price ? `<span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}</li>`;
+          return `<li>${httpsUrl(it.img) ? `<img class="dish" src="${esc(httpsUrl(it.img))}" alt="${esc(it.name)}" loading="lazy" />` : ''}<div class="row"><span class="name">${esc(it.name)}</span>${it.price || ordering ? `<span class="price">${esc(it.price ?? '')}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}</li>`;
         })
         .join('')}</ul></section>`,
     )
