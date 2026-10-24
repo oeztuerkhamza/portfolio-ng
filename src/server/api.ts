@@ -1685,6 +1685,23 @@ admin.delete(
   }),
 );
 
+// Bestell-Board: alle Tischbestellungen, offene und die der letzten 12 Stunden
+admin.get(
+  '/menu-orders',
+  h(async (_req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    res.json(
+      await sql`
+        select o.id, o.created_at, o.menu_id, o.table_label, o.items, o.total_cents, o.note, o.status,
+               coalesce(m.data ->> 'name', m.slug) as menu_name
+        from menu_orders o join menus m on m.id = o.menu_id
+        where o.status in ('new', 'accepted') or o.created_at > now() - interval '12 hours'
+        order by o.created_at asc limit 300`,
+    );
+  }),
+);
+
 admin.get(
   '/menus/:id/orders',
   h(async (req, res) => {

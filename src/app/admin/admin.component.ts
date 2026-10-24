@@ -12,11 +12,12 @@ import { CardsTab } from './tabs/cards.tab';
 import { ReviewsTab } from './tabs/reviews.tab';
 import { PricesTab } from './tabs/prices.tab';
 import { OrdersTab } from './tabs/orders.tab';
+import { TableOrdersTab } from './tabs/table-orders.tab';
 import { SettingsTab } from './tabs/settings.tab';
 import { InvoicesTab } from './tabs/invoices.tab';
 import { InvitesTab } from './tabs/invites.tab';
 
-type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'menus' | 'invites' | 'reviews' | 'prices' | 'orders' | 'settings';
+type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'menus' | 'invites' | 'reviews' | 'prices' | 'orders' | 'tableorders' | 'settings';
 
 /**
  * Admin-Portal unter /admin. Läuft nur im Browser; der Server liefert
@@ -26,7 +27,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
   selector: 'app-admin',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, MenusTab, ReviewsTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab, InvitesTab],
+  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, MenusTab, ReviewsTab, PricesTab, OrdersTab, TableOrdersTab, SettingsTab, InvoicesTab, InvitesTab],
   styleUrl: './admin.component.scss',
   template: `
     <div class="adm">
@@ -125,6 +126,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
             @case ('reviews') { <adm-reviews /> }
             @case ('prices') { <adm-prices /> }
             @case ('orders') { <adm-orders /> }
+            @case ('tableorders') { <adm-table-orders /> }
             @case ('settings') { <adm-settings /> }
           }
         </main>
@@ -148,7 +150,8 @@ export class AdminComponent implements OnInit {
     { id: 'invites', label: 'Davetiyeler' },
     { id: 'reviews', label: 'Google yorumları' },
     { id: 'prices', label: 'Fiyatlar' },
-    { id: 'orders', label: 'Siparişler' },
+    { id: 'tableorders', label: 'Masa siparişleri' },
+    { id: 'orders', label: 'Mağaza siparişleri' },
     { id: 'settings', label: 'Ayarlar' },
   ];
   readonly tab = signal<Tab>('overview');

@@ -370,3 +370,36 @@
   white-space: pre-line;
   color: $text;
 }
+
+// ── Bestell-Board (adm-table-orders) ───────────────────────
+.tbo-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.tbo-live {
+  display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; font-weight: 600; color: #1a7f4b;
+  &::before { content: ""; width: 0.55rem; height: 0.55rem; border-radius: 50%; background: currentColor; animation: tbo-pulse 2s ease-in-out infinite; }
+  &.off { color: #b42318; &::before { animation: none; } }
+}
+@keyframes tbo-pulse { 50% { opacity: 0.35; } }
+.tbo-stats { display: flex; flex-wrap: wrap; gap: 0.5rem 1.4rem; margin: 0.4rem 0 1rem; font-size: 0.95rem; strong { font-size: 1.15rem; } }
+.tbo-board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+.tbo-col {
+  background: $brand-tint; border-radius: $radius; padding: 0.8rem; display: grid; gap: 0.7rem; min-height: 8rem;
+  h3 { margin: 0; display: flex; align-items: center; gap: 0.5rem; }
+  &[data-col="new"] h3 { color: #b42318; }
+}
+.tbo-count { font-size: 0.8rem; font-weight: 600; background: #fff; border-radius: 999px; padding: 0.05rem 0.6rem; }
+.tbo-empty { margin: 0.4rem 0; text-align: center; }
+.tbo-card {
+  padding: 0.9rem 1rem; display: grid; gap: 0.35rem;
+  header { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+  footer { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.5rem; margin-top: 0.3rem; }
+  &.late { border-left: 4px solid #b42318; }
+  &.fresh { animation: tbo-flash 1.2s ease-out 3; }
+}
+@keyframes tbo-flash { 0% { box-shadow: 0 0 0 0 rgba(180, 35, 24, 0.55); } 100% { box-shadow: 0 0 0 14px rgba(180, 35, 24, 0); } }
+.tbo-table { font-size: 1.2rem; }
+.tbo-age { font-size: 0.85rem; color: $text-mute; &.late { color: #b42318; font-weight: 700; } }
+.tbo-menu { margin: 0; font-size: 0.8rem; }
+.tbo-lines { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; font-size: 1rem; }
+.tbo-note { margin: 0; padding: 0.4rem 0.6rem; background: #fff7e0; border-radius: 8px; font-style: italic; }
+.tbo-actions { display: flex; align-items: center; gap: 0.7rem; margin-left: auto; }
+@media (max-width: 900px) { .tbo-board { grid-template-columns: 1fr; } }
