@@ -87,7 +87,7 @@ describe('renderMenu', () => {
   test('zeigt Name, Rubriken, Gerichte und Preise', () => {
     const html = renderMenu(menu(), 'https://breisgaudigital.de');
     for (const s of ['Sichelschmiede', 'Vorspeisen', 'Tomatensuppe', '6,50', 'Hauptgerichte', 'href="#k2"']) assert.ok(html.includes(s), s);
-    assert.ok(!html.includes('<script'));
+    assert.ok(!html.includes('menu-order'));
   });
 
   test('maskiert Inhalt aus der Datenbank', () => {
