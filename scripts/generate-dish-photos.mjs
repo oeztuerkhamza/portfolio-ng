@@ -6,6 +6,10 @@
  *   node scripts/generate-dish-photos.mjs --url … --only maultaschen,tiramisu --force
  *   node scripts/generate-dish-photos.mjs --list
  *
+ * Referenzbild: liegt scripts/assets/plate-reference.jpg, wird es als Image Prompt
+ * mitgegeben (Teller, Tisch und Wand bleiben dann gleich). --make-reference <n> erzeugt n
+ * Kandidaten (leerer Teller) nach scripts/assets/candidates/; --no-reference schaltet es ab,
+ * --ref-weight <0-2> (0.6) und --ref-stop <0-1> (0.5) stellen die Stärke ein.
  * Optionen: --out <Ordner> (public/menu/sichelschmiede), --seed <Zahl> (Start,
  * je Gericht +1), --performance Quality|Speed (Quality), --force (vorhandene
  * Bilder neu erzeugen). Ohne --force wird übersprungen, was schon da ist; ein
@@ -20,7 +24,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { DISHES, NEGATIVE, PROMPT_PREFIX, PROMPT_SUFFIX } from './dish-photos.mjs';
+import { DISHES, NEGATIVE, PROMPT_PREFIX, PROMPT_SUFFIX, REFERENCE_PROMPT } from './dish-photos.mjs';
 
 const args = process.argv.slice(2);
 const opt = (name, def) => {
@@ -74,6 +78,24 @@ const aspect = choices(ID.aspect).find((c) => c.startsWith('1280×768'));
 if (!aspect) throw new Error('Seitenverhältnis 1280×768 fehlt in dieser Fooocus-Version.');
 const wantStyles = ['Fooocus Photograph', 'Fooocus Enhance'].filter((s) => choices(ID.styles).includes(s));
 
+// Image-Prompt-Felder von Fooocus (Position in der Eingabeliste, per Beschriftung geprüft)
+const IP = {
+  enable: dep.inputs[31],
+  tab: dep.inputs[32],
+  image: dep.inputs[81],
+  stop: dep.inputs[82],
+  weight: dep.inputs[83],
+  type: dep.inputs[84],
+};
+if (comps.get(IP.image)?.props?.label !== 'Image' || comps.get(IP.type)?.props?.label !== 'Type') {
+  throw new Error('Image-Prompt-Felder nicht gefunden: andere Fooocus-Version?');
+}
+const refPath = String(opt('reference', 'scripts/assets/plate-reference.jpg'));
+const useRef = !flag('no-reference') && !flag('make-reference') && existsSync(refPath);
+const refData = useRef ? `data:image/jpeg;base64,${(await readFile(refPath)).toString('base64')}` : null;
+const refWeight = Number(opt('ref-weight', 0.6));
+const refStop = Number(opt('ref-stop', 0.5));
+
 function payload(prompt, seed) {
   const over = {
     [ID.prompt]: prompt,
@@ -84,6 +106,7 @@ function payload(prompt, seed) {
     [ID.count]: 1,
     [ID.format]: 'jpeg',
     [ID.seed]: String(seed),
+    ...(refData ? { [IP.enable]: true, [IP.tab]: 'ip', [IP.image]: refData, [IP.stop]: refStop, [IP.weight]: refWeight, [IP.type]: 'ImagePrompt' } : {}),
   };
   return dep.inputs.map((id) => {
     if (id in over) return over[id];
@@ -164,22 +187,25 @@ try {
   console.warn('Hinweis: sharp fehlt, Bilder werden unverkleinert gespeichert.');
 }
 
-await mkdir(outDir, { recursive: true });
-const todo = DISHES.filter((d) => (!only || only.includes(d.slug)) && (force || !existsSync(join(outDir, `${d.slug}.jpg`))));
-console.log(`${todo.length} von ${DISHES.length} Gerichten, ${performance}, ${aspect.split(' ')[0]}`);
+const nRef = Number(opt('make-reference', 0));
+await mkdir(nRef ? 'scripts/assets/candidates' : outDir, { recursive: true });
+const todo = nRef
+  ? Array.from({ length: nRef }, (_, i) => ({ slug: `ref-${i + 1}`, raw: REFERENCE_PROMPT, outDir: 'scripts/assets/candidates' }))
+  : DISHES.filter((d) => (!only || only.includes(d.slug)) && (force || !existsSync(join(outDir, `${d.slug}.jpg`))));
+console.log(`${todo.length} ${nRef ? 'Referenzbilder' : `von ${DISHES.length} Gerichten`}, ${performance}, ${aspect.split(' ')[0]}${refData ? ', mit Referenzbild' : ''}`);
 
 let done = 0;
 const failed = [];
 for (const [i, d] of todo.entries()) {
-  const seed = seed0 + DISHES.indexOf(d);
-  const prompt = PROMPT_PREFIX + d.prompt + PROMPT_SUFFIX;
+  const seed = seed0 + (nRef ? i * 7 : DISHES.indexOf(d));
+  const prompt = d.raw ?? PROMPT_PREFIX + d.prompt + PROMPT_SUFFIX;
   const t0 = Date.now();
   let ok = false;
   for (let attempt = 1; attempt <= 3 && !ok; attempt++) {
     try {
       let buf = await generate(prompt, seed + (attempt - 1) * 1000);
       if (sharp) buf = await sharp(buf).resize({ width: 1280, withoutEnlargement: true }).jpeg({ quality: 82, mozjpeg: true }).toBuffer();
-      await writeFile(join(outDir, `${d.slug}.jpg`), buf);
+      await writeFile(join(d.outDir ?? outDir, `${d.slug}.jpg`), buf);
       ok = true;
       done++;
       console.log(`[${i + 1}/${todo.length}] ${d.slug} ✓ ${Math.round((Date.now() - t0) / 1000)} s, ${Math.round(buf.length / 1024)} KB`);

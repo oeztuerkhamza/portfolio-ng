@@ -14,6 +14,79 @@ import { CARD_LANGS, CARD_THEMES, esc, httpsUrl, mailAddress, telHref, type Card
  * gespeichert wird die geprüfte Form `MenuData`.
  */
 
+export type Diet = 'vegan' | 'vegetarian';
+
+/** Die 14 kennzeichnungspflichtigen Allergene (EU-Lebensmittelinformationsverordnung). */
+export const ALLERGENS = [
+  'gluten',
+  'krebstiere',
+  'eier',
+  'fisch',
+  'erdnuesse',
+  'soja',
+  'milch',
+  'schalenfruechte',
+  'sellerie',
+  'senf',
+  'sesam',
+  'sulfite',
+  'lupinen',
+  'weichtiere',
+] as const;
+export type Allergen = (typeof ALLERGENS)[number];
+
+const ALLERGEN_ALIASES: Record<string, Allergen> = {
+  gluten: 'gluten', weizen: 'gluten',
+  krebstiere: 'krebstiere', crustaceans: 'krebstiere',
+  eier: 'eier', ei: 'eier', egg: 'eier', eggs: 'eier',
+  fisch: 'fisch', fish: 'fisch',
+  erdnuesse: 'erdnuesse', erdnuss: 'erdnuesse', peanuts: 'erdnuesse',
+  soja: 'soja', soy: 'soja',
+  milch: 'milch', laktose: 'milch', milk: 'milch',
+  schalenfruechte: 'schalenfruechte', nuesse: 'schalenfruechte', nuss: 'schalenfruechte', nuts: 'schalenfruechte',
+  sellerie: 'sellerie', celery: 'sellerie',
+  senf: 'senf', mustard: 'senf',
+  sesam: 'sesam', sesame: 'sesam',
+  sulfite: 'sulfite', schwefeldioxid: 'sulfite', sulphites: 'sulfite',
+  lupinen: 'lupinen', lupine: 'lupinen',
+  weichtiere: 'weichtiere', molluscs: 'weichtiere',
+};
+
+const DIET_WORDS: Record<string, Diet> = { vegan: 'vegan', vegetarisch: 'vegetarian', vegetarian: 'vegetarian', veg: 'vegetarian', vejetaryen: 'vegetarian' };
+
+/**
+ * Angaben zu einem Gericht in eckigen Klammern, z. B. `[vegetarisch; milch, eier]`:
+ * vegan/vegetarisch und die Allergene, die das Gericht enthält. `keine` heißt: geprüft, enthält
+ * keines der 14. Fehlt die Allergen-Angabe ganz, gilt sie als unbekannt — der Filter zeigt so ein
+ * Gericht dann nie als „ohne Allergen" an.
+ */
+export function parseTags(raw: string): { diet?: Diet; allergens?: Allergen[] } {
+  let diet: Diet | undefined;
+  let allergens: Allergen[] | undefined;
+  for (const tok of raw.replace(/^\[|\]$/g, '').split(/[;,]/)) {
+    const k = tok.trim().toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
+    if (!k) continue;
+    if (DIET_WORDS[k]) {
+      if (diet !== 'vegan') diet = DIET_WORDS[k];
+    } else if (k === 'keine' || k === 'none' || k === 'allergenfrei') {
+      allergens ??= [];
+    } else if (ALLERGEN_ALIASES[k]) {
+      allergens ??= [];
+      if (!allergens.includes(ALLERGEN_ALIASES[k]!)) allergens.push(ALLERGEN_ALIASES[k]!);
+    }
+  }
+  if (allergens) allergens.sort((a, b) => ALLERGENS.indexOf(a) - ALLERGENS.indexOf(b));
+  return { ...(diet ? { diet } : {}), ...(allergens ? { allergens } : {}) };
+}
+
+/** Umkehrung von `parseTags` für das Textformat im Portal; leer, wenn nichts angegeben ist. */
+export function tagsText(i: { diet?: Diet; allergens?: Allergen[] }): string {
+  const parts: string[] = [];
+  if (i.diet) parts.push(i.diet === 'vegan' ? 'vegan' : 'vegetarisch');
+  if (i.allergens) parts.push(i.allergens.length ? i.allergens.join(', ') : 'keine');
+  return parts.length ? `[${parts.join('; ')}]` : '';
+}
+
 export interface MenuItem {
   name: string;
   /** Freitext, damit „9,50", „ab 12" oder „0,3 l 4,20 / 0,5 l 5,80" möglich sind. */
@@ -21,6 +94,9 @@ export interface MenuItem {
   desc?: string;
   /** Foto des Gerichts, https. */
   img?: string;
+  diet?: Diet;
+  /** Enthaltene Allergene; `[]` = geprüft, keines. Fehlt das Feld, ist es unbekannt. */
+  allergens?: Allergen[];
 }
 
 export interface MenuCategory {
@@ -79,7 +155,18 @@ export function menuData(input: unknown): MenuData | null {
       const it = (i && typeof i === 'object' ? i : {}) as Record<string, unknown>;
       const itemName = text(it['name'], 160);
       if (!itemName) continue;
-      items.push({ name: itemName, price: text(it['price'], 60), desc: text(it['desc'], 400), img: httpsUrl(it['img']) ?? undefined });
+      const diet = it['diet'] === 'vegan' || it['diet'] === 'vegetarian' ? (it['diet'] as Diet) : undefined;
+      const allergens = Array.isArray(it['allergens'])
+        ? ALLERGENS.filter((a) => (it['allergens'] as unknown[]).includes(a))
+        : undefined;
+      items.push({
+        name: itemName,
+        price: text(it['price'], 60),
+        desc: text(it['desc'], 400),
+        img: httpsUrl(it['img']) ?? undefined,
+        ...(diet ? { diet } : {}),
+        ...(allergens ? { allergens } : {}),
+      });
     }
     categories.push({ title, note: text(cat['note'], 300), items });
   }
@@ -202,7 +289,8 @@ export const newTableToken = () => randomBytes(18).toString('base64url');
  *   Bruschetta | 7,00
  *
  * „#" eröffnet eine Rubrik, jede weitere Zeile ist ein Gericht:
- * Name | Preis | Beschreibung | https://…/foto.jpg (Foto zuletzt, optional).
+ * Name | Preis | Beschreibung | [vegetarisch; milch, eier] | https://…/foto.jpg
+ * (Angaben und Foto optional; die Angaben stehen vor dem Foto).
  * Zeilen vor der ersten Rubrik werden ignoriert.
  */
 export function parseMenuText(src: unknown): MenuCategory[] {
@@ -220,8 +308,10 @@ export function parseMenuText(src: unknown): MenuCategory[] {
     const parts = t.split('|').map((p) => p.trim());
     // Ein Foto steht als https-Adresse an letzter Stelle (nach dem Namen).
     const img = parts.length > 1 && /^https:\/\/\S+$/.test(parts[parts.length - 1]!) ? parts.pop() : undefined;
+    // Davor (oder allein am Ende) können Angaben in eckigen Klammern stehen: [vegetarisch; milch, eier].
+    const tags = parts.length > 1 && /^\[[^\]]*\]$/.test(parts[parts.length - 1]!) ? parseTags(parts.pop()!) : {};
     const [name, price, ...desc] = parts;
-    if (name) cat.items.push({ name, price: price || undefined, desc: desc.join(' | ') || undefined, ...(img ? { img } : {}) });
+    if (name) cat.items.push({ name, price: price || undefined, desc: desc.join(' | ') || undefined, ...(img ? { img } : {}), ...tags });
   }
   return out;
 }
@@ -233,7 +323,7 @@ export function menuText(categories: MenuCategory[]): string {
       [
         `# ${c.title}${c.note ? ` | ${c.note}` : ''}`,
         ...c.items.map((i) =>
-          (i.img ? [i.name, i.price ?? '', i.desc ?? '', i.img] : [i.name, i.price ?? '', i.desc ?? ''])
+          [i.name, i.price ?? '', i.desc ?? '', ...(tagsText(i) ? [tagsText(i)] : []), ...(i.img ? [i.img] : [])]
             .join(' | ')
             .replace(/( \| )+$/, ''),
         ),
@@ -360,9 +450,69 @@ a:focus-visible,button:focus-visible{outline:2px solid ${t.accent};outline-offse
 .preview{margin:18px 0 0;padding:11px 14px;border-radius:12px;border:1px dashed ${t.accent};color:${t.dim};font-size:.8rem;text-align:center}
 .foot{margin:24px 0 0;text-align:center;font-size:.72rem;color:${t.dim}}
 .foot a{color:${t.dim}}
+[hidden]{display:none!important}
+.tag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;background:${t.soft};border:1px solid ${t.line};color:${t.accent};font:600 .68rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;vertical-align:.12em}
+.contains{margin:3px 0 0;color:${t.dim};font-size:.78rem}
+.filters{margin:18px 0 0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
+.chip{padding:6px 15px;border-radius:999px;border:1px solid ${t.line};background:${t.soft};color:${t.ink};font-family:inherit;font-weight:500;font-size:.82rem;line-height:1.4;cursor:pointer;list-style:none;transition:background .2s,color .2s}
+.chip::-webkit-details-marker{display:none}
+.chip[aria-pressed=true]{background:linear-gradient(135deg,${t.accent},${t.accent2});border-color:transparent;color:${t.onAccent};font-weight:600}
+.al{flex:1 1 100%}
+.al[open] .chip{border-color:${t.accent};color:${t.accent}}
+.alg{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px 14px;margin:10px 0 0;padding:12px 14px;background:${t.soft};border-radius:14px;font-size:.84rem}
+.alg label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.alg input{accent-color:${t.accent}}
+.fnote{margin:10px 0 0;color:${t.dim};font-size:.74rem;line-height:1.5}
+.nomatch{margin:22px 0;text-align:center;color:${t.dim}}
 @media (min-width:700px){body{padding:44px 20px 80px}.menu{padding:0 40px 34px}.hero{margin:0 -40px;padding:62px 40px 34px}.nav{margin:0 -40px;padding:12px 40px}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
 `;
+
+interface FilterLabels {
+  filter: string;
+  vegetarian: string;
+  vegan: string;
+  allergens: string;
+  without: string;
+  contains: string;
+  note: string;
+  none: string;
+}
+
+const FILTER_LABELS: Record<CardLang, FilterLabels> = {
+  de: { filter: 'Filter', vegetarian: 'Vegetarisch', vegan: 'Vegan', allergens: 'Allergene', without: 'ohne', contains: 'Enthält', note: 'Angaben ohne Gewähr. Bei Allergien fragen Sie bitte den Service; Gerichte ohne Angabe werden beim Filtern ausgeblendet.', none: 'Keine Gerichte entsprechen dem Filter.' },
+  en: { filter: 'Filter', vegetarian: 'Vegetarian', vegan: 'Vegan', allergens: 'Allergens', without: 'without', contains: 'Contains', note: 'Information without guarantee. If you have an allergy, please ask the staff; dishes without information are hidden when filtering.', none: 'No dishes match the filter.' },
+  tr: { filter: 'Filtre', vegetarian: 'Vejetaryen', vegan: 'Vegan', allergens: 'Alerjenler', without: 'içermeyen:', contains: 'İçerir', note: 'Bilgiler garanti değildir. Alerjiniz varsa lütfen servise sorun; bilgisi olmayan yemekler filtrelemede gizlenir.', none: 'Filtreye uyan yemek yok.' },
+  fr: { filter: 'Filtre', vegetarian: 'Végétarien', vegan: 'Végan', allergens: 'Allergènes', without: 'sans', contains: 'Contient', note: 'Informations sans garantie. En cas d’allergie, demandez au personnel ; les plats sans information sont masqués lors du filtrage.', none: 'Aucun plat ne correspond au filtre.' },
+  ku: { filter: 'Filter', vegetarian: 'Vegetarian', vegan: 'Vegan', allergens: 'Allergens', without: 'without', contains: 'Contains', note: 'Information without guarantee. If you have an allergy, please ask the staff; dishes without information are hidden when filtering.', none: 'No dishes match the filter.' },
+};
+
+const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr', Record<Allergen, string>> = {
+  de: { gluten: 'Gluten', krebstiere: 'Krebstiere', eier: 'Eier', fisch: 'Fisch', erdnuesse: 'Erdnüsse', soja: 'Soja', milch: 'Milch', schalenfruechte: 'Schalenfrüchte', sellerie: 'Sellerie', senf: 'Senf', sesam: 'Sesam', sulfite: 'Sulfite', lupinen: 'Lupinen', weichtiere: 'Weichtiere' },
+  en: { gluten: 'Gluten', krebstiere: 'Crustaceans', eier: 'Eggs', fisch: 'Fish', erdnuesse: 'Peanuts', soja: 'Soy', milch: 'Milk', schalenfruechte: 'Tree nuts', sellerie: 'Celery', senf: 'Mustard', sesam: 'Sesame', sulfite: 'Sulphites', lupinen: 'Lupin', weichtiere: 'Molluscs' },
+  tr: { gluten: 'Gluten', krebstiere: 'Kabuklular', eier: 'Yumurta', fisch: 'Balık', erdnuesse: 'Yer fıstığı', soja: 'Soya', milch: 'Süt', schalenfruechte: 'Kabuklu yemişler', sellerie: 'Kereviz', senf: 'Hardal', sesam: 'Susam', sulfite: 'Sülfit', lupinen: 'Acı bakla', weichtiere: 'Yumuşakçalar' },
+  fr: { gluten: 'Gluten', krebstiere: 'Crustacés', eier: 'Œufs', fisch: 'Poisson', erdnuesse: 'Arachides', soja: 'Soja', milch: 'Lait', schalenfruechte: 'Fruits à coque', sellerie: 'Céleri', senf: 'Moutarde', sesam: 'Sésame', sulfite: 'Sulfites', lupinen: 'Lupin', weichtiere: 'Mollusques' },
+};
+const allergenLabels = (lang: CardLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' : lang];
+
+/** Filter auf der Karte: blendet Gerichte aus, die nicht passen. Gerichte ohne Angabe fallen heraus. */
+const FILTER_SCRIPT = `(function(){var f=document.querySelector('.filters');if(!f)return;
+var diet=null,ex={};
+function ok(li){var d=li.getAttribute('data-d'),a=li.getAttribute('data-a');
+if(diet==='vegan'&&d!=='vegan')return false;
+if(diet==='vegetarian'&&d!=='vegan'&&d!=='vegetarian')return false;
+var k=Object.keys(ex).filter(function(x){return ex[x]});
+if(k.length){if(a===null)return false;var l=a.split(' ');for(var i=0;i<k.length;i++)if(l.indexOf(k[i])>-1)return false}
+return true}
+function apply(){var any=0;document.querySelectorAll('main section').forEach(function(s){var n=0;
+s.querySelectorAll('li').forEach(function(li){var v=ok(li);li.hidden=!v;if(v)n++});s.hidden=!n;any+=n;
+var h=s.querySelector('h2'),a=h&&document.querySelector('.nav a[href="#'+h.id+'"]');if(a)a.hidden=!n});
+f.querySelector('.nomatch').hidden=any>0}
+f.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-f');diet=diet===v?null:v;
+f.querySelectorAll('[data-f]').forEach(function(x){x.setAttribute('aria-pressed',String(x.getAttribute('data-f')===diet))});apply()})});
+f.querySelectorAll('input[type=checkbox]').forEach(function(c){c.addEventListener('change',function(){ex[c.value]=c.checked;apply()})});
+})();`;
 
 const anchor = (i: number) => `k${i + 1}`;
 
@@ -468,6 +618,23 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const ordering = !!opts.table && !menu.preview;
   const keep = ordering ? `&amp;t=${encodeURIComponent(opts.table!.token)}` : '';
   const ol = ORDER_LABELS[lang];
+  const fl = FILTER_LABELS[lang];
+  const al = allergenLabels(lang);
+  const allItems = d.categories.flatMap((c) => c.items);
+  const hasDiet = allItems.some((i) => i.diet);
+  const hasAllergens = allItems.some((i) => i.allergens);
+  const filtersUi =
+    hasDiet || hasAllergens
+      ? `<div class="filters" role="group" aria-label="${esc(fl.filter)}">
+<div class="chips">${hasDiet ? `<button type="button" class="chip" data-f="vegetarian" aria-pressed="false">${esc(fl.vegetarian)}</button><button type="button" class="chip" data-f="vegan" aria-pressed="false">${esc(fl.vegan)}</button>` : ''}${
+          hasAllergens
+            ? `<details class="al"><summary class="chip">${esc(fl.allergens)}</summary><div class="alg">${ALLERGENS.map((a) => `<label><input type="checkbox" value="${a}" /> ${esc(fl.without)} ${esc(al[a])}</label>`).join('')}</div></details>`
+            : ''
+        }</div>
+<p class="fnote">${esc(fl.note)}</p>
+<p class="nomatch" hidden>${esc(fl.none)}</p>
+</div>`
+      : '';
 
   const body = cats
     .map(
@@ -478,7 +645,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
             ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
           const img = httpsUrl(it.img);
-          return `<li${img ? ' class="has-img"' : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${esc(it.name)}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}</div></li>`;
+          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
         })
         .join('')}</ul></section>`,
     )
@@ -535,6 +702,7 @@ ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
 ${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c }, i) => `<a href="#${anchor(i)}">${esc(c.title)}</a>`).join('')}</nav>` : ''}
+${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}
 ${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
 ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
@@ -542,6 +710,7 @@ ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 </main>
 ${orderUi}
 ${cats.length > 1 ? `<script>${NAV_SCRIPT}</script>` : ''}
+${filtersUi ? `<script>${FILTER_SCRIPT}</script>` : ''}
 </body></html>`;
 }
 
@@ -596,26 +765,26 @@ Elmalı gazoz` },
       {
         title: 'Vorspeisen',
         items: [
-          { name: 'Tomatencremesuppe', price: '5,50', desc: 'mit Basilikum und Croutons', img: img('suppe') },
-          { name: 'Gemischter Blattsalat', price: '6,90', desc: 'Hausdressing, geröstete Kerne' },
+          { name: 'Tomatencremesuppe', price: '5,50', diet: 'vegetarian', allergens: ['gluten', 'milch'], desc: 'mit Basilikum und Croutons', img: img('suppe') },
+          { name: 'Gemischter Blattsalat', price: '6,90', diet: 'vegan', allergens: ['senf'], desc: 'Hausdressing, geröstete Kerne' },
         ],
       },
       {
         title: 'Hauptgerichte',
         note: 'Vegetarische Gerichte sind gekennzeichnet.',
         items: [
-          { name: 'Käsespätzle', price: '12,90', desc: 'mit Röstzwiebeln und Salat (vegetarisch)', img: img('spaetzle') },
-          { name: 'Schäufele', price: '16,90', desc: 'mit Kartoffelsalat und Sauerkraut', img: img('schaeufele') },
-          { name: 'Gemüsepfanne', price: '11,50', desc: 'saisonales Gemüse, Kräuterquark (vegetarisch)' },
+          { name: 'Käsespätzle', price: '12,90', diet: 'vegetarian', allergens: ['gluten', 'eier', 'milch'], desc: 'mit Röstzwiebeln und Salat (vegetarisch)', img: img('spaetzle') },
+          { name: 'Schäufele', price: '16,90', allergens: ['sellerie', 'senf'], desc: 'mit Kartoffelsalat und Sauerkraut', img: img('schaeufele') },
+          { name: 'Gemüsepfanne', price: '11,50', diet: 'vegetarian', allergens: ['milch', 'sellerie'], desc: 'saisonales Gemüse, Kräuterquark (vegetarisch)' },
         ],
       },
-      { title: 'Dessert', items: [{ name: 'Schwarzwälder Kirsch', price: '5,90', desc: 'Stück vom Blech, mit Sahne', img: img('dessert') }] },
+      { title: 'Dessert', items: [{ name: 'Schwarzwälder Kirsch', price: '5,90', diet: 'vegetarian', allergens: ['gluten', 'eier', 'milch'], desc: 'Stück vom Blech, mit Sahne', img: img('dessert') }] },
       {
         title: 'Getränke',
         items: [
-          { name: 'Hauswein, weiß oder rot', price: '0,2 l 4,80', img: img('wein') },
-          { name: 'Mineralwasser', price: '0,75 l 4,20' },
-          { name: 'Apfelschorle', price: '0,3 l 3,40' },
+          { name: 'Hauswein, weiß oder rot', price: '0,2 l 4,80', diet: 'vegan', allergens: ['sulfite'], img: img('wein') },
+          { name: 'Mineralwasser', price: '0,75 l 4,20', diet: 'vegan', allergens: [] },
+          { name: 'Apfelschorle', price: '0,3 l 3,40', diet: 'vegan', allergens: [] },
         ],
       },
     ],

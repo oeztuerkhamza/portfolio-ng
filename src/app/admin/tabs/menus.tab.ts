@@ -146,6 +146,10 @@ interface Menu {
         </label>
         <p class="adm-muted small">
           <code># Rubrik | not</code> yeni bölüm açar; altındaki her satır <code>Ad | Fiyat | Açıklama | https://…/foto.jpg</code> (fiyat, açıklama ve foto isteğe bağlı; foto en sonda).
+          <br />Vejetaryen/vegan ve alerjen filtresi için açıklamadan sonra köşeli parantez ekleyin:
+          <code>Ad | Fiyat | Açıklama | [vegetarisch; milch, eier, gluten]</code> (foto varsa ondan önce).
+          <code>vegan</code>/<code>vegetarisch</code> ve içerdiği alerjenler (gluten, krebstiere, eier, fisch, erdnuesse, soja, milch, schalenfruechte, sellerie, senf, sesam, sulfite, lupinen, weichtiere);
+          alerjeni olmayan yemeğe <code>[keine]</code> yazın. <strong>Parantezi olmayan yemek filtrede gizlenir</strong>, yani bilinmeyen alerjen "yok" sayılmaz.
         </p>
         @for (l of otherLangs(); track l.id) {
           <label class="adm-field">Çeviri: {{ l.label }} (isteğe bağlı)

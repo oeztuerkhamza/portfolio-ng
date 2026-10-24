@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { buildOrder, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
+import { ALLERGENS, buildOrder, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -215,5 +215,63 @@ describe('Bestellen am Tisch', () => {
     assert.ok(a.length >= 20);
     assert.notEqual(a, newTableToken());
     assert.match(a, /^[A-Za-z0-9_-]+$/);
+  });
+});
+
+describe('Ernährung und Allergene', () => {
+  test('Angaben in eckigen Klammern', () => {
+    assert.deepEqual(parseTags('[vegetarisch; Milch, Eier, Gluten]'), { diet: 'vegetarian', allergens: ['gluten', 'eier', 'milch'] });
+    assert.deepEqual(parseTags('[vegan]'), { diet: 'vegan' });
+    assert.deepEqual(parseTags('[keine]'), { allergens: [] });
+    assert.deepEqual(parseTags('[vegan; vegetarisch]'), { diet: 'vegan' });
+    assert.deepEqual(parseTags('[Erdnüsse, Schalenfrüchte, Unsinn]'), { allergens: ['erdnuesse', 'schalenfruechte'] });
+    assert.deepEqual(parseTags('[]'), {});
+  });
+
+  test('Text → Karte → Text bleibt stabil, mit Foto', () => {
+    const src = '# A\nSuppe | 5,00 | mit Brot | [vegetarisch; gluten] | https://x.de/s.jpg\nWasser | 2,00 | | [vegan; keine]\nNur Preis | 3,00\nOhne Preis | | | [milch]';
+    const [cat] = parseMenuText(src);
+    assert.deepEqual(cat!.items[0], { name: 'Suppe', price: '5,00', desc: 'mit Brot', img: 'https://x.de/s.jpg', diet: 'vegetarian', allergens: ['gluten'] });
+    assert.deepEqual(cat!.items[1]!.allergens, []);
+    assert.equal(cat!.items[2]!.allergens, undefined);
+    assert.deepEqual(cat!.items[3]!.allergens, ['milch']);
+    const again = parseMenuText(menuText([cat!]));
+    assert.deepEqual(again[0], cat);
+    assert.equal(tagsText({}), '');
+  });
+
+  test('menuData übernimmt nur bekannte Werte', () => {
+    const data = menuData({ name: 'T', categories: [{ title: 'A', items: [{ name: 'X', diet: 'vegan', allergens: ['gluten', 'quatsch'] }, { name: 'Y', diet: 'bio' }] }] })!;
+    assert.equal(data.categories[0]!.items[0]!.diet, 'vegan');
+    assert.deepEqual(data.categories[0]!.items[0]!.allergens, ['gluten']);
+    assert.equal(data.categories[0]!.items[1]!.diet, undefined);
+    assert.equal(data.categories[0]!.items[1]!.allergens, undefined);
+    assert.equal(ALLERGENS.length, 14);
+  });
+
+  test('Filterleiste nur, wenn Angaben da sind; Gerichte tragen ihre Angaben', () => {
+    const plain = renderMenu({ slug: 'x', lang: 'de', theme: 'warm', preview: false, data: menuData({ name: 'T', categories: parseMenuText('# A\nX | 1') })! });
+    assert.doesNotMatch(plain, /class="filters"|FILTER|data-f=/);
+    const tagged = renderMenu({ slug: 'x', lang: 'de', theme: 'warm', preview: false, data: menuData({ name: 'T', categories: parseMenuText('# A\nX | 1 | | [vegan; keine]\nY | 2 | | [milch, gluten]\nZ | 3') })! });
+    assert.match(tagged, /class="filters"/);
+    assert.match(tagged, /data-f="vegan"/);
+    assert.match(tagged, /data-d="vegan" data-a=""/);
+    assert.match(tagged, /data-a="gluten milch"/);
+    assert.match(tagged, /Enthält: Gluten, Milch/);
+    assert.match(tagged, /value="gluten"/);
+    // Z hat keine Angaben: kein data-a, damit der Filter es nie als „ohne Allergen" zeigt
+    assert.ok(/<li><div class="txt"><div class="row"><span class="name">Z/.test(tagged));
+  });
+
+  test('nur Ernährung angegeben: keine Allergen-Auswahl', () => {
+    const html = renderMenu({ slug: 'x', lang: 'de', theme: 'warm', preview: false, data: menuData({ name: 'T', categories: parseMenuText('# A\nX | 1 | | [vegan]') })! });
+    assert.match(html, /data-f="vegetarian"/);
+    assert.doesNotMatch(html, /class="al"/);
+  });
+
+  test('Demo-Karte zeigt die Filter', () => {
+    const html = renderMenu(demoMenu('https://x.de'));
+    assert.match(html, /class="filters"/);
+    assert.match(html, /ohne Sulfite/);
   });
 });
