@@ -328,6 +328,13 @@ export async function menuPage(req: Request, res: Response) {
   res.set('Cache-Control', 'no-store');
   res.set('Referrer-Policy', 'no-referrer');
   res.set('X-Content-Type-Options', 'nosniff');
+  // Die Seite bringt ihr Skript und ihre Stile selbst mit und holt nur Bilder von außen;
+  // Bestellungen gehen ausschließlich an die eigene Domain. Einbetten in fremde Seiten ist verboten.
+  res.set(
+    'Content-Security-Policy',
+    "default-src 'none'; img-src 'self' https: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+  );
+  res.set('X-Frame-Options', 'DENY');
   const slug = String(req.params['slug'] ?? '').toLowerCase();
   if (slug === DEMO_SLUG) return res.type('html').send(renderMenu(demoMenu(origin(req)), origin(req), { lang: str(req.query['l'], 5) ?? undefined }));
   const sql = db();
@@ -794,16 +801,17 @@ api.post(
     const data = menuData(t['data']);
     const order = data && buildOrder(data, req.body);
     if (!order) return res.status(400).json({ error: 'invalid_order' });
-    const [busy] = await sql`
-      select count(*) filter (where created_at > now() - interval '30 seconds')::int as recent,
-             count(*) filter (where status = 'new')::int as open
-      from menu_orders where table_id = ${t['id']}`;
-    if ((busy?.['recent'] ?? 0) > 0 || (busy?.['open'] ?? 0) >= 5) return res.status(429).json({ error: 'slow_down' });
+    // Prüfen und Einfügen in einer Anweisung: zwei gleichzeitige Anfragen vom selben Tisch
+    // dürfen die Bremse nicht beide passieren.
+    res.set('Cache-Control', 'no-store');
     const [row] = await sql`
       insert into menu_orders (menu_id, table_id, table_label, items, total_cents, note)
-      values (${t['menu_id']}, ${t['id']}, ${t['label']}, ${sql.json(order.lines as any)}, ${order.totalCents}, ${order.note})
+      select ${t['menu_id']}, ${t['id']}, ${t['label']}, ${sql.json(order.lines as any)}, ${order.totalCents}, ${order.note}
+      where not exists (select 1 from menu_orders where table_id = ${t['id']} and created_at > now() - interval '30 seconds')
+        and (select count(*) from menu_orders where table_id = ${t['id']} and status = 'new') < 5
       returning id`;
-    return res.status(201).json({ id: row?.['id'] });
+    if (!row) return res.status(429).json({ error: 'slow_down' });
+    return res.status(201).json({ id: row['id'] });
   }),
 );
 
