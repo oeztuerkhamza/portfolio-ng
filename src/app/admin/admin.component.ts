@@ -7,6 +7,7 @@ import { EnquiriesTab } from './tabs/enquiries.tab';
 import { CustomersTab } from './tabs/customers.tab';
 import { SubscriptionsTab } from './tabs/subscriptions.tab';
 import { LinksTab } from './tabs/links.tab';
+import { MenusTab } from './tabs/menus.tab';
 import { CardsTab } from './tabs/cards.tab';
 import { ReviewsTab } from './tabs/reviews.tab';
 import { PricesTab } from './tabs/prices.tab';
@@ -15,7 +16,7 @@ import { SettingsTab } from './tabs/settings.tab';
 import { InvoicesTab } from './tabs/invoices.tab';
 import { InvitesTab } from './tabs/invites.tab';
 
-type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'invites' | 'reviews' | 'prices' | 'orders' | 'settings';
+type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices' | 'cards' | 'links' | 'menus' | 'invites' | 'reviews' | 'prices' | 'orders' | 'settings';
 
 /**
  * Admin-Portal unter /admin. Läuft nur im Browser; der Server liefert
@@ -25,7 +26,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
   selector: 'app-admin',
   standalone: true,
   encapsulation: ViewEncapsulation.None,
-  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, ReviewsTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab, InvitesTab],
+  imports: [OverviewTab, EnquiriesTab, CustomersTab, SubscriptionsTab, CardsTab, LinksTab, MenusTab, ReviewsTab, PricesTab, OrdersTab, SettingsTab, InvoicesTab, InvitesTab],
   styleUrl: './admin.component.scss',
   template: `
     <div class="adm">
@@ -119,6 +120,7 @@ type Tab = 'overview' | 'enquiries' | 'customers' | 'subscriptions' | 'invoices'
             @case ('invoices') { <adm-invoices /> }
             @case ('cards') { <adm-cards /> }
             @case ('links') { <adm-links /> }
+            @case ('menus') { <adm-menus /> }
             @case ('invites') { <adm-invites /> }
             @case ('reviews') { <adm-reviews /> }
             @case ('prices') { <adm-prices /> }
@@ -142,6 +144,7 @@ export class AdminComponent implements OnInit {
     { id: 'invoices', label: 'Faturalar' },
     { id: 'cards', label: 'NFC kartları' },
     { id: 'links', label: 'NFC linkleri' },
+    { id: 'menus', label: 'Menüler' },
     { id: 'invites', label: 'Davetiyeler' },
     { id: 'reviews', label: 'Google yorumları' },
     { id: 'prices', label: 'Fiyatlar' },

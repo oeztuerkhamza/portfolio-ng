@@ -1,5 +1,6 @@
 {
   "/api": { "target": "http://localhost:4301", "secure": false, "logLevel": "warn" },
   "/k": { "target": "http://localhost:4301", "secure": false, "logLevel": "warn" },
+  "/m": { "target": "http://localhost:4301", "secure": false, "logLevel": "warn" },
   "/r": { "target": "http://localhost:4301", "secure": false, "logLevel": "warn" }
 }
