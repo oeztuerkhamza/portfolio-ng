@@ -25,7 +25,7 @@ import {
   vcard,
 } from './cards';
 import { h, sqlOr503, str, UUID } from './http';
-import { DEMO_SLUG, MENU_LANGS, MENU_THEMES, type Menu, demoMenu, menuData, menuText, parseMenuText, renderMenu } from './menus';
+import { DEMO_SLUG, MENU_LANGS, MENU_THEMES, type Menu, buildOrder, demoMenu, menuData, menuText, newTableToken, parseMenuText, renderMenu } from './menus';
 import { ALLOWED_TYPES, deleteImage, uploadImage } from './storage';
 import { invoices } from './invoices';
 import { adminInvites, invites } from './invites';
@@ -329,17 +329,17 @@ export async function menuPage(req: Request, res: Response) {
   res.set('Referrer-Policy', 'no-referrer');
   res.set('X-Content-Type-Options', 'nosniff');
   const slug = String(req.params['slug'] ?? '').toLowerCase();
-  if (slug === DEMO_SLUG) return res.type('html').send(renderMenu(demoMenu(origin(req)), origin(req)));
+  if (slug === DEMO_SLUG) return res.type('html').send(renderMenu(demoMenu(origin(req)), origin(req), { lang: str(req.query['l'], 5) ?? undefined }));
   const sql = db();
   if (!sql || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.redirect(302, '/');
   const token = str(req.query['vorschau'], 40);
   try {
     const [row] = token
-      ? await sql`select id, slug, lang, theme, data, active from menus where slug = ${slug}`
+      ? await sql`select id, slug, lang, theme, data, active, ordering from menus where slug = ${slug}`
       : await sql`
-          with m as (select id, slug, lang, theme, data, active from menus where slug = ${slug} and active),
+          with m as (select id, slug, lang, theme, data, active, ordering from menus where slug = ${slug} and active),
                s as (insert into scans (menu_id, device) select id, ${deviceOf(req)} from m)
-          select id, slug, lang, theme, data, active from m`;
+          select id, slug, lang, theme, data, active, ordering from m`;
     if (!row || !cardVisible(row['active'], token, row['id'])) return res.redirect(302, '/');
     const data = menuData(row['data']);
     if (!data) return res.redirect(302, '/');
@@ -350,7 +350,14 @@ export async function menuPage(req: Request, res: Response) {
       preview: row['active'] !== true,
       data,
     };
-    return res.type('html').send(renderMenu(menu, origin(req)));
+    // Bestellen nur mit gültigem Tischkürzel (aus dem QR-Code/NFC-Aufsteller auf dem Tisch).
+    let table: { label: string; token: string } | undefined;
+    const t = str(req.query['t'], 64);
+    if (t && row['ordering'] === true && row['active'] === true) {
+      const [tr] = await sql`select label from menu_tables where menu_id = ${row['id']} and token = ${t}`;
+      if (tr) table = { label: String(tr['label']), token: t };
+    }
+    return res.type('html').send(renderMenu(menu, origin(req), { lang: str(req.query['l'], 5) ?? undefined, table }));
   } catch (err) {
     console.error('[m]', err);
     return res.redirect(302, '/');
@@ -764,6 +771,42 @@ api.use('/invites', invites);
 
 api.use(express.json({ limit: '32kb' }));
 
+/**
+ * Bestellung vom Tisch: POST /api/menu-order. Angenommen wird sie nur mit dem
+ * geheimen Tischkürzel (steckt im QR-Code/NFC-Aufsteller auf genau diesem
+ * Tisch), bei aktiver Karte mit eingeschaltetem Bestellen. Namen und Preise
+ * kommen von der gespeicherten Karte, nicht vom Gast (siehe buildOrder).
+ * Bremsen: eine Bestellung je Tisch alle 30 s, höchstens 5 offene je Tisch.
+ */
+api.post(
+  '/menu-order',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    const slug = String(req.body?.slug ?? '').toLowerCase();
+    const token = str(req.body?.t, 64);
+    if (!token || !/^[a-z0-9-]{3,50}$/.test(slug)) return res.status(403).json({ error: 'forbidden' });
+    const [t] = await sql`
+      select t.id, t.label, m.id as menu_id, m.data
+      from menu_tables t join menus m on m.id = t.menu_id
+      where m.slug = ${slug} and m.active and m.ordering and t.token = ${token}`;
+    if (!t) return res.status(403).json({ error: 'forbidden' });
+    const data = menuData(t['data']);
+    const order = data && buildOrder(data, req.body);
+    if (!order) return res.status(400).json({ error: 'invalid_order' });
+    const [busy] = await sql`
+      select count(*) filter (where created_at > now() - interval '30 seconds')::int as recent,
+             count(*) filter (where status = 'new')::int as open
+      from menu_orders where table_id = ${t['id']}`;
+    if ((busy?.['recent'] ?? 0) > 0 || (busy?.['open'] ?? 0) >= 5) return res.status(429).json({ error: 'slow_down' });
+    const [row] = await sql`
+      insert into menu_orders (menu_id, table_id, table_label, items, total_cents, note)
+      values (${t['menu_id']}, ${t['id']}, ${t['label']}, ${sql.json(order.lines as any)}, ${order.totalCents}, ${order.note})
+      returning id`;
+    return res.status(201).json({ id: row?.['id'] });
+  }),
+);
+
 // ── Öffentlich: Anfrage speichern ──────────────────────────
 api.post(
   '/enquiry',
@@ -827,6 +870,13 @@ api.get(
       console.log('[cron] unbeanspruchte Bilder gelöscht:', uploads);
     } catch (err) {
       console.error('[cron] Bilder aufräumen', err);
+    }
+
+    // Tischbestellungen brauchen nach einem Monat niemand mehr.
+    try {
+      await sql`delete from menu_orders where created_at < now() - interval '30 days'`;
+    } catch (err) {
+      console.error('[cron] Bestellungen aufräumen', err);
     }
 
     // Bei derselben Gelegenheit die Bewertungen erneuern. Ein Fehlschlag
@@ -1497,6 +1547,9 @@ admin.get(
     if (!sql) return;
     const rows = await sql`
       select m.*, c.name as customer_name,
+        coalesce((select json_agg(json_build_object('id', t.id, 'label', t.label, 'token', t.token) order by t.label)
+                  from menu_tables t where t.menu_id = m.id), '[]'::json) as tables,
+        (select count(*)::int from menu_orders o where o.menu_id = m.id and o.status = 'new') as open_orders,
         count(s.id)::int as scans_total,
         (count(s.id) filter (where s.scanned_at > now() - interval '30 days'))::int as scans_30d,
         max(s.scanned_at) as last_scan
@@ -1512,7 +1565,7 @@ admin.get(
 
 /** Eingabe des Portals → geprüfte Felder; null, wenn der Name fehlt. */
 function menuFields(body: any) {
-  const data = menuData({ ...(body?.data ?? {}), categories: parseMenuText(body?.text) });
+  const data = menuData({ ...(body?.data ?? {}), translations: body?.translations, categories: parseMenuText(body?.text) });
   if (!data) return null;
   const theme = (MENU_THEMES as readonly string[]).includes(body?.theme) ? body.theme : 'warm';
   const lang = (MENU_LANGS as readonly string[]).includes(body?.lang) ? body.lang : 'de';
@@ -1553,6 +1606,10 @@ admin.patch(
       const [row] = await sql`update menus set active = ${b.active} where id = ${req.params['id']} returning *`;
       return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
     }
+    if (Object.keys(b).length === 1 && typeof b.ordering === 'boolean') {
+      const [row] = await sql`update menus set ordering = ${b.ordering} where id = ${req.params['id']} returning *`;
+      return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+    }
     const fields = menuFields(b);
     if (!fields) return res.status(400).json({ error: 'invalid_menu' });
     const [row] = await sql`
@@ -1573,6 +1630,79 @@ admin.delete(
     if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
     await sql`delete from menus where id = ${req.params['id']}`;
     return res.status(204).end();
+  }),
+);
+
+// Tische und Bestellungen der Speisekarten
+admin.post(
+  '/menus/:id/tables',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const label = str(req.body?.label, 40);
+    if (!label) return res.status(400).json({ error: 'invalid_label' });
+    try {
+      const [row] = await sql`
+        insert into menu_tables (menu_id, label, token) values (${req.params['id']}, ${label}, ${newTableToken()})
+        returning id, label, token`;
+      return res.status(201).json(row);
+    } catch (err) {
+      if ((err as { code?: string }).code === '23505') return res.status(409).json({ error: 'label_taken' });
+      throw err;
+    }
+  }),
+);
+
+/** Neues Kürzel: Fotos des alten QR-Codes funktionieren danach nicht mehr. */
+admin.post(
+  '/menu-tables/:id/rotate',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const [row] = await sql`update menu_tables set token = ${newTableToken()} where id = ${req.params['id']} returning id, label, token`;
+    return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
+  }),
+);
+
+admin.delete(
+  '/menu-tables/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    await sql`delete from menu_tables where id = ${req.params['id']}`;
+    return res.status(204).end();
+  }),
+);
+
+admin.get(
+  '/menus/:id/orders',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    return res.json(
+      await sql`
+        select id, created_at, table_label, items, total_cents, note, status
+        from menu_orders
+        where menu_id = ${req.params['id']} and (status in ('new', 'accepted') or created_at > now() - interval '12 hours')
+        order by created_at desc limit 100`,
+    );
+  }),
+);
+
+admin.patch(
+  '/menu-orders/:id',
+  h(async (req, res) => {
+    const sql = sqlOr503(res);
+    if (!sql) return;
+    if (!UUID.test(req.params['id'])) return res.status(400).json({ error: 'invalid_id' });
+    const status = req.body?.status;
+    if (!['new', 'accepted', 'done', 'cancelled'].includes(status)) return res.status(400).json({ error: 'invalid_status' });
+    const [row] = await sql`update menu_orders set status = ${status} where id = ${req.params['id']} returning id, status`;
+    return row ? res.json(row) : res.status(404).json({ error: 'not_found' });
   }),
 );
 

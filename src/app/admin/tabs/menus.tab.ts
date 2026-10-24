@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import qrcode from 'qrcode-generator';
 import { AdminApi, errorText } from '../admin-api.service';
 import { dateTime } from '../labels';
@@ -29,6 +29,30 @@ Bruschetta | 7,00
 # Hauptgerichte
 Schnitzel | 16,90 | mit Pommes und Salat`;
 
+interface Table {
+  id: string;
+  label: string;
+  token: string;
+}
+
+interface OrderLine {
+  name: string;
+  price?: string;
+  qty: number;
+}
+
+interface Order {
+  id: string;
+  created_at: string;
+  table_label: string;
+  items: OrderLine[];
+  total_cents: number | null;
+  note: string | null;
+  status: 'new' | 'accepted' | 'done' | 'cancelled';
+}
+
+const STATUS: Record<Order['status'], string> = { new: 'Yeni', accepted: 'Hazırlanıyor', done: 'Teslim edildi', cancelled: 'İptal' };
+
 interface Menu {
   id: string;
   slug: string;
@@ -37,7 +61,10 @@ interface Menu {
   customer_name: string | null;
   lang: Lang;
   theme: Theme;
-  data: Record<string, string | undefined>;
+  data: Record<string, string | Record<string, string> | undefined>;
+  ordering: boolean;
+  tables: Table[];
+  open_orders: number;
   /** Rubriken im Textformat (Server: menuText). */
   text: string;
   active: boolean;
@@ -120,6 +147,17 @@ interface Menu {
         <p class="adm-muted small">
           <code># Rubrik | not</code> yeni bölüm açar; altındaki her satır <code>Ad | Fiyat | Açıklama | https://…/foto.jpg</code> (fiyat, açıklama ve foto isteğe bağlı; foto en sonda).
         </p>
+        @for (l of otherLangs(); track l.id) {
+          <label class="adm-field">Çeviri: {{ l.label }} (isteğe bağlı)
+            <textarea rows="6" [value]="trans()[l.id] ?? ''" (input)="setTrans(l.id, val($event))" placeholder="Aynı sıra ve aynı satır sayısı; fiyatlar boş bırakılabilir: Ad | | Açıklama"></textarea>
+          </label>
+        }
+        @if (otherLangs().length) {
+          <p class="adm-muted small">
+            Çeviri, yukarıdaki menüyle <strong>aynı sırada</strong> olmalı (aynı rubrikler, aynı yemekler). Fiyat ve fotoğraf her zaman ana menüden alınır;
+            ziyaretçi sayfanın üstünden dil seçer. Boş bırakılan dil görünmez.
+          </p>
+        }
         <label class="adm-field">Alt not (ör. alerjenler, katkı maddeleri)
           <textarea rows="3" maxlength="600" [value]="f('footnote')" (input)="setF('footnote', val($event))"></textarea>
         </label>
@@ -154,17 +192,64 @@ interface Menu {
         </div>
         <div class="adm-actions">
           <label class="adm-toggle"><input type="checkbox" [checked]="m.active" (change)="setActive(m, checked($event))" /> Aktif</label>
+          <label class="adm-toggle"><input type="checkbox" [checked]="m.ordering" (change)="setOrdering(m, checked($event))" /> Masadan sipariş</label>
           <a class="adm-link" [href]="previewUrl(m)" target="_blank" rel="noopener">Önizleme</a>
+          <button class="adm-link" (click)="toggleOrders(m)">Siparişler@if (m.open_orders) { ({{ m.open_orders }} yeni) }</button>
           <button class="adm-link" (click)="openEdit(m)">Düzenle</button>
           <button class="adm-link danger" (click)="remove(m)">Sil</button>
         </div>
+        @if (m.ordering || m.tables.length) {
+          <div class="adm-sub">
+            <p class="adm-muted small">
+              <strong>Masalar.</strong> Her masanın <em>gizli</em> kendi linki/QR kodu vardır; sadece o kodu okutan masadaki misafir sipariş verebilir.
+              Link olmadan menü yalnızca okunur. Kod fotoğrafını başkası paylaşırsa “Yenile” ile eskisini geçersiz kılın.
+              @if (!m.active) { <em>Menü taslak: sipariş için önce “Aktif” yapın.</em> }
+            </p>
+            @for (t of m.tables; track t.id) {
+              <div class="adm-shortlink">
+                <strong>Masa {{ t.label }}</strong>
+                <button class="adm-link" (click)="copyTable(m, t)">{{ copied() === t.id ? 'Kopyalandı ✓' : 'Link' }}</button>
+                <button class="adm-link" (click)="tableQr(m, t)">QR (SVG)</button>
+                <button class="adm-link" (click)="rotate(t)">Yenile</button>
+                <button class="adm-link danger" (click)="removeTable(t)">Sil</button>
+              </div>
+            }
+            <form class="adm-actions" (submit)="addTable($event, m)">
+              <input name="tableLabel" required maxlength="40" placeholder="Masa adı/no (ör. 5 veya Teras 2)" [value]="newTable()" (input)="newTable.set(val($event))" />
+              <button class="btn btn-secondary btn-small">+ Masa ekle</button>
+            </form>
+          </div>
+        }
+        @if (ordersFor() === m.id) {
+          <div class="adm-sub">
+            @for (o of orders(); track o.id) {
+              <div class="adm-card" [class.dim]="o.status === 'done' || o.status === 'cancelled'">
+                <strong>Masa {{ o.table_label }}</strong> · {{ dateTime(o.created_at) }} · <em>{{ statusLabel(o.status) }}</em>
+                <ul>
+                  @for (l of o.items; track l.name) { <li>{{ l.qty }} × {{ l.name }}@if (l.price) { <span class="adm-muted"> ({{ l.price }})</span> }</li> }
+                </ul>
+                @if (o.note) { <p><em>Not:</em> {{ o.note }}</p> }
+                @if (o.total_cents !== null) { <p class="adm-muted small">Toplam: {{ money(o.total_cents) }}</p> }
+                <div class="adm-actions">
+                  @if (o.status === 'new') { <button class="btn btn-primary btn-small" (click)="setStatus(o, 'accepted')">Kabul et</button> }
+                  @if (o.status === 'new' || o.status === 'accepted') {
+                    <button class="btn btn-secondary btn-small" (click)="setStatus(o, 'done')">Teslim edildi</button>
+                    <button class="adm-link danger" (click)="setStatus(o, 'cancelled')">İptal</button>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <p class="adm-muted">Açık sipariş yok. Bu liste 15 saniyede bir kendini yeniler.</p>
+            }
+          </div>
+        }
       </article>
     } @empty {
       <p class="adm-muted">Henüz menü yok.</p>
     }
   `,
 })
-export class MenusTab implements OnInit {
+export class MenusTab implements OnInit, OnDestroy {
   private readonly api = inject(AdminApi);
   readonly items = signal<Menu[]>([]);
   readonly customers = signal<Customer[]>([]);
@@ -178,6 +263,11 @@ export class MenusTab implements OnInit {
   readonly customerId = signal('');
   readonly fields = signal<Record<string, string>>({});
   readonly text = signal('');
+  readonly trans = signal<Record<string, string>>({});
+  readonly newTable = signal('');
+  readonly ordersFor = signal('');
+  readonly orders = signal<Order[]>([]);
+  private poll: ReturnType<typeof setInterval> | undefined;
   readonly copied = signal('');
   readonly themes = THEMES;
   readonly langs = LANGS;
@@ -187,6 +277,27 @@ export class MenusTab implements OnInit {
 
   async ngOnInit() {
     await this.load();
+  }
+
+  ngOnDestroy() {
+    clearInterval(this.poll);
+  }
+
+  /** Sprachen für die Übersetzungsfelder: alle außer der Hauptsprache. */
+  otherLangs() {
+    return this.langs.filter((l) => l.id !== this.lang());
+  }
+
+  setTrans(lang: string, value: string) {
+    this.trans.update((v) => ({ ...v, [lang]: value }));
+  }
+
+  statusLabel(s: Order['status']) {
+    return STATUS[s];
+  }
+
+  money(cents: number) {
+    return (cents / 100).toFixed(2).replace('.', ',') + ' €';
   }
 
   private async load() {
@@ -242,6 +353,7 @@ export class MenusTab implements OnInit {
     this.customerId.set('');
     this.fields.set({});
     this.text.set('');
+    this.trans.set({});
     this.formOpen.set(true);
   }
 
@@ -256,6 +368,8 @@ export class MenusTab implements OnInit {
     const fields: Record<string, string> = {};
     for (const [k, v] of Object.entries(m.data)) if (typeof v === 'string') fields[k] = v;
     this.fields.set(fields);
+    const tr = m.data['translations'];
+    this.trans.set(tr && typeof tr === 'object' ? { ...tr } : {});
     this.text.set(m.text);
     this.formOpen.set(true);
   }
@@ -271,6 +385,7 @@ export class MenusTab implements OnInit {
       lang: this.lang(),
       data: this.fields(),
       text: this.text(),
+      translations: Object.fromEntries(Object.entries(this.trans()).filter(([l]) => l !== this.lang())),
       ...(editing ? { active: editing.active } : {}),
     };
     try {
@@ -291,6 +406,101 @@ export class MenusTab implements OnInit {
     } catch (err) {
       this.error.set(errorText(err));
     }
+    await this.load();
+  }
+
+  async setOrdering(m: Menu, ordering: boolean) {
+    try {
+      await this.api.req('PATCH', `/menus/${m.id}`, { ordering });
+      this.error.set('');
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.load();
+  }
+
+  tableUrl(m: Menu, t: Table) {
+    return `${this.origin}/m/${m.slug}?t=${t.token}`;
+  }
+
+  async addTable(e: Event, m: Menu) {
+    e.preventDefault();
+    try {
+      await this.api.req('POST', `/menus/${m.id}/tables`, { label: this.newTable() });
+      this.newTable.set('');
+      this.error.set('');
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.load();
+  }
+
+  async rotate(t: Table) {
+    if (!confirm(`Masa ${t.label}: yeni kod üretilsin mi? Basılı eski QR/NFC artık çalışmaz, yenisini yazdırmanız gerekir.`)) return;
+    try {
+      await this.api.req('POST', `/menu-tables/${t.id}/rotate`);
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.load();
+  }
+
+  async removeTable(t: Table) {
+    if (!confirm(`Masa ${t.label} silinsin mi? Basılı kodu artık çalışmaz.`)) return;
+    try {
+      await this.api.req('DELETE', `/menu-tables/${t.id}`);
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.load();
+  }
+
+  async copyTable(m: Menu, t: Table) {
+    try {
+      await navigator.clipboard.writeText(this.tableUrl(m, t));
+      this.copied.set(t.id);
+      setTimeout(() => this.copied.set(''), 1500);
+    } catch {
+      /* Zwischenablage nicht verfügbar */
+    }
+  }
+
+  tableQr(m: Menu, t: Table) {
+    this.download(this.tableUrl(m, t), `qr-${m.slug}-masa-${t.label.replace(/[^a-z0-9]+/gi, '-')}.svg`);
+  }
+
+  /** Bestellungen ein-/ausblenden; solange offen, alle 15 s neu laden. */
+  async toggleOrders(m: Menu) {
+    clearInterval(this.poll);
+    if (this.ordersFor() === m.id) {
+      this.ordersFor.set('');
+      return;
+    }
+    this.ordersFor.set(m.id);
+    await this.loadOrders();
+    this.poll = setInterval(() => {
+      void this.loadOrders();
+      void this.load();
+    }, 15000);
+  }
+
+  private async loadOrders() {
+    const id = this.ordersFor();
+    if (!id) return;
+    try {
+      this.orders.set(await this.api.req<Order[]>('GET', `/menus/${id}/orders`));
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+  }
+
+  async setStatus(o: Order, status: Order['status']) {
+    try {
+      await this.api.req('PATCH', `/menu-orders/${o.id}`, { status });
+    } catch (err) {
+      this.error.set(errorText(err));
+    }
+    await this.loadOrders();
     await this.load();
   }
 
@@ -321,14 +531,18 @@ export class MenusTab implements OnInit {
 
   /** QR-Code als SVG-Datei für den Druck herunterladen. */
   qr(m: Menu) {
+    this.download(`${this.origin}/m/${m.slug}`, `qr-menu-${m.slug}.svg`);
+  }
+
+  private download(link: string, filename: string) {
     const code = qrcode(0, 'M');
-    code.addData(`${this.origin}/m/${m.slug}`);
+    code.addData(link);
     code.make();
     const svg = code.createSvgTag({ cellSize: 8, margin: 4, scalable: true });
     const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
     const a = document.createElement('a');
     a.href = url;
-    a.download = `qr-menu-${m.slug}.svg`;
+    a.download = filename;
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
   }

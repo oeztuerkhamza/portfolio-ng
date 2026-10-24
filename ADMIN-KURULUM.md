@@ -19,6 +19,11 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
 | **Siparişler** | Online mağaza siparişleri (mağaza kapalıyken boş kalır). |
 | **Ayarlar** | Online mağazayı açma / kapama (varsayılan: **kapalı**) ve **bakım modu**. |
 
+### Menüde dil ve masadan sipariş
+
+- **Dil:** Menü formunda her dil için bir çeviri kutusu var. Çeviri ana menüyle aynı sırada olmalı; fiyat ve fotoğraf hep ana menüden gelir. Ziyaretçi sayfanın üstündeki dil düğmeleriyle seçer; çevirisi olmayan dil görünmez.
+- **Masadan sipariş:** Menüde “Masadan sipariş”i açın, **Masalar**a masa ekleyin ve her masanın kendi QR/NFC linkini (`/m/<ad>?t=<gizli kod>`) o masaya koyun. Sipariş yalnızca bu gizli kodla kabul edilir; evden açılan menü sadece okunur. Sunucu fiyatları kendi kartından alır, misafirden gelen fiyata bakmaz. Masa başına 30 sn’de bir sipariş ve en fazla 5 açık sipariş sınırı var. Gelen siparişler **Siparişler**de (15 sn’de bir yenilenir): Kabul et → Teslim edildi / İptal. Kod bir yerde paylaşılırsa **Yenile** eskisini geçersiz kılar. Siparişler 30 gün sonra silinir. Ödeme sistemi yok: ödeme servis masasında.
+
 ## 1. Supabase projesi (≈ 10 dk)
 
 1. <https://supabase.com> → ücretsiz hesap → **New project**.
@@ -38,6 +43,8 @@ paneli bir kez çalışır hale getirmek için gereken adımları sırayla anlat
    `20260929120000_card_designs.sql` (müşterinin kart tasarlayıcıda doldurduğu taslak) ve
    `20260930120000_card_uploads.sql` (tasarlayıcıya yüklenen görsellerin kaydı; siparişe bağlanmayanlar iki hafta sonra otomatik silinir).
    `20261024120000_menus.sql` (müşteri menüleri; Sichelschmiede taslak olarak hazır gelir).
+   `20261024140000_menu_orders.sql` (masadan sipariş: masalar ve siparişler) ve
+   `20261024150000_sichelschmiede_menu.sql` (Sichelschmiede'nin güncel menüsü, TR/EN çevirili, taslak olarak).
    Dosyaları **isim sırasıyla** çalıştırın; her biri bir kez yeter, tekrar çalıştırmak zarar vermez.
 3. **Authentication → Sign In / Providers → Email**:
    - **Allow new users to sign up** kapatın (kimse kendi hesap açamasın).

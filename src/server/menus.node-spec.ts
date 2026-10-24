@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { demoMenu, menuData, menuText, parseMenuText, renderMenu, type Menu } from './menus';
+import { buildOrder, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -125,5 +125,95 @@ describe('demoMenu', () => {
     const html = renderMenu(m, 'https://breisgau-digital.de');
     assert.ok(html.includes('src="https://breisgau-digital.de/demo-menu/suppe.svg"'));
     assert.ok(html.includes('alle Gerichte und Preise sind erfunden'));
+  });
+});
+
+describe('Übersetzungen', () => {
+  const base = menuData({
+    name: 'Test',
+    translations: { en: '# Starters\nTomato soup | 99 | with basil' },
+    categories: parseMenuText('# Vorspeisen\nTomatensuppe | 6,50 | mit Basilikum | https://x.de/s.jpg\nBrot | 2,00'),
+  })!;
+
+  test('Texte aus der Übersetzung, Preis und Foto vom Original', () => {
+    const [cat] = localize(base, 'en');
+    assert.equal(cat!.title, 'Starters');
+    assert.equal(cat!.items[0]!.name, 'Tomato soup');
+    assert.equal(cat!.items[0]!.price, '6,50');
+    assert.equal(cat!.items[0]!.img, 'https://x.de/s.jpg');
+  });
+
+  test('fehlende Zeilen bleiben im Original', () => {
+    assert.equal(localize(base, 'en')[0]!.items[1]!.name, 'Brot');
+    assert.deepEqual(localize(base, 'tr'), base.categories);
+  });
+
+  test('?l= wählt nur angebotene Sprachen', () => {
+    const menu: Menu = { slug: 'x', lang: 'de', theme: 'warm', preview: false, data: base };
+    assert.match(renderMenu(menu, '', { lang: 'en' }), /Tomato soup/);
+    assert.match(renderMenu(menu, '', { lang: 'tr' }), /Tomatensuppe/);
+    assert.match(renderMenu(menu, '', { lang: '<script>' }), /Tomatensuppe/);
+    assert.match(renderMenu(menu), /hreflang="en"/);
+  });
+});
+
+describe('Bestellen am Tisch', () => {
+  const data = menuData({
+    name: 'Test',
+    categories: parseMenuText('# A\nSuppe | 6,50\nSchäufele | 21,90 | mit Brägele\nWein | 0,2 l 4,80'),
+  })!;
+  const menu: Menu = { slug: 'x', lang: 'de', theme: 'warm', preview: false, data };
+
+  test('Preise in Cent; unklare Preise ergeben keine Summe', () => {
+    assert.equal(priceCents('21,90'), 2190);
+    assert.equal(priceCents('7'), 700);
+    assert.equal(priceCents('5,5 €'), 550);
+    assert.equal(priceCents('ab 12'), null);
+    assert.equal(priceCents('0,2 l 4,80'), null);
+    assert.equal(priceCents(undefined), null);
+  });
+
+  test('gültige Bestellung: Preise von der Karte, nicht vom Gast', () => {
+    const o = buildOrder(data, { items: [{ name: 'Suppe', qty: 2, price: '0,01' }, { name: 'Schäufele', qty: 1 }], note: ' ohne Zwiebeln ' })!;
+    assert.deepEqual(o.lines, [{ name: 'Suppe', price: '6,50', qty: 2 }, { name: 'Schäufele', price: '21,90', qty: 1 }]);
+    assert.equal(o.totalCents, 2 * 650 + 2190);
+    assert.equal(o.note, 'ohne Zwiebeln');
+    assert.equal(buildOrder(data, { items: [{ name: 'Wein', qty: 1 }] })!.totalCents, null);
+  });
+
+  test('abgelehnt: unbekanntes Gericht, doppelt, Menge, leer, zu viel', () => {
+    assert.equal(buildOrder(data, { items: [{ name: 'Pizza', qty: 1 }] }), null);
+    assert.equal(buildOrder(data, { items: [{ name: 'Suppe', qty: 1 }, { name: 'Suppe', qty: 1 }] }), null);
+    for (const qty of [0, -1, 1.5, 21, '2', null]) assert.equal(buildOrder(data, { items: [{ name: 'Suppe', qty }] }), null);
+    assert.equal(buildOrder(data, { items: [] }), null);
+    assert.equal(buildOrder(data, {}), null);
+    assert.equal(buildOrder(data, null), null);
+    assert.equal(buildOrder(data, { items: [{ name: 'Suppe', qty: 20 }, { name: 'Schäufele', qty: 20 }, { name: 'Wein', qty: 20 }, { name: 'Suppe', qty: 1 }] }), null);
+  });
+
+  test('Gesamtmenge ist begrenzt', () => {
+    assert.equal(buildOrder(data, { items: [{ name: 'Suppe', qty: 20 }, { name: 'Schäufele', qty: 20 }, { name: 'Wein', qty: 20 }] })!.lines.length, 3);
+    assert.equal(buildOrder(data, { items: [{ name: 'Suppe', qty: 20 }, { name: 'Schäufele', qty: 20 }, { name: 'Wein', qty: 20 }, { name: 'X', qty: 1 }] }), null);
+  });
+
+  test('Bestell-Knöpfe nur mit Tischkürzel und nicht in der Vorschau', () => {
+    assert.doesNotMatch(renderMenu(menu), /class="add"|menu-order/);
+    const html = renderMenu(menu, '', { table: { label: '5', token: 'abc' } });
+    assert.match(html, /class="add"/);
+    assert.match(html, /menu-order/);
+    assert.doesNotMatch(renderMenu({ ...menu, preview: true }, '', { table: { label: '5', token: 'abc' } }), /class="add"/);
+  });
+
+  test('Tischname und Kürzel werden maskiert', () => {
+    const html = renderMenu(menu, '', { table: { label: '<img src=x onerror=1>', token: '</script><b>' } });
+    assert.doesNotMatch(html, /<img src=x/);
+    assert.doesNotMatch(html, /<\/script><b>/);
+  });
+
+  test('Tischkürzel sind lang und verschieden', () => {
+    const a = newTableToken();
+    assert.ok(a.length >= 20);
+    assert.notEqual(a, newTableToken());
+    assert.match(a, /^[A-Za-z0-9_-]+$/);
   });
 });
