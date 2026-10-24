@@ -36,6 +36,17 @@ describe('parseMenuText', () => {
     assert.deepEqual(parseMenuText('Verirrt | 1\n# A\nB | 2'), [{ title: 'A', note: undefined, items: [{ name: 'B', price: '2', desc: undefined }] }]);
   });
 
+  test('Foto als letzte https-Spalte', () => {
+    const [cat] = parseMenuText('# A\nSchäufele | 14,80 | mit Brägele | https://x.de/a.jpg\nKäsespätzle | 12,80 | https://x.de/b.jpg\nNur Text | 1 | siehe https://x.de');
+    assert.equal(cat!.items[0]!.img, 'https://x.de/a.jpg');
+    assert.equal(cat!.items[0]!.desc, 'mit Brägele');
+    assert.equal(cat!.items[1]!.img, 'https://x.de/b.jpg');
+    assert.equal(cat!.items[1]!.desc, undefined);
+    assert.equal(cat!.items[2]!.img, undefined);
+    const once = menuText([cat!]);
+    assert.deepEqual(parseMenuText(once)[0], cat);
+  });
+
   test('Text → Karte → Text bleibt stabil', () => {
     const once = menuText(parseMenuText(SRC));
     assert.equal(menuText(parseMenuText(once)), once);
@@ -94,6 +105,12 @@ describe('renderMenu', () => {
     const html = renderMenu(menu({ categories: [] }, true));
     assert.ok(html.includes('wird gerade vorbereitet'));
     assert.ok(html.includes('role="status"'));
+  });
+
+  test('Gerichtfoto nur mit https-Adresse', () => {
+    const html = renderMenu(menu({ categories: [{ title: 'A', items: [{ name: 'X', img: 'https://x.de/a.jpg' }, { name: 'Y', img: 'javascript:1' }] }] }));
+    assert.ok(html.includes('src="https://x.de/a.jpg"'));
+    assert.ok(!html.includes('javascript:1'));
   });
 
   test('noindex', () => {

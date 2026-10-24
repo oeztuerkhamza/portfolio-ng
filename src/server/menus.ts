@@ -18,6 +18,8 @@ export interface MenuItem {
   /** Freitext, damit „9,50", „ab 12" oder „0,3 l 4,20 / 0,5 l 5,80" möglich sind. */
   price?: string;
   desc?: string;
+  /** Foto des Gerichts, https. */
+  img?: string;
 }
 
 export interface MenuCategory {
@@ -74,7 +76,7 @@ export function menuData(input: unknown): MenuData | null {
       const it = (i && typeof i === 'object' ? i : {}) as Record<string, unknown>;
       const itemName = text(it['name'], 160);
       if (!itemName) continue;
-      items.push({ name: itemName, price: text(it['price'], 60), desc: text(it['desc'], 400) });
+      items.push({ name: itemName, price: text(it['price'], 60), desc: text(it['desc'], 400), img: httpsUrl(it['img']) ?? undefined });
     }
     categories.push({ title, note: text(cat['note'], 300), items });
   }
@@ -102,7 +104,8 @@ export function menuData(input: unknown): MenuData | null {
  *   Bruschetta | 7,00
  *
  * „#" eröffnet eine Rubrik, jede weitere Zeile ist ein Gericht:
- * Name | Preis | Beschreibung. Zeilen vor der ersten Rubrik werden ignoriert.
+ * Name | Preis | Beschreibung | https://…/foto.jpg (Foto zuletzt, optional).
+ * Zeilen vor der ersten Rubrik werden ignoriert.
  */
 export function parseMenuText(src: unknown): MenuCategory[] {
   const out: MenuCategory[] = [];
@@ -116,8 +119,11 @@ export function parseMenuText(src: unknown): MenuCategory[] {
     }
     const cat = out[out.length - 1];
     if (!cat) continue;
-    const [name, price, ...desc] = t.split('|').map((p) => p.trim());
-    if (name) cat.items.push({ name, price: price || undefined, desc: desc.join(' | ') || undefined });
+    const parts = t.split('|').map((p) => p.trim());
+    // Ein Foto steht als https-Adresse an letzter Stelle (nach dem Namen).
+    const img = parts.length > 1 && /^https:\/\/\S+$/.test(parts[parts.length - 1]!) ? parts.pop() : undefined;
+    const [name, price, ...desc] = parts;
+    if (name) cat.items.push({ name, price: price || undefined, desc: desc.join(' | ') || undefined, ...(img ? { img } : {}) });
   }
   return out;
 }
@@ -128,7 +134,11 @@ export function menuText(categories: MenuCategory[]): string {
     .map((c) =>
       [
         `# ${c.title}${c.note ? ` | ${c.note}` : ''}`,
-        ...c.items.map((i) => [i.name, i.price ?? '', i.desc ?? ''].join(' | ').replace(/( \| )+$/, '')),
+        ...c.items.map((i) =>
+          (i.img ? [i.name, i.price ?? '', i.desc ?? '', i.img] : [i.name, i.price ?? '', i.desc ?? ''])
+            .join(' | ')
+            .replace(/( \| )+$/, ''),
+        ),
       ].join('\n'),
     )
     .join('\n\n');
@@ -171,6 +181,7 @@ li:last-child{border-bottom:0}
 .row{display:flex;gap:12px;justify-content:space-between;align-items:baseline}
 .name{font-weight:600}
 .price{flex:0 0 auto;font-weight:600;white-space:nowrap}
+.dish{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;border-radius:14px;margin:0 0 10px;background:rgba(147,161,179,.2)}
 .desc{margin:2px 0 0;color:${t.dim};font-size:.9rem}
 .empty{margin:20px 0;text-align:center;color:${t.dim}}
 .foot-note{margin:26px 0 0;color:${t.dim};font-size:.8rem;line-height:1.5;white-space:pre-line}
@@ -197,7 +208,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || ''): string {
       (c, i) => `<section><h2 id="${anchor(i)}">${esc(c.title)}</h2>${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<ul>${c.items
         .map(
           (it) =>
-            `<li><div class="row"><span class="name">${esc(it.name)}</span>${it.price ? `<span class="price">${esc(it.price)}</span>` : ''}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}</li>`,
+            `<li>${httpsUrl(it.img) ? `<img class="dish" src="${esc(httpsUrl(it.img))}" alt="${esc(it.name)}" loading="lazy" />` : ''}<div class="row"><span class="name">${esc(it.name)}</span>${it.price ? `<span class="price">${esc(it.price)}</span>` : ''}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}</li>`,
         )
         .join('')}</ul></section>`,
     )

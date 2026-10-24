@@ -118,7 +118,7 @@ interface Menu {
           <textarea rows="14" [value]="text()" (input)="text.set(val($event))" [placeholder]="example"></textarea>
         </label>
         <p class="adm-muted small">
-          <code># Rubrik | not</code> yeni bölüm açar; altındaki her satır <code>Ad | Fiyat | Açıklama</code> (fiyat ve açıklama isteğe bağlı).
+          <code># Rubrik | not</code> yeni bölüm açar; altındaki her satır <code>Ad | Fiyat | Açıklama | https://…/foto.jpg</code> (fiyat, açıklama ve foto isteğe bağlı; foto en sonda).
         </p>
         <label class="adm-field">Alt not (ör. alerjenler, katkı maddeleri)
           <textarea rows="3" maxlength="600" [value]="f('footnote')" (input)="setF('footnote', val($event))"></textarea>
