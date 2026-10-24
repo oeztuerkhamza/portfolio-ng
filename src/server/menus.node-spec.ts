@@ -101,6 +101,21 @@ describe('renderMenu', () => {
     assert.ok(!renderMenu(menu()).includes('Bewerten Sie uns auf Google'));
   });
 
+  test('Bildnachweis-Link nur mit https-Adresse', () => {
+    assert.equal(menuData({ name: 'X', creditsUrl: 'http://x.de/b.html' })!.creditsUrl, undefined);
+    const html = renderMenu(menu({ creditsUrl: 'https://breisgaudigital.de/menu/x/bildnachweis.html' }));
+    assert.ok(html.includes('href="https://breisgaudigital.de/menu/x/bildnachweis.html"'));
+    assert.ok(html.includes('Bildnachweis'));
+    assert.ok(!renderMenu(menu()).includes('Bildnachweis'));
+  });
+
+  test('Theme „orient" bringt eigene Regeln mit, die anderen nicht', () => {
+    const orient = renderMenu({ ...menu(), theme: 'orient' });
+    assert.ok(orient.includes('.hero::before'));
+    assert.ok(orient.includes('data:image/svg+xml,'));
+    assert.ok(!renderMenu(menu()).includes('.hero::before'));
+  });
+
   test('leere Karte und Vorschau', () => {
     const html = renderMenu(menu({ categories: [] }, true));
     assert.ok(html.includes('wird gerade vorbereitet'));

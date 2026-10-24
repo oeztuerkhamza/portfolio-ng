@@ -4,13 +4,15 @@ import { AdminApi, errorText } from '../admin-api.service';
 import { dateTime } from '../labels';
 import type { Customer } from './customers.tab';
 
-type Theme = 'brand' | 'dark' | 'warm';
+/** Muss zu MENU_THEMES in src/server/menus.ts passen. */
+type Theme = 'brand' | 'dark' | 'warm' | 'orient';
 type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku';
 
 const THEMES: { id: Theme; label: string }[] = [
   { id: 'warm', label: 'Sıcak' },
   { id: 'brand', label: 'Açık (marka)' },
   { id: 'dark', label: 'Koyu' },
+  { id: 'orient', label: 'Oryantal (zümrüt ve altın)' },
 ];
 
 /** Muss zu CARD_LANGS in src/server/cards.ts passen. */
@@ -139,6 +141,9 @@ interface Menu {
         <label class="adm-field">Adres (haritada açılır)<input maxlength="200" [value]="f('address')" (input)="setF('address', val($event))" /></label>
         <label class="adm-field">“Google’da değerlendirin” düğmesi (isteğe bağlı) — buraya <code>{{ origin }}/r/…</code> kısa linkini yazın
           <input type="url" placeholder="{{ origin }}/r/…" [value]="f('reviewUrl')" (input)="setF('reviewUrl', val($event))" />
+        </label>
+        <label class="adm-field">Fotoğraf kaynakları sayfası (CC lisanslı fotoğraflar için zorunlu, isteğe bağlı)
+          <input type="url" placeholder="{{ origin }}/menu/…/bildnachweis.html" [value]="f('creditsUrl')" (input)="setF('creditsUrl', val($event))" />
         </label>
 
         <label class="adm-field">Menü içeriği
