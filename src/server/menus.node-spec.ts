@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { ALLERGENS, buildOrder, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
+import { ALLERGENS, buildOrder, parseSteps, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -137,6 +137,25 @@ describe('renderMenu', () => {
     assert.equal(fold.split('<details class="cat"').length - 1, 2);
     assert.ok(fold.includes('</ul></details></section>'));
     assert.equal(menuData({ name: 'X', sections: 'irgendwas' })!.sections, undefined);
+  });
+
+  test('Schritt-für-Schritt-Auswahl nur mit gültigen Schritten', () => {
+    assert.deepEqual(parseSteps('start:1; main:2', 2), [{ kind: 'start', cats: [0] }, { kind: 'main', cats: [1] }]);
+    assert.deepEqual(parseSteps('start:1-3, 5; bogus:2; drinks:9; main:2-1', 5), [{ kind: 'start', cats: [0, 1, 2, 4] }]);
+    assert.deepEqual(parseSteps(undefined, 3), []);
+    assert.ok(!renderMenu(menu()).includes('id="wiz"'));
+    const html = renderMenu(menu({ steps: 'start:1; main:2' }), 'https://breisgaudigital.de');
+    assert.ok(html.includes('<button type="button" class="btn" id="wopen" hidden>Schritt für Schritt wählen</button>'));
+    assert.ok(html.includes('data-t="Vorspeisen &amp; Salate"') && html.includes('data-t="Hauptgerichte"') && html.includes('data-t="Ihre Auswahl"'));
+    assert.equal(html.split('class="wi"').length - 1, 4);
+    assert.ok(html.includes('data-n="Tomatensuppe" data-c="650"'));
+    assert.ok(!html.includes('id="wsend"'));
+  });
+
+  test('Schritt-für-Schritt-Auswahl bestellt nur mit Tischkürzel', () => {
+    const html = renderMenu(menu({ steps: 'start:1-2' }), 'https://breisgaudigital.de', { table: { label: '4', token: 'abc' } });
+    assert.ok(html.includes('id="wsend"'));
+    assert.ok(html.includes('"t":"abc"'));
   });
 
   test('leere Karte und Vorschau', () => {

@@ -120,6 +120,11 @@ export interface MenuData {
   creditsUrl?: string;
   /** „collapsed": Rubriken sind zugeklappt, nur die Titel stehen untereinander; ein Tipp öffnet eine. */
   sections?: 'collapsed';
+  /**
+   * Schritt-für-Schritt-Auswahl: welche Rubriken (Nummern ab 1, in Kartenreihenfolge) in welchen Schritt
+   * gehören, z. B. „start:1-2; main:3-15; dessert:16; drinks:17-24". Fehlt es, gibt es keinen Assistenten.
+   */
+  steps?: string;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
   translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
@@ -135,6 +140,37 @@ export type MenuLang = (typeof MENU_LANGS)[number];
 /** Die Themes der NFC-Karten plus „orient" (Smaragd und Gold), das es nur für Speisekarten gibt. */
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
 export type MenuTheme = (typeof MENU_THEMES)[number];
+
+export const STEP_KINDS = ['start', 'main', 'dessert', 'drinks'] as const;
+export type StepKind = (typeof STEP_KINDS)[number];
+
+/**
+ * „start:1-2; main:3-15; dessert:16; drinks:17-24" → Schritte mit Rubrik-Indizes (ab 0). Unbekannte Arten,
+ * Nummern außerhalb der Karte und doppelte Rubriken fallen weg; ein Schritt ohne Rubrik ebenso.
+ */
+export function parseSteps(spec: string | undefined, count: number): { kind: StepKind; cats: number[] }[] {
+  const out: { kind: StepKind; cats: number[] }[] = [];
+  const used = new Set<number>();
+  for (const part of String(spec ?? '').split(';')) {
+    const m = /^\s*([a-z]+)\s*:\s*(.+)$/.exec(part);
+    if (!m || !(STEP_KINDS as readonly string[]).includes(m[1]!)) continue;
+    const cats: number[] = [];
+    for (const r of m[2]!.split(',')) {
+      const mm = /^\s*(\d{1,3})\s*(?:-\s*(\d{1,3}))?\s*$/.exec(r);
+      if (!mm) continue;
+      const a = Number(mm[1]);
+      const b = Number(mm[2] ?? mm[1]);
+      for (let i = Math.min(a, b); i <= Math.max(a, b); i++) {
+        if (i >= 1 && i <= count && !used.has(i - 1)) {
+          used.add(i - 1);
+          cats.push(i - 1);
+        }
+      }
+    }
+    if (cats.length) out.push({ kind: m[1] as StepKind, cats });
+  }
+  return out;
+}
 
 export interface Menu {
   slug: string;
@@ -206,6 +242,7 @@ export function menuData(input: unknown): MenuData | null {
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     creditsUrl: httpsUrl(d['creditsUrl']) ?? undefined,
     sections: d['sections'] === 'collapsed' ? 'collapsed' : undefined,
+    steps: text(d['steps'], 200),
     translations: Object.keys(translations).length ? translations : undefined,
     categories,
   };
@@ -470,6 +507,7 @@ li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 
 .dots{border-bottom-color:rgba(158,118,48,.45)}
 .tag{color:#0f4a45}
 .btn{background:linear-gradient(160deg,#155a53,${heroB});border:1px solid ${gold};color:#f6e5bb}
+#wopen{border-color:${gold}}
 .foot-note{text-align:center}
 `,
   };
@@ -626,6 +664,19 @@ const anchor = (i: number) => `k${i + 1}`;
 
 const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', ku: 'Kurdî', ar: 'العربية', ru: 'Русский' };
 
+interface WizLabels { open: string; start: string; main: string; dessert: string; drinks: string; step: string; next: string; back: string; summary: string; show: string; empty: string; restart: string; close: string; total: string; add: string; remove: string; hint: string }
+
+/** Texte der Schritt-für-Schritt-Auswahl. {n} und {m} in `step` sind Schritt und Anzahl der Schritte. */
+const WIZ_LABELS: Record<MenuLang, WizLabels> = {
+  de: { open: 'Schritt für Schritt wählen', start: 'Vorspeisen & Salate', main: 'Hauptgerichte', dessert: 'Dessert', drinks: 'Getränke', step: 'Schritt {n} von {m}', next: 'Weiter', back: 'Zurück', summary: 'Ihre Auswahl', show: 'Zeigen Sie diese Liste einfach dem Service – wir nehmen Ihre Bestellung gern auf.', empty: 'Noch nichts ausgewählt.', restart: 'Neu beginnen', close: 'Zur Speisekarte', total: 'Summe', add: 'Mehr', remove: 'Weniger', hint: 'Nichts dabei? Einfach weiter.' },
+  en: { open: 'Choose step by step', start: 'Starters & salads', main: 'Main courses', dessert: 'Dessert', drinks: 'Drinks', step: 'Step {n} of {m}', next: 'Next', back: 'Back', summary: 'Your selection', show: 'Simply show this list to our staff – we will gladly take your order.', empty: 'Nothing selected yet.', restart: 'Start over', close: 'Back to the menu', total: 'Total', add: 'More', remove: 'Less', hint: 'Nothing for you here? Just continue.' },
+  fr: { open: 'Choisir étape par étape', start: 'Entrées et salades', main: 'Plats principaux', dessert: 'Dessert', drinks: 'Boissons', step: 'Étape {n} sur {m}', next: 'Suivant', back: 'Retour', summary: 'Votre sélection', show: 'Montrez simplement cette liste au personnel – nous prendrons volontiers votre commande.', empty: 'Rien de sélectionné pour l’instant.', restart: 'Recommencer', close: 'Retour à la carte', total: 'Total', add: 'Plus', remove: 'Moins', hint: 'Rien pour vous ici ? Continuez simplement.' },
+  tr: { open: 'Adım adım seç', start: 'Başlangıçlar ve salatalar', main: 'Ana yemekler', dessert: 'Tatlı', drinks: 'İçecekler', step: 'Adım {n} / {m}', next: 'İleri', back: 'Geri', summary: 'Seçiminiz', show: 'Bu listeyi servis personelimize göstermeniz yeterli, siparişinizi memnuniyetle alırız.', empty: 'Henüz bir şey seçmediniz.', restart: 'Baştan başla', close: 'Menüye dön', total: 'Toplam', add: 'Artır', remove: 'Azalt', hint: 'Burada istediğiniz yok mu? İleri geçin.' },
+  ar: { open: 'اختر خطوة بخطوة', start: 'المقبلات والسلطات', main: 'الأطباق الرئيسية', dessert: 'الحلويات', drinks: 'المشروبات', step: 'الخطوة {n} من {m}', next: 'التالي', back: 'رجوع', summary: 'اختيارك', show: 'ما عليك سوى إظهار هذه القائمة لفريق الخدمة، ويسعدنا تلقي طلبك.', empty: 'لم تختر شيئًا بعد.', restart: 'البدء من جديد', close: 'العودة إلى القائمة', total: 'المجموع', add: 'زيادة', remove: 'إنقاص', hint: 'لا شيء يناسبك هنا؟ تابع ببساطة.' },
+  ru: { open: 'Выбрать по шагам', start: 'Закуски и салаты', main: 'Основные блюда', dessert: 'Десерт', drinks: 'Напитки', step: 'Шаг {n} из {m}', next: 'Далее', back: 'Назад', summary: 'Ваш выбор', show: 'Просто покажите этот список официанту — мы с радостью примем ваш заказ.', empty: 'Пока ничего не выбрано.', restart: 'Начать заново', close: 'Вернуться к меню', total: 'Итого', add: 'Больше', remove: 'Меньше', hint: 'Ничего не подходит? Просто продолжайте.' },
+  ku: { open: 'Gav bi gav hilbijêre', start: 'Destpêk û selete', main: 'Xwarinên sereke', dessert: 'Şîranî', drinks: 'Vexwarin', step: 'Gav {n} ji {m}', next: 'Pêşve', back: 'Paşve', summary: 'Hilbijartina we', show: 'Vê lîsteyê tenê nîşanî karmendan bidin, em ê fermana we bi kêfxweşî bigirin.', empty: 'Hê tiştek nehatiye hilbijartin.', restart: 'Ji nû ve dest pê bike', close: 'Vegere menûyê', total: 'Giştî', add: 'Zêdetir', remove: 'Kêmtir', hint: 'Tiştek ji bo we tune? Tenê pêşve biçin.' },
+};
+
 /** Texte der Bestell-Oberfläche. Sie werden auch im Browser gebraucht und deshalb als JSON eingebettet. */
 const ORDER_LABELS: Record<MenuLang, { add: string; cart: string; table: string; note: string; send: string; sent: string; fail: string; wait: string; total: string; pay: string; close: string; remove: string }> = {
   de: { add: 'Hinzufügen', cart: 'Ihre Bestellung', table: 'Tisch', note: 'Hinweis für die Küche (optional)', send: 'Verbindlich bestellen', sent: 'Danke! Ihre Bestellung ist angekommen.', fail: 'Das hat nicht geklappt. Bitte sprechen Sie das Personal an.', wait: 'Bitte einen Moment warten, bevor Sie erneut bestellen.', total: 'Summe', pay: 'Bezahlt wird wie gewohnt beim Service.', close: 'Schließen', remove: 'Entfernen' },
@@ -636,6 +687,61 @@ const ORDER_LABELS: Record<MenuLang, { add: string; cart: string; table: string;
   ar: { add: 'إضافة', cart: 'طلبك', table: 'الطاولة', note: 'ملاحظة للمطبخ (اختياري)', send: 'تأكيد الطلب', sent: 'شكرًا! وصل طلبك.', fail: 'لم ينجح ذلك. يرجى التحدث إلى فريق الخدمة.', wait: 'يرجى الانتظار قليلًا قبل الطلب مرة أخرى.', total: 'المجموع', pay: 'الدفع كالمعتاد لدى فريق الخدمة.', close: 'إغلاق', remove: 'حذف' },
   ru: { add: 'Добавить', cart: 'Ваш заказ', table: 'Стол', note: 'Пожелание для кухни (необязательно)', send: 'Заказать', sent: 'Спасибо! Ваш заказ принят.', fail: 'Не получилось. Пожалуйста, обратитесь к персоналу.', wait: 'Пожалуйста, подождите немного перед новым заказом.', total: 'Итого', pay: 'Оплата, как обычно, у официанта.', close: 'Закрыть', remove: 'Убрать' },
 };
+
+/** Aussehen der Schritt-für-Schritt-Auswahl: Kopf im Stil der Karte, unten Zurück/Weiter. */
+const wizStyles = (t: Palette) => `
+#wopen{width:100%;margin:18px 0 0;border:1px solid transparent;font:inherit;font-weight:600;cursor:pointer}
+body.wiz-on{overflow:hidden}
+#wiz{position:fixed;inset:0;z-index:6;display:flex;flex-direction:column;background:${t.panel};color:${t.ink}}
+#wiz[hidden]{display:none}
+.wh{position:relative;padding:16px 56px 12px;text-align:center;background:linear-gradient(170deg,${t.heroA},${t.heroB});color:${t.heroInk}}
+.wpr{margin:0;min-height:1.1em;color:${t.heroDim};font-size:.74rem;letter-spacing:.08em;text-transform:uppercase}
+.wh h3{margin:3px 0 10px;font:600 1.3rem/1.25 ${SERIF}}
+.wx{position:absolute;top:12px;inset-inline-end:12px;width:2.2rem;height:2.2rem;border:0;border-radius:50%;background:rgba(255,255,255,.14);color:${t.heroInk};font:inherit;font-size:1.3rem;line-height:1;cursor:pointer}
+.wdots{display:flex;gap:6px;justify-content:center}
+.wdots i{width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.22)}
+.wdots i.done{background:${t.heroDim}}
+.wdots i.cur{background:${t.heroInk}}
+.wb{flex:1;overflow:auto;padding:4px 20px 28px;-webkit-overflow-scrolling:touch}
+.wstep,.wb .wsum{max-width:560px;margin:0 auto}
+.whint{margin:14px 0 0;color:${t.dim};font-size:.8rem;text-align:center}
+.wstep h4{margin:22px 0 2px;font:600 1.05rem/1.3 ${SERIF};color:${t.accent}}
+details.wcat{border-bottom:1px solid ${t.line}}
+details.wcat>summary{display:flex;align-items:center;gap:10px;padding:15px 0;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+details.wcat>summary::-webkit-details-marker{display:none}
+details.wcat>summary h4{flex:1;margin:0}
+details.wcat>summary::after{content:"";flex:0 0 auto;width:7px;height:7px;margin:0 6px;border-right:2px solid ${t.accent};border-bottom:2px solid ${t.accent};transform:translateY(-2px) rotate(45deg);transition:transform .25s}
+details.wcat[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+details.wcat .wi:last-child{border-bottom:0}
+.wsel{flex:0 0 auto;min-width:1.6rem;padding:1px 8px;border-radius:999px;background:linear-gradient(135deg,${t.accent},${t.accent2});color:${t.onAccent};font-size:.74rem;font-weight:700;text-align:center}
+.wi{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid ${t.line}}
+.wt{flex:1;min-width:0}
+.wn{display:block;font:600 1rem/1.3 ${SERIF}}
+.wd{display:block;margin-top:2px;color:${t.dim};font-size:.8rem;line-height:1.35}
+.wp{flex:0 0 auto;font-weight:600;color:${t.accent};font-variant-numeric:tabular-nums}
+.wq{flex:0 0 auto;display:flex;align-items:center;gap:6px}
+.wq button{width:2.15rem;height:2.15rem;padding:0;border-radius:50%;border:1px solid ${t.line};background:${t.soft};color:${t.accent};font:inherit;font-size:1.15rem;line-height:1;cursor:pointer}
+.wq output{min-width:1.2rem;text-align:center;font-weight:700;font-variant-numeric:tabular-nums}
+.wi:not(.on) .wm,.wi:not(.on) output{visibility:hidden}
+.wi.on .wa{background:linear-gradient(135deg,${t.accent},${t.accent2});border-color:transparent;color:${t.onAccent}}
+.wi.on .wn{color:${t.accent}}
+.wf{display:flex;gap:10px;padding:12px 20px calc(12px + env(safe-area-inset-bottom));border-top:1px solid ${t.line};background:${t.panel}}
+.wf button{flex:1;padding:14px 18px;border-radius:999px;font:inherit;font-weight:600;cursor:pointer}
+.wf button[hidden]{display:none}
+.wbk{background:transparent;border:1px solid ${t.line};color:${t.accent}}
+.wnx{border:0;background:linear-gradient(135deg,${t.accent},${t.accent2});color:${t.onAccent}}
+.wsum h4{margin:22px 0 4px;font:600 1.02rem/1.3 ${SERIF};color:${t.accent}}
+.wl{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid ${t.line}}
+.wl span:last-child{flex:0 0 auto;font-weight:600;white-space:nowrap;color:${t.accent};font-variant-numeric:tabular-nums}
+.wtot{margin:14px 0 0;text-align:end;font-weight:700;font-size:1.12rem}
+.wshow{margin:20px 0 0;padding:14px 16px;border-radius:14px;background:${t.soft};border:1px solid ${t.line};text-align:center;line-height:1.45}
+.wempty{margin:30px 0;color:${t.dim};text-align:center}
+.wre{display:block;margin:18px auto 0;background:none;border:0;color:${t.dim};font:inherit;font-size:.9rem;text-decoration:underline;cursor:pointer}
+#wnote{width:100%;margin:16px 0 10px;padding:10px;border-radius:10px;border:1px solid ${t.line};font:inherit;background:transparent;color:${t.ink}}
+#wsend{width:100%;border:0;border-radius:999px;padding:14px 18px;background:linear-gradient(135deg,${t.accent},${t.accent2});color:${t.onAccent};font:inherit;font-weight:600;cursor:pointer}
+#wsend:disabled{opacity:.5}
+#wmsg{margin:10px 0 0;text-align:center;font-weight:600}
+`;
 
 const ORDER_STYLES = `
 .add{flex:0 0 auto;align-self:center;margin-inline-start:auto;width:2.3rem;height:2.3rem;padding:0;line-height:1;font-size:1.3rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:50%;font-family:inherit;font-weight:500;cursor:pointer}
@@ -695,6 +801,52 @@ $('send').addEventListener('click',function(){
     else{$('msg').textContent=s===429?L.wait:L.fail}
   }).catch(function(){$('msg').textContent=L.fail}).then(function(){$('send').disabled=false});
 });
+})();`;
+
+/**
+ * Schritt-für-Schritt-Auswahl: blättert durch die Schritte, zählt je Gericht mit, baut am Ende die Liste.
+ * Die Auswahl bleibt in sessionStorage, falls der Gast die Seite neu lädt. Mit Tischkürzel (Bestellen am
+ * Tisch) schickt „Bestellen" die Liste an /api/menu-order; Namen und Preise prüft dort der Server.
+ */
+const WIZ_SCRIPT = `(function(){var w=document.getElementById('wiz'),o=document.getElementById('wopen');if(!w||!o)return;
+var cfg=JSON.parse(document.getElementById('wc').textContent),L=cfg.l,q={},cur=0,$=function(i){return document.getElementById(i)};
+var st=[].slice.call(w.querySelectorAll('.wstep')),items=[].slice.call(w.querySelectorAll('.wi'));
+var fmt=function(c){return (c/100).toFixed(2).replace('.',',')+' €'};
+try{q=JSON.parse(sessionStorage.getItem(cfg.k)||'{}')||{}}catch(e){q={}}
+function save(){try{sessionStorage.setItem(cfg.k,JSON.stringify(q))}catch(e){}}
+function sync(){items.forEach(function(it){var v=q[it.getAttribute('data-n')]||0;it.querySelector('output').textContent=v;it.classList.toggle('on',v>0)});
+w.querySelectorAll('details.wcat').forEach(function(d){var n=0;d.querySelectorAll('.wi').forEach(function(it){n+=q[it.getAttribute('data-n')]||0});var b=d.querySelector('.wsel');b.hidden=!n;b.textContent=n})}
+items.forEach(function(it){var n=it.getAttribute('data-n');
+it.querySelector('.wa').addEventListener('click',function(){q[n]=Math.min((q[n]||0)+1,20);save();sync()});
+it.querySelector('.wm').addEventListener('click',function(){if(q[n]){q[n]--;if(!q[n])delete q[n]}save();sync()})});
+function chosen(){return items.filter(function(it){return q[it.getAttribute('data-n')]})}
+function summary(){var box=$('wlist'),tot=0,known=true,any=false;box.textContent='';
+st.slice(0,-1).forEach(function(s){var rows=[].slice.call(s.querySelectorAll('.wi')).filter(function(it){return q[it.getAttribute('data-n')]});if(!rows.length)return;any=true;
+var h=document.createElement('h4');h.textContent=s.getAttribute('data-t');box.appendChild(h);
+rows.forEach(function(it){var k=q[it.getAttribute('data-n')],c=it.getAttribute('data-c'),r=document.createElement('div'),a=document.createElement('span'),b=document.createElement('span');
+r.className='wl';a.textContent=k+' × '+it.querySelector('.wn').textContent;
+if(c===''){known=false;b.textContent=it.getAttribute('data-p')}else{tot+=Number(c)*k;b.textContent=fmt(Number(c)*k)}
+r.appendChild(a);r.appendChild(b);box.appendChild(r)})});
+if(!any){var e=document.createElement('p');e.className='wempty';e.textContent=L.empty;box.appendChild(e)}
+$('wtot').hidden=!(any&&known);$('wtot').textContent=L.total+' '+fmt(tot);$('wshow').hidden=!any;$('wre').hidden=!any;
+if(cfg.o)$('wsend').disabled=!any}
+function show(i){cur=Math.max(0,Math.min(i,st.length-1));var last=cur===st.length-1;
+st.forEach(function(s,j){s.hidden=j!==cur});$('wtt').textContent=st[cur].getAttribute('data-t');
+$('wpr').textContent=last?'':L.step.replace('{n}',cur+1).replace('{m}',st.length-1);
+[].forEach.call($('wdots').children,function(d,j){d.className=j<cur?'done':j===cur?'cur':''});
+$('wback').hidden=cur===0;$('wnext').hidden=last;$('wnext').textContent=cur===st.length-2?L.summary:L.next;
+if(last)summary();$('wb').scrollTop=0}
+st.forEach(function(){$('wdots').appendChild(document.createElement('i'))});
+function close(){w.hidden=true;document.body.classList.remove('wiz-on');o.focus()}
+o.hidden=false;o.addEventListener('click',function(){w.hidden=false;document.body.classList.add('wiz-on');sync();show(cur)});
+$('wx').addEventListener('click',close);document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!w.hidden)close()});
+$('wnext').addEventListener('click',function(){show(cur+1)});$('wback').addEventListener('click',function(){show(cur-1)});
+$('wre').addEventListener('click',function(){q={};save();sync();show(0)});
+if(cfg.o)$('wsend').addEventListener('click',function(){var list=chosen().map(function(it){var n=it.getAttribute('data-n');return{name:n,qty:q[n]}});if(!list.length)return;
+$('wsend').disabled=true;$('wmsg').textContent='';
+fetch('/api/menu-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:cfg.o.slug,t:cfg.o.t,items:list,note:$('wnote').value})})
+.then(function(r){if(r.status===201){q={};save();sync();$('wnote').value='';summary();$('wmsg').textContent=cfg.o.sent}else{$('wmsg').textContent=r.status===429?cfg.o.wait:cfg.o.fail;$('wsend').disabled=false}})
+.catch(function(){$('wmsg').textContent=cfg.o.fail;$('wsend').disabled=false})});
 })();`;
 
 /** Hebt in der Rubrikleiste die Rubrik hervor, in der man gerade liest. Ohne Script bleibt die Leiste einfach eine Linkliste. */
@@ -779,6 +931,46 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     )
     .join('\n');
 
+  // Schritt-für-Schritt-Auswahl: dieselben Gerichte wie auf der Karte, je Schritt mit Zähler.
+  const wl = WIZ_LABELS[lang];
+  const localized = localize(d, lang);
+  const steps = parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length));
+  const wizard = steps.length
+    ? `<div id="wiz" hidden role="dialog" aria-modal="true" aria-label="${esc(wl.open)}">
+<div class="wh"><button type="button" class="wx" id="wx" aria-label="${esc(wl.close)}">×</button><p class="wpr" id="wpr"></p><h3 id="wtt"></h3><div class="wdots" id="wdots"></div></div>
+<div class="wb" id="wb">${steps
+        .map(
+          (st) =>
+            `<div class="wstep" data-t="${esc(wl[st.kind])}" hidden>${st.cats
+              .filter((ci) => localized[ci]?.items.length)
+              .map((ci, k, all) => {
+                const c = localized[ci]!;
+                const o = d.categories[ci]!;
+                const many = all.length > 1;
+                return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary><h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
+                  .map((it, j) => {
+                    const oi = o.items[j]!;
+                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${esc(it.name)}</span>${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
+                  })
+                  .join('')}${many ? '</details>' : ''}`;
+              })
+              .join('')}<p class="whint">${esc(wl.hint)}</p></div>`,
+        )
+        .join('')}<div class="wstep wsum" data-t="${esc(wl.summary)}" hidden><div id="wlist"></div><p class="wtot" id="wtot" hidden></p><p class="wshow" id="wshow">${esc(wl.show)}</p>${
+        ordering
+          ? `<textarea id="wnote" rows="2" maxlength="300" placeholder="${esc(ol.note)}"></textarea><button type="button" id="wsend">${esc(ol.send)} · ${esc(ol.table)} ${esc(opts.table!.label)}</button><p id="wmsg" role="status"></p>`
+          : ''
+      }<button type="button" class="wre" id="wre">${esc(wl.restart)}</button></div></div>
+<div class="wf"><button type="button" class="wbk" id="wback">${esc(wl.back)}</button><button type="button" class="wnx" id="wnext">${esc(wl.next)}</button></div>
+</div>
+<script type="application/json" id="wc">${JSON.stringify({
+        k: `wiz:${menu.slug}`,
+        l: { step: wl.step, next: wl.next, summary: wl.summary, empty: wl.empty, total: wl.total },
+        o: ordering ? { slug: menu.slug, t: opts.table!.token, sent: ol.sent, fail: ol.fail, wait: ol.wait } : null,
+      }).replace(/</g, '\\u003c')}</script>
+<script>${WIZ_SCRIPT}</script>`
+    : '';
+
   const actions: string[] = [];
   const review = httpsUrl(d.reviewUrl);
   if (review) actions.push(`<a class="btn" href="${esc(review)}" rel="noopener">${esc(l.review)}</a>`);
@@ -817,7 +1009,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 <meta name="robots" content="noindex,nofollow" />
 <meta name="referrer" content="no-referrer" />
 <title>${esc(d.name)}${d.tagline ? ` · ${esc(d.tagline)}` : ''}</title>
-<style>:root{--accent:${t.accent};--on:${t.onAccent};--panel:${t.panel};--ink:${t.ink};--dim:${t.dim};--accent2:${t.accent2}}${styles(t)}${ORDER_STYLES}</style>
+<style>:root{--accent:${t.accent};--on:${t.onAccent};--panel:${t.panel};--ink:${t.ink};--dim:${t.dim};--accent2:${t.accent2}}${styles(t)}${ORDER_STYLES}${wizard ? wizStyles(t) : ''}</style>
 </head><body${ordering ? ' class="ordering"' : ''}>
 <main class="menu">
 <header class="hero">
@@ -831,6 +1023,7 @@ ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
 ${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c }, i) => `<a href="#${anchor(i)}">${esc(c.title)}</a>`).join('')}</nav>` : ''}
+${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}
 ${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
@@ -838,6 +1031,7 @@ ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 <p class="foot">${credits ? `<a href="${esc(credits)}" rel="noopener">${esc(l.credits)}</a> · ` : ''}${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>
 ${orderUi}
+${wizard}
 ${cats.length > 1 ? `<script>${NAV_SCRIPT}</script>` : ''}
 ${fold ? `<script>${FOLD_SCRIPT}</script>` : ''}
 ${filtersUi ? `<script>${FILTER_SCRIPT}</script>` : ''}
