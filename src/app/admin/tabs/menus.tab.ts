@@ -120,6 +120,12 @@ interface Menu {
               @for (l of langs; track l.id) { <option [value]="l.id">{{ l.label }}</option> }
             </select>
           </label>
+          <label class="adm-field">Bölümler
+            <select [value]="f('sections')" (change)="setF('sections', val($event))">
+              <option value="">Hepsi açık</option>
+              <option value="collapsed">Kapalı, dokununca açılır</option>
+            </select>
+          </label>
           <label class="adm-field">Müşteri
             <select [value]="customerId()" (change)="customerId.set(val($event))">
               <option value="">—</option>

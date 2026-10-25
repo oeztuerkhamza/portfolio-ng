@@ -118,6 +118,8 @@ export interface MenuData {
   reviewUrl?: string;
   /** Link „Bildnachweis" im Fuß: Pflicht, sobald Fotos unter CC BY/BY-SA auf der Karte stehen. */
   creditsUrl?: string;
+  /** „collapsed": Rubriken sind zugeklappt, nur die Titel stehen untereinander; ein Tipp öffnet eine. */
+  sections?: 'collapsed';
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
   translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
@@ -203,6 +205,7 @@ export function menuData(input: unknown): MenuData | null {
     footnote: text(d['footnote'], 600),
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     creditsUrl: httpsUrl(d['creditsUrl']) ?? undefined,
+    sections: d['sections'] === 'collapsed' ? 'collapsed' : undefined,
     translations: Object.keys(translations).length ? translations : undefined,
     categories,
   };
@@ -458,6 +461,7 @@ h2::before,h2::after{content:"";flex:1;height:8px;min-width:24px}
 h2::before{background:${diamond} right center/8px 8px no-repeat,linear-gradient(270deg,${gold},transparent) left center/calc(100% - 13px) 1px no-repeat}
 h2::after{background:${diamond} left center/8px 8px no-repeat,linear-gradient(90deg,${gold},transparent) right center/calc(100% - 13px) 1px no-repeat}
 .note{text-align:center}
+.nav a{transition:none}
 .nav a[aria-current]{background:linear-gradient(160deg,${heroA},${heroB});border-color:${gold};color:#f6e5bb;transition:none}
 li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 2px rgba(40,30,10,.08),0 14px 30px -16px rgba(20,40,36,.45)}
 .ph{border-bottom:1px solid ${gold}}
@@ -506,6 +510,19 @@ section{margin-top:36px}
 h2{display:flex;align-items:center;gap:14px;margin:0 0 4px;font:600 1.5rem/1.2 ${SERIF};color:${t.accent};scroll-margin-top:68px}
 h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,${t.line},transparent)}
 .note{margin:0 0 6px;color:${t.dim};font-size:.86rem;font-style:italic}
+section.fold{margin-top:0}
+section.fold:first-of-type{margin-top:22px}
+details.cat{border-bottom:1px solid ${t.line}}
+details.cat>summary{display:flex;align-items:center;gap:12px;padding:17px 2px;scroll-margin-top:62px;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
+details.cat>summary::-webkit-details-marker{display:none}
+details.cat>summary h2{flex:1;display:block;margin:0;font-size:1.28rem;text-align:start}
+details.cat>summary h2::before,details.cat>summary h2::after{display:none}
+details.cat>summary::after{content:"";flex:0 0 auto;width:8px;height:8px;margin:0 6px;border-right:2px solid ${t.accent};border-bottom:2px solid ${t.accent};transform:translateY(-2px) rotate(45deg);transition:transform .25s}
+details.cat[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
+.cnt{flex:0 0 auto;min-width:2rem;padding:1px 9px;border-radius:999px;background:${t.soft};border:1px solid ${t.line};color:${t.dim};font-size:.74rem;font-weight:600;text-align:center;font-variant-numeric:tabular-nums}
+details.cat[open]>summary .cnt{display:none}
+details.cat>ul{margin-top:0;padding-bottom:10px}
+details.cat>.note{margin-top:-6px}
 ul{list-style:none;margin:10px 0 0;padding:0}
 li{padding:13px 0;border-bottom:1px solid ${t.line}}
 li:last-child{border-bottom:0}
@@ -552,7 +569,7 @@ a:focus-visible,button:focus-visible{outline:2px solid ${t.accent};outline-offse
 .nomatch{margin:22px 0;text-align:center;color:${t.dim}}
 @media (min-width:700px){body{padding:44px 20px 80px}.menu{padding:0 40px 34px}.hero{margin:0 -40px;padding:62px 40px 34px}.nav{margin:0 -40px;padding:12px 40px}}
 ${t.extra ?? ''}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}details.cat>summary::after{transition:none}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
 `;
 
 interface FilterLabels {
@@ -597,6 +614,7 @@ if(k.length){if(a===null)return false;var l=a.split(' ');for(var i=0;i<k.length;
 return true}
 function apply(){var any=0;document.querySelectorAll('main section').forEach(function(s){var n=0;
 s.querySelectorAll('li').forEach(function(li){var v=ok(li);li.hidden=!v;if(v)n++});s.hidden=!n;any+=n;
+var cnt=s.querySelector('.cnt');if(cnt)cnt.textContent=n;
 var h=s.querySelector('h2'),a=h&&document.querySelector('.nav a[href="#'+h.id+'"]');if(a)a.hidden=!n});
 f.querySelector('.nomatch').hidden=any>0}
 f.querySelectorAll('[data-f]').forEach(function(b){b.addEventListener('click',function(){var v=b.getAttribute('data-f');diet=diet===v?null:v;
@@ -689,6 +707,18 @@ a.setAttribute('aria-current','true');var r=a.getBoundingClientRect(),q=n.getBou
 n.scrollBy({left:r.left+r.width/2-(q.left+q.width/2),behavior:'smooth'})}
 addEventListener('scroll',function(){if(!t)t=requestAnimationFrame(upd)},{passive:true});upd()})();`;
 
+/**
+ * Zugeklappte Rubriken: Ein Tipp auf die Rubrikleiste öffnet die Rubrik, ebenso ein #k…-Link beim Laden.
+ * Öffnet man eine Rubrik, schließt der Browser die vorige (name="cats"); rutscht der Titel dabei aus dem
+ * Bild, holt das Script ihn zurück nach oben. Ohne Script bleiben die Rubriken per Tipp auf- und zuklappbar.
+ */
+const FOLD_SCRIPT = `(function(){function open(id){var h=document.getElementById(id),d=h&&h.closest('details');if(d&&!d.open)d.open=true}
+document.querySelectorAll('.nav a').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href').slice(1),h=document.getElementById(id);if(!h)return;
+e.preventDefault();open(id);history.replaceState(null,'','#'+id);h.closest('summary').scrollIntoView({block:'start',behavior:'instant'})})});
+if(location.hash){open(location.hash.slice(1));var h0=document.getElementById(location.hash.slice(1));if(h0)h0.closest('summary').scrollIntoView({block:'start',behavior:'instant'})}
+document.querySelectorAll('details.cat').forEach(function(d){d.addEventListener('toggle',function(){if(!d.open)return;
+var s=d.querySelector('summary'),r=s.getBoundingClientRect();if(r.top<62)s.scrollIntoView({block:'start',behavior:'instant'})})})})();`;
+
 export interface RenderOptions {
   /** Gewünschte Anzeigesprache (?l=). Gilt nur, wenn die Karte sie anbietet. */
   lang?: string;
@@ -709,6 +739,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     .map((c, i) => ({ c, orig: d.categories[i]! }))
     .filter((x) => x.c.items.length);
   const ordering = !!opts.table && !menu.preview;
+  const fold = d.sections === 'collapsed' && cats.length > 1;
   const keep = ordering ? `&amp;t=${encodeURIComponent(opts.table!.token)}` : '';
   const ol = ORDER_LABELS[lang];
   const fl = FILTER_LABELS[lang];
@@ -731,7 +762,11 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 
   const body = cats
     .map(
-      ({ c, orig }, i) => `<section><h2 id="${anchor(i)}">${esc(c.title)}</h2>${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<ul>${c.items
+      ({ c, orig }, i) => `${
+        fold
+          ? `<section class="fold"><details class="cat" name="cats"><summary><h2 id="${anchor(i)}">${esc(c.title)}</h2><span class="cnt">${c.items.length}</span></summary>`
+          : `<section><h2 id="${anchor(i)}">${esc(c.title)}</h2>`
+      }${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<ul>${c.items
         .map((it, j) => {
           const o = orig.items[j]!;
           const add = ordering
@@ -740,7 +775,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
           const img = httpsUrl(it.img);
           return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
         })
-        .join('')}</ul></section>`,
+        .join('')}</ul>${fold ? '</details>' : ''}</section>`,
     )
     .join('\n');
 
@@ -804,6 +839,7 @@ ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 </main>
 ${orderUi}
 ${cats.length > 1 ? `<script>${NAV_SCRIPT}</script>` : ''}
+${fold ? `<script>${FOLD_SCRIPT}</script>` : ''}
 ${filtersUi ? `<script>${FILTER_SCRIPT}</script>` : ''}
 </body></html>`;
 }

@@ -128,6 +128,17 @@ describe('renderMenu', () => {
     assert.ok(ru.includes('Русский') && ru.includes('العربية'));
   });
 
+  test('Rubriken zuklappbar, sonst wie bisher offen', () => {
+    const open = renderMenu(menu());
+    assert.ok(!open.includes('<details class="cat"'));
+    assert.ok(open.includes('<section><h2 id="k1">Vorspeisen</h2>'));
+    const fold = renderMenu(menu({ sections: 'collapsed' }));
+    assert.ok(fold.includes('<details class="cat" name="cats"><summary><h2 id="k1">Vorspeisen</h2><span class="cnt">2</span></summary>'));
+    assert.equal(fold.split('<details class="cat"').length - 1, 2);
+    assert.ok(fold.includes('</ul></details></section>'));
+    assert.equal(menuData({ name: 'X', sections: 'irgendwas' })!.sections, undefined);
+  });
+
   test('leere Karte und Vorschau', () => {
     const html = renderMenu(menu({ categories: [] }, true));
     assert.ok(html.includes('wird gerade vorbereitet'));
