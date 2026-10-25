@@ -102,6 +102,8 @@ export interface MenuItem {
 export interface MenuCategory {
   title: string;
   note?: string;
+  /** Bild der Rubrik, https: zugeklappt als Bildkarte, offen als Banner über dem Titel. */
+  img?: string;
   items: MenuItem[];
 }
 
@@ -219,7 +221,8 @@ export function menuData(input: unknown): MenuData | null {
         ...(allergens ? { allergens } : {}),
       });
     }
-    categories.push({ title, note: text(cat['note'], 300), items });
+    const img = httpsUrl(cat['img']);
+    categories.push({ title, note: text(cat['note'], 300), ...(img ? { img } : {}), items });
   }
 
   const translations: Partial<Record<MenuLang, string>> = {};
@@ -263,6 +266,7 @@ export function localize(data: MenuData, lang: MenuLang): MenuCategory[] {
     return {
       title: t.title || c.title,
       note: t.note ?? c.note,
+      ...(c.img ? { img: c.img } : {}),
       items: c.items.map((it, j) => {
         const ti = t.items[j];
         return ti ? { ...it, name: ti.name, desc: ti.desc ?? it.desc } : it;
@@ -353,8 +357,11 @@ export function parseMenuText(src: unknown): MenuCategory[] {
     const t = line.trim();
     if (!t) continue;
     if (t.startsWith('#')) {
-      const [title, note] = t.replace(/^#+\s*/, '').split('|').map((p) => p.trim());
-      if (title) out.push({ title, note: note || undefined, items: [] });
+      const parts = t.replace(/^#+\s*/, '').split('|').map((p) => p.trim());
+      // Ein Rubrikbild steht wie beim Gericht als https-Adresse an letzter Stelle.
+      const img = parts.length > 1 && /^https:\/\/\S+$/.test(parts[parts.length - 1]!) ? parts.pop() : undefined;
+      const [title, note] = parts;
+      if (title) out.push({ title, note: note || undefined, ...(img ? { img } : {}), items: [] });
       continue;
     }
     const cat = out[out.length - 1];
@@ -375,7 +382,7 @@ export function menuText(categories: MenuCategory[]): string {
   return categories
     .map((c) =>
       [
-        `# ${c.title}${c.note ? ` | ${c.note}` : ''}`,
+        `# ${c.title}${c.note ? ` | ${c.note}` : ''}${c.img ? ` | ${c.img}` : ''}`,
         ...c.items.map((i) =>
           [i.name, i.price ?? '', i.desc ?? '', ...(tagsText(i) ? [tagsText(i)] : []), ...(i.img ? [i.img] : [])]
             .join(' | ')
@@ -499,6 +506,8 @@ h2::before{background:${diamond} right center/8px 8px no-repeat,linear-gradient(
 h2::after{background:${diamond} left center/8px 8px no-repeat,linear-gradient(90deg,${gold},transparent) right center/calc(100% - 13px) 1px no-repeat}
 .note{text-align:center}
 .nav a{transition:none}
+details.cat.card>summary{background:${star('#e2c27e', 0.16)},linear-gradient(170deg,${heroA},${heroB});outline:1px solid rgba(214,181,110,.55);outline-offset:-6px}
+details.cat.card>summary h2{color:#f6e6bf}
 .nav a[aria-current]{background:linear-gradient(160deg,${heroA},${heroB});border-color:${gold};color:#f6e5bb;transition:none}
 li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 2px rgba(40,30,10,.08),0 14px 30px -16px rgba(20,40,36,.45)}
 .ph{border-bottom:1px solid ${gold}}
@@ -561,6 +570,22 @@ details.cat[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 details.cat[open]>summary .cnt{display:none}
 details.cat>ul{margin-top:0;padding-bottom:10px}
 details.cat>.note{margin-top:-6px}
+details.cat.card{border:0;margin:12px 0}
+details.cat.card>summary{position:relative;overflow:hidden;min-height:108px;padding:16px 18px;align-items:flex-end;border-radius:16px;
+  background:linear-gradient(160deg,${t.heroA},${t.heroB});color:${t.heroInk};box-shadow:0 10px 24px -14px rgba(0,0,0,.55)}
+details.cat.card[open]>summary{border-radius:16px 16px 0 0}
+.ci{position:absolute;inset:0;z-index:0}
+.ci img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+details.cat.card>summary:hover .ci img{transform:scale(1.04)}
+details.cat.card>summary::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(0deg,rgba(0,0,0,.8) 0%,rgba(0,0,0,.42) 45%,rgba(0,0,0,.08) 100%)}
+details.cat.card>summary h2,details.cat.card>summary .cnt,details.cat.card>summary::after{position:relative;z-index:2}
+details.cat.card>summary h2{color:${t.heroInk};font-size:1.42rem;text-shadow:0 2px 10px rgba(0,0,0,.55)}
+details.cat.card .cnt{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.28);color:${t.heroInk};backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+details.cat.card>summary::after{border-color:${t.heroInk};margin-bottom:9px}
+details.cat.card>ul{padding:0 4px 12px;border-bottom:1px solid ${t.line}}
+details.cat.card>.note{margin:10px 4px 0}
+.cban{display:block;overflow:hidden;margin:0 0 14px;border-radius:16px;aspect-ratio:16/7;background:${t.line}}
+.cban img{display:block;width:100%;height:100%;object-fit:cover}
 ul{list-style:none;margin:10px 0 0;padding:0}
 li{padding:13px 0;border-bottom:1px solid ${t.line}}
 li:last-child{border-bottom:0}
@@ -607,7 +632,7 @@ a:focus-visible,button:focus-visible{outline:2px solid ${t.accent};outline-offse
 .nomatch{margin:22px 0;text-align:center;color:${t.dim}}
 @media (min-width:700px){body{padding:44px 20px 80px}.menu{padding:0 40px 34px}.hero{margin:0 -40px;padding:62px 40px 34px}.nav{margin:0 -40px;padding:12px 40px}}
 ${t.extra ?? ''}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}details.cat>summary::after{transition:none}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}details.cat>summary::after,.ci img{transition:none}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
 `;
 
 interface FilterLabels {
@@ -710,6 +735,8 @@ details.wcat{border-bottom:1px solid ${t.line}}
 details.wcat>summary{display:flex;align-items:center;gap:10px;padding:15px 0;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
 details.wcat>summary::-webkit-details-marker{display:none}
 details.wcat>summary h4{flex:1;margin:0}
+.wci{flex:0 0 auto;width:46px;height:46px;overflow:hidden;border-radius:50%;border:1px solid ${t.line}}
+.wci img{display:block;width:100%;height:100%;object-fit:cover}
 details.wcat>summary::after{content:"";flex:0 0 auto;width:7px;height:7px;margin:0 6px;border-right:2px solid ${t.accent};border-bottom:2px solid ${t.accent};transform:translateY(-2px) rotate(45deg);transition:transform .25s}
 details.wcat[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 details.wcat .wi:last-child{border-bottom:0}
@@ -892,6 +919,12 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     .filter((x) => x.c.items.length);
   const ordering = !!opts.table && !menu.preview;
   const fold = d.sections === 'collapsed' && cats.length > 1;
+  // Sobald eine Rubrik ein Bild hat, werden zugeklappte Rubriken zu Bildkarten; ohne Bild trägt die Karte das Muster des Themes.
+  const cards = fold && cats.some(({ c }) => httpsUrl(c.img));
+  const catImg = (c: MenuCategory, cls: string) => {
+    const u = httpsUrl(c.img);
+    return u ? `<span class="${cls}"><img src="${esc(u)}" alt="" loading="lazy" decoding="async" /></span>` : '';
+  };
   const keep = ordering ? `&amp;t=${encodeURIComponent(opts.table!.token)}` : '';
   const ol = ORDER_LABELS[lang];
   const fl = FILTER_LABELS[lang];
@@ -916,8 +949,8 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     .map(
       ({ c, orig }, i) => `${
         fold
-          ? `<section class="fold"><details class="cat" name="cats"><summary><h2 id="${anchor(i)}">${esc(c.title)}</h2><span class="cnt">${c.items.length}</span></summary>`
-          : `<section><h2 id="${anchor(i)}">${esc(c.title)}</h2>`
+          ? `<section class="fold"><details class="cat${cards ? ' card' : ''}" name="cats"><summary>${cards ? catImg(c, 'ci') : ''}<h2 id="${anchor(i)}">${esc(c.title)}</h2><span class="cnt">${c.items.length}</span></summary>`
+          : `<section>${catImg(c, 'cban')}<h2 id="${anchor(i)}">${esc(c.title)}</h2>`
       }${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<ul>${c.items
         .map((it, j) => {
           const o = orig.items[j]!;
@@ -947,7 +980,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
                 const c = localized[ci]!;
                 const o = d.categories[ci]!;
                 const many = all.length > 1;
-                return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary><h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
+                return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
                   .map((it, j) => {
                     const oi = o.items[j]!;
                     return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${esc(it.name)}</span>${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;

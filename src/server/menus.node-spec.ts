@@ -158,6 +158,22 @@ describe('renderMenu', () => {
     assert.ok(html.includes('"t":"abc"'));
   });
 
+  test('Rubrikbild: Textformat, nur https, Bildkarte oder Banner', () => {
+    const cats = parseMenuText('# Vorspeisen | kalt | https://x.de/v.jpg\nSuppe | 5\n\n# Salate | https://x.de/s.jpg\nGrün | 4\n\n# Dessert\nEis | 3');
+    assert.equal(cats[0]!.img, 'https://x.de/v.jpg');
+    assert.equal(cats[0]!.note, 'kalt');
+    assert.equal(cats[1]!.img, 'https://x.de/s.jpg');
+    assert.equal(cats[1]!.note, undefined);
+    assert.ok(menuText(cats).startsWith('# Vorspeisen | kalt | https://x.de/v.jpg\n'));
+    assert.equal(menuData({ name: 'X', categories: [{ title: 'A', img: 'http://x.de/a.jpg', items: [{ name: 'B' }] }] })!.categories[0]!.img, undefined);
+    const fold = renderMenu(menu({ categories: cats, sections: 'collapsed' }));
+    assert.ok(fold.includes('<details class="cat card" name="cats"><summary><span class="ci"><img src="https://x.de/v.jpg"'));
+    assert.ok(fold.includes('<details class="cat card" name="cats"><summary><h2 id="k3">Dessert</h2>'));
+    const open = renderMenu(menu({ categories: cats }));
+    assert.ok(open.includes('<section><span class="cban"><img src="https://x.de/v.jpg"'));
+    assert.ok(!renderMenu(menu({ sections: 'collapsed' })).includes('cat card'));
+  });
+
   test('leere Karte und Vorschau', () => {
     const html = renderMenu(menu({ categories: [] }, true));
     assert.ok(html.includes('wird gerade vorbereitet'));
