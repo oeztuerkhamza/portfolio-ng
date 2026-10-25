@@ -116,6 +116,18 @@ describe('renderMenu', () => {
     assert.ok(!renderMenu(menu()).includes('.hero::before'));
   });
 
+  test('Arabisch und Russisch als Übersetzung, Arabisch von rechts nach links', () => {
+    const d = { translations: { ar: '# مقبلات\nحساء الطماطم | | بالريحان', ru: '# Закуски\nТоматный суп | | с базиликом' } };
+    const ar = renderMenu(menu(d), 'https://breisgaudigital.de', { lang: 'ar' });
+    assert.ok(ar.includes('<html lang="ar" dir="rtl">'));
+    assert.ok(ar.includes('حساء الطماطم'));
+    assert.ok(ar.includes('6,50'));
+    const ru = renderMenu(menu(d), 'https://breisgaudigital.de', { lang: 'ru' });
+    assert.ok(ru.includes('<html lang="ru">'));
+    assert.ok(ru.includes('Томатный суп'));
+    assert.ok(ru.includes('Русский') && ru.includes('العربية'));
+  });
+
   test('leere Karte und Vorschau', () => {
     const html = renderMenu(menu({ categories: [] }, true));
     assert.ok(html.includes('wird gerade vorbereitet'));

@@ -6,7 +6,7 @@ import type { Customer } from './customers.tab';
 
 /** Muss zu MENU_THEMES in src/server/menus.ts passen. */
 type Theme = 'brand' | 'dark' | 'warm' | 'orient';
-type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku';
+type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku' | 'ar' | 'ru';
 
 const THEMES: { id: Theme; label: string }[] = [
   { id: 'warm', label: 'Sıcak' },
@@ -15,12 +15,14 @@ const THEMES: { id: Theme; label: string }[] = [
   { id: 'orient', label: 'Oryantal (zümrüt ve altın)' },
 ];
 
-/** Muss zu CARD_LANGS in src/server/cards.ts passen. */
+/** Muss zu MENU_LANGS in src/server/menus.ts passen. */
 const LANGS: { id: Lang; label: string }[] = [
   { id: 'de', label: 'Almanca' },
-  { id: 'fr', label: 'Fransızca' },
   { id: 'en', label: 'İngilizce' },
+  { id: 'fr', label: 'Fransızca' },
   { id: 'tr', label: 'Türkçe' },
+  { id: 'ar', label: 'Arapça' },
+  { id: 'ru', label: 'Rusça' },
   { id: 'ku', label: 'Kürtçe' },
 ];
 

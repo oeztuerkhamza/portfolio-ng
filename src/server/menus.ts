@@ -1,6 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { config } from './config';
-import { CARD_LANGS, CARD_THEMES, esc, httpsUrl, mailAddress, telHref, type CardLang } from './cards';
+import { CARD_THEMES, esc, httpsUrl, mailAddress, telHref, type CardLang } from './cards';
 
 /**
  * Speisekarten für Kunden: /m/<slug>.
@@ -119,9 +119,16 @@ export interface MenuData {
   /** Link „Bildnachweis" im Fuß: Pflicht, sobald Fotos unter CC BY/BY-SA auf der Karte stehen. */
   creditsUrl?: string;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
-  translations?: Partial<Record<CardLang, string>>;
+  translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
 }
+
+/**
+ * Die Sprachen der NFC-Karten plus Arabisch (von rechts nach links) und Russisch, die es nur für
+ * Speisekarten gibt. Die Reihenfolge ist die der Sprachleiste auf der Karte.
+ */
+export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'ar', 'ru', 'ku'] as const satisfies readonly (CardLang | 'ar' | 'ru')[];
+export type MenuLang = (typeof MENU_LANGS)[number];
 
 /** Die Themes der NFC-Karten plus „orient" (Smaragd und Gold), das es nur für Speisekarten gibt. */
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
@@ -129,7 +136,7 @@ export type MenuTheme = (typeof MENU_THEMES)[number];
 
 export interface Menu {
   slug: string;
-  lang: CardLang;
+  lang: MenuLang;
   theme: MenuTheme;
   preview: boolean;
   data: MenuData;
@@ -177,9 +184,9 @@ export function menuData(input: unknown): MenuData | null {
     categories.push({ title, note: text(cat['note'], 300), items });
   }
 
-  const translations: Partial<Record<CardLang, string>> = {};
+  const translations: Partial<Record<MenuLang, string>> = {};
   const rawTr = (d['translations'] && typeof d['translations'] === 'object' ? d['translations'] : {}) as Record<string, unknown>;
-  for (const l of CARD_LANGS) {
+  for (const l of MENU_LANGS) {
     const v = text(rawTr[l], 20000);
     if (v) translations[l] = v;
   }
@@ -206,7 +213,7 @@ export function menuData(input: unknown): MenuData | null {
  * Übersetzung, Preise und Fotos immer vom Original — ein Tippfehler im
  * Türkischen darf keinen Preis verändern. Fehlt eine Zeile, bleibt das Original.
  */
-export function localize(data: MenuData, lang: CardLang): MenuCategory[] {
+export function localize(data: MenuData, lang: MenuLang): MenuCategory[] {
   const src = data.translations?.[lang];
   if (!src) return data.categories;
   const tr = parseMenuText(src);
@@ -225,8 +232,8 @@ export function localize(data: MenuData, lang: CardLang): MenuCategory[] {
 }
 
 /** Sprachen, in denen die Karte angeboten wird: die Hauptsprache plus alle Übersetzungen. */
-export function menuLangs(menu: Menu): CardLang[] {
-  return CARD_LANGS.filter((l) => l === menu.lang || !!menu.data.translations?.[l]);
+export function menuLangs(menu: Menu): MenuLang[] {
+  return MENU_LANGS.filter((l) => l === menu.lang || !!menu.data.translations?.[l]);
 }
 
 // ── Bestellen am Tisch ─────────────────────────────────────
@@ -339,14 +346,15 @@ export function menuText(categories: MenuCategory[]): string {
     .join('\n\n');
 }
 
-export const MENU_LANGS = CARD_LANGS;
 
-const LABELS: Record<CardLang, { review: string; call: string; mail: string; map: string; preview: string; empty: string; credits: string }> = {
+const LABELS: Record<MenuLang, { review: string; call: string; mail: string; map: string; preview: string; empty: string; credits: string }> = {
   de: { review: 'Bewerten Sie uns auf Google', call: 'Anrufen', mail: 'E-Mail', map: 'Anfahrt', preview: 'Vorschau — diese Karte ist noch nicht veröffentlicht.', empty: 'Die Speisekarte wird gerade vorbereitet.', credits: 'Bildnachweis' },
   fr: { review: 'Évaluez-nous sur Google', call: 'Appeler', mail: 'E-mail', map: 'Itinéraire', preview: 'Aperçu — cette carte n’est pas encore publiée.', empty: 'La carte est en préparation.', credits: 'Crédits photo' },
   en: { review: 'Rate us on Google', call: 'Call', mail: 'Email', map: 'Directions', preview: 'Preview — this menu is not published yet.', empty: 'The menu is being prepared.', credits: 'Photo credits' },
   tr: { review: 'Google’da bizi değerlendirin', call: 'Ara', mail: 'E-posta', map: 'Yol tarifi', preview: 'Önizleme — bu menü henüz yayında değil.', empty: 'Menü hazırlanıyor.', credits: 'Fotoğraf kaynakları' },
   ku: { review: 'Li ser Google me binirxînin', call: 'Telefon bikin', mail: 'E-name', map: 'Rê', preview: 'Pêşdîtin — ev menû hê nehatiye weşandin.', empty: 'Menû tê amadekirin.', credits: 'Çavkaniya wêneyan' },
+  ar: { review: 'قيّمونا على Google', call: 'اتصال', mail: 'البريد الإلكتروني', map: 'الاتجاهات', preview: 'معاينة — هذه القائمة غير منشورة بعد.', empty: 'يجري إعداد القائمة.', credits: 'مصادر الصور' },
+  ru: { review: 'Оцените нас в Google', call: 'Позвонить', mail: 'E-mail', map: 'Как добраться', preview: 'Предпросмотр — это меню ещё не опубликовано.', empty: 'Меню готовится.', credits: 'Источники фото' },
 };
 
 interface Palette {
@@ -484,7 +492,7 @@ h1{position:relative;margin:0;font:600 clamp(2.1rem,9.5vw,2.9rem)/1.08 ${SERIF};
 .orn::after{transform:scaleX(-1)}
 .orn i{font-style:normal;font-size:.8rem}
 .where{position:relative;margin:0 0 16px;color:${t.heroDim};font-size:.84rem}
-.langs{position:relative;display:flex;gap:2px;justify-content:center;margin:0 auto;padding:3px;width:max-content;max-width:100%;background:rgba(255,255,255,.12);border-radius:999px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.langs{position:relative;display:flex;flex-wrap:wrap;gap:2px;justify-content:center;margin:0 auto;padding:3px;width:max-content;max-width:100%;background:rgba(255,255,255,.12);border-radius:20px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
 .langs a{padding:5px 15px;border-radius:999px;color:${t.heroDim};text-decoration:none;font-size:.8rem;font-weight:500;transition:background .2s,color .2s}
 .langs a:hover{color:${t.heroInk}}
 .langs a[aria-current]{background:${t.panel};color:${t.accent};font-weight:600;box-shadow:0 2px 8px rgba(0,0,0,.28)}
@@ -528,7 +536,7 @@ a:focus-visible,button:focus-visible{outline:2px solid ${t.accent};outline-offse
 .foot{margin:24px 0 0;text-align:center;font-size:.72rem;color:${t.dim}}
 .foot a{color:${t.dim}}
 [hidden]{display:none!important}
-.tag{display:inline-block;margin-left:8px;padding:1px 9px;border-radius:999px;background:${t.soft};border:1px solid ${t.line};color:${t.accent};font:600 .68rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;vertical-align:.12em}
+.tag{display:inline-block;margin-inline-start:8px;padding:1px 9px;border-radius:999px;background:${t.soft};border:1px solid ${t.line};color:${t.accent};font:600 .68rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;vertical-align:.12em}
 .contains{margin:3px 0 0;color:${t.dim};font-size:.78rem}
 .filters{margin:18px 0 0}
 .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start}
@@ -558,21 +566,25 @@ interface FilterLabels {
   none: string;
 }
 
-const FILTER_LABELS: Record<CardLang, FilterLabels> = {
+const FILTER_LABELS: Record<MenuLang, FilterLabels> = {
   de: { filter: 'Filter', vegetarian: 'Vegetarisch', vegan: 'Vegan', allergens: 'Allergene', without: 'ohne', contains: 'Enthält', note: 'Angaben ohne Gewähr. Bei Allergien fragen Sie bitte den Service; Gerichte ohne Angabe werden beim Filtern ausgeblendet.', none: 'Keine Gerichte entsprechen dem Filter.' },
   en: { filter: 'Filter', vegetarian: 'Vegetarian', vegan: 'Vegan', allergens: 'Allergens', without: 'without', contains: 'Contains', note: 'Information without guarantee. If you have an allergy, please ask the staff; dishes without information are hidden when filtering.', none: 'No dishes match the filter.' },
   tr: { filter: 'Filtre', vegetarian: 'Vejetaryen', vegan: 'Vegan', allergens: 'Alerjenler', without: 'içermeyen:', contains: 'İçerir', note: 'Bilgiler garanti değildir. Alerjiniz varsa lütfen servise sorun; bilgisi olmayan yemekler filtrelemede gizlenir.', none: 'Filtreye uyan yemek yok.' },
   fr: { filter: 'Filtre', vegetarian: 'Végétarien', vegan: 'Végan', allergens: 'Allergènes', without: 'sans', contains: 'Contient', note: 'Informations sans garantie. En cas d’allergie, demandez au personnel ; les plats sans information sont masqués lors du filtrage.', none: 'Aucun plat ne correspond au filtre.' },
   ku: { filter: 'Filter', vegetarian: 'Vegetarian', vegan: 'Vegan', allergens: 'Allergens', without: 'without', contains: 'Contains', note: 'Information without guarantee. If you have an allergy, please ask the staff; dishes without information are hidden when filtering.', none: 'No dishes match the filter.' },
+  ar: { filter: 'تصفية', vegetarian: 'نباتي', vegan: 'نباتي صرف', allergens: 'مسببات الحساسية', without: 'بدون', contains: 'يحتوي على', note: 'المعلومات دون ضمان. إذا كانت لديك حساسية فاسأل فريق الخدمة؛ الأطباق التي لا تتوفر عنها معلومات تُخفى عند التصفية.', none: 'لا توجد أطباق تطابق التصفية.' },
+  ru: { filter: 'Фильтр', vegetarian: 'Вегетарианское', vegan: 'Веганское', allergens: 'Аллергены', without: 'без', contains: 'Содержит', note: 'Информация без гарантии. При аллергии, пожалуйста, спросите персонал; блюда без указаний при фильтрации скрываются.', none: 'Нет блюд, подходящих под фильтр.' },
 };
 
-const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr', Record<Allergen, string>> = {
+const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr' | 'ar' | 'ru', Record<Allergen, string>> = {
   de: { gluten: 'Gluten', krebstiere: 'Krebstiere', eier: 'Eier', fisch: 'Fisch', erdnuesse: 'Erdnüsse', soja: 'Soja', milch: 'Milch', schalenfruechte: 'Schalenfrüchte', sellerie: 'Sellerie', senf: 'Senf', sesam: 'Sesam', sulfite: 'Sulfite', lupinen: 'Lupinen', weichtiere: 'Weichtiere' },
   en: { gluten: 'Gluten', krebstiere: 'Crustaceans', eier: 'Eggs', fisch: 'Fish', erdnuesse: 'Peanuts', soja: 'Soy', milch: 'Milk', schalenfruechte: 'Tree nuts', sellerie: 'Celery', senf: 'Mustard', sesam: 'Sesame', sulfite: 'Sulphites', lupinen: 'Lupin', weichtiere: 'Molluscs' },
   tr: { gluten: 'Gluten', krebstiere: 'Kabuklular', eier: 'Yumurta', fisch: 'Balık', erdnuesse: 'Yer fıstığı', soja: 'Soya', milch: 'Süt', schalenfruechte: 'Kabuklu yemişler', sellerie: 'Kereviz', senf: 'Hardal', sesam: 'Susam', sulfite: 'Sülfit', lupinen: 'Acı bakla', weichtiere: 'Yumuşakçalar' },
   fr: { gluten: 'Gluten', krebstiere: 'Crustacés', eier: 'Œufs', fisch: 'Poisson', erdnuesse: 'Arachides', soja: 'Soja', milch: 'Lait', schalenfruechte: 'Fruits à coque', sellerie: 'Céleri', senf: 'Moutarde', sesam: 'Sésame', sulfite: 'Sulfites', lupinen: 'Lupin', weichtiere: 'Mollusques' },
+  ar: { gluten: 'الغلوتين', krebstiere: 'القشريات', eier: 'البيض', fisch: 'السمك', erdnuesse: 'الفول السوداني', soja: 'الصويا', milch: 'الحليب', schalenfruechte: 'المكسرات', sellerie: 'الكرفس', senf: 'الخردل', sesam: 'السمسم', sulfite: 'الكبريتيت', lupinen: 'الترمس', weichtiere: 'الرخويات' },
+  ru: { gluten: 'Глютен', krebstiere: 'Ракообразные', eier: 'Яйца', fisch: 'Рыба', erdnuesse: 'Арахис', soja: 'Соя', milch: 'Молоко', schalenfruechte: 'Орехи', sellerie: 'Сельдерей', senf: 'Горчица', sesam: 'Кунжут', sulfite: 'Сульфиты', lupinen: 'Люпин', weichtiere: 'Моллюски' },
 };
-const allergenLabels = (lang: CardLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' : lang];
+const allergenLabels = (lang: MenuLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' : lang];
 
 /** Filter auf der Karte: blendet Gerichte aus, die nicht passen. Gerichte ohne Angabe fallen heraus. */
 const FILTER_SCRIPT = `(function(){var f=document.querySelector('.filters');if(!f)return;
@@ -594,19 +606,21 @@ f.querySelectorAll('input[type=checkbox]').forEach(function(c){c.addEventListene
 
 const anchor = (i: number) => `k${i + 1}`;
 
-const LANG_NAMES: Record<CardLang, string> = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', ku: 'Kurdî' };
+const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', ku: 'Kurdî', ar: 'العربية', ru: 'Русский' };
 
 /** Texte der Bestell-Oberfläche. Sie werden auch im Browser gebraucht und deshalb als JSON eingebettet. */
-const ORDER_LABELS: Record<CardLang, { add: string; cart: string; table: string; note: string; send: string; sent: string; fail: string; wait: string; total: string; pay: string; close: string; remove: string }> = {
+const ORDER_LABELS: Record<MenuLang, { add: string; cart: string; table: string; note: string; send: string; sent: string; fail: string; wait: string; total: string; pay: string; close: string; remove: string }> = {
   de: { add: 'Hinzufügen', cart: 'Ihre Bestellung', table: 'Tisch', note: 'Hinweis für die Küche (optional)', send: 'Verbindlich bestellen', sent: 'Danke! Ihre Bestellung ist angekommen.', fail: 'Das hat nicht geklappt. Bitte sprechen Sie das Personal an.', wait: 'Bitte einen Moment warten, bevor Sie erneut bestellen.', total: 'Summe', pay: 'Bezahlt wird wie gewohnt beim Service.', close: 'Schließen', remove: 'Entfernen' },
   en: { add: 'Add', cart: 'Your order', table: 'Table', note: 'Note for the kitchen (optional)', send: 'Place order', sent: 'Thank you! Your order has been received.', fail: 'That did not work. Please ask the staff.', wait: 'Please wait a moment before ordering again.', total: 'Total', pay: 'You pay at the table as usual.', close: 'Close', remove: 'Remove' },
   tr: { add: 'Ekle', cart: 'Siparişiniz', table: 'Masa', note: 'Mutfak için not (isteğe bağlı)', send: 'Siparişi ver', sent: 'Teşekkürler! Siparişiniz alındı.', fail: 'Olmadı. Lütfen personele söyleyin.', wait: 'Tekrar sipariş vermeden önce lütfen biraz bekleyin.', total: 'Toplam', pay: 'Ödeme her zamanki gibi serviste yapılır.', close: 'Kapat', remove: 'Kaldır' },
   fr: { add: 'Ajouter', cart: 'Votre commande', table: 'Table', note: 'Remarque pour la cuisine (facultatif)', send: 'Commander', sent: 'Merci ! Votre commande a bien été reçue.', fail: 'Cela n’a pas fonctionné. Veuillez vous adresser au personnel.', wait: 'Veuillez patienter un instant avant de recommander.', total: 'Total', pay: 'Le paiement se fait comme d’habitude au service.', close: 'Fermer', remove: 'Retirer' },
   ku: { add: 'Zêde bike', cart: 'Fermana we', table: 'Mase', note: 'Têbînî ji bo mitbaxê (bi dilê xwe)', send: 'Ferman bide', sent: 'Spas! Fermana we hat.', fail: 'Nebû. Ji kerema xwe ji karmendan re bêje.', wait: 'Ji kerema xwe berî fermana nû hinekî bisekine.', total: 'Giştî', pay: 'Drav wekî her car li ser mase tê dayîn.', close: 'Bigire', remove: 'Rake' },
+  ar: { add: 'إضافة', cart: 'طلبك', table: 'الطاولة', note: 'ملاحظة للمطبخ (اختياري)', send: 'تأكيد الطلب', sent: 'شكرًا! وصل طلبك.', fail: 'لم ينجح ذلك. يرجى التحدث إلى فريق الخدمة.', wait: 'يرجى الانتظار قليلًا قبل الطلب مرة أخرى.', total: 'المجموع', pay: 'الدفع كالمعتاد لدى فريق الخدمة.', close: 'إغلاق', remove: 'حذف' },
+  ru: { add: 'Добавить', cart: 'Ваш заказ', table: 'Стол', note: 'Пожелание для кухни (необязательно)', send: 'Заказать', sent: 'Спасибо! Ваш заказ принят.', fail: 'Не получилось. Пожалуйста, обратитесь к персоналу.', wait: 'Пожалуйста, подождите немного перед новым заказом.', total: 'Итого', pay: 'Оплата, как обычно, у официанта.', close: 'Закрыть', remove: 'Убрать' },
 };
 
 const ORDER_STYLES = `
-.add{flex:0 0 auto;align-self:center;margin-left:auto;width:2.3rem;height:2.3rem;padding:0;line-height:1;font-size:1.3rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:50%;font-family:inherit;font-weight:500;cursor:pointer}
+.add{flex:0 0 auto;align-self:center;margin-inline-start:auto;width:2.3rem;height:2.3rem;padding:0;line-height:1;font-size:1.3rem;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:50%;font-family:inherit;font-weight:500;cursor:pointer}
 .add:active{opacity:.7}
 #bar{position:fixed;left:0;right:0;bottom:0;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--panel);box-shadow:0 -6px 20px rgba(14,26,43,.16);display:flex;justify-content:center}
 #bar[hidden],#sheet[hidden]{display:none}
@@ -671,7 +685,8 @@ var hs=[].slice.call(document.querySelectorAll('h2[id]')),L={},cur=null,t=0;
 n.querySelectorAll('a').forEach(function(a){L[a.getAttribute('href').slice(1)]=a});
 function upd(){t=0;var c=hs[0];hs.forEach(function(h){if(h.getBoundingClientRect().top<140)c=h});if(!c||c===cur)return;cur=c;
 for(var k in L)L[k].removeAttribute('aria-current');var a=L[c.id];if(!a)return;
-a.setAttribute('aria-current','true');n.scrollTo({left:a.offsetLeft-n.clientWidth/2+a.clientWidth/2,behavior:'smooth'})}
+a.setAttribute('aria-current','true');var r=a.getBoundingClientRect(),q=n.getBoundingClientRect();
+n.scrollBy({left:r.left+r.width/2-(q.left+q.width/2),behavior:'smooth'})}
 addEventListener('scroll',function(){if(!t)t=requestAnimationFrame(upd)},{passive:true});upd()})();`;
 
 export interface RenderOptions {
@@ -684,9 +699,9 @@ export interface RenderOptions {
 export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: RenderOptions = {}): string {
   const t = THEMES[menu.theme] ?? THEMES.warm;
   const offered = menuLangs(menu);
-  const fallback: CardLang = CARD_LANGS.includes(menu.lang) ? menu.lang : 'de';
-  const wanted = opts.lang as CardLang;
-  const lang: CardLang = offered.includes(wanted) ? wanted : fallback;
+  const fallback: MenuLang = MENU_LANGS.includes(menu.lang) ? menu.lang : 'de';
+  const wanted = opts.lang as MenuLang;
+  const lang: MenuLang = offered.includes(wanted) ? wanted : fallback;
   const l = LABELS[lang];
   const d = menu.data;
   const site = base.replace(/\/+$/, '');
@@ -761,7 +776,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     : '';
 
   return `<!doctype html>
-<html lang="${lang}"><head>
+<html lang="${lang}"${lang === 'ar' ? ' dir="rtl"' : ''}><head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
