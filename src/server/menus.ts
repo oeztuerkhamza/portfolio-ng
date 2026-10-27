@@ -506,7 +506,7 @@ const THEMES: Record<MenuTheme, Palette> = {
  * Inline-SVG, damit die Karte ohne Webfonts sofort steht.
  */
 function orientPalette(): Palette {
-  const gold = '#cfa64f';
+  const gold = '#e3b44c';
   const star = (color: string, opacity: number) =>
     svgUrl(
       `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="none" stroke="${color}" stroke-opacity="${opacity}" stroke-width="1"><rect x="20" y="20" width="24" height="24"/><rect x="20" y="20" width="24" height="24" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="5"/><path d="M0 32h7M57 32h7M32 0v7M32 57v7M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8"/></g></svg>`,
@@ -526,11 +526,11 @@ function orientPalette(): Palette {
     accent2: '#b32c43',
     onAccent: '#f6e5bb',
     soft: '#f9efdc',
-    line: 'rgba(176,128,44,.34)',
+    line: 'rgba(200,150,40,.5)',
     heroA,
     heroB,
-    heroInk: '#f6e6bf',
-    heroDim: '#d4b57a',
+    heroInk: '#fbeabb',
+    heroDim: '#e6c477',
     extra: `
 .menu{border-radius:22px;box-shadow:0 0 0 1px rgba(201,162,90,.7),0 0 0 7px #2c0611,0 0 0 8px rgba(207,166,79,.6),0 0 0 11px rgba(44,6,17,.55),0 34px 80px rgba(0,0,0,.55)}
 .hero{border-radius:22px 22px 0 0;padding-top:58px;padding-bottom:30px;border-bottom:1px solid ${gold};
@@ -564,6 +564,26 @@ li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 
 .btn{background:linear-gradient(160deg,#a62338,${heroB});border:1px solid ${gold};color:#f6e5bb}
 #wopen{border-color:${gold}}
 .foot-note{text-align:center}
+.menu{box-shadow:0 0 0 2px #f0cf78,0 0 0 6px #2c0611,0 0 0 8px #d9a93f,0 0 0 9px #2c0611,0 0 26px 6px rgba(224,178,74,.3),0 34px 80px rgba(0,0,0,.6)}
+.hero{border-bottom:3px double #e3b44c}
+.hero::before{border:2px solid rgba(240,207,120,.85);box-shadow:inset 0 0 0 5px rgba(44,6,17,.45),inset 0 0 0 7px rgba(240,207,120,.45),inset 0 0 40px rgba(224,178,74,.12)}
+h1{background:linear-gradient(180deg,#fffbe2 0%,#ffe9a1 22%,#e9bd53 50%,#b9831f 74%,#f1d27c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  filter:drop-shadow(0 0 14px rgba(240,200,100,.35)) drop-shadow(0 6px 16px rgba(0,0,0,.5))}
+.tagline{color:#f1cf7a}
+.nav a{border-color:rgba(200,150,40,.65)}
+.nav a[aria-current]{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#c08a25);border-color:#f0cf78;color:#3a0814}
+h2{color:#7a1226}
+h2::before,h2::after{height:10px}
+h2::before{background:${diamond} right center/10px 10px no-repeat,linear-gradient(270deg,#e3b44c,transparent) left center/calc(100% - 15px) 2px no-repeat}
+h2::after{background:${diamond} left center/10px 10px no-repeat,linear-gradient(90deg,#e3b44c,transparent) right center/calc(100% - 15px) 2px no-repeat}
+details.cat.card>summary{outline:1.5px solid rgba(240,207,120,.85);outline-offset:-6px;box-shadow:0 0 0 1px #d9a93f,0 12px 26px -14px rgba(0,0,0,.6)}
+details.cat.card>summary h2{background:linear-gradient(180deg,#fff3c4,#eec766 55%,#c9962f);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:600}
+li.has-img{border:1.5px solid #d9a93f}
+.ph{border-bottom:2px solid #e3b44c}
+.num{background:linear-gradient(180deg,#dcab3f,#9a6710);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+.price{background:linear-gradient(180deg,#d6a031,#8c5a08);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
+.dots{border-bottom:2px dotted rgba(200,150,40,.7)}
+.btn,#wopen{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#b98322);border:1px solid #f4d98a;color:#4a0b17;font-weight:700;box-shadow:0 8px 22px -10px rgba(120,80,0,.7)}
 `,
   };
 }
