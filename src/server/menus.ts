@@ -106,6 +106,8 @@ export interface MenuCategory {
   note?: string;
   /** Bild der Rubrik, https: zugeklappt als Bildkarte, offen als Banner über dem Titel. */
   img?: string;
+  /** Nur in diesem Zeitraum (Berliner Zeit) sichtbar, z. B. „11:30-16:00" fürs Mittagsmenü; der Zeitraum steht am Titel. */
+  hours?: string;
   items: MenuItem[];
 }
 
@@ -193,6 +195,25 @@ const menuNum = (v: unknown): string | undefined => {
   return /^[A-Za-z]{0,3}\d{1,3}$/.test(s) ? s : undefined;
 };
 
+/** „11:30-16:00" (Uhrzeiten 0:00-23:59); alles andere ist keine Zeitangabe. */
+export function hoursSpec(v: unknown): string | undefined {
+  const m = /^(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})$/.exec(typeof v === 'string' ? v.trim() : '');
+  if (!m) return undefined;
+  const [a, b, c, d] = [m[1], m[2], m[3], m[4]].map(Number) as [number, number, number, number];
+  if (a > 23 || c > 23 || b > 59 || d > 59) return undefined;
+  const two = (n: number) => String(n).padStart(2, '0');
+  return `${two(a)}:${two(b)}-${two(c)}:${two(d)}`;
+}
+
+/** Ist die Rubrik jetzt (Berliner Zeit) zu sehen? Ohne Zeitraum immer; über Mitternacht geht auch. */
+export function openAt(hours: string | undefined, at: Date = new Date()): boolean {
+  if (!hours) return true;
+  const parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(at);
+  const now = Number(parts.find((x) => x.type === 'hour')?.value) * 60 + Number(parts.find((x) => x.type === 'minute')?.value);
+  const [from, to] = hours.split('-').map((t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5))) as [number, number];
+  return from <= to ? now >= from && now < to : now >= from || now < to;
+}
+
 const text = (v: unknown, max: number): string | undefined => {
   if (typeof v !== 'string') return undefined;
   const s = v.trim();
@@ -232,7 +253,8 @@ export function menuData(input: unknown): MenuData | null {
       });
     }
     const img = httpsUrl(cat['img']);
-    categories.push({ title, note: text(cat['note'], 300), ...(img ? { img } : {}), items });
+    const hours = hoursSpec(cat['hours']);
+    categories.push({ title, note: text(cat['note'], 300), ...(img ? { img } : {}), ...(hours ? { hours } : {}), items });
   }
 
   const translations: Partial<Record<MenuLang, string>> = {};
@@ -277,6 +299,7 @@ export function localize(data: MenuData, lang: MenuLang): MenuCategory[] {
       title: t.title || c.title,
       note: t.note ?? c.note,
       ...(c.img ? { img: c.img } : {}),
+      ...(c.hours ? { hours: c.hours } : {}),
       items: c.items.map((it, j) => {
         const ti = t.items[j];
         return ti ? { ...it, name: ti.name, desc: ti.desc ?? it.desc } : it;
@@ -370,8 +393,10 @@ export function parseMenuText(src: unknown): MenuCategory[] {
       const parts = t.replace(/^#+\s*/, '').split('|').map((p) => p.trim());
       // Ein Rubrikbild steht wie beim Gericht als https-Adresse an letzter Stelle.
       const img = parts.length > 1 && /^https:\/\/\S+$/.test(parts[parts.length - 1]!) ? parts.pop() : undefined;
+      // Davor kann der Zeitraum stehen: „@11:30-16:00".
+      const hours = parts.length > 1 && /^@\d{1,2}:\d{2}\s*-\s*\d{1,2}:\d{2}$/.test(parts[parts.length - 1]!) ? hoursSpec(parts.pop()!.slice(1)) : undefined;
       const [title, note] = parts;
-      if (title) out.push({ title, note: note || undefined, ...(img ? { img } : {}), items: [] });
+      if (title) out.push({ title, note: note || undefined, ...(hours ? { hours } : {}), ...(img ? { img } : {}), items: [] });
       continue;
     }
     const cat = out[out.length - 1];
@@ -396,7 +421,7 @@ export function menuText(categories: MenuCategory[]): string {
   return categories
     .map((c) =>
       [
-        `# ${c.title}${c.note ? ` | ${c.note}` : ''}${c.img ? ` | ${c.img}` : ''}`,
+        `# ${c.title}${c.note ? ` | ${c.note}` : ''}${c.hours ? ` | @${c.hours}` : ''}${c.img ? ` | ${c.img}` : ''}`,
         ...c.items.map((i) =>
           [i.num ? `${i.num}. ${i.name}` : i.name, i.price ?? '', i.desc ?? '', ...(tagsText(i) ? [tagsText(i)] : []), ...(i.img ? [i.img] : [])]
             .join(' | ')
@@ -625,6 +650,9 @@ li.has-img{background:${t.soft};border:1px solid ${t.line};border-radius:20px;ov
   background:linear-gradient(100deg,transparent,rgba(255,255,255,.34),transparent);transform:translateX(-140%) skewX(-14deg)}
 li.has-img:hover .ph::after,li.has-img:active .ph::after{opacity:1;transform:translateX(340%) skewX(-14deg);transition:transform .9s cubic-bezier(.4,.1,.2,1),opacity .2s}
 .desc{margin:3px 0 0;color:${t.dim};font-size:.88rem;line-height:1.45}
+.closed{display:none!important}
+.hrs{display:block;margin-top:2px;color:${t.dim};font:italic 400 .78rem/1.3 ${SERIF};letter-spacing:.02em}
+details.cat.card>summary .hrs{color:${t.heroDim}}
 .orig{margin:1px 0 0;color:${t.dim};font-size:.8rem;font-style:italic;unicode-bidi:isolate}
 .empty{margin:28px 0;text-align:center;color:${t.dim}}
 .foot-note{margin:36px 0 0;padding-top:18px;border-top:1px solid ${t.line};color:${t.dim};font-size:.76rem;line-height:1.6;white-space:pre-line}
@@ -928,6 +956,18 @@ fetch('/api/menu-order',{method:'POST',headers:{'Content-Type':'application/json
 })();`;
 
 /** Hebt in der Rubrikleiste die Rubrik hervor, in der man gerade liest. Ohne Script bleibt die Leiste einfach eine Linkliste. */
+/** Rubriken mit Zeitraum (data-hrs) erscheinen und verschwinden zur Minute, auch wenn die Seite offen bleibt. */
+const HOURS_SCRIPT = `(function(){try{var f=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Berlin',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function t(s){return +s.slice(0,2)*60+ +s.slice(3,5)}
+function run(){var p=f.formatToParts(new Date()),n=0;p.forEach(function(x){if(x.type==='hour')n+=+x.value*60;if(x.type==='minute')n+=+x.value});
+document.querySelectorAll('[data-hrs]').forEach(function(e){var r=e.getAttribute('data-hrs').split('-'),a=t(r[0]),b=t(r[1]);e.classList.toggle('closed',!(a<=b?n>=a&&n<b:n>=a||n<b))})}
+run();setInterval(run,30000)}catch(e){}})();`;
+
+const HOURS_LABEL: Record<MenuLang, string> = {
+  de: 'Täglich', en: 'Daily', fr: 'Tous les jours', tr: 'Her gün', es: 'Todos los días', it: 'Ogni giorno', el: 'Καθημερινά',
+  ar: 'يوميًا', fa: 'هر روز', hi: 'रोज़ाना', ru: 'Ежедневно', zh: '每天', ko: '매일', ku: 'Her roj',
+};
+
 const NAV_SCRIPT = `(function(){var n=document.querySelector('.nav');if(!n)return;
 var hs=[].slice.call(document.querySelectorAll('h2[id]')),L={},cur=null,t=0;
 n.querySelectorAll('a').forEach(function(a){L[a.getAttribute('href').slice(1)]=a});
@@ -999,12 +1039,15 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   // Bei Getränken steht unter dem übersetzten Namen der Originalname, damit das Servicepersonal ihn versteht.
   const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks').flatMap((st) => st.cats));
   const origName = (ci: number, it: MenuItem, o: MenuItem) => (drinkCats.has(ci) && it.name !== o.name ? `<p class="orig" lang="${menu.lang}" dir="ltr">${esc(o.name)}</p>` : '');
+  const inHours = (c: MenuCategory) => (c.hours ? ` data-hrs="${esc(c.hours)}"` : '');
+  const isClosed = (c: MenuCategory) => !openAt(c.hours);
+  const hrsLabel = (c: MenuCategory) => (c.hours ? `<small class="hrs">${esc(HOURS_LABEL[lang])} ${esc(c.hours.replace('-', '–'))}</small>` : '');
   const body = cats
     .map(
       ({ c, orig }, i) => `${
         fold
-          ? `<section class="fold"><details class="cat${cards ? ' card' : ''}" name="cats"><summary>${cards ? catImg(c, 'ci') : ''}<h2 id="${anchor(i)}">${esc(c.title)}</h2><span class="cnt">${c.items.length}</span></summary>`
-          : `<section>${catImg(c, 'cban')}<h2 id="${anchor(i)}">${esc(c.title)}</h2>`
+          ? `<section class="fold${isClosed(orig) ? ' closed' : ''}"${inHours(orig)}><details class="cat${cards ? ' card' : ''}" name="cats"><summary>${cards ? catImg(c, 'ci') : ''}<h2 id="${anchor(i)}">${esc(c.title)}${hrsLabel(orig)}</h2><span class="cnt">${c.items.length}</span></summary>`
+          : `<section${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${catImg(c, 'cban')}<h2 id="${anchor(i)}">${esc(c.title)}${hrsLabel(orig)}</h2>`
       }${c.note ? `<p class="note">${esc(c.note)}</p>` : ''}<ul>${c.items
         .map((it, j) => {
           const o = orig.items[j]!;
@@ -1034,7 +1077,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
                 const c = localized[ci]!;
                 const o = d.categories[ci]!;
                 const many = all.length > 1;
-                return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
+                return `${many ? `<details class="wcat${isClosed(o) ? ' closed' : ''}"${inHours(o)}${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
                   .map((it, j) => {
                     const oi = o.items[j]!;
                     return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${st.kind === 'drinks' && it.name !== oi.name ? `<span class="wd" lang="${menu.lang}" dir="ltr">${esc(oi.name)}</span>` : ''}${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
@@ -1109,7 +1152,7 @@ ${offered.length > 1 ? `<nav class="langs" aria-label="Language">${offered.map((
 ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p>` : ''}
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
-${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c }, i) => `<a href="#${anchor(i)}">${esc(c.title)}</a>`).join('')}</nav>` : ''}
+${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : ''}
 ${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}
@@ -1120,6 +1163,7 @@ ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 ${orderUi}
 ${wizard}
 ${cats.length > 1 ? `<script>${NAV_SCRIPT}</script>` : ''}
+${cats.some(({ orig }) => orig.hours) ? `<script>${HOURS_SCRIPT}</script>` : ''}
 ${fold ? `<script>${FOLD_SCRIPT}</script>` : ''}
 ${filtersUi ? `<script>${FILTER_SCRIPT}</script>` : ''}
 </body></html>`;

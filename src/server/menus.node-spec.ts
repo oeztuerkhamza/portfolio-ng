@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { ALLERGENS, buildOrder, parseSteps, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
+import { ALLERGENS, buildOrder, hoursSpec, openAt, parseSteps, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -385,5 +385,37 @@ describe('Getränke und Rechts-nach-links', () => {
     const html = renderMenu(m, 'https://breisgaudigital.de', { lang: 'ar' } as never);
     assert.ok(html.includes('dir="rtl"'));
     assert.ok(html.includes('<bdi dir="ltr">0761 2927151</bdi>'));
+  });
+});
+
+describe('Rubrik mit Zeitraum (Mittagsmenü)', () => {
+  const at = (h: number, m: number) => new Date(Date.UTC(2026, 9, 27, h - 1, m)); // 27.10.2026: MEZ = UTC+1
+  test('openAt: nur im Zeitraum, Berliner Zeit', () => {
+    assert.equal(openAt('11:30-16:00', at(11, 29)), false);
+    assert.equal(openAt('11:30-16:00', at(11, 30)), true);
+    assert.equal(openAt('11:30-16:00', at(15, 59)), true);
+    assert.equal(openAt('11:30-16:00', at(16, 0)), false);
+    assert.equal(openAt('22:00-02:00', at(1, 0)), true);
+    assert.equal(openAt(undefined, at(3, 0)), true);
+  });
+  test('hoursSpec nimmt nur echte Zeiträume', () => {
+    assert.equal(hoursSpec('9:05 - 16:00'), '09:05-16:00');
+    assert.equal(hoursSpec('25:00-16:00'), undefined);
+    assert.equal(hoursSpec('mittags'), undefined);
+  });
+  test('Textformat: @Zeitraum an der Rubrik', () => {
+    const cats = parseMenuText('# Mittag | 10,90 € | @11:30-16:00\nSalat | 10,90');
+    assert.equal(cats[0]!.hours, '11:30-16:00');
+    assert.equal(cats[0]!.note, '10,90 €');
+    assert.equal(menuText(cats).split('\n')[0], '# Mittag | 10,90 € | @11:30-16:00');
+  });
+  test('Seite: Zeitraum am Titel, außerhalb versteckt, mit Skript zum Nachführen', () => {
+    const data = menuData({ name: 'X', categories: [{ title: 'Mittag', hours: '11:30-16:00', items: [{ name: 'Salat' }] }, { title: 'Abend', items: [{ name: 'Suppe' }] }] })!;
+    const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+    const html = renderMenu(m, 'https://breisgaudigital.de');
+    assert.ok(html.includes('<small class="hrs">Täglich 11:30–16:00</small>'));
+    assert.ok(html.includes('data-hrs="11:30-16:00"'));
+    assert.ok(html.includes('Europe/Berlin'));
+    assert.ok(!renderMenu({ ...m, data: menuData({ name: 'X', categories: [{ title: 'Abend', items: [{ name: 'Suppe' }] }] })! }, 'https://breisgaudigital.de').includes('Europe/Berlin'));
   });
 });
