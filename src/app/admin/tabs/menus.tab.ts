@@ -12,7 +12,7 @@ const THEMES: { id: Theme; label: string }[] = [
   { id: 'warm', label: 'Sıcak' },
   { id: 'brand', label: 'Açık (marka)' },
   { id: 'dark', label: 'Koyu' },
-  { id: 'orient', label: 'Oryantal (zümrüt ve altın)' },
+  { id: 'orient', label: 'Oryantal (yakut kırmızısı ve altın)' },
 ];
 
 /** Muss zu MENU_LANGS in src/server/menus.ts passen. */
@@ -21,6 +21,7 @@ const LANGS: { id: Lang; label: string }[] = [
   { id: 'en', label: 'İngilizce' },
   { id: 'fr', label: 'Fransızca' },
   { id: 'tr', label: 'Türkçe' },
+  { id: 'ku', label: 'Kürtçe' },
   { id: 'ar', label: 'Arapça' },
   { id: 'fa', label: 'Farsça' },
   { id: 'ru', label: 'Rusça' },
@@ -30,7 +31,6 @@ const LANGS: { id: Lang; label: string }[] = [
   { id: 'es', label: 'İspanyolca' },
   { id: 'it', label: 'İtalyanca' },
   { id: 'el', label: 'Yunanca' },
-  { id: 'ku', label: 'Kürtçe' },
 ];
 
 const EXAMPLE = `# Vorspeisen | Hinweis zur Rubrik (isteğe bağlı)

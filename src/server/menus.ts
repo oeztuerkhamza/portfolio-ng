@@ -140,7 +140,7 @@ export interface MenuData {
  * Die Sprachen der NFC-Karten plus Arabisch (von rechts nach links) und Russisch, die es nur für
  * Speisekarten gibt. Die Reihenfolge ist die der Sprachleiste auf der Karte.
  */
-export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'es', 'it', 'el', 'ar', 'fa', 'hi', 'ru', 'zh', 'ko', 'ku'] as const satisfies readonly (CardLang | 'es' | 'it' | 'el' | 'ar' | 'fa' | 'hi' | 'ru' | 'zh' | 'ko')[];
+export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'ku', 'es', 'it', 'el', 'ar', 'fa', 'hi', 'ru', 'zh', 'ko'] as const satisfies readonly (CardLang | 'es' | 'it' | 'el' | 'ar' | 'fa' | 'hi' | 'ru' | 'zh' | 'ko')[];
 export type MenuLang = (typeof MENU_LANGS)[number];
 
 /** Die Themes der NFC-Karten plus „orient" (Rubinrot und Gold), das es nur für Speisekarten gibt. */
