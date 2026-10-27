@@ -89,6 +89,8 @@ export function tagsText(i: { diet?: Diet; allergens?: Allergen[] }): string {
 
 export interface MenuItem {
   name: string;
+  /** Nummer auf der gedruckten Karte, z. B. „37" oder „M4" (Mittagsmenü); steht vor dem Namen. */
+  num?: string;
   /** Freitext, damit „9,50", „ab 12" oder „0,3 l 4,20 / 0,5 l 5,80" möglich sind. */
   price?: string;
   desc?: string;
@@ -185,6 +187,12 @@ export interface Menu {
 export const MAX_CATEGORIES = 40;
 export const MAX_ITEMS = 60;
 
+/** „37", „M4": höchstens drei Buchstaben, dann bis zu drei Ziffern. */
+const menuNum = (v: unknown): string | undefined => {
+  const s = typeof v === 'string' ? v.trim() : '';
+  return /^[A-Za-z]{0,3}\d{1,3}$/.test(s) ? s : undefined;
+};
+
 const text = (v: unknown, max: number): string | undefined => {
   if (typeof v !== 'string') return undefined;
   const s = v.trim();
@@ -212,8 +220,10 @@ export function menuData(input: unknown): MenuData | null {
       const allergens = Array.isArray(it['allergens'])
         ? ALLERGENS.filter((a) => (it['allergens'] as unknown[]).includes(a))
         : undefined;
+      const num = menuNum(it['num']);
       items.push({
         name: itemName,
+        ...(num ? { num } : {}),
         price: text(it['price'], 60),
         desc: text(it['desc'], 400),
         img: httpsUrl(it['img']) ?? undefined,
@@ -371,8 +381,12 @@ export function parseMenuText(src: unknown): MenuCategory[] {
     const img = parts.length > 1 && /^https:\/\/\S+$/.test(parts[parts.length - 1]!) ? parts.pop() : undefined;
     // Davor (oder allein am Ende) können Angaben in eckigen Klammern stehen: [vegetarisch; milch, eier].
     const tags = parts.length > 1 && /^\[[^\]]*\]$/.test(parts[parts.length - 1]!) ? parseTags(parts.pop()!) : {};
-    const [name, price, ...desc] = parts;
-    if (name) cat.items.push({ name, price: price || undefined, desc: desc.join(' | ') || undefined, ...(img ? { img } : {}), ...tags });
+    const [first, price, ...desc] = parts;
+    // Eine Nummer steht mit Punkt vor dem Namen: „37. Musakka", „M4. Hindi Salatasi".
+    const nm = /^([A-Za-z]{0,3}\d{1,3})\.\s+(.+)$/.exec(first ?? '');
+    const name = nm ? nm[2]! : first;
+    const num = nm ? nm[1] : undefined;
+    if (name) cat.items.push({ name, ...(num ? { num } : {}), price: price || undefined, desc: desc.join(' | ') || undefined, ...(img ? { img } : {}), ...tags });
   }
   return out;
 }
@@ -384,7 +398,7 @@ export function menuText(categories: MenuCategory[]): string {
       [
         `# ${c.title}${c.note ? ` | ${c.note}` : ''}${c.img ? ` | ${c.img}` : ''}`,
         ...c.items.map((i) =>
-          [i.name, i.price ?? '', i.desc ?? '', ...(tagsText(i) ? [tagsText(i)] : []), ...(i.img ? [i.img] : [])]
+          [i.num ? `${i.num}. ${i.name}` : i.name, i.price ?? '', i.desc ?? '', ...(tagsText(i) ? [tagsText(i)] : []), ...(i.img ? [i.img] : [])]
             .join(' | ')
             .replace(/( \| )+$/, ''),
         ),
@@ -594,6 +608,7 @@ li.has-img{background:${t.soft};border:1px solid ${t.line};border-radius:20px;ov
 .has-img .txt{padding:14px 18px 2px}
 .row{display:flex;align-items:baseline;gap:8px}
 .name{font:600 1.05rem/1.3 ${SERIF}}
+.num{display:inline-block;min-width:1.9em;margin-right:.35em;color:${t.accent};font-variant-numeric:tabular-nums}
 .dots{flex:1 1 1rem;min-width:.8rem;border-bottom:2px dotted ${t.line};transform:translateY(-.3em)}
 .price{flex:0 0 auto;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums;color:${t.accent}}
 .ph{position:relative;overflow:hidden;background:${t.line}}
@@ -958,7 +973,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
             ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
           const img = httpsUrl(it.img);
-          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
+          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
         })
         .join('')}</ul>${fold ? '</details>' : ''}</section>`,
     )
@@ -983,7 +998,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
                 return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
                   .map((it, j) => {
                     const oi = o.items[j]!;
-                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${esc(it.name)}</span>${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
+                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
                   })
                   .join('')}${many ? '</details>' : ''}`;
               })

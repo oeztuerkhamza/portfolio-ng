@@ -51,6 +51,14 @@ describe('parseMenuText', () => {
     const once = menuText(parseMenuText(SRC));
     assert.equal(menuText(parseMenuText(once)), once);
   });
+
+  test('Nummer vor dem Namen: „M4. Salat", „37. Musakka"', () => {
+    const [c] = parseMenuText(['# Mittag', 'M4. Salata Spezial | 10,90 | mit Avocado', '37. Musakka | 20,90', '1/8 Wein | 5,50', 'Pide 2. Wahl | 9,00'].join('\n'));
+    assert.deepEqual(c!.items.map((i) => [i.num, i.name]), [['M4', 'Salata Spezial'], ['37', 'Musakka'], [undefined, '1/8 Wein'], [undefined, 'Pide 2. Wahl']]);
+    const text = menuText([c!]);
+    assert.ok(text.includes('M4. Salata Spezial | 10,90'));
+    assert.equal(menuText(parseMenuText(text)), text);
+  });
 });
 
 describe('menuData', () => {
@@ -88,6 +96,15 @@ describe('renderMenu', () => {
     const html = renderMenu(menu(), 'https://breisgaudigital.de');
     for (const s of ['Sichelschmiede', 'Vorspeisen', 'Tomatensuppe', '6,50', 'Hauptgerichte', 'href="#k2"']) assert.ok(html.includes(s), s);
     assert.ok(!html.includes('menu-order'));
+  });
+
+  test('zeigt die Nummer vor dem Namen, auch in einer Übersetzung', () => {
+    const data = menuData({ name: 'X', translations: { en: '# Lunch\nSalad | 10,90' }, categories: [{ title: 'Mittag', items: [{ name: 'Salat', num: 'M1', price: '10,90' }, { name: 'Suppe', num: '<b>' }] }] })!;
+    assert.equal(data.categories[0]!.items[0]!.num, 'M1');
+    assert.equal(data.categories[0]!.items[1]!.num, undefined);
+    const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+    assert.ok(renderMenu(m, 'https://breisgaudigital.de').includes('<span class="num">M1</span>Salat'));
+    assert.ok(renderMenu({ ...m, lang: 'en' }, 'https://breisgaudigital.de', { lang: 'en' } as never).includes('<span class="num">M1</span>Salad'));
   });
 
   test('maskiert Inhalt aus der Datenbank', () => {
