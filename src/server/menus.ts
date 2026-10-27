@@ -138,7 +138,7 @@ export interface MenuData {
  * Die Sprachen der NFC-Karten plus Arabisch (von rechts nach links) und Russisch, die es nur für
  * Speisekarten gibt. Die Reihenfolge ist die der Sprachleiste auf der Karte.
  */
-export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'ar', 'ru', 'ku'] as const satisfies readonly (CardLang | 'ar' | 'ru')[];
+export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'es', 'it', 'el', 'ar', 'fa', 'hi', 'ru', 'zh', 'ko', 'ku'] as const satisfies readonly (CardLang | 'es' | 'it' | 'el' | 'ar' | 'fa' | 'hi' | 'ru' | 'zh' | 'ko')[];
 export type MenuLang = (typeof MENU_LANGS)[number];
 
 /** Die Themes der NFC-Karten plus „orient" (Smaragd und Gold), das es nur für Speisekarten gibt. */
@@ -238,7 +238,7 @@ export function menuData(input: unknown): MenuData | null {
   const translations: Partial<Record<MenuLang, string>> = {};
   const rawTr = (d['translations'] && typeof d['translations'] === 'object' ? d['translations'] : {}) as Record<string, unknown>;
   for (const l of MENU_LANGS) {
-    const v = text(rawTr[l], 20000);
+    const v = text(rawTr[l], 40000);
     if (v) translations[l] = v;
   }
 
@@ -416,6 +416,13 @@ const LABELS: Record<MenuLang, { review: string; call: string; mail: string; map
   ku: { review: 'Li ser Google me binirxînin', call: 'Telefon bikin', mail: 'E-name', map: 'Rê', preview: 'Pêşdîtin — ev menû hê nehatiye weşandin.', empty: 'Menû tê amadekirin.', credits: 'Çavkaniya wêneyan' },
   ar: { review: 'قيّمونا على Google', call: 'اتصال', mail: 'البريد الإلكتروني', map: 'الاتجاهات', preview: 'معاينة — هذه القائمة غير منشورة بعد.', empty: 'يجري إعداد القائمة.', credits: 'مصادر الصور' },
   ru: { review: 'Оцените нас в Google', call: 'Позвонить', mail: 'E-mail', map: 'Как добраться', preview: 'Предпросмотр — это меню ещё не опубликовано.', empty: 'Меню готовится.', credits: 'Источники фото' },
+  fa: { review: 'به ما در Google امتیاز دهید', call: 'تماس', mail: 'ایمیل', map: 'مسیر', preview: 'پیش‌نمایش — این منو هنوز منتشر نشده است.', empty: 'منو در حال آماده‌سازی است.', credits: 'منبع تصاویر' },
+  zh: { review: '在 Google 上给我们评分', call: '致电', mail: '电子邮件', map: '路线', preview: '预览——此菜单尚未发布。', empty: '菜单正在准备中。', credits: '图片来源' },
+  ko: { review: 'Google에서 평가해 주세요', call: '전화', mail: '이메일', map: '길찾기', preview: '미리보기 — 이 메뉴는 아직 게시되지 않았습니다.', empty: '메뉴를 준비하고 있습니다.', credits: '사진 출처' },
+  hi: { review: 'Google पर हमें रेट करें', call: 'कॉल करें', mail: 'ईमेल', map: 'रास्ता', preview: 'पूर्वावलोकन — यह मेनू अभी प्रकाशित नहीं हुआ है।', empty: 'मेनू तैयार किया जा रहा है।', credits: 'तस्वीरों के स्रोत' },
+  es: { review: 'Valóranos en Google', call: 'Llamar', mail: 'Correo', map: 'Cómo llegar', preview: 'Vista previa: esta carta aún no está publicada.', empty: 'La carta se está preparando.', credits: 'Créditos de las fotos' },
+  it: { review: 'Valutaci su Google', call: 'Chiama', mail: 'E-mail', map: 'Indicazioni', preview: 'Anteprima: questo menu non è ancora pubblicato.', empty: 'Il menu è in preparazione.', credits: 'Crediti fotografici' },
+  el: { review: 'Αξιολογήστε μας στο Google', call: 'Κλήση', mail: 'Email', map: 'Οδηγίες', preview: 'Προεπισκόπηση — αυτός ο κατάλογος δεν έχει δημοσιευτεί ακόμη.', empty: 'Ο κατάλογος ετοιμάζεται.', credits: 'Πηγές φωτογραφιών' },
 };
 
 interface Palette {
@@ -669,15 +676,29 @@ const FILTER_LABELS: Record<MenuLang, FilterLabels> = {
   ku: { filter: 'Filter', vegetarian: 'Vegetarian', vegan: 'Vegan', allergens: 'Allergens', without: 'without', contains: 'Contains', note: 'Information without guarantee. If you have an allergy, please ask the staff; dishes without information are hidden when filtering.', none: 'No dishes match the filter.' },
   ar: { filter: 'تصفية', vegetarian: 'نباتي', vegan: 'نباتي صرف', allergens: 'مسببات الحساسية', without: 'بدون', contains: 'يحتوي على', note: 'المعلومات دون ضمان. إذا كانت لديك حساسية فاسأل فريق الخدمة؛ الأطباق التي لا تتوفر عنها معلومات تُخفى عند التصفية.', none: 'لا توجد أطباق تطابق التصفية.' },
   ru: { filter: 'Фильтр', vegetarian: 'Вегетарианское', vegan: 'Веганское', allergens: 'Аллергены', without: 'без', contains: 'Содержит', note: 'Информация без гарантии. При аллергии, пожалуйста, спросите персонал; блюда без указаний при фильтрации скрываются.', none: 'Нет блюд, подходящих под фильтр.' },
+  fa: { filter: 'فیلتر', vegetarian: 'گیاهی', vegan: 'وگان', allergens: 'آلرژن‌ها', without: 'بدون', contains: 'حاوی', note: 'اطلاعات بدون ضمانت است. در صورت آلرژی لطفاً از کارکنان بپرسید؛ غذاهای بدون اطلاعات هنگام فیلتر کردن پنهان می‌شوند.', none: 'هیچ غذایی با فیلتر مطابقت ندارد.' },
+  zh: { filter: '筛选', vegetarian: '素食', vegan: '纯素', allergens: '过敏原', without: '不含', contains: '含有', note: '信息仅供参考，不作保证。如有过敏，请询问服务人员；筛选时，没有相关信息的菜品会被隐藏。', none: '没有符合筛选条件的菜品。' },
+  ko: { filter: '필터', vegetarian: '채식', vegan: '비건', allergens: '알레르기 유발 성분', without: '제외', contains: '함유', note: '정보는 보증되지 않습니다. 알레르기가 있으시면 직원에게 문의해 주세요. 정보가 없는 메뉴는 필터링 시 숨겨집니다.', none: '필터에 맞는 메뉴가 없습니다.' },
+  hi: { filter: 'फ़िल्टर', vegetarian: 'शाकाहारी', vegan: 'वीगन', allergens: 'एलर्जी कारक', without: 'बिना', contains: 'इसमें है', note: 'जानकारी बिना गारंटी के है। एलर्जी होने पर कृपया स्टाफ़ से पूछें; जिन व्यंजनों की जानकारी नहीं है, वे फ़िल्टर करने पर छिप जाते हैं।', none: 'फ़िल्टर से मेल खाता कोई व्यंजन नहीं है।' },
+  es: { filter: 'Filtro', vegetarian: 'Vegetariano', vegan: 'Vegano', allergens: 'Alérgenos', without: 'sin', contains: 'Contiene', note: 'Información sin garantía. Si tiene alguna alergia, pregunte al personal; los platos sin información se ocultan al filtrar.', none: 'Ningún plato coincide con el filtro.' },
+  it: { filter: 'Filtro', vegetarian: 'Vegetariano', vegan: 'Vegano', allergens: 'Allergeni', without: 'senza', contains: 'Contiene', note: 'Informazioni senza garanzia. In caso di allergie chiedete al personale; i piatti senza indicazioni vengono nascosti con il filtro.', none: 'Nessun piatto corrisponde al filtro.' },
+  el: { filter: 'Φίλτρο', vegetarian: 'Χορτοφαγικό', vegan: 'Βίγκαν', allergens: 'Αλλεργιογόνα', without: 'χωρίς', contains: 'Περιέχει', note: 'Οι πληροφορίες δίνονται χωρίς εγγύηση. Σε περίπτωση αλλεργίας ρωτήστε το προσωπικό· τα πιάτα χωρίς πληροφορίες κρύβονται κατά το φιλτράρισμα.', none: 'Κανένα πιάτο δεν ταιριάζει με το φίλτρο.' },
 };
 
-const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr' | 'ar' | 'ru', Record<Allergen, string>> = {
+const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr' | 'es' | 'it' | 'el' | 'ar' | 'fa' | 'hi' | 'ru' | 'zh' | 'ko', Record<Allergen, string>> = {
   de: { gluten: 'Gluten', krebstiere: 'Krebstiere', eier: 'Eier', fisch: 'Fisch', erdnuesse: 'Erdnüsse', soja: 'Soja', milch: 'Milch', schalenfruechte: 'Schalenfrüchte', sellerie: 'Sellerie', senf: 'Senf', sesam: 'Sesam', sulfite: 'Sulfite', lupinen: 'Lupinen', weichtiere: 'Weichtiere' },
   en: { gluten: 'Gluten', krebstiere: 'Crustaceans', eier: 'Eggs', fisch: 'Fish', erdnuesse: 'Peanuts', soja: 'Soy', milch: 'Milk', schalenfruechte: 'Tree nuts', sellerie: 'Celery', senf: 'Mustard', sesam: 'Sesame', sulfite: 'Sulphites', lupinen: 'Lupin', weichtiere: 'Molluscs' },
   tr: { gluten: 'Gluten', krebstiere: 'Kabuklular', eier: 'Yumurta', fisch: 'Balık', erdnuesse: 'Yer fıstığı', soja: 'Soya', milch: 'Süt', schalenfruechte: 'Kabuklu yemişler', sellerie: 'Kereviz', senf: 'Hardal', sesam: 'Susam', sulfite: 'Sülfit', lupinen: 'Acı bakla', weichtiere: 'Yumuşakçalar' },
   fr: { gluten: 'Gluten', krebstiere: 'Crustacés', eier: 'Œufs', fisch: 'Poisson', erdnuesse: 'Arachides', soja: 'Soja', milch: 'Lait', schalenfruechte: 'Fruits à coque', sellerie: 'Céleri', senf: 'Moutarde', sesam: 'Sésame', sulfite: 'Sulfites', lupinen: 'Lupin', weichtiere: 'Mollusques' },
   ar: { gluten: 'الغلوتين', krebstiere: 'القشريات', eier: 'البيض', fisch: 'السمك', erdnuesse: 'الفول السوداني', soja: 'الصويا', milch: 'الحليب', schalenfruechte: 'المكسرات', sellerie: 'الكرفس', senf: 'الخردل', sesam: 'السمسم', sulfite: 'الكبريتيت', lupinen: 'الترمس', weichtiere: 'الرخويات' },
   ru: { gluten: 'Глютен', krebstiere: 'Ракообразные', eier: 'Яйца', fisch: 'Рыба', erdnuesse: 'Арахис', soja: 'Соя', milch: 'Молоко', schalenfruechte: 'Орехи', sellerie: 'Сельдерей', senf: 'Горчица', sesam: 'Кунжут', sulfite: 'Сульфиты', lupinen: 'Люпин', weichtiere: 'Моллюски' },
+  fa: { gluten: 'گلوتن', krebstiere: 'سخت‌پوستان', eier: 'تخم‌مرغ', fisch: 'ماهی', erdnuesse: 'بادام‌زمینی', soja: 'سویا', milch: 'شیر', schalenfruechte: 'آجیل‌ها', sellerie: 'کرفس', senf: 'خردل', sesam: 'کنجد', sulfite: 'سولفیت‌ها', lupinen: 'لوپین', weichtiere: 'نرم‌تنان' },
+  zh: { gluten: '麸质', krebstiere: '甲壳类', eier: '鸡蛋', fisch: '鱼', erdnuesse: '花生', soja: '大豆', milch: '牛奶', schalenfruechte: '坚果', sellerie: '芹菜', senf: '芥末', sesam: '芝麻', sulfite: '亚硫酸盐', lupinen: '羽扇豆', weichtiere: '软体动物' },
+  ko: { gluten: '글루텐', krebstiere: '갑각류', eier: '달걀', fisch: '생선', erdnuesse: '땅콩', soja: '대두', milch: '우유', schalenfruechte: '견과류', sellerie: '셀러리', senf: '겨자', sesam: '참깨', sulfite: '아황산염', lupinen: '루핀', weichtiere: '연체동물' },
+  hi: { gluten: 'ग्लूटेन', krebstiere: 'क्रस्टेशियन', eier: 'अंडे', fisch: 'मछली', erdnuesse: 'मूंगफली', soja: 'सोया', milch: 'दूध', schalenfruechte: 'मेवे', sellerie: 'सेलेरी', senf: 'सरसों', sesam: 'तिल', sulfite: 'सल्फ़ाइट', lupinen: 'ल्यूपिन', weichtiere: 'मोलस्क' },
+  es: { gluten: 'Gluten', krebstiere: 'Crustáceos', eier: 'Huevos', fisch: 'Pescado', erdnuesse: 'Cacahuetes', soja: 'Soja', milch: 'Leche', schalenfruechte: 'Frutos de cáscara', sellerie: 'Apio', senf: 'Mostaza', sesam: 'Sésamo', sulfite: 'Sulfitos', lupinen: 'Altramuces', weichtiere: 'Moluscos' },
+  it: { gluten: 'Glutine', krebstiere: 'Crostacei', eier: 'Uova', fisch: 'Pesce', erdnuesse: 'Arachidi', soja: 'Soia', milch: 'Latte', schalenfruechte: 'Frutta a guscio', sellerie: 'Sedano', senf: 'Senape', sesam: 'Sesamo', sulfite: 'Solfiti', lupinen: 'Lupini', weichtiere: 'Molluschi' },
+  el: { gluten: 'Γλουτένη', krebstiere: 'Μαλακόστρακα', eier: 'Αυγά', fisch: 'Ψάρι', erdnuesse: 'Φιστίκια', soja: 'Σόγια', milch: 'Γάλα', schalenfruechte: 'Ξηροί καρποί', sellerie: 'Σέλινο', senf: 'Μουστάρδα', sesam: 'Σουσάμι', sulfite: 'Θειώδη', lupinen: 'Λούπινο', weichtiere: 'Μαλάκια' },
 };
 const allergenLabels = (lang: MenuLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' : lang];
 
@@ -702,7 +723,7 @@ f.querySelectorAll('input[type=checkbox]').forEach(function(c){c.addEventListene
 
 const anchor = (i: number) => `k${i + 1}`;
 
-const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', ku: 'Kurdî', ar: 'العربية', ru: 'Русский' };
+const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr: 'Türkçe', fr: 'Français', ku: 'Kurdî', ar: 'العربية', fa: 'فارسی', ru: 'Русский', zh: '中文', ko: '한국어', es: 'Español', it: 'Italiano', el: 'Ελληνικά', hi: 'हिन्दी' };
 
 interface WizLabels { open: string; start: string; main: string; dessert: string; drinks: string; step: string; next: string; back: string; summary: string; show: string; empty: string; restart: string; close: string; total: string; add: string; remove: string; hint: string }
 
@@ -714,6 +735,13 @@ const WIZ_LABELS: Record<MenuLang, WizLabels> = {
   tr: { open: 'Adım adım seç', start: 'Başlangıçlar ve salatalar', main: 'Ana yemekler', dessert: 'Tatlı', drinks: 'İçecekler', step: 'Adım {n} / {m}', next: 'İleri', back: 'Geri', summary: 'Seçiminiz', show: 'Bu listeyi servis personelimize göstermeniz yeterli, siparişinizi memnuniyetle alırız.', empty: 'Henüz bir şey seçmediniz.', restart: 'Baştan başla', close: 'Menüye dön', total: 'Toplam', add: 'Artır', remove: 'Azalt', hint: 'Burada istediğiniz yok mu? İleri geçin.' },
   ar: { open: 'اختر خطوة بخطوة', start: 'المقبلات والسلطات', main: 'الأطباق الرئيسية', dessert: 'الحلويات', drinks: 'المشروبات', step: 'الخطوة {n} من {m}', next: 'التالي', back: 'رجوع', summary: 'اختيارك', show: 'ما عليك سوى إظهار هذه القائمة لفريق الخدمة، ويسعدنا تلقي طلبك.', empty: 'لم تختر شيئًا بعد.', restart: 'البدء من جديد', close: 'العودة إلى القائمة', total: 'المجموع', add: 'زيادة', remove: 'إنقاص', hint: 'لا شيء يناسبك هنا؟ تابع ببساطة.' },
   ru: { open: 'Выбрать по шагам', start: 'Закуски и салаты', main: 'Основные блюда', dessert: 'Десерт', drinks: 'Напитки', step: 'Шаг {n} из {m}', next: 'Далее', back: 'Назад', summary: 'Ваш выбор', show: 'Просто покажите этот список официанту — мы с радостью примем ваш заказ.', empty: 'Пока ничего не выбрано.', restart: 'Начать заново', close: 'Вернуться к меню', total: 'Итого', add: 'Больше', remove: 'Меньше', hint: 'Ничего не подходит? Просто продолжайте.' },
+  fa: { open: 'گام‌به‌گام انتخاب کنید', start: 'پیش‌غذا و سالاد', main: 'غذاهای اصلی', dessert: 'دسر', drinks: 'نوشیدنی‌ها', step: 'گام {n} از {m}', next: 'بعدی', back: 'بازگشت', summary: 'انتخاب شما', show: 'فقط این فهرست را به سرویس‌دهنده نشان دهید؛ با کمال میل سفارش شما را ثبت می‌کنیم.', empty: 'هنوز چیزی انتخاب نکرده‌اید.', restart: 'شروع دوباره', close: 'بازگشت به منو', total: 'جمع', add: 'بیشتر', remove: 'کمتر', hint: 'چیزی مناسب شما نیست؟ ادامه دهید.' },
+  zh: { open: '分步选择', start: '前菜和沙拉', main: '主菜', dessert: '甜点', drinks: '饮品', step: '第 {n} 步，共 {m} 步', next: '下一步', back: '返回', summary: '您的选择', show: '只需把这份清单出示给服务员，我们很乐意为您点单。', empty: '您还没有选择任何菜品。', restart: '重新开始', close: '返回菜单', total: '合计', add: '增加', remove: '减少', hint: '这里没有合适的？直接继续即可。' },
+  ko: { open: '단계별로 선택', start: '전채와 샐러드', main: '메인 요리', dessert: '디저트', drinks: '음료', step: '{n}/{m} 단계', next: '다음', back: '뒤로', summary: '선택 내역', show: '이 목록을 직원에게 보여 주시면 기꺼이 주문을 받겠습니다.', empty: '아직 선택한 메뉴가 없습니다.', restart: '처음부터 다시', close: '메뉴로 돌아가기', total: '합계', add: '늘리기', remove: '줄이기', hint: '맞는 메뉴가 없나요? 그냥 계속하세요.' },
+  hi: { open: 'चरण-दर-चरण चुनें', start: 'स्टार्टर और सलाद', main: 'मुख्य व्यंजन', dessert: 'मिठाई', drinks: 'पेय', step: 'चरण {n} / {m}', next: 'आगे', back: 'पीछे', summary: 'आपका चयन', show: 'बस यह सूची हमारे स्टाफ़ को दिखाएँ, हम खुशी से आपका ऑर्डर लेंगे।', empty: 'अभी कुछ नहीं चुना गया।', restart: 'फिर से शुरू करें', close: 'मेनू पर वापस', total: 'कुल', add: 'बढ़ाएँ', remove: 'घटाएँ', hint: 'यहाँ कुछ पसंद नहीं आया? बस आगे बढ़ें।' },
+  es: { open: 'Elegir paso a paso', start: 'Entrantes y ensaladas', main: 'Platos principales', dessert: 'Postre', drinks: 'Bebidas', step: 'Paso {n} de {m}', next: 'Siguiente', back: 'Atrás', summary: 'Su selección', show: 'Basta con mostrar esta lista a nuestro personal; encantados de tomar su pedido.', empty: 'Todavía no ha elegido nada.', restart: 'Empezar de nuevo', close: 'Volver a la carta', total: 'Total', add: 'Más', remove: 'Menos', hint: '¿Nada que le guste aquí? Siga adelante.' },
+  it: { open: 'Scegli passo dopo passo', start: 'Antipasti e insalate', main: 'Piatti principali', dessert: 'Dolce', drinks: 'Bevande', step: 'Passo {n} di {m}', next: 'Avanti', back: 'Indietro', summary: 'La tua scelta', show: 'Mostra semplicemente questa lista al nostro personale: prenderemo volentieri il tuo ordine.', empty: 'Non hai ancora scelto nulla.', restart: 'Ricomincia', close: 'Torna al menu', total: 'Totale', add: 'Di più', remove: 'Di meno', hint: 'Niente che faccia per te? Vai avanti.' },
+  el: { open: 'Επιλέξτε βήμα βήμα', start: 'Ορεκτικά και σαλάτες', main: 'Κυρίως πιάτα', dessert: 'Επιδόρπιο', drinks: 'Ποτά', step: 'Βήμα {n} από {m}', next: 'Επόμενο', back: 'Πίσω', summary: 'Η επιλογή σας', show: 'Δείξτε απλώς αυτή τη λίστα στο προσωπικό μας· θα πάρουμε με χαρά την παραγγελία σας.', empty: 'Δεν έχετε επιλέξει τίποτα ακόμη.', restart: 'Ξεκινήστε από την αρχή', close: 'Επιστροφή στον κατάλογο', total: 'Σύνολο', add: 'Περισσότερα', remove: 'Λιγότερα', hint: 'Δεν βρήκατε κάτι; Συνεχίστε.' },
   ku: { open: 'Gav bi gav hilbijêre', start: 'Destpêk û selete', main: 'Xwarinên sereke', dessert: 'Şîranî', drinks: 'Vexwarin', step: 'Gav {n} ji {m}', next: 'Pêşve', back: 'Paşve', summary: 'Hilbijartina we', show: 'Vê lîsteyê tenê nîşanî karmendan bidin, em ê fermana we bi kêfxweşî bigirin.', empty: 'Hê tiştek nehatiye hilbijartin.', restart: 'Ji nû ve dest pê bike', close: 'Vegere menûyê', total: 'Giştî', add: 'Zêdetir', remove: 'Kêmtir', hint: 'Tiştek ji bo we tune? Tenê pêşve biçin.' },
 };
 
@@ -726,6 +754,13 @@ const ORDER_LABELS: Record<MenuLang, { add: string; cart: string; table: string;
   ku: { add: 'Zêde bike', cart: 'Fermana we', table: 'Mase', note: 'Têbînî ji bo mitbaxê (bi dilê xwe)', send: 'Ferman bide', sent: 'Spas! Fermana we hat.', fail: 'Nebû. Ji kerema xwe ji karmendan re bêje.', wait: 'Ji kerema xwe berî fermana nû hinekî bisekine.', total: 'Giştî', pay: 'Drav wekî her car li ser mase tê dayîn.', close: 'Bigire', remove: 'Rake' },
   ar: { add: 'إضافة', cart: 'طلبك', table: 'الطاولة', note: 'ملاحظة للمطبخ (اختياري)', send: 'تأكيد الطلب', sent: 'شكرًا! وصل طلبك.', fail: 'لم ينجح ذلك. يرجى التحدث إلى فريق الخدمة.', wait: 'يرجى الانتظار قليلًا قبل الطلب مرة أخرى.', total: 'المجموع', pay: 'الدفع كالمعتاد لدى فريق الخدمة.', close: 'إغلاق', remove: 'حذف' },
   ru: { add: 'Добавить', cart: 'Ваш заказ', table: 'Стол', note: 'Пожелание для кухни (необязательно)', send: 'Заказать', sent: 'Спасибо! Ваш заказ принят.', fail: 'Не получилось. Пожалуйста, обратитесь к персоналу.', wait: 'Пожалуйста, подождите немного перед новым заказом.', total: 'Итого', pay: 'Оплата, как обычно, у официанта.', close: 'Закрыть', remove: 'Убрать' },
+  fa: { add: 'افزودن', cart: 'سفارش شما', table: 'میز', note: 'توضیح برای آشپزخانه (اختیاری)', send: 'ثبت سفارش', sent: 'متشکریم! سفارش شما دریافت شد.', fail: 'انجام نشد. لطفاً با کارکنان صحبت کنید.', wait: 'لطفاً پیش از سفارش جدید کمی صبر کنید.', total: 'جمع', pay: 'پرداخت مثل همیشه سر میز انجام می‌شود.', close: 'بستن', remove: 'حذف' },
+  zh: { add: '添加', cart: '您的订单', table: '桌号', note: '给厨房的备注（可选）', send: '提交订单', sent: '谢谢！我们已收到您的订单。', fail: '提交失败，请联系服务人员。', wait: '请稍候再提交新订单。', total: '合计', pay: '像往常一样在餐桌上付款。', close: '关闭', remove: '移除' },
+  ko: { add: '추가', cart: '주문 내역', table: '테이블', note: '주방 요청사항 (선택)', send: '주문하기', sent: '감사합니다! 주문이 접수되었습니다.', fail: '실패했습니다. 직원에게 문의해 주세요.', wait: '새 주문 전에 잠시 기다려 주세요.', total: '합계', pay: '결제는 평소처럼 테이블에서 해 주세요.', close: '닫기', remove: '삭제' },
+  hi: { add: 'जोड़ें', cart: 'आपका ऑर्डर', table: 'टेबल', note: 'रसोई के लिए नोट (वैकल्पिक)', send: 'ऑर्डर करें', sent: 'धन्यवाद! आपका ऑर्डर मिल गया।', fail: 'नहीं हो पाया। कृपया स्टाफ़ से बात करें।', wait: 'नया ऑर्डर देने से पहले कृपया थोड़ा इंतज़ार करें।', total: 'कुल', pay: 'भुगतान हमेशा की तरह टेबल पर होगा।', close: 'बंद करें', remove: 'हटाएँ' },
+  es: { add: 'Añadir', cart: 'Su pedido', table: 'Mesa', note: 'Nota para la cocina (opcional)', send: 'Pedir', sent: '¡Gracias! Hemos recibido su pedido.', fail: 'No ha funcionado. Hable con el personal, por favor.', wait: 'Espere un momento antes de hacer un nuevo pedido.', total: 'Total', pay: 'El pago se hace como siempre en la mesa.', close: 'Cerrar', remove: 'Quitar' },
+  it: { add: 'Aggiungi', cart: 'Il tuo ordine', table: 'Tavolo', note: 'Nota per la cucina (facoltativa)', send: 'Ordina', sent: 'Grazie! Abbiamo ricevuto il tuo ordine.', fail: 'Non è andata a buon fine. Rivolgiti al personale.', wait: 'Attendi un momento prima di un nuovo ordine.', total: 'Totale', pay: 'Il pagamento avviene come sempre al tavolo.', close: 'Chiudi', remove: 'Rimuovi' },
+  el: { add: 'Προσθήκη', cart: 'Η παραγγελία σας', table: 'Τραπέζι', note: 'Σημείωση για την κουζίνα (προαιρετική)', send: 'Παραγγελία', sent: 'Ευχαριστούμε! Λάβαμε την παραγγελία σας.', fail: 'Δεν ήταν δυνατό. Απευθυνθείτε στο προσωπικό.', wait: 'Περιμένετε λίγο πριν από νέα παραγγελία.', total: 'Σύνολο', pay: 'Η πληρωμή γίνεται ως συνήθως στο τραπέζι.', close: 'Κλείσιμο', remove: 'Αφαίρεση' },
 };
 
 /** Aussehen der Schritt-für-Schritt-Auswahl: Kopf im Stil der Karte, unten Zurück/Weiter. */
@@ -1051,7 +1086,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     : '';
 
   return `<!doctype html>
-<html lang="${lang}"${lang === 'ar' ? ' dir="rtl"' : ''}><head>
+<html lang="${lang}"${lang === 'ar' || lang === 'fa' ? ' dir="rtl"' : ''}><head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta name="robots" content="noindex,nofollow" />
