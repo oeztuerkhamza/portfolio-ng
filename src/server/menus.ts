@@ -141,7 +141,7 @@ export interface MenuData {
 export const MENU_LANGS = ['de', 'en', 'fr', 'tr', 'es', 'it', 'el', 'ar', 'fa', 'hi', 'ru', 'zh', 'ko', 'ku'] as const satisfies readonly (CardLang | 'es' | 'it' | 'el' | 'ar' | 'fa' | 'hi' | 'ru' | 'zh' | 'ko')[];
 export type MenuLang = (typeof MENU_LANGS)[number];
 
-/** Die Themes der NFC-Karten plus „orient" (Smaragd und Gold), das es nur für Speisekarten gibt. */
+/** Die Themes der NFC-Karten plus „orient" (Rubinrot und Gold), das es nur für Speisekarten gibt. */
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
 export type MenuTheme = (typeof MENU_THEMES)[number];
 
@@ -475,13 +475,13 @@ const THEMES: Record<MenuTheme, Palette> = {
 };
 
 /**
- * „orient" ist Smaragd, Elfenbein und Gold, wie ein osmanischer Diwan: Der Kopf
- * ist ein Spitzbogenfenster über einem Muster aus achtzackigen Sternen, Rubriken
- * stehen zwischen goldenen Linien mit Raute. Alles mit Systemschriften und
+ * „orient" ist Rubinrot, Elfenbein und Blattgold, wie ein osmanischer Diwan: Der Kopf
+ * ist ein Spitzbogenfenster über einem Muster aus achtzackigen Sternen, Titel und
+ * Rahmen schimmern wie Blattgold, Rubriken stehen zwischen goldenen Linien mit Raute. Alles mit Systemschriften und
  * Inline-SVG, damit die Karte ohne Webfonts sofort steht.
  */
 function orientPalette(): Palette {
-  const gold = '#c9a25a';
+  const gold = '#cfa64f';
   const star = (color: string, opacity: number) =>
     svgUrl(
       `<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><g fill="none" stroke="${color}" stroke-opacity="${opacity}" stroke-width="1"><rect x="20" y="20" width="24" height="24"/><rect x="20" y="20" width="24" height="24" transform="rotate(45 32 32)"/><circle cx="32" cy="32" r="5"/><path d="M0 32h7M57 32h7M32 0v7M32 57v7M0 0l8 8M64 0l-8 8M0 64l8-8M64 64l-8-8"/></g></svg>`,
@@ -490,38 +490,38 @@ function orientPalette(): Palette {
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><g fill="${gold}"><rect x="6" y="6" width="12" height="12"/><rect x="6" y="6" width="12" height="12" transform="rotate(45 12 12)"/></g></svg>`,
   );
   const diamond = svgUrl(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path d="M4 0 8 4 4 8 0 4z" fill="${gold}"/></svg>`);
-  const heroA = '#11433f';
-  const heroB = '#061a1c';
+  const heroA = '#8c1b2f';
+  const heroB = '#2c0611';
   return {
-    bg: `${star('#d8b56e', 0.1)},radial-gradient(1100px 620px at 50% -8%,#15433f 0%,#0b2628 52%,#051416 100%)`,
+    bg: `${star('#e0b865', 0.13)},radial-gradient(1100px 620px at 50% -8%,#8a1c30 0%,#4d0e1c 52%,#280510 100%)`,
     panel: '#fcf7ec',
-    ink: '#1f2422',
-    dim: '#6e6452',
-    accent: '#0f4a45',
-    accent2: '#1b6a60',
+    ink: '#2b1a1a',
+    dim: '#7b6047',
+    accent: '#8c1b2f',
+    accent2: '#b32c43',
     onAccent: '#f6e5bb',
-    soft: '#f6eedc',
-    line: 'rgba(158,118,48,.30)',
+    soft: '#f9efdc',
+    line: 'rgba(176,128,44,.34)',
     heroA,
     heroB,
     heroInk: '#f6e6bf',
     heroDim: '#d4b57a',
     extra: `
-.menu{border-radius:22px;box-shadow:0 0 0 1px rgba(201,162,90,.7),0 0 0 7px #08201f,0 0 0 8px rgba(201,162,90,.45),0 34px 80px rgba(0,0,0,.55)}
+.menu{border-radius:22px;box-shadow:0 0 0 1px rgba(201,162,90,.7),0 0 0 7px #2c0611,0 0 0 8px rgba(207,166,79,.6),0 0 0 11px rgba(44,6,17,.55),0 34px 80px rgba(0,0,0,.55)}
 .hero{border-radius:22px 22px 0 0;padding-top:58px;padding-bottom:30px;border-bottom:1px solid ${gold};
   background:${star('#e2c27e', 0.16)},radial-gradient(420px 260px at 50% 0%,rgba(226,194,126,.2),transparent 70%),linear-gradient(170deg,${heroA},${heroB})}
 .hero::before{content:"";position:absolute;inset:16px 16px 14px;pointer-events:none;border:1px solid rgba(214,181,110,.5);
-  border-radius:50% 50% 14px 14px/34% 34% 14px 14px;box-shadow:inset 0 0 0 5px rgba(6,26,28,.35),inset 0 0 0 6px rgba(214,181,110,.22)}
+  border-radius:50% 50% 14px 14px/34% 34% 14px 14px;box-shadow:inset 0 0 0 5px rgba(44,6,17,.4),inset 0 0 0 6px rgba(214,181,110,.22)}
 h1{font-weight:500;letter-spacing:.08em;text-transform:uppercase;text-shadow:none;
-  background:linear-gradient(180deg,#fbeecb 10%,#dcb873 60%,#b88a3e 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
+  background:linear-gradient(180deg,#fff3cf 8%,#f0d48e 34%,#cfa04a 62%,#a8782c 100%);-webkit-background-clip:text;background-clip:text;color:transparent;
   filter:drop-shadow(0 6px 18px rgba(0,0,0,.45))}
 .tagline{letter-spacing:.06em}
 .orn{max-width:260px}
 .orn::before,.orn::after{background:linear-gradient(90deg,transparent,${gold})}
 .orn i{display:block;width:16px;height:16px;font-size:0;background:${solidStar} center/contain no-repeat}
-.langs a[aria-current]{background:linear-gradient(180deg,#f7e7bf,#ddbb76);color:#0d302d}
+.langs a[aria-current]{background:linear-gradient(180deg,#fbeec8,#d9b062);color:#3a0814}
 section{margin-top:42px}
-h2{justify-content:center;text-align:center;font-weight:500;letter-spacing:.05em;color:#7c5314}
+h2{justify-content:center;text-align:center;font-weight:500;letter-spacing:.05em;color:#7f1a2b}
 h2::before,h2::after{content:"";flex:1;height:8px;min-width:24px}
 h2::before{background:${diamond} right center/8px 8px no-repeat,linear-gradient(270deg,${gold},transparent) left center/calc(100% - 13px) 1px no-repeat}
 h2::after{background:${diamond} left center/8px 8px no-repeat,linear-gradient(90deg,${gold},transparent) right center/calc(100% - 13px) 1px no-repeat}
@@ -530,13 +530,13 @@ h2::after{background:${diamond} left center/8px 8px no-repeat,linear-gradient(90
 details.cat.card>summary{background:${star('#e2c27e', 0.16)},linear-gradient(170deg,${heroA},${heroB});outline:1px solid rgba(214,181,110,.55);outline-offset:-6px}
 details.cat.card>summary h2{color:#f6e6bf}
 .nav a[aria-current]{background:linear-gradient(160deg,${heroA},${heroB});border-color:${gold};color:#f6e5bb;transition:none}
-li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 2px rgba(40,30,10,.08),0 14px 30px -16px rgba(20,40,36,.45)}
+li.has-img{border-color:rgba(201,162,90,.5);border-radius:18px;box-shadow:0 1px 2px rgba(40,30,10,.08),0 14px 30px -16px rgba(60,10,22,.4)}
 .ph{border-bottom:1px solid ${gold}}
 .dish{aspect-ratio:4/3}
-.price{color:#0f4a45;font-family:${SERIF};font-size:1.04rem}
-.dots{border-bottom-color:rgba(158,118,48,.45)}
-.tag{color:#0f4a45}
-.btn{background:linear-gradient(160deg,#155a53,${heroB});border:1px solid ${gold};color:#f6e5bb}
+.price{color:#8c1b2f;font-family:${SERIF};font-size:1.04rem}
+.dots{border-bottom-color:rgba(176,128,44,.5)}
+.tag{color:#8c1b2f}
+.btn{background:linear-gradient(160deg,#a62338,${heroB});border:1px solid ${gold};color:#f6e5bb}
 #wopen{border-color:${gold}}
 .foot-note{text-align:center}
 `,
