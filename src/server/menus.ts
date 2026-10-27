@@ -625,6 +625,7 @@ li.has-img{background:${t.soft};border:1px solid ${t.line};border-radius:20px;ov
   background:linear-gradient(100deg,transparent,rgba(255,255,255,.34),transparent);transform:translateX(-140%) skewX(-14deg)}
 li.has-img:hover .ph::after,li.has-img:active .ph::after{opacity:1;transform:translateX(340%) skewX(-14deg);transition:transform .9s cubic-bezier(.4,.1,.2,1),opacity .2s}
 .desc{margin:3px 0 0;color:${t.dim};font-size:.88rem;line-height:1.45}
+.orig{margin:1px 0 0;color:${t.dim};font-size:.8rem;font-style:italic;unicode-bidi:isolate}
 .empty{margin:28px 0;text-align:center;color:${t.dim}}
 .foot-note{margin:36px 0 0;padding-top:18px;border-top:1px solid ${t.line};color:${t.dim};font-size:.76rem;line-height:1.6;white-space:pre-line}
 .actions{display:grid;gap:10px;margin:28px 0 0}
@@ -995,6 +996,9 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 </div>`
       : '';
 
+  // Bei Getränken steht unter dem übersetzten Namen der Originalname, damit das Servicepersonal ihn versteht.
+  const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks').flatMap((st) => st.cats));
+  const origName = (ci: number, it: MenuItem, o: MenuItem) => (drinkCats.has(ci) && it.name !== o.name ? `<p class="orig" lang="${menu.lang}" dir="ltr">${esc(o.name)}</p>` : '');
   const body = cats
     .map(
       ({ c, orig }, i) => `${
@@ -1008,7 +1012,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
             ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
           const img = httpsUrl(it.img);
-          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
+          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${origName(i, it, o)}${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
         })
         .join('')}</ul>${fold ? '</details>' : ''}</section>`,
     )
@@ -1033,7 +1037,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
                 return `${many ? `<details class="wcat"${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
                   .map((it, j) => {
                     const oi = o.items[j]!;
-                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
+                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${st.kind === 'drinks' && it.name !== oi.name ? `<span class="wd" lang="${menu.lang}" dir="ltr">${esc(oi.name)}</span>` : ''}${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
                   })
                   .join('')}${many ? '</details>' : ''}`;
               })
@@ -1058,10 +1062,10 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const review = httpsUrl(d.reviewUrl);
   if (review) actions.push(`<a class="btn" href="${esc(review)}" rel="noopener">${esc(l.review)}</a>`);
   const tel = d.phone ? telHref(d.phone) : null;
-  if (tel) actions.push(`<a class="btn ghost" href="tel:${esc(tel)}">${esc(l.call)} · ${esc(d.phone)}</a>`);
+  if (tel) actions.push(`<a class="btn ghost" href="tel:${esc(tel)}">${esc(l.call)} · <bdi dir="ltr">${esc(d.phone)}</bdi></a>`);
   const mail = mailAddress(d.email);
   if (mail) actions.push(`<a class="btn ghost" href="mailto:${esc(mail)}">${esc(l.mail)}</a>`);
-  if (d.address) actions.push(`<a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(d.address)}" rel="noopener">${esc(l.map)} · ${esc(d.address)}</a>`);
+  if (d.address) actions.push(`<a class="btn ghost" href="https://www.google.com/maps/search/?api=1&amp;query=${encodeURIComponent(d.address)}" rel="noopener">${esc(l.map)} · <bdi dir="ltr">${esc(d.address)}</bdi></a>`);
 
   const logo = httpsUrl(d.logoUrl);
   const credits = httpsUrl(d.creditsUrl);
@@ -1100,7 +1104,7 @@ ${logo ? `<img class="logo" src="${esc(logo)}" alt="" />` : ''}
 <h1>${esc(d.name)}</h1>
 ${d.tagline ? `<p class="tagline">${esc(d.tagline)}</p>` : ''}
 <div class="orn" aria-hidden="true"><i>✦</i></div>
-${d.address ? `<p class="where">${esc(d.address)}</p>` : ''}
+${d.address ? `<p class="where"><bdi dir="ltr">${esc(d.address)}</bdi></p>` : ''}
 ${offered.length > 1 ? `<nav class="langs" aria-label="Language">${offered.map((x) => `<a href="?l=${x}${keep}" hreflang="${x}"${x === lang ? ' aria-current="true"' : ''}>${esc(LANG_NAMES[x])}</a>`).join('')}</nav>` : ''}
 ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p>` : ''}
 </header>

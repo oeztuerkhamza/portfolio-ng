@@ -365,3 +365,25 @@ describe('Ernährung und Allergene', () => {
     assert.match(html, /ohne Sulfite/);
   });
 });
+
+describe('Getränke und Rechts-nach-links', () => {
+  const data = menuData({
+    name: 'X',
+    phone: '0761 2927151',
+    steps: 'start:1; drinks:2',
+    translations: { ar: '# Food\nSuppe\n\n# Drinks\nWasser' },
+    categories: [{ title: 'Essen', items: [{ name: 'Suppe', price: '5,00' }] }, { title: 'Getränke', items: [{ name: 'Wasser', price: '3,00' }] }],
+  })!;
+  const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+  test('Getränke zeigen den Originalnamen unter der Übersetzung, Speisen nicht', () => {
+    const html = renderMenu({ ...m, data: { ...data, translations: { en: '# Food\nSoup | | x\n\n# Drinks\nWater' } } }, 'https://breisgaudigital.de', { lang: 'en' } as never);
+    assert.ok(html.includes('<p class="orig" lang="de" dir="ltr">Wasser</p>'));
+    assert.ok(!html.includes('>Suppe</p>'));
+    assert.ok(!renderMenu(m, 'https://breisgaudigital.de').includes('class="orig"'));
+  });
+  test('Telefonnummer bleibt auf Arabisch in ihrer Reihenfolge', () => {
+    const html = renderMenu(m, 'https://breisgaudigital.de', { lang: 'ar' } as never);
+    assert.ok(html.includes('dir="rtl"'));
+    assert.ok(html.includes('<bdi dir="ltr">0761 2927151</bdi>'));
+  });
+});
