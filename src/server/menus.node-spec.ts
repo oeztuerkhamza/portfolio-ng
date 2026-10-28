@@ -503,3 +503,20 @@ function menuFrom(steps: string): Menu {
   const cat = (title: string) => ({ title, items: [{ name: `${title} 1`, price: '4,00' }] });
   return { slug: 'x', lang: 'de', theme: 'orient', preview: false, data: menuData({ name: 'X', steps, categories: [cat('Softdrinks'), cat('Bier')] })! };
 }
+
+describe('Nur Schritt für Schritt (stepsOnly)', () => {
+  test('keine Liste auf der Seite, nur Knopf und Konten; ohne JavaScript die Liste im noscript', () => {
+    const base = menuFrom('soft:1; beer:2');
+    const on = renderMenu({ ...base, data: { ...base.data, stepsOnly: true } }, 'https://breisgaudigital.de');
+    assert.ok(on.includes('class="cta only"'));
+    const outside = on.replace(/<noscript>[\s\S]*?<\/noscript>/, '').replace(/<div id="wiz"[\s\S]*?<\/div>\s*<script type="application\/json" id="wc">/, '');
+    assert.ok(!outside.includes('<section'), 'Liste steht nicht auf der Seite');
+    assert.ok(on.includes('<noscript>') && on.split('<noscript>')[1]!.includes('<section'));
+    assert.ok(!on.includes('class="filters"'));
+    assert.ok(renderMenu(base, 'https://breisgaudigital.de').includes('<section'));
+  });
+  test('ohne Schritte hat stepsOnly keine Wirkung', () => {
+    const base = menuFrom('');
+    assert.ok(renderMenu({ ...base, data: { ...base.data, stepsOnly: true } }, 'https://breisgaudigital.de').includes('<section'));
+  });
+});

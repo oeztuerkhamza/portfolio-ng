@@ -134,6 +134,8 @@ export interface MenuData {
   steps?: string;
   /** Instagram-Konto des Hauses, https; erscheint unter dem Knopf „Schritt für Schritt" und am Ende der Auswahl. */
   instagramUrl?: string;
+  /** true: auf der Seite steht nur der Knopf Schritt für Schritt; die ganze Liste gibt es nur ohne JavaScript (noscript). Braucht `steps`. */
+  stepsOnly?: boolean;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
   translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
@@ -282,6 +284,7 @@ export function menuData(input: unknown): MenuData | null {
     footnote: text(d['footnote'], 600),
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     instagramUrl: httpsUrl(d['instagramUrl']) ?? undefined,
+    stepsOnly: d['stepsOnly'] === true ? true : undefined,
     creditsUrl: httpsUrl(d['creditsUrl']) ?? undefined,
     sections: d['sections'] === 'collapsed' ? 'collapsed' : undefined,
     steps: text(d['steps'], 200),
@@ -878,6 +881,8 @@ details.wcat .wi:last-child{border-bottom:0}
 .wchoice{display:block;width:100%;margin:16px 0 0;padding:26px 16px;border-radius:20px;border:1px solid ${t.line};background:${t.soft};color:${t.accent};font:600 1.2rem/1.3 ${SERIF};cursor:pointer}
 .wchoice small{display:block;margin-top:3px;color:${t.dim};font:italic 400 .85rem/1.3 ${SERIF}}
 .cta{margin:18px 0 0}
+.cta.only{margin:26px 0 8px}
+.cta.only #wopen{padding:22px 18px;font-size:1.2rem;border-radius:22px}
 .cta #wopen{margin:0}
 .social{display:flex;gap:10px;margin:10px 0 0}
 .social .btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin:0;padding:11px 10px;font-size:.9rem;text-align:center;text-decoration:none}
@@ -1216,6 +1221,9 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 <script>${ORDER_SCRIPT}</script>`
     : '';
 
+  const stepsOnly = !!d.stepsOnly && !!wizard;
+  const navHtml = cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : '';
+
   return `<!doctype html>
 <html lang="${lang}"${lang === 'ar' || lang === 'fa' ? ' dir="rtl"' : ''}><head>
 <meta charset="utf-8" />
@@ -1236,10 +1244,10 @@ ${offered.length > 1 ? `<nav class="langs" aria-label="Language">${offered.map((
 ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p>` : ''}
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
-${wizard || social ? `<div class="cta">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${social}</div>` : ''}
-${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : ''}
+${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${social}</div>` : ''}
+${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${navHtml}
 ${filtersUi}
-${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}
+${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}`}
 ${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
 ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 <p class="foot">${credits ? `<a href="${esc(credits)}" rel="noopener">${esc(l.credits)}</a> · ` : ''}${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
