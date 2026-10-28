@@ -3,6 +3,16 @@
   "buildCommand": "npm run build",
   "redirects": [
     {
+      "source": "/:locale(de|en|tr)/projects/benlirad",
+      "destination": "/:locale/projects",
+      "permanent": true
+    },
+    {
+      "source": "/:locale(de|en|tr)/ratgeber/fallstudie-benlirad-lahr",
+      "destination": "/:locale/ratgeber",
+      "permanent": true
+    },
+    {
       "source": "/:locale(fr|ku)",
       "destination": "/de",
       "permanent": true

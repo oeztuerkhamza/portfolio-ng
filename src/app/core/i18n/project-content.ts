@@ -62,52 +62,6 @@ Dışarıya bakan yüz ise halka açık site: sunucu taraflı render’lı Angul
       ],
     },
   },
-  'benlirad': {
-    en: {
-      subtitle: 'Inventory management and website for a bicycle shop in Lahr',
-      category: 'Full-stack web app',
-      description:
-        'Second shop, same platform: .NET 9 API, Angular admin and a public SSR website with showroom, accessories and repair service — four languages, on a dedicated server.',
-      role: 'Full-stack developer & architect',
-      long: `Benlirad is a bicycle shop in Lahr in the Black Forest. The platform originally built for Bikehaus Freiburg runs here in its own cut: the same core — purchasing, stock, sales, returns, customers, invoices, expenses and statistics — but shaped for a shop that sells and repairs rather than rents. That was exactly the work: what actually belongs to the core, and what only existed for the first client?
-
-The public site runs on Angular 17 with server-side rendering in four languages (DE, EN, FR, TR). It pulls its content straight from the inventory system: the showroom shows real stock including a counter of available bikes, alongside new bikes, accessories, repair service, guides, FAQ, warranty and local landing pages for the region. What gets booked in at the shop is online without an intermediate step.
-
-It all runs on a dedicated server with Docker and nginx: API, admin interface and SSR front-end as separate services, SQLite as the database, JWT for sign-in. On top come the same tools as in the sibling project — Kleinanzeigen sync, Chrome extension and a Windows build for the machine at the shop.`,
-      features: [
-        'Inventory management: purchasing, stock, sales, returns, customers, invoices, expenses',
-        'Public website with live stock from the same database',
-        'Four languages (DE, EN, FR, TR) on their own URLs, with SSR',
-        'Showroom, new bikes, accessories, repair service, guides and FAQ',
-        'Local landing pages for search around Lahr',
-        'Kleinanzeigen sync plus Chrome extension for the listings',
-        'Windows desktop build with a bundled API',
-        'Self-hosted: Docker, nginx, automatic TLS',
-      ],
-    },
-    tr: {
-      subtitle: 'Lahr’daki bir bisiklet mağazası için stok yönetimi ve web sitesi',
-      category: 'Full-stack web uygulaması',
-      description:
-        'İkinci mağaza, aynı platform: .NET 9 API, Angular yönetim paneli ve showroom, aksesuar ve tamir servisiyle SSR’li halka açık site — dört dil, kendi sunucusunda.',
-      role: 'Full-stack geliştirici & mimar',
-      long: `Benlirad, Kara Orman’daki Lahr’da bir bisiklet mağazası. Bikehaus Freiburg için doğan platform burada kendi kesimiyle çalışıyor: aynı çekirdek — alım, stok, satış, iade, müşteriler, faturalar, giderler ve istatistik — ama kiralayan değil, satan ve tamir eden bir mağazaya göre biçilmiş. İşin özü de tam buradaydı: Gerçekten çekirdeğe ait olan ne, sadece ilk müşteri için var olan ne?
-
-Halka açık site, sunucu taraflı render’lı Angular 17 ile dört dilde çalışıyor (DE, EN, FR, TR). İçeriğini doğrudan stok sisteminden alıyor: Showroom gerçek stoğu, müsait bisiklet sayacıyla birlikte gösteriyor; yanında yeni bisikletler, aksesuar, tamir servisi, rehber, SSS, garanti ve bölge için yerel sayfalar. Mağazada kaydedilen, aradan bir adım geçmeden internette.
-
-Tamamı kendi sunucusunda, Docker ve nginx ile çalışıyor: API, yönetim arayüzü ve SSR ön yüzü ayrı servisler, veritabanı SQLite, giriş için JWT. Üstüne kardeş projedeki araçların aynısı geliyor — Kleinanzeigen eşitlemesi, Chrome eklentisi ve mağazadaki bilgisayar için Windows sürümü.`,
-      features: [
-        'Stok yönetimi: alım, stok, satış, iade, müşteriler, faturalar, giderler',
-        'Aynı veritabanından canlı stokla beslenen halka açık site',
-        'Kendi URL’leriyle dört dil (DE, EN, FR, TR) ve SSR',
-        'Showroom, yeni bisikletler, aksesuar, tamir servisi, rehber ve SSS',
-        'Lahr çevresindeki arama için yerel sayfalar',
-        'İlanlar için Kleinanzeigen eşitlemesi ve Chrome eklentisi',
-        'API’yi içeren Windows masaüstü sürümü',
-        'Kendi sunucusu: Docker, nginx, otomatik TLS',
-      ],
-    },
-  },
   'di-flux': {
     en: {
       subtitle: 'Intelligent time-tracking system for companies',
@@ -291,9 +245,9 @@ Altında ise: React Server Components ve Server Actions ile Next.js 16, PostgreS
       subtitle: 'Inventory system and website for a bicycle shop in Lünen',
       category: 'Full-stack web app',
       description:
-        'Third shop, same platform: .NET 9 API, Angular admin and a public SSR website with live stock for a family business in Lünen — four languages, self-hosted.',
+        'Second shop, same platform: .NET 9 API, Angular admin and a public SSR website with live stock for a family business in Lünen — four languages, self-hosted.',
       role: 'Full-stack developer & architect',
-      long: `Karaarslan Bike is a bicycle shop in Lünen in the Ruhr area, a family business since 2021. It gets the same platform as Bikehaus Freiburg and Benlirad — and that was exactly the test of whether it really carries over to a new business: different name, different city, different region, different range, the same core of purchase, stock, sale, return, customers, invoices, expenses and statistics.
+      long: `Karaarslan Bike is a bicycle shop in Lünen in the Ruhr area, a family business since 2021. It gets the same platform as Bikehaus Freiburg — and that was exactly the test of whether it really carries over to a new business: different name, different city, different region, different range, the same core of purchase, stock, sale, return, customers, invoices, expenses and statistics.
 
 The public site runs on Angular 17 with server-side rendering in four languages (DE, EN, FR, TR). It pulls its content straight from the inventory system: the showroom shows the real stock with filters for condition, category and price, plus accessories, new bikes, guides, FAQ, warranty and city landing pages for the towns around Lünen. What is booked in at the shop is online without an intermediate step — currently around 90 bikes.
 
@@ -313,9 +267,9 @@ Behind it sits the admin area with modules for purchases, sales, returns, custom
       subtitle: 'Lünen’deki bir bisiklet dükkânı için stok sistemi ve web sitesi',
       category: 'Full-stack web uygulaması',
       description:
-        'Üçüncü dükkân, aynı platform: Lünen’deki bir aile işletmesi için .NET 9 API, Angular yönetim paneli ve canlı stoklu herkese açık SSR web sitesi — dört dil, kendi sunucusunda.',
+        'İkinci dükkân, aynı platform: Lünen’deki bir aile işletmesi için .NET 9 API, Angular yönetim paneli ve canlı stoklu herkese açık SSR web sitesi — dört dil, kendi sunucusunda.',
       role: 'Full-stack geliştirici & mimar',
-      long: `Karaarslan Bike, Ruhr bölgesindeki Lünen’de 2021’den beri aile işletmesi olarak çalışan bir bisiklet dükkânı. Bikehaus Freiburg ve Benlirad ile aynı platformu kullanıyor — ve asıl sınav da buydu: platform gerçekten yeni bir işletmeye taşınabiliyor mu? Farklı isim, farklı şehir, farklı bölge, farklı ürün yelpazesi; ama alım, stok, satış, iade, müşteri, fatura, gider ve istatistikten oluşan aynı çekirdek.
+      long: `Karaarslan Bike, Ruhr bölgesindeki Lünen’de 2021’den beri aile işletmesi olarak çalışan bir bisiklet dükkânı. Bikehaus Freiburg ile aynı platformu kullanıyor — ve asıl sınav da buydu: platform gerçekten yeni bir işletmeye taşınabiliyor mu? Farklı isim, farklı şehir, farklı bölge, farklı ürün yelpazesi; ama alım, stok, satış, iade, müşteri, fatura, gider ve istatistikten oluşan aynı çekirdek.
 
 Herkese açık site, dört dilde (DE, EN, FR, TR) sunucu tarafı render’lı Angular 17 ile çalışıyor. İçeriğini doğrudan stok sisteminden çekiyor: showroom gerçek stoğu durum, kategori ve fiyat filtreleriyle gösteriyor; ayrıca aksesuar, yeni bisiklet, rehber, SSS, garanti ve Lünen çevresindeki yerler için şehir sayfaları var. Dükkânda kaydedilen şey ara adım olmadan çevrimiçi görünüyor — şu an yaklaşık 90 bisiklet.
 

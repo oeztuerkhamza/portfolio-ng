@@ -91,60 +91,6 @@ Dazu kommt, was ein einzelner Laden sonst von Hand macht: Ein Hintergrunddienst 
     },
   },
   {
-    slug: 'benlirad',
-    title: 'Benlirad',
-    subtitle: 'Warenwirtschaft und Website für ein Fahrradgeschäft in Lahr',
-    category: 'Full-Stack Web-App',
-    tags: ['Full-Stack', 'Angular 17', '.NET 9', 'SSR', '4 Sprachen'],
-    image: '/assets/images/benlirad.webp',
-    liveUrl: 'https://benlirad.de',
-    githubUrl: 'https://github.com/oeztuerkhamza',
-    description:
-      'Zweiter Laden, dieselbe Plattform: .NET-9-API, Angular-Admin und öffentliche SSR-Website mit Showroom, Zubehör und Reparatur-Service — viersprachig, auf eigenem Server.',
-    longDescription: `Benlirad ist ein Fahrradgeschäft in Lahr im Schwarzwald. Die Plattform, die für Bikehaus Freiburg entstanden ist, läuft hier in einem eigenen Zuschnitt: derselbe Kern — Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben und Statistik — aber zugeschnitten auf einen Laden, der verkauft und repariert statt vermietet. Genau darin lag die Arbeit: Was gehört wirklich zum Kern und was war nur für den ersten Kunden?
-
-Die öffentliche Seite läuft auf Angular 17 mit Server-Side Rendering in vier Sprachen (DE, EN, FR, TR). Sie zieht ihre Inhalte direkt aus der Warenwirtschaft: Der Showroom zeigt den echten Bestand samt Zähler der verfügbaren Räder, dazu neue Fahrräder, Zubehör, Reparatur-Service, Ratgeber, FAQ, Garantie und Stadt-Landingpages für die Region. Was im Laden eingebucht wird, steht ohne Zwischenschritt online.
-
-Betrieben wird das Ganze auf einem eigenen Server mit Docker und nginx: API, Admin-Oberfläche und SSR-Frontend als getrennte Dienste, SQLite als Datenbank, JWT für die Anmeldung. Dazu kommen dieselben Werkzeuge wie beim Schwesterprojekt — Kleinanzeigen-Abgleich, Chrome-Erweiterung und eine Windows-Version für den Rechner im Laden.`,
-    features: [
-      'Warenwirtschaft: Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben',
-      'Öffentliche Website mit Live-Bestand aus derselben Datenbank',
-      'Vier Sprachen (DE, EN, FR, TR) mit eigenen URLs und SSR',
-      'Showroom, Neuräder, Zubehör, Reparatur-Service, Ratgeber und FAQ',
-      'Stadt-Landingpages für die lokale Suche rund um Lahr',
-      'Kleinanzeigen-Abgleich plus Chrome-Erweiterung für die Inserate',
-      'Windows-Desktop-Variante mit gebündelter API',
-      'Self-Hosting: Docker, nginx, Let’s-Encrypt-Automatik',
-    ],
-    techStack: [
-      { name: 'Angular 17', icon: '🅰️' },
-      { name: '.NET 9', icon: '🔷' },
-      { name: 'SQLite', icon: '🗃️' },
-      { name: 'Entity Framework', icon: '📦' },
-      { name: 'Angular SSR', icon: '⚡' },
-      { name: 'Docker', icon: '🐳' },
-      { name: 'nginx', icon: '🔀' },
-      { name: 'TypeScript', icon: '📘' },
-    ],
-    screenshots: [
-      '/assets/images/benlirad.webp',
-      '/assets/images/benlirad-2.webp',
-      '/assets/images/benlirad-3.webp',
-    ],
-    role: 'Full-Stack Developer & Architekt',
-    duration: '2025 – Heute',
-    demo: {
-      type: 'image',
-      url: 'https://benlirad.de',
-      screens: [
-        '/assets/images/benlirad.webp',
-        '/assets/images/benlirad-2.webp',
-        '/assets/images/benlirad-3.webp',
-      ],
-      note: 'Live-System — Einbettung serverseitig gesperrt, daher Screenshots',
-    },
-  },
-  {
     slug: 'karaarslan-bike',
     title: 'Karaarslan Bike',
     subtitle: 'Warenwirtschaft und Website für einen Fahrradladen in Lünen',
@@ -154,8 +100,8 @@ Betrieben wird das Ganze auf einem eigenen Server mit Docker und nginx: API, Adm
     liveUrl: 'https://karaarslan-bike.de',
     githubUrl: 'https://github.com/oeztuerkhamza',
     description:
-      'Dritter Laden, dieselbe Plattform: .NET-9-API, Angular-Admin und öffentliche SSR-Website mit Live-Bestand für einen Familienbetrieb in Lünen — viersprachig, auf eigenem Server.',
-    longDescription: `Karaarslan Bike ist ein Fahrradladen in Lünen im Ruhrgebiet, ein Familienbetrieb seit 2021. Er bekommt dieselbe Plattform wie Bikehaus Freiburg und Benlirad — und genau das war der Test, ob sie sich wirklich auf einen neuen Betrieb übertragen lässt: anderer Name, andere Stadt, andere Region, anderes Sortiment, derselbe Kern aus Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben und Statistik.
+      'Zweiter Laden, dieselbe Plattform: .NET-9-API, Angular-Admin und öffentliche SSR-Website mit Live-Bestand für einen Familienbetrieb in Lünen — viersprachig, auf eigenem Server.',
+    longDescription: `Karaarslan Bike ist ein Fahrradladen in Lünen im Ruhrgebiet, ein Familienbetrieb seit 2021. Er bekommt dieselbe Plattform wie Bikehaus Freiburg — und genau das war der Test, ob sie sich wirklich auf einen neuen Betrieb übertragen lässt: anderer Name, andere Stadt, andere Region, anderes Sortiment, derselbe Kern aus Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben und Statistik.
 
 Die öffentliche Seite läuft auf Angular 17 mit Server-Side Rendering in vier Sprachen (DE, EN, FR, TR). Sie zieht ihre Inhalte direkt aus der Warenwirtschaft: Der Showroom zeigt den echten Bestand mit Filtern nach Zustand, Kategorie und Preis, dazu Zubehör, Neuräder, Ratgeber, FAQ, Garantie und Stadt-Landingpages für die Orte rund um Lünen. Was im Laden eingebucht wird, steht ohne Zwischenschritt online — derzeit rund 90 Räder.
 

@@ -151,54 +151,7 @@ export const RATGEBER: RatgeberArticle[] = [
       {
         h: 'Was andere Betriebe daraus mitnehmen können',
         p: [
-          'Die Plattform läuft inzwischen auch bei Benlirad in Lahr und bei Karaarslan Bike in Lünen — jeweils im eigenen Zuschnitt. Das zeigt den eigentlichen Wert: Software, die einmal sauber für einen Betrieb gebaut wurde, lässt sich auf den nächsten übertragen, ohne wieder bei null anzufangen.',
-        ],
-      },
-    ],
-  },
-  {
-    slug: 'fallstudie-benlirad-lahr',
-    title: 'Benlirad in Lahr: eine Plattform, ein zweiter Laden — was gehört zum Kern?',
-    seoTitle: 'Fallstudie Benlirad Lahr: Warenwirtschaft & Website',
-    description:
-      'Wie die Plattform von Bikehaus Freiburg für ein Fahrradgeschäft in Lahr zugeschnitten wurde: Live-Bestand auf der Website, Reparatur statt Verleih, vier Sprachen und Ortsseiten für die Ortenau.',
-    published: '2026-10-23',
-    minutes: 4,
-    image: '/assets/images/benlirad.webp',
-    project: 'benlirad',
-    town: 'lahr',
-    lead:
-      'Benlirad ist ein Fahrradgeschäft in Lahr im Schwarzwald. Es bekam dieselbe Plattform wie Bikehaus Freiburg — aber nicht dieselbe Software. Die eigentliche Arbeit war eine Frage: Was gehört wirklich zum Kern, und was war nur für den ersten Kunden gebaut?',
-    sections: [
-      {
-        h: 'Gleicher Kern, anderer Laden',
-        p: [
-          'Bikehaus vermietet, Benlirad repariert. Ankauf, Bestand, Verkauf, Rücknahme, Kunden, Rechnungen, Ausgaben und Statistik brauchen beide. Der Verleih mit Online-Zahlung und Mietvertrag dagegen war für Lahr überflüssig — stattdessen bekam die Website einen eigenen Bereich für den Reparatur-Service.',
-          'Diese Trennung ist der Grund, warum die Plattform heute in drei Läden läuft. Was Bikehaus-spezifisch war, ist ein Modul; was alle brauchen, ist der Kern.',
-        ],
-      },
-      {
-        h: 'Der Bestand steht von selbst online',
-        p: [
-          'Die öffentliche Website zieht ihre Inhalte direkt aus der Warenwirtschaft. Wird im Laden ein Rad eingebucht, steht es im Showroom — samt Zähler der verfügbaren Räder. Wird es verkauft, verschwindet es. Niemand muss eine zweite Liste pflegen.',
-        ],
-        list: [
-          'Showroom mit dem echten Bestand, Neuräder und Zubehör',
-          'Reparatur-Service, Ratgeber, FAQ und Garantie-Seite',
-          'Vier Sprachen (Deutsch, Englisch, Französisch, Türkisch) mit eigenen Adressen und Server-Side Rendering',
-          'Stadt-Landingpages für die Orte rund um Lahr',
-        ],
-      },
-      {
-        h: 'Gefunden werden in der Ortenau',
-        p: [
-          'Wer in Lahr ein gebrauchtes Rad sucht, sucht nicht nur in Lahr — die Orte von Friesenheim bis Seelbach liegen nah genug. Deshalb hat die Website eigene Stadt-Landingpages für die Region und strukturierte Daten, die Google sagen, wo der Laden steht und wen er bedient.',
-        ],
-      },
-      {
-        h: 'Betrieb und Kosten',
-        p: [
-          'API, Admin-Oberfläche und Website laufen als getrennte Dienste mit Docker und nginx auf einem eigenen Server. Für den Rechner im Laden gibt es eine Windows-Version. Weil der Kern schon stand, musste er für Lahr nicht neu entwickelt werden — die Arbeit steckte im Zuschnitt, nicht im Fundament.',
+          'Die Plattform läuft inzwischen auch bei Karaarslan Bike in Lünen — im eigenen Zuschnitt. Das zeigt den eigentlichen Wert: Software, die einmal sauber für einen Betrieb gebaut wurde, lässt sich auf den nächsten übertragen, ohne wieder bei null anzufangen.',
         ],
       },
     ],

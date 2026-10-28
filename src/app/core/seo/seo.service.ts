@@ -6,7 +6,7 @@ import { I18nService, Lang, LANGS } from '../i18n/i18n.service';
 export interface SeoConfig {
   title: string;
   description: string;
-  /** Locale-agnostic path, e.g. "/projects/benlirad" or "/". SeoService adds the locale prefix. */
+  /** Locale-agnostic path, e.g. "/projects/bikehaus-freiburg" or "/". SeoService adds the locale prefix. */
   path?: string;
   image?: string;
   type?: 'website' | 'article' | 'profile';

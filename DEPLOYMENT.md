@@ -76,7 +76,7 @@ CMD ["node", "dist/breisgau-digital/server/server.mjs"]
 - **OG-Bild:** Aktuell `profile.jpg`. Für schönere Social-Cards ein
   1200×630-PNG unter `assets/images/og-cover.png` ablegen und
   `SeoService.DEFAULT_IMAGE` darauf zeigen lassen.
-- **Live-Demo-Iframes:** Eigene .NET-Seiten (Bikehaus, Benlirad) senden ggf.
+- **Live-Demo-Iframes:** Eigene .NET-Seiten (Bikehaus, Karaarslan Bike) senden ggf.
   `X-Frame-Options`/`CSP frame-ancestors`. Damit die Demo *im* Portfolio lädt,
   auf diesen Servern `frame-ancestors https://breisgau-digital.de` erlauben.
   Sonst greift automatisch der Poster-Fallback mit „in neuem Tab öffnen".
