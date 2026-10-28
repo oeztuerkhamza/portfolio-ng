@@ -596,6 +596,72 @@ li.has-img{border:1.5px solid #d9a93f}
 .num{background:linear-gradient(180deg,#dcab3f,#9a6710);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
 .price{background:linear-gradient(180deg,#d6a031,#8c5a08);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
 .dots{border-bottom:2px dotted rgba(200,150,40,.7)}
+/* Eingang: zwei goldgerahmte Palasttüren öffnen sich über der Karte, einmal je Sitzung (html.seen) */
+html{--d:2.15s;--h:1.55s}
+html.seen{--d:0s;--h:0s}
+.intro{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;perspective:1700px;overflow:hidden;
+  animation:introOut .5s ease calc(var(--d) - .3s) forwards;cursor:pointer}
+html.seen .intro,.intro.skip{display:none}
+.door{position:absolute;top:0;bottom:0;width:50.5%;backface-visibility:hidden;
+  background:${star('#e8c06a', 0.22)},radial-gradient(120% 80% at 50% 50%,#80192d,#3c0813 70%,#22040b);
+  box-shadow:inset 0 0 0 3px #e3b44c,inset 0 0 0 10px #2c0611,inset 0 0 0 12px rgba(240,207,120,.75),inset 0 0 80px rgba(0,0,0,.65)}
+.door.l{left:0;transform-origin:0 50%;animation:doorL 1.45s cubic-bezier(.66,0,.24,1) calc(var(--d) - 1.15s) forwards}
+.door.r{right:0;transform-origin:100% 50%;animation:doorR 1.45s cubic-bezier(.66,0,.24,1) calc(var(--d) - 1.15s) forwards}
+.door i{position:absolute;inset:9% 15% 8%;border:2px solid rgba(240,207,120,.9);border-radius:50% 50% 12px 12px/24% 24% 12px 12px;
+  box-shadow:inset 0 0 0 6px rgba(44,6,17,.5),inset 0 0 0 8px rgba(240,207,120,.38),0 0 22px rgba(240,200,100,.18)}
+.door b{position:absolute;top:66%;width:16px;height:16px;margin-top:-8px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,#fff6cf,#e3b44c 45%,#7d500c);box-shadow:0 0 14px rgba(240,200,100,.85)}
+.door.l b{right:14px}
+.door.r b{left:14px}
+.medal{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 24px;
+  animation:medalIn 1s cubic-bezier(.2,.8,.2,1) .05s both,medalOut .45s ease calc(var(--d) - 1.2s) forwards}
+.medal::before{content:"";position:absolute;z-index:-1;inset:-40px -30px;background:radial-gradient(closest-side,rgba(28,3,9,.78),rgba(28,3,9,.4) 60%,transparent);pointer-events:none}
+.mstar{width:78px;height:78px;background:${solidStar} center/contain no-repeat;filter:drop-shadow(0 0 20px rgba(240,200,100,.85));animation:spin 10s linear infinite}
+.mname{margin-top:16px;font:500 clamp(2.5rem,13vw,3.6rem)/1 ${SERIF};letter-spacing:.2em;text-transform:uppercase;padding-left:.2em;
+  background:linear-gradient(110deg,#b9831f 0%,#ffe9a1 22%,#fffbe2 30%,#e9bd53 42%,#b9831f 60%,#f1d27c 80%,#b9831f 100%);background-size:260% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 14px rgba(0,0,0,.6));animation:foil 2.6s linear .25s both}
+.mline{width:0;height:1px;margin:16px 0 12px;background:linear-gradient(90deg,transparent,#f0cf78,transparent);animation:line .9s ease .45s forwards}
+.mtag{opacity:0;color:#f1cf7a;font:italic 400 1.02rem/1.35 ${SERIF};letter-spacing:.08em;animation:fade .8s ease .75s forwards}
+@keyframes doorL{to{transform:rotateY(-104deg)}}
+@keyframes doorR{to{transform:rotateY(104deg)}}
+@keyframes introOut{to{opacity:0;visibility:hidden}}
+@keyframes medalIn{from{opacity:0;transform:scale(.82);filter:blur(6px)}to{opacity:1;transform:none;filter:none}}
+@keyframes medalOut{to{opacity:0;transform:scale(1.12)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes foil{from{background-position:100% 0}to{background-position:0 0}}
+@keyframes line{to{width:min(260px,62vw)}}
+@keyframes fade{to{opacity:1}}
+/* Danach: Kopf und Knöpfe steigen nacheinander auf, Goldstaub schwebt, der Name schimmert */
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.hero h1,.hero .tagline,.hero .orn,.hero .where,.hero .langs,.cta>*,.foot{animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+.hero h1{animation:rise .9s cubic-bezier(.2,.8,.2,1) var(--h) both,foil 7s linear calc(var(--h) + .9s) infinite;
+  background:linear-gradient(110deg,#b9831f 0%,#ffe9a1 22%,#fffbe2 30%,#e9bd53 42%,#b9831f 60%,#f1d27c 80%,#b9831f 100%);background-size:260% 100%;
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .tagline{animation-delay:calc(var(--h) + .12s)}
+.hero .orn{animation-delay:calc(var(--h) + .22s)}
+.hero .where{animation-delay:calc(var(--h) + .3s)}
+.hero .langs{animation-delay:calc(var(--h) + .38s)}
+.cta>*{animation-delay:calc(var(--h) + .5s)}
+.cta>.social{animation-delay:calc(var(--h) + .64s)}
+.foot{animation-delay:calc(var(--h) + .8s)}
+.orn i{animation:pulse 3.4s ease-in-out infinite}
+@keyframes pulse{0%,100%{filter:drop-shadow(0 0 2px rgba(240,200,100,.4));transform:scale(1)}50%{filter:drop-shadow(0 0 12px rgba(255,220,130,.95));transform:scale(1.18)}}
+.dust{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.dust i{position:absolute;bottom:-12px;width:4px;height:4px;border-radius:50%;background:#ffe9a1;box-shadow:0 0 8px 2px rgba(240,200,100,.75);opacity:0;animation:dust 10s linear infinite}
+.dust i:nth-child(1){left:8%;animation-delay:.2s;animation-duration:9s}
+.dust i:nth-child(2){left:17%;animation-delay:3.1s;width:3px;height:3px}
+.dust i:nth-child(3){left:26%;animation-delay:5.6s;animation-duration:12s}
+.dust i:nth-child(4){left:35%;animation-delay:1.4s;width:5px;height:5px}
+.dust i:nth-child(5){left:44%;animation-delay:7.2s;animation-duration:8s}
+.dust i:nth-child(6){left:53%;animation-delay:2.3s;width:3px;height:3px}
+.dust i:nth-child(7){left:62%;animation-delay:4.8s;animation-duration:11s}
+.dust i:nth-child(8){left:71%;animation-delay:.9s}
+.dust i:nth-child(9){left:79%;animation-delay:6.4s;width:5px;height:5px;animation-duration:13s}
+.dust i:nth-child(10){left:87%;animation-delay:3.7s;width:3px;height:3px}
+.dust i:nth-child(11){left:93%;animation-delay:8.1s;animation-duration:9.5s}
+.dust i:nth-child(12){left:4%;animation-delay:5s;width:3px;height:3px;animation-duration:12.5s}
+@keyframes dust{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:.95}70%{opacity:.7}100%{transform:translate(26px,-460px) scale(1.15);opacity:0}}
+@media (prefers-reduced-motion:reduce){.intro,.dust{display:none}.hero h1,.hero .tagline,.hero .orn,.hero .where,.hero .langs,.cta>*,.foot,.orn i{animation:none}}
 .btn,#wopen{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#b98322);border:1px solid #f4d98a;color:#4a0b17;font-weight:700;box-shadow:0 8px 22px -10px rgba(120,80,0,.7)}
 `,
   };
@@ -1181,7 +1247,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
         ordering
           ? `<textarea id="wnote" rows="2" maxlength="300" placeholder="${esc(ol.note)}"></textarea><button type="button" id="wsend">${esc(ol.send)} · ${esc(ol.table)} ${esc(opts.table!.label)}</button><p id="wmsg" role="status"></p>`
           : ''
-      }${social}<button type="button" class="wre" id="wre">${esc(wl.restart)}</button></div></div>
+      }${social}${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}<button type="button" class="wre" id="wre">${esc(wl.restart)}</button></div></div>
 <div class="wf"><button type="button" class="wbk" id="wback">${esc(wl.back)}</button><button type="button" class="wnx" id="wnext">${esc(wl.next)}</button></div>
 </div>
 <script type="application/json" id="wc">${JSON.stringify({
@@ -1222,6 +1288,8 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     : '';
 
   const stepsOnly = !!d.stepsOnly && !!wizard;
+  // Das Theme „orient" bekommt den animierten Eingang (Palasttüren, Goldstaub).
+  const grand = menu.theme === 'orient';
   const navHtml = cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : '';
 
   return `<!doctype html>
@@ -1232,9 +1300,13 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 <meta name="referrer" content="no-referrer" />
 <title>${esc(d.name)}${d.tagline ? ` · ${esc(d.tagline)}` : ''}</title>
 <style>:root{--accent:${t.accent};--on:${t.onAccent};--panel:${t.panel};--ink:${t.ink};--dim:${t.dim};--accent2:${t.accent2}}${styles(t)}${ORDER_STYLES}${wizard ? wizStyles(t) : ''}</style>
+${grand ? `<script>try{var k='intro:${esc(menu.slug)}';if(sessionStorage.getItem(k))document.documentElement.classList.add('seen');else sessionStorage.setItem(k,'1')}catch(e){}</script>` : ''}
 </head><body${ordering ? ' class="ordering"' : ''}>
+${grand ? `<div class="intro" aria-hidden="true"><div class="door l"><i></i><b></b></div><div class="door r"><i></i><b></b></div><div class="medal"><span class="mstar"></span><span class="mname">${esc(d.name)}</span><span class="mline"></span>${d.tagline ? `<span class="mtag">${esc(d.tagline)}</span>` : ''}</div></div>
+<script>(function(){var i=document.querySelector('.intro');if(i)i.addEventListener('click',function(){i.classList.add('skip');document.documentElement.classList.add('seen')})})();</script>` : ''}
 <main class="menu">
 <header class="hero">
+${grand ? `<div class="dust" aria-hidden="true">${'<i></i>'.repeat(12)}</div>` : ''}
 ${logo ? `<img class="logo" src="${esc(logo)}" alt="" />` : ''}
 <h1>${esc(d.name)}</h1>
 ${d.tagline ? `<p class="tagline">${esc(d.tagline)}</p>` : ''}
@@ -1248,7 +1320,7 @@ ${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<b
 ${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${navHtml}
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}`}
-${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
+${d.footnote && !stepsOnly ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
 ${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
 <p class="foot">${credits ? `<a href="${esc(credits)}" rel="noopener">${esc(l.credits)}</a> · ` : ''}${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>

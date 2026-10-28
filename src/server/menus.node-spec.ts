@@ -520,3 +520,17 @@ describe('Nur Schritt für Schritt (stepsOnly)', () => {
     assert.ok(renderMenu({ ...base, data: { ...base.data, stepsOnly: true } }, 'https://breisgaudigital.de').includes('<section'));
   });
 });
+
+describe('Eingang (Theme orient)', () => {
+  test('Palasttüren nur bei orient; Hinweis bei stepsOnly erst am Ende der Auswahl', () => {
+    const base = menuFrom('soft:1; beer:2');
+    const data = { ...base.data, stepsOnly: true, footnote: 'Es gilt die aktuelle Karte im Haus.' };
+    const html = renderMenu({ ...base, data }, 'https://breisgaudigital.de');
+    assert.ok(html.includes('<div class="intro" aria-hidden="true">') && html.includes('class="dust"'));
+    assert.ok(html.includes("sessionStorage.getItem(k)"));
+    const page = html.split('<div id="wiz"')[0]!;
+    assert.ok(!page.includes('class="foot-note"'), 'nicht auf der Startseite');
+    assert.ok(html.split('<div id="wiz"')[1]!.includes('<p class="foot-note">Es gilt die aktuelle Karte im Haus.</p>'));
+    assert.ok(!renderMenu({ ...base, theme: 'warm' }, 'https://breisgaudigital.de').includes('class="intro"'));
+  });
+});
