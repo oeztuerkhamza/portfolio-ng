@@ -491,3 +491,15 @@ describe('Getränkearten im Assistenten', () => {
     assert.equal(html.split('data-k="wine" data-dr="1"')[1]!.split('data-k="spirits"')[0]!.split('<details class="wcat').length - 1, 2);
   });
 });
+
+describe('Getränkewahl überspringen', () => {
+  test('auf der Frage gibt es „Weiter", das ohne Getränk zur Auswahl führt', () => {
+    const html = renderMenu(menuFrom('soft:1; beer:2'), 'https://breisgaudigital.de');
+    assert.ok(html.includes("function nextOf(j){return pickI>-1&&(dk[j]||j===pickI)?sumI:j+1}"));
+    assert.ok(html.includes("$('wnext').hidden=last;"));
+  });
+});
+function menuFrom(steps: string): Menu {
+  const cat = (title: string) => ({ title, items: [{ name: `${title} 1`, price: '4,00' }] });
+  return { slug: 'x', lang: 'de', theme: 'orient', preview: false, data: menuData({ name: 'X', steps, categories: [cat('Softdrinks'), cat('Bier')] })! };
+}
