@@ -32,6 +32,7 @@ import { IconComponent } from '../../shared/icon/icon.component';
 import { HOME_CONTENT } from './home.content';
 import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { UPDATE_PACKAGES, UPDATE_PRICE_FROM } from '../../core/data/homepage-update.data';
+import { SpeisekarteTeaserComponent } from '../../shared/speisekarte-teaser/speisekarte-teaser.component';
 import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 import { ReviewsComponent } from '../../shared/reviews/reviews.component';
 // Dieselbe Scroll-Mechanik wie in den Einladungen: --p (0…1) am Element,
@@ -41,7 +42,7 @@ import { ScrollFxDirective } from '../../einladung/scroll-fx.directive';
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, ReviewsComponent, ScrollFxDirective],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, SpeisekarteTeaserComponent, ReviewsComponent, ScrollFxDirective],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
   animations: [fadeIn],

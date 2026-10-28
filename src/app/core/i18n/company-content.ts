@@ -12,6 +12,14 @@ import type { Entry } from './translations';
 export const COMPANY_TRANSLATIONS: Record<string, Entry> = {
   'nav.invite': { de: 'Einladungen', en: 'Invitations', tr: 'Davetiyeler' },
   'nav.speisekarte': { de: 'Digitale Speisekarte', en: 'Digital menu', tr: 'Dijital menü' },
+  'sk.teaser.label': { de: 'Neu · Für Restaurants', en: 'New · For restaurants', tr: 'Yeni · Restoranlar için' },
+  'sk.teaser.title': { de: 'Die digitale Speisekarte, die Gäste erleben.', en: 'The digital menu guests experience.', tr: 'Misafirlerin deneyimlediği dijital menü.' },
+  'sk.teaser.text': {
+    de: 'QR-Code oder NFC am Tisch, Bestellung Schritt für Schritt, 14 Sprachen, Ihre eigenen Fotos und ein Design wie Ihr Haus. Live zu sehen beim Divan Ocakbaşı in Freiburg.',
+    en: 'QR code or NFC on the table, step-by-step ordering, 14 languages, your own photos and a design like your restaurant. See it live at Divan Ocakbaşı in Freiburg.',
+    tr: 'Masada QR kod veya NFC, adım adım sipariş, 14 dil, kendi fotoğraflarınız ve mekânınıza özel tasarım. Freiburg’daki Divan Ocakbaşı’nda canlı görün.',
+  },
+  'sk.teaser.cta': { de: 'Mehr zur Speisekarte', en: 'More about the menu', tr: 'Menü hakkında daha fazla' },
   'nav.smarthome': { de: 'Smart Home', en: 'Smart home', tr: 'Akıllı ev' },
   'nav.wartung': {
     de: 'Wartung',

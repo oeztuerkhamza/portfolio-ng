@@ -10,6 +10,7 @@ import { UPDATE_PACKAGES } from '../../core/data/homepage-update.data';
 import { UPDATE_CONTENT } from '../../core/data/homepage-update.content';
 import { IconComponent } from '../../shared/icon/icon.component';
 import { LEISTUNGEN_CONTENT } from './leistungen.content';
+import { SpeisekarteTeaserComponent } from '../../shared/speisekarte-teaser/speisekarte-teaser.component';
 import { WartungBannerComponent } from '../../shared/wartung-banner/wartung-banner.component';
 
 interface ServiceDetail {
@@ -32,7 +33,7 @@ interface Faq {
 @Component({
   selector: 'app-leistungen',
   standalone: true,
-  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent],
+  imports: [RouterLink, LocalizePipe, IconComponent, WartungBannerComponent, SpeisekarteTeaserComponent],
   templateUrl: './leistungen.component.html',
   styleUrl: './leistungen.component.scss',
 })
