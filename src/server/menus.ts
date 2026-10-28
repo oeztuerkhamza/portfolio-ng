@@ -900,6 +900,7 @@ details.wcat .wi:last-child{border-bottom:0}
 .wnx{border:0;background:linear-gradient(135deg,${t.accent},${t.accent2});color:${t.onAccent}}
 .wsum h4{margin:22px 0 4px;font:600 1.02rem/1.3 ${SERIF};color:${t.accent}}
 .wl{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid ${t.line}}
+.wnum{font-size:1.14em;font-weight:800;color:${t.accent};font-variant-numeric:tabular-nums}
 .wl span:last-child{flex:0 0 auto;font-weight:600;white-space:nowrap;color:${t.accent};font-variant-numeric:tabular-nums}
 .wtot{margin:14px 0 0;text-align:end;font-weight:700;font-size:1.12rem}
 .wshow{margin:20px 0 0;padding:14px 16px;border-radius:14px;background:${t.soft};border:1px solid ${t.line};text-align:center;line-height:1.45}
@@ -996,7 +997,7 @@ function summary(){var box=$('wlist'),tot=0,known=true,any=false;box.textContent
 st.slice(0,-1).forEach(function(s){var rows=[].slice.call(s.querySelectorAll('.wi')).filter(function(it){return q[it.getAttribute('data-n')]});if(!rows.length)return;any=true;
 var h=document.createElement('h4'),ht=s.getAttribute('data-t'),hd=s.getAttribute('data-td');h.textContent=hd&&hd!==ht?ht+' · '+hd:ht;box.appendChild(h);
 rows.forEach(function(it){var k=q[it.getAttribute('data-n')],c=it.getAttribute('data-c'),r=document.createElement('div'),a=document.createElement('span'),b=document.createElement('span');
-r.className='wl';var tn=it.getAttribute('data-tn'),on=it.getAttribute('data-n'),nu=it.getAttribute('data-num');a.textContent=k+' × '+(nu?nu+' ':'')+tn;
+r.className='wl';var tn=it.getAttribute('data-tn'),on=it.getAttribute('data-n'),nu=it.getAttribute('data-num');a.appendChild(document.createTextNode(k+' × '));if(nu){var nb=document.createElement('b');nb.className='wnum';nb.textContent=nu;a.appendChild(nb);a.appendChild(document.createTextNode(' '))}a.appendChild(document.createTextNode(tn));
 if(tn!==on){var de=document.createElement('small');de.className='wde';de.textContent=on;a.appendChild(document.createElement('br'));a.appendChild(de)}
 if(c===''){known=false;b.textContent=it.getAttribute('data-p')}else{tot+=Number(c)*k;b.textContent=fmt(Number(c)*k)}
 r.appendChild(a);r.appendChild(b);box.appendChild(r)})});
