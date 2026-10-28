@@ -534,3 +534,20 @@ describe('Eingang (Theme orient)', () => {
     assert.ok(!renderMenu({ ...base, theme: 'warm' }, 'https://breisgaudigital.de').includes('class="intro"'));
   });
 });
+
+describe('Zwei Seiten: am Tisch und die ganze Karte', () => {
+  const base = menuFrom('soft:1; beer:2');
+  const data = { ...base.data, stepsOnly: true, phone: '0761 2927151', address: 'Bertoldstraße 54, 79098 Freiburg' };
+  test('am Tisch: nur Assistent, kein Anrufen und keine Anfahrt', () => {
+    const html = renderMenu({ ...base, data }, 'https://breisgaudigital.de');
+    assert.ok(html.includes('id="wopen"'));
+    assert.ok(!html.includes('class="actions"'));
+  });
+  test('ganze Karte (/karte): Liste von vorn bis hinten, kein Assistent, mit Anrufen und Anfahrt', () => {
+    const html = renderMenu({ ...base, data }, 'https://breisgaudigital.de', { view: 'full' });
+    assert.ok(!html.includes('id="wiz"') && !html.includes('id="wopen"'));
+    assert.ok(html.includes('<section') && html.includes('class="nav"'));
+    assert.ok(!html.includes('<noscript>'));
+    assert.ok(html.includes('class="actions"') && html.includes('href="tel:07612927151"'));
+  });
+});

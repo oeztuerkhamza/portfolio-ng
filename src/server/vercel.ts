@@ -17,6 +17,7 @@ app.use('/api', api);
 app.get('/r/:slug', nfcRedirect);
 app.get('/k/:slug', cardPage);
 app.get('/m/:slug', menuPage);
+app.get('/m/:slug/karte', menuPage);
 app.get('/k/:slug/kontakt.vcf', cardVcard);
 app.post('/k/:slug/kontakt', leadBody, cardLead);
 

@@ -1135,6 +1135,11 @@ export interface RenderOptions {
   lang?: string;
   /** Gültiges Tischkürzel: nur dann erscheint die Bestell-Oberfläche. */
   table?: { label: string; token: string };
+  /**
+   * „full": die ganze Karte von vorn bis hinten (/m/<slug>/karte), ohne Assistent — für Gäste außer Haus.
+   * Sonst die Seite am Tisch; mit `stepsOnly` dort nur der Assistent, ohne Anruf- und Anfahrtsknöpfe.
+   */
+  view?: 'full';
 }
 
 export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: RenderOptions = {}): string {
@@ -1213,7 +1218,8 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
       ? `<div class="social">${insta ? `<a class="btn" href="${esc(insta)}" rel="noopener">Instagram${handle ? `<small dir="ltr">@${esc(handle)}</small>` : ''}</a>` : ''}${reviewHref ? `<a class="btn" href="${esc(reviewHref)}" rel="noopener">${esc(l.review)}</a>` : ''}</div>`
       : '';
   const localized = localize(d, lang);
-  const steps = parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length));
+  const full = opts.view === 'full';
+  const steps = full ? [] : parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length));
   const wizard = steps.length
     ? `<div id="wiz" hidden role="dialog" aria-modal="true" aria-label="${esc(wl.open)}">
 <div class="wh"><button type="button" class="wx" id="wx" aria-label="${esc(wl.close)}">×</button><p class="wpr" id="wpr"></p><h3 id="wtt"></h3><div class="wdots" id="wdots"></div></div>
@@ -1321,7 +1327,7 @@ ${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${n
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}`}
 ${d.footnote && !stepsOnly ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
-${actions.length ? `<div class="actions">${actions.join('')}</div>` : ''}
+${actions.length && !stepsOnly ? `<div class="actions">${actions.join('')}</div>` : ''}
 <p class="foot">${credits ? `<a href="${esc(credits)}" rel="noopener">${esc(l.credits)}</a> · ` : ''}${site ? `<a href="${esc(site)}" rel="noopener">${esc(site.replace(/^https:\/\//, ''))}</a>` : 'Breisgau Digital'}</p>
 </main>
 ${orderUi}

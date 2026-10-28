@@ -127,6 +127,10 @@
       "destination": "/api"
     },
     {
+      "source": "/m/:slug/karte",
+      "destination": "/api"
+    },
+    {
       "source": "/k/:slug",
       "destination": "/api"
     },

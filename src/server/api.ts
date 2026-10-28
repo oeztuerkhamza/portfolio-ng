@@ -364,7 +364,9 @@ export async function menuPage(req: Request, res: Response) {
       const [tr] = await sql`select label from menu_tables where menu_id = ${row['id']} and token = ${t}`;
       if (tr) table = { label: String(tr['label']), token: t };
     }
-    return res.type('html').send(renderMenu(menu, origin(req), { lang: str(req.query['l'], 5) ?? undefined, table }));
+    // /m/<slug>/karte: die ganze Karte für Gäste außer Haus; /m/<slug>: die Seite am Tisch.
+    const view = /\/karte\/?$/.test(req.path) ? 'full' : undefined;
+    return res.type('html').send(renderMenu(menu, origin(req), { lang: str(req.query['l'], 5) ?? undefined, table, view }));
   } catch (err) {
     console.error('[m]', err);
     return res.redirect(302, '/');
