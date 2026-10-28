@@ -134,6 +134,8 @@ export interface MenuData {
   steps?: string;
   /** Instagram-Konto des Hauses, https; erscheint unter dem Knopf „Schritt für Schritt" und am Ende der Auswahl. */
   instagramUrl?: string;
+  /** Begrüßung auf der Seite am Tisch, je Sprache: erste Zeile Überschrift, der Rest der Text. */
+  welcome?: Partial<Record<MenuLang, string>>;
   /** true: auf der Seite steht nur der Knopf Schritt für Schritt; die ganze Liste gibt es nur ohne JavaScript (noscript). Braucht `steps`. */
   stepsOnly?: boolean;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
@@ -152,7 +154,7 @@ export type MenuLang = (typeof MENU_LANGS)[number];
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
 export type MenuTheme = (typeof MENU_THEMES)[number];
 
-export const STEP_KINDS = ['start', 'salad', 'main', 'dessert', 'drinks', 'soft', 'alc', 'beer', 'wine', 'spirits'] as const;
+export const STEP_KINDS = ['lunch', 'start', 'salad', 'main', 'dessert', 'drinks', 'soft', 'alc', 'beer', 'wine', 'spirits'] as const;
 export type StepKind = (typeof STEP_KINDS)[number];
 
 /** Getränkeschritte: gibt es mehrere Arten, fragt der Assistent zuerst, was man trinken möchte. */
@@ -285,6 +287,15 @@ export function menuData(input: unknown): MenuData | null {
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     instagramUrl: httpsUrl(d['instagramUrl']) ?? undefined,
     stepsOnly: d['stepsOnly'] === true ? true : undefined,
+    welcome: (() => {
+      const w = (d['welcome'] && typeof d['welcome'] === 'object' ? d['welcome'] : {}) as Record<string, unknown>;
+      const out: Partial<Record<MenuLang, string>> = {};
+      for (const l of MENU_LANGS) {
+        const v = text(w[l], 600);
+        if (v) out[l] = v;
+      }
+      return Object.keys(out).length ? out : undefined;
+    })(),
     creditsUrl: httpsUrl(d['creditsUrl']) ?? undefined,
     sections: d['sections'] === 'collapsed' ? 'collapsed' : undefined,
     steps: text(d['steps'], 200),
@@ -641,8 +652,12 @@ html.seen .intro,.intro.skip{display:none}
 .hero .orn{animation-delay:calc(var(--h) + .22s)}
 .hero .where{animation-delay:calc(var(--h) + .3s)}
 .hero .langs{animation-delay:calc(var(--h) + .38s)}
-.cta>*{animation-delay:calc(var(--h) + .5s)}
-.cta>.social{animation-delay:calc(var(--h) + .64s)}
+.welcome>*{animation:rise .9s cubic-bezier(.2,.8,.2,1) both}
+.wel-h{animation-delay:calc(var(--h) + .46s)!important;color:#7a1226}
+.wel-h::after{background:linear-gradient(90deg,transparent,#e3b44c,transparent);opacity:1;height:2px}
+.wel-t{animation-delay:calc(var(--h) + .58s)!important}
+.cta>*{animation-delay:calc(var(--h) + .72s)}
+.cta>.social{animation-delay:calc(var(--h) + .86s)}
 .foot{animation-delay:calc(var(--h) + .8s)}
 .orn i{animation:pulse 3.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{filter:drop-shadow(0 0 2px rgba(240,200,100,.4));transform:scale(1)}50%{filter:drop-shadow(0 0 12px rgba(255,220,130,.95));transform:scale(1.18)}}
@@ -661,7 +676,7 @@ html.seen .intro,.intro.skip{display:none}
 .dust i:nth-child(11){left:93%;animation-delay:8.1s;animation-duration:9.5s}
 .dust i:nth-child(12){left:4%;animation-delay:5s;width:3px;height:3px;animation-duration:12.5s}
 @keyframes dust{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:.95}70%{opacity:.7}100%{transform:translate(26px,-460px) scale(1.15);opacity:0}}
-@media (prefers-reduced-motion:reduce){.intro,.dust{display:none}.hero h1,.hero .tagline,.hero .orn,.hero .where,.hero .langs,.cta>*,.foot,.orn i{animation:none}}
+@media (prefers-reduced-motion:reduce){.intro,.dust{display:none}.welcome>*,.hero h1,.hero .tagline,.hero .orn,.hero .where,.hero .langs,.cta>*,.foot,.orn i{animation:none}}
 .btn,#wopen{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#b98322);border:1px solid #f4d98a;color:#4a0b17;font-weight:700;box-shadow:0 8px 22px -10px rgba(120,80,0,.7)}
 `,
   };
@@ -856,23 +871,23 @@ const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr:
 interface WizLabels { open: string; start: string; main: string; dessert: string; drinks: string; step: string; next: string; back: string; summary: string; show: string; empty: string; restart: string; close: string; total: string; add: string; remove: string; hint: string }
 
 /** Texte der Schritt-für-Schritt-Auswahl. {n} und {m} in `step` sind Schritt und Anzahl der Schritte. */
-interface WizExtra { start: string; salad: string; soft: string; alc: string; beer: string; wine: string; spirits: string; pick: string }
+interface WizExtra { open: string; lunch: string; start: string; salad: string; soft: string; alc: string; beer: string; wine: string; spirits: string; pick: string }
 /** Ab Oktober 2026: Salate und Getränke haben eigene Schritte; „start" heißt jetzt nur noch Vorspeisen. */
 const WIZ_EXTRA: Record<MenuLang, WizExtra> = {
-  de: { start: 'Vorspeisen', salad: 'Salate', soft: 'Alkoholfreie Getränke', alc: 'Alkoholische Getränke', beer: 'Bier', wine: 'Wein', spirits: 'Aperitif & Spirituosen', pick: 'Was möchten Sie trinken?' },
-  en: { start: 'Starters', salad: 'Salads', soft: 'Non-alcoholic drinks', alc: 'Alcoholic drinks', beer: 'Beer', wine: 'Wine', spirits: 'Aperitifs & spirits', pick: 'What would you like to drink?' },
-  fr: { start: 'Entrées', salad: 'Salades', soft: 'Boissons sans alcool', alc: 'Boissons alcoolisées', beer: 'Bière', wine: 'Vin', spirits: 'Apéritifs et spiritueux', pick: 'Que souhaitez-vous boire ?' },
-  tr: { start: 'Başlangıçlar', salad: 'Salatalar', soft: 'Alkolsüz içecekler', alc: 'Alkollü içecekler', beer: 'Bira', wine: 'Şarap', spirits: 'Aperitif ve sert içkiler', pick: 'Ne içmek istersiniz?' },
-  es: { start: 'Entrantes', salad: 'Ensaladas', soft: 'Bebidas sin alcohol', alc: 'Bebidas con alcohol', beer: 'Cerveza', wine: 'Vino', spirits: 'Aperitivos y licores', pick: '¿Qué le gustaría beber?' },
-  it: { start: 'Antipasti', salad: 'Insalate', soft: 'Bevande analcoliche', alc: 'Bevande alcoliche', beer: 'Birra', wine: 'Vino', spirits: 'Aperitivi e distillati', pick: 'Cosa desideri bere?' },
-  el: { start: 'Ορεκτικά', salad: 'Σαλάτες', soft: 'Μη αλκοολούχα ποτά', alc: 'Αλκοολούχα ποτά', beer: 'Μπίρα', wine: 'Κρασί', spirits: 'Απεριτίφ και αποστάγματα', pick: 'Τι θα θέλατε να πιείτε;' },
-  ar: { start: 'المقبلات', salad: 'السلطات', soft: 'مشروبات بدون كحول', alc: 'مشروبات كحولية', beer: 'البيرة', wine: 'النبيذ', spirits: 'الأبيريتيف والمشروبات الروحية', pick: 'ماذا تودّ أن تشرب؟' },
-  fa: { start: 'پیش‌غذاها', salad: 'سالادها', soft: 'نوشیدنی‌های بدون الکل', alc: 'نوشیدنی‌های الکلی', beer: 'آبجو', wine: 'شراب', spirits: 'آپریتیف و مشروبات تقطیری', pick: 'چه نوشیدنی می‌خواهید؟' },
-  hi: { start: 'स्टार्टर', salad: 'सलाद', soft: 'बिना अल्कोहल के पेय', alc: 'अल्कोहल वाले पेय', beer: 'बीयर', wine: 'वाइन', spirits: 'एपेरिटिफ़ और स्पिरिट्स', pick: 'आप क्या पीना चाहेंगे?' },
-  ru: { start: 'Закуски', salad: 'Салаты', soft: 'Безалкогольные напитки', alc: 'Алкогольные напитки', beer: 'Пиво', wine: 'Вино', spirits: 'Аперитивы и крепкие напитки', pick: 'Что вы хотите выпить?' },
-  zh: { start: '前菜', salad: '沙拉', soft: '无酒精饮料', alc: '含酒精饮料', beer: '啤酒', wine: '葡萄酒', spirits: '开胃酒与烈酒', pick: '您想喝点什么？' },
-  ko: { start: '전채', salad: '샐러드', soft: '무알코올 음료', alc: '알코올 음료', beer: '맥주', wine: '와인', spirits: '아페리티프 & 증류주', pick: '무엇을 드시겠어요?' },
-  ku: { start: 'Destpêk', salad: 'Selete', soft: 'Vexwarinên bê alkol', alc: 'Vexwarinên bi alkol', beer: 'Bîra', wine: 'Şerab', spirits: 'Aperîtîf û vexwarinên distîlkirî', pick: 'Hûn dixwazin çi vexwin?' },
+  de: { open: 'Menü', lunch: 'Mittagsmenü', start: 'Vorspeisen', salad: 'Salate', soft: 'Alkoholfreie Getränke', alc: 'Alkoholische Getränke', beer: 'Bier', wine: 'Wein', spirits: 'Aperitif & Spirituosen', pick: 'Was möchten Sie trinken?' },
+  en: { open: 'Menu', lunch: 'Lunch menu', start: 'Starters', salad: 'Salads', soft: 'Non-alcoholic drinks', alc: 'Alcoholic drinks', beer: 'Beer', wine: 'Wine', spirits: 'Aperitifs & spirits', pick: 'What would you like to drink?' },
+  fr: { open: 'Menu', lunch: 'Menu du midi', start: 'Entrées', salad: 'Salades', soft: 'Boissons sans alcool', alc: 'Boissons alcoolisées', beer: 'Bière', wine: 'Vin', spirits: 'Apéritifs et spiritueux', pick: 'Que souhaitez-vous boire ?' },
+  tr: { open: 'Menü', lunch: 'Öğle menüsü', start: 'Başlangıçlar', salad: 'Salatalar', soft: 'Alkolsüz içecekler', alc: 'Alkollü içecekler', beer: 'Bira', wine: 'Şarap', spirits: 'Aperitif ve sert içkiler', pick: 'Ne içmek istersiniz?' },
+  es: { open: 'Menú', lunch: 'Menú del mediodía', start: 'Entrantes', salad: 'Ensaladas', soft: 'Bebidas sin alcohol', alc: 'Bebidas con alcohol', beer: 'Cerveza', wine: 'Vino', spirits: 'Aperitivos y licores', pick: '¿Qué le gustaría beber?' },
+  it: { open: 'Menu', lunch: 'Menu di mezzogiorno', start: 'Antipasti', salad: 'Insalate', soft: 'Bevande analcoliche', alc: 'Bevande alcoliche', beer: 'Birra', wine: 'Vino', spirits: 'Aperitivi e distillati', pick: 'Cosa desideri bere?' },
+  el: { open: 'Μενού', lunch: 'Μενού μεσημεριού', start: 'Ορεκτικά', salad: 'Σαλάτες', soft: 'Μη αλκοολούχα ποτά', alc: 'Αλκοολούχα ποτά', beer: 'Μπίρα', wine: 'Κρασί', spirits: 'Απεριτίφ και αποστάγματα', pick: 'Τι θα θέλατε να πιείτε;' },
+  ar: { open: 'القائمة', lunch: 'قائمة الغداء', start: 'المقبلات', salad: 'السلطات', soft: 'مشروبات بدون كحول', alc: 'مشروبات كحولية', beer: 'البيرة', wine: 'النبيذ', spirits: 'الأبيريتيف والمشروبات الروحية', pick: 'ماذا تودّ أن تشرب؟' },
+  fa: { open: 'منو', lunch: 'منوی ظهر', start: 'پیش‌غذاها', salad: 'سالادها', soft: 'نوشیدنی‌های بدون الکل', alc: 'نوشیدنی‌های الکلی', beer: 'آبجو', wine: 'شراب', spirits: 'آپریتیف و مشروبات تقطیری', pick: 'چه نوشیدنی می‌خواهید؟' },
+  hi: { open: 'मेनू', lunch: 'दोपहर का मेनू', start: 'स्टार्टर', salad: 'सलाद', soft: 'बिना अल्कोहल के पेय', alc: 'अल्कोहल वाले पेय', beer: 'बीयर', wine: 'वाइन', spirits: 'एपेरिटिफ़ और स्पिरिट्स', pick: 'आप क्या पीना चाहेंगे?' },
+  ru: { open: 'Меню', lunch: 'Обеденное меню', start: 'Закуски', salad: 'Салаты', soft: 'Безалкогольные напитки', alc: 'Алкогольные напитки', beer: 'Пиво', wine: 'Вино', spirits: 'Аперитивы и крепкие напитки', pick: 'Что вы хотите выпить?' },
+  zh: { open: '菜单', lunch: '午间套餐', start: '前菜', salad: '沙拉', soft: '无酒精饮料', alc: '含酒精饮料', beer: '啤酒', wine: '葡萄酒', spirits: '开胃酒与烈酒', pick: '您想喝点什么？' },
+  ko: { open: '메뉴', lunch: '점심 메뉴', start: '전채', salad: '샐러드', soft: '무알코올 음료', alc: '알코올 음료', beer: '맥주', wine: '와인', spirits: '아페리티프 & 증류주', pick: '무엇을 드시겠어요?' },
+  ku: { open: 'Menû', lunch: 'Menûya nîvro', start: 'Destpêk', salad: 'Selete', soft: 'Vexwarinên bê alkol', alc: 'Vexwarinên bi alkol', beer: 'Bîra', wine: 'Şerab', spirits: 'Aperîtîf û vexwarinên distîlkirî', pick: 'Hûn dixwazin çi vexwin?' },
 };
 
 const WIZ_LABELS: Record<MenuLang, WizLabels> = {
@@ -948,7 +963,11 @@ details.wcat .wi:last-child{border-bottom:0}
 .wchoice small{display:block;margin-top:3px;color:${t.dim};font:italic 400 .85rem/1.3 ${SERIF}}
 .cta{margin:18px 0 0}
 .cta.only{margin:26px 0 8px}
-.cta.only #wopen{padding:22px 18px;font-size:1.2rem;border-radius:22px}
+.cta.only #wopen{padding:20px 18px;border-radius:22px;font:600 1.55rem/1 ${SERIF};letter-spacing:.32em;text-transform:uppercase;padding-left:calc(18px + .32em)}
+.welcome{margin:30px 6px 4px;text-align:center}
+.wel-h{margin:0;font:600 clamp(1.45rem,6.4vw,1.85rem)/1.2 ${SERIF};color:${t.accent};letter-spacing:.01em}
+.wel-h::after{content:"";display:block;width:84px;height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,${t.accent},transparent);opacity:.6}
+.wel-t{margin:12px auto 0;max-width:30em;color:${t.dim};font:italic 400 1.02rem/1.6 ${SERIF}}
 .cta #wopen{margin:0}
 .social{display:flex;gap:10px;margin:10px 0 0}
 .social .btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin:0;padding:11px 10px;font-size:.9rem;text-align:center;text-decoration:none}
@@ -1219,7 +1238,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
       : '';
   const localized = localize(d, lang);
   const full = opts.view === 'full';
-  const steps = full ? [] : parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length));
+  const steps = full ? [] : parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length && openAt(d.categories[ci]!.hours)));
   const wizard = steps.length
     ? `<div id="wiz" hidden role="dialog" aria-modal="true" aria-label="${esc(wl.open)}">
 <div class="wh"><button type="button" class="wx" id="wx" aria-label="${esc(wl.close)}">×</button><p class="wpr" id="wpr"></p><h3 id="wtt"></h3><div class="wdots" id="wdots"></div></div>
@@ -1296,6 +1315,11 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const stepsOnly = !!d.stepsOnly && !!wizard;
   // Das Theme „orient" bekommt den animierten Eingang (Palasttüren, Goldstaub).
   const grand = menu.theme === 'orient';
+  const welcomeText = full ? undefined : (d.welcome?.[lang] ?? d.welcome?.[menu.lang]);
+  const [welcomeHead, ...welcomeRest] = (welcomeText ?? '').split(/\r?\n/);
+  const welcomeHtml = welcomeText
+    ? `<div class="welcome"><p class="wel-h">${esc(welcomeHead!.trim())}</p>${welcomeRest.join(' ').trim() ? `<p class="wel-t">${esc(welcomeRest.join(' ').trim())}</p>` : ''}</div>`
+    : '';
   const navHtml = cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : '';
 
   return `<!doctype html>
@@ -1322,6 +1346,7 @@ ${offered.length > 1 ? `<nav class="langs" aria-label="Language">${offered.map((
 ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p>` : ''}
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
+${welcomeHtml}
 ${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${social}</div>` : ''}
 ${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${navHtml}
 ${filtersUi}

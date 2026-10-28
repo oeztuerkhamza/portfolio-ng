@@ -162,7 +162,7 @@ describe('renderMenu', () => {
     assert.deepEqual(parseSteps(undefined, 3), []);
     assert.ok(!renderMenu(menu()).includes('id="wiz"'));
     const html = renderMenu(menu({ steps: 'start:1; main:2' }), 'https://breisgaudigital.de');
-    assert.ok(html.includes('<button type="button" class="btn" id="wopen" hidden>Schritt für Schritt wählen</button>'));
+    assert.ok(html.includes('<button type="button" class="btn" id="wopen" hidden>Menü</button>'));
     assert.ok(html.includes('data-t="Vorspeisen"') && html.includes('data-t="Hauptgerichte"') && html.includes('data-t="Ihre Auswahl"'));
     assert.equal(html.split('class="wi"').length - 1, 4);
     assert.ok(html.includes('data-c="650" data-p="6,50"'));
@@ -549,5 +549,31 @@ describe('Zwei Seiten: am Tisch und die ganze Karte', () => {
     assert.ok(html.includes('<section') && html.includes('class="nav"'));
     assert.ok(!html.includes('<noscript>'));
     assert.ok(html.includes('class="actions"') && html.includes('href="tel:07612927151"'));
+  });
+});
+
+describe('Begrüßung und Mittagsmenü als erster Schritt', () => {
+  const cat = (title: string, extra: object = {}) => ({ title, ...extra, items: [{ name: `${title} 1`, price: '4,00' }] });
+  const data = menuData({
+    name: 'X',
+    stepsOnly: true,
+    steps: 'lunch:1; start:2; soft:3',
+    translations: { en: ['# Lunch', 'Lunch 1', '', '# Starters', 'Starter 1', '', '# Soft', 'Soft 1'].join('\n') },
+    welcome: { de: 'Willkommen am Feuer.\nAm offenen Grill.', en: 'Welcome to the fire.\nAt the open grill.' },
+    categories: [cat('Mittagsmenü', { hours: '00:00-23:59' }), cat('Vorspeisen'), cat('Softdrinks')],
+  })!;
+  const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+  test('Begrüßung je Sprache über dem Knopf, nicht auf der ganzen Karte', () => {
+    const de = renderMenu(m, 'https://breisgaudigital.de');
+    assert.ok(de.includes('<p class="wel-h">Willkommen am Feuer.</p><p class="wel-t">Am offenen Grill.</p>'));
+    assert.ok(de.indexOf('class="welcome"') < de.indexOf('class="cta only"'));
+    assert.ok(renderMenu(m, 'https://breisgaudigital.de', { lang: 'en' } as never).includes('Welcome to the fire.'));
+    assert.ok(!renderMenu(m, 'https://breisgaudigital.de', { view: 'full' }).includes('class="welcome"'));
+  });
+  test('Mittagsmenü ist der erste Schritt, solange es offen ist; sonst fällt der Schritt weg', () => {
+    const open = renderMenu(m, 'https://breisgaudigital.de');
+    assert.ok(open.includes('data-k="lunch"') && open.indexOf('data-k="lunch"') < open.indexOf('data-k="start"'));
+    const closedData = { ...data, categories: data.categories.map((c, i) => (i === 0 ? { ...c, hours: openAt('00:00-00:01') ? '12:00-12:01' : '00:00-00:01' } : c)) };
+    assert.ok(!renderMenu({ ...m, data: closedData }, 'https://breisgaudigital.de').includes('data-k="lunch"'));
   });
 });
