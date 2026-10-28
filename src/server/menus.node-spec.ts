@@ -448,8 +448,10 @@ describe('Assistent: Salate, Getränkewahl, Konten, Euro', () => {
   test('ohne Getränkewahl, wenn es nur eine Getränkeart gibt', () => {
     assert.ok(!renderMenu({ ...m, data: { ...data, steps: 'start:1; soft:4' } }, 'https://breisgaudigital.de').includes('data-k="pick"'));
   });
-  test('Listen im Assistenten starten zu, Gerichtfoto groß', () => {
-    assert.ok(!/<details class="wcat[^>]*\sopen/.test(de));
+  test('Listen im Assistenten starten zu, nur eine einzige Rubrik im Schritt ist offen; Gerichtfoto groß', () => {
+    assert.equal((de.match(/<details class="wcat[^>]*\sopen/g) ?? []).length, 5); // jeder Schritt der Testkarte hat genau eine Rubrik
+    const two = renderMenu({ ...m, data: { ...data, steps: 'start:1-2' } }, 'https://breisgaudigital.de');
+    assert.ok(!/<details class="wcat[^>]*\sopen/.test(two));
     assert.ok(de.includes('class="wph"'));
   });
   test('Preise mit Euro-Zeichen, Sonderformen bleiben', () => {

@@ -1151,12 +1151,12 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
                   .map((k) => `<button type="button" class="wchoice" data-go="${k}">${esc(wl[k])}${lang !== 'de' ? `<small lang="de" dir="ltr">${esc(wlDe[k])}</small>` : ''}</button>`)
                   .join('')}</div>`
               : '';
-          return `${pick}<div class="wstep" data-k="${st.kind}" data-t="${esc(wl[st.kind])}" data-td="${esc(wlDe[st.kind])}" hidden>${st.cats
-            .filter((ci) => localized[ci]?.items.length)
+          const shown = st.cats.filter((ci) => localized[ci]?.items.length);
+          return `${pick}<div class="wstep" data-k="${st.kind}" data-t="${esc(wl[st.kind])}" data-td="${esc(wlDe[st.kind])}" hidden>${shown
             .map((ci) => {
               const c = localized[ci]!;
               const o = d.categories[ci]!;
-              return `<details class="wcat${isClosed(o) ? ' closed' : ''}"${inHours(o)}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>${c.items
+              return `<details class="wcat${isClosed(o) ? ' closed' : ''}"${inHours(o)}${shown.length === 1 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>${c.items
                 .map((it, j) => {
                   const oi = o.items[j]!;
                   const photo = httpsUrl(it.img);
