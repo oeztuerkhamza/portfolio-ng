@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, test } from 'node:test';
-import { ALLERGENS, buildOrder, hoursSpec, openAt, parseSteps, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
+import { ALLERGENS, buildOrder, hoursSpec, openAt, priceText, parseSteps, parseTags, tagsText, demoMenu, localize, menuData, menuText, newTableToken, parseMenuText, priceCents, renderMenu, type Menu } from './menus';
 
 /**
  * Tests der Kunden-Speisekarten (/m/<slug>). Der Inhalt kommt aus der
@@ -163,9 +163,9 @@ describe('renderMenu', () => {
     assert.ok(!renderMenu(menu()).includes('id="wiz"'));
     const html = renderMenu(menu({ steps: 'start:1; main:2' }), 'https://breisgaudigital.de');
     assert.ok(html.includes('<button type="button" class="btn" id="wopen" hidden>Schritt für Schritt wählen</button>'));
-    assert.ok(html.includes('data-t="Vorspeisen &amp; Salate"') && html.includes('data-t="Hauptgerichte"') && html.includes('data-t="Ihre Auswahl"'));
+    assert.ok(html.includes('data-t="Vorspeisen"') && html.includes('data-t="Hauptgerichte"') && html.includes('data-t="Ihre Auswahl"'));
     assert.equal(html.split('class="wi"').length - 1, 4);
-    assert.ok(html.includes('data-n="Tomatensuppe" data-c="650"'));
+    assert.ok(html.includes('data-c="650" data-p="6,50"'));
     assert.ok(!html.includes('id="wsend"'));
   });
 
@@ -417,5 +417,58 @@ describe('Rubrik mit Zeitraum (Mittagsmenü)', () => {
     assert.ok(html.includes('data-hrs="11:30-16:00"'));
     assert.ok(html.includes('Europe/Berlin'));
     assert.ok(!renderMenu({ ...m, data: menuData({ name: 'X', categories: [{ title: 'Abend', items: [{ name: 'Suppe' }] }] })! }, 'https://breisgaudigital.de').includes('Europe/Berlin'));
+  });
+});
+
+describe('Assistent: Salate, Getränkewahl, Konten, Euro', () => {
+  const data = menuData({
+    name: 'X',
+    instagramUrl: 'https://www.instagram.com/divanfreiburg/',
+    reviewUrl: 'https://www.google.com/search?q=x',
+    steps: 'start:1; salad:2; main:3; soft:4; alc:5',
+    translations: { en: ['# Starters', 'Soup', '', '# Salads', 'Green', '', '# Mains', 'Schnitzel', '', '# Soft', 'Water', '', '# Wine', 'Red wine'].join('\n') },
+    categories: [
+      { title: 'Vorspeisen', items: [{ name: 'Suppe', price: '5,00' }] },
+      { title: 'Salate', items: [{ name: 'Grün', price: '4,50', img: 'https://x.de/g.jpg' }] },
+      { title: 'Hauptgerichte', items: [{ name: 'Schnitzel', num: '12', price: '9,90' }] },
+      { title: 'Alkoholfrei', items: [{ name: 'Wasser', price: '3,00' }] },
+      { title: 'Wein', items: [{ name: 'Rotwein', price: '0,25 l 6,00' }] },
+    ],
+  })!;
+  const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+  const de = renderMenu(m, 'https://breisgaudigital.de');
+  const en = renderMenu(m, 'https://breisgaudigital.de', { lang: 'en' } as never);
+
+  test('eigene Schritte für Salate und für alkoholfrei/alkoholisch, davor die Frage', () => {
+    for (const k of ['start', 'salad', 'main', 'pick', 'soft', 'alc', 'sum']) assert.ok(de.includes(`data-k="${k}"`), k);
+    assert.ok(de.includes('data-t="Was möchten Sie trinken?"'));
+    assert.ok(de.includes('class="wchoice" data-go="soft"') && de.includes('class="wchoice" data-go="alc"'));
+    assert.ok(de.indexOf('data-k="pick"') < de.indexOf('data-k="soft"'));
+  });
+  test('ohne Getränkewahl, wenn es nur eine Getränkeart gibt', () => {
+    assert.ok(!renderMenu({ ...m, data: { ...data, steps: 'start:1; soft:4' } }, 'https://breisgaudigital.de').includes('data-k="pick"'));
+  });
+  test('Listen im Assistenten starten zu, Gerichtfoto groß', () => {
+    assert.ok(!/<details class="wcat[^>]*\sopen/.test(de));
+    assert.ok(de.includes('class="wph"'));
+  });
+  test('Preise mit Euro-Zeichen, Sonderformen bleiben', () => {
+    assert.equal(priceText('10,90'), '10,90 €');
+    assert.equal(priceText('0,25 l 6,00'), '0,25 l 6,00');
+    assert.equal(priceText('10,90 €'), '10,90 €');
+    assert.ok(de.includes('<span class="price">9,90 €</span>') && de.includes('<span class="wp">9,90 €</span>'));
+  });
+  test('Auswahl-Seite trägt die deutschen Namen und Titel mit', () => {
+    assert.ok(en.includes('data-tn="Green"') && en.includes('data-n="Grün"'));
+    assert.ok(en.includes('<p class="wsub" lang="de" dir="ltr">Ihre Auswahl</p>'));
+    assert.ok(en.includes('id="wshowde"'));
+    assert.ok(!de.includes('id="wshowde"'));
+    assert.ok(en.includes('data-td="Salate"'));
+  });
+  test('Instagram und Google-Bewertung unter dem Knopf und am Ende der Auswahl', () => {
+    assert.equal(de.split('class="social"').length - 1, 2);
+    assert.ok(de.indexOf('class="cta"') < de.indexOf('class="nav"'));
+    assert.ok(de.includes('href="https://www.instagram.com/divanfreiburg/"') && de.includes('@divanfreiburg'));
+    assert.ok(de.includes('href="https://www.google.com/search?q=x"'));
   });
 });

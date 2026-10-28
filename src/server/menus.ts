@@ -128,9 +128,12 @@ export interface MenuData {
   sections?: 'collapsed';
   /**
    * Schritt-für-Schritt-Auswahl: welche Rubriken (Nummern ab 1, in Kartenreihenfolge) in welchen Schritt
-   * gehören, z. B. „start:1-2; main:3-15; dessert:16; drinks:17-24". Fehlt es, gibt es keinen Assistenten.
+   * gehören, z. B. „start:2; salad:3; main:1,4-16; dessert:17; soft:18-20; alc:21-26". Fehlt es, gibt es keinen
+   * Assistenten. Gibt es „soft" und „alc", fragt der Assistent vor den Getränken, was man trinken möchte.
    */
   steps?: string;
+  /** Instagram-Konto des Hauses, https; erscheint unter dem Knopf „Schritt für Schritt" und am Ende der Auswahl. */
+  instagramUrl?: string;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
   translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
@@ -147,7 +150,7 @@ export type MenuLang = (typeof MENU_LANGS)[number];
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
 export type MenuTheme = (typeof MENU_THEMES)[number];
 
-export const STEP_KINDS = ['start', 'main', 'dessert', 'drinks'] as const;
+export const STEP_KINDS = ['start', 'salad', 'main', 'dessert', 'drinks', 'soft', 'alc'] as const;
 export type StepKind = (typeof STEP_KINDS)[number];
 
 /**
@@ -275,6 +278,7 @@ export function menuData(input: unknown): MenuData | null {
     address: text(d['address'], 200),
     footnote: text(d['footnote'], 600),
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
+    instagramUrl: httpsUrl(d['instagramUrl']) ?? undefined,
     creditsUrl: httpsUrl(d['creditsUrl']) ?? undefined,
     sections: d['sections'] === 'collapsed' ? 'collapsed' : undefined,
     steps: text(d['steps'], 200),
@@ -324,6 +328,9 @@ export interface OrderLine {
   price?: string;
   qty: number;
 }
+
+/** „10,90" → „10,90 €"; Preise in anderer Schreibweise („ab 12", „0,3 l 4,20") bleiben, wie sie stehen. */
+export const priceText = (price: string): string => (priceCents(price) === null || /€/.test(price) ? price : `${price.trim()} €`);
 
 /** „21,90" → 2190. Preise in anderer Form („ab 12", „0,3 l 4,20") ergeben null. */
 export function priceCents(price: string | undefined): number | null {
@@ -637,7 +644,7 @@ details.cat[open]>summary .cnt{display:none}
 details.cat>ul{margin-top:0;padding-bottom:10px}
 details.cat>.note{margin-top:-6px}
 details.cat.card{border:0;margin:12px 0}
-details.cat.card>summary{position:relative;overflow:hidden;min-height:108px;padding:16px 18px;align-items:flex-end;border-radius:16px;
+details.cat.card>summary{position:relative;overflow:hidden;min-height:150px;padding:16px 18px;align-items:flex-end;border-radius:16px;
   background:linear-gradient(160deg,${t.heroA},${t.heroB});color:${t.heroInk};box-shadow:0 10px 24px -14px rgba(0,0,0,.55)}
 details.cat.card[open]>summary{border-radius:16px 16px 0 0}
 .ci{position:absolute;inset:0;z-index:0}
@@ -777,6 +784,25 @@ const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr:
 interface WizLabels { open: string; start: string; main: string; dessert: string; drinks: string; step: string; next: string; back: string; summary: string; show: string; empty: string; restart: string; close: string; total: string; add: string; remove: string; hint: string }
 
 /** Texte der Schritt-für-Schritt-Auswahl. {n} und {m} in `step` sind Schritt und Anzahl der Schritte. */
+interface WizExtra { start: string; salad: string; soft: string; alc: string; pick: string }
+/** Ab Oktober 2026: Salate und Getränke haben eigene Schritte; „start" heißt jetzt nur noch Vorspeisen. */
+const WIZ_EXTRA: Record<MenuLang, WizExtra> = {
+  de: { start: 'Vorspeisen', salad: 'Salate', soft: 'Alkoholfreie Getränke', alc: 'Alkoholische Getränke', pick: 'Was möchten Sie trinken?' },
+  en: { start: 'Starters', salad: 'Salads', soft: 'Non-alcoholic drinks', alc: 'Alcoholic drinks', pick: 'What would you like to drink?' },
+  fr: { start: 'Entrées', salad: 'Salades', soft: 'Boissons sans alcool', alc: 'Boissons alcoolisées', pick: 'Que souhaitez-vous boire ?' },
+  tr: { start: 'Başlangıçlar', salad: 'Salatalar', soft: 'Alkolsüz içecekler', alc: 'Alkollü içecekler', pick: 'Ne içmek istersiniz?' },
+  es: { start: 'Entrantes', salad: 'Ensaladas', soft: 'Bebidas sin alcohol', alc: 'Bebidas con alcohol', pick: '¿Qué le gustaría beber?' },
+  it: { start: 'Antipasti', salad: 'Insalate', soft: 'Bevande analcoliche', alc: 'Bevande alcoliche', pick: 'Cosa desideri bere?' },
+  el: { start: 'Ορεκτικά', salad: 'Σαλάτες', soft: 'Μη αλκοολούχα ποτά', alc: 'Αλκοολούχα ποτά', pick: 'Τι θα θέλατε να πιείτε;' },
+  ar: { start: 'المقبلات', salad: 'السلطات', soft: 'مشروبات بدون كحول', alc: 'مشروبات كحولية', pick: 'ماذا تودّ أن تشرب؟' },
+  fa: { start: 'پیش‌غذاها', salad: 'سالادها', soft: 'نوشیدنی‌های بدون الکل', alc: 'نوشیدنی‌های الکلی', pick: 'چه نوشیدنی می‌خواهید؟' },
+  hi: { start: 'स्टार्टर', salad: 'सलाद', soft: 'बिना अल्कोहल के पेय', alc: 'अल्कोहल वाले पेय', pick: 'आप क्या पीना चाहेंगे?' },
+  ru: { start: 'Закуски', salad: 'Салаты', soft: 'Безалкогольные напитки', alc: 'Алкогольные напитки', pick: 'Что вы хотите выпить?' },
+  zh: { start: '前菜', salad: '沙拉', soft: '无酒精饮料', alc: '含酒精饮料', pick: '您想喝点什么？' },
+  ko: { start: '전채', salad: '샐러드', soft: '무알코올 음료', alc: '알코올 음료', pick: '무엇을 드시겠어요?' },
+  ku: { start: 'Destpêk', salad: 'Selete', soft: 'Vexwarinên bê alkol', alc: 'Vexwarinên bi alkol', pick: 'Hûn dixwazin çi vexwin?' },
+};
+
 const WIZ_LABELS: Record<MenuLang, WizLabels> = {
   de: { open: 'Schritt für Schritt wählen', start: 'Vorspeisen & Salate', main: 'Hauptgerichte', dessert: 'Dessert', drinks: 'Getränke', step: 'Schritt {n} von {m}', next: 'Weiter', back: 'Zurück', summary: 'Ihre Auswahl', show: 'Zeigen Sie diese Liste einfach dem Service – wir nehmen Ihre Bestellung gern auf.', empty: 'Noch nichts ausgewählt.', restart: 'Neu beginnen', close: 'Zur Speisekarte', total: 'Summe', add: 'Mehr', remove: 'Weniger', hint: 'Nichts dabei? Einfach weiter.' },
   en: { open: 'Choose step by step', start: 'Starters & salads', main: 'Main courses', dessert: 'Dessert', drinks: 'Drinks', step: 'Step {n} of {m}', next: 'Next', back: 'Back', summary: 'Your selection', show: 'Simply show this list to our staff – we will gladly take your order.', empty: 'Nothing selected yet.', restart: 'Start over', close: 'Back to the menu', total: 'Total', add: 'More', remove: 'Less', hint: 'Nothing for you here? Just continue.' },
@@ -834,13 +860,26 @@ details.wcat{border-bottom:1px solid ${t.line}}
 details.wcat>summary{display:flex;align-items:center;gap:10px;padding:15px 0;cursor:pointer;list-style:none;-webkit-tap-highlight-color:transparent}
 details.wcat>summary::-webkit-details-marker{display:none}
 details.wcat>summary h4{flex:1;margin:0}
-.wci{flex:0 0 auto;width:46px;height:46px;overflow:hidden;border-radius:50%;border:1px solid ${t.line}}
+.wci{flex:0 0 auto;width:104px;height:72px;overflow:hidden;border-radius:14px;border:1px solid ${t.line}}
 .wci img{display:block;width:100%;height:100%;object-fit:cover}
 details.wcat>summary::after{content:"";flex:0 0 auto;width:7px;height:7px;margin:0 6px;border-right:2px solid ${t.accent};border-bottom:2px solid ${t.accent};transform:translateY(-2px) rotate(45deg);transition:transform .25s}
 details.wcat[open]>summary::after{transform:translateY(2px) rotate(-135deg)}
 details.wcat .wi:last-child{border-bottom:0}
 .wsel{flex:0 0 auto;min-width:1.6rem;padding:1px 8px;border-radius:999px;background:linear-gradient(135deg,${t.accent},${t.accent2});color:${t.onAccent};font-size:.74rem;font-weight:700;text-align:center}
 .wi{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid ${t.line}}
+.wi.has-img{flex-wrap:wrap;padding:14px 0}
+.wph{flex:0 0 100%;overflow:hidden;border-radius:16px;border:1px solid ${t.line}}
+.wph img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover}
+.wde{display:inline-block;margin-top:1px;color:${t.dim};font:italic 400 .8rem/1.3 ${SERIF}}
+.wsub{margin:14px 0 0;color:${t.dim};font:italic 400 .9rem/1.3 ${SERIF};text-align:center}
+.wchoice{display:block;width:100%;margin:16px 0 0;padding:26px 16px;border-radius:20px;border:1px solid ${t.line};background:${t.soft};color:${t.accent};font:600 1.2rem/1.3 ${SERIF};cursor:pointer}
+.wchoice small{display:block;margin-top:3px;color:${t.dim};font:italic 400 .85rem/1.3 ${SERIF}}
+.cta{margin:18px 0 0}
+.cta #wopen{margin:0}
+.social{display:flex;gap:10px;margin:10px 0 0}
+.social .btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin:0;padding:11px 10px;font-size:.9rem;text-align:center;text-decoration:none}
+.social .btn small{font-size:.72rem;font-weight:500;opacity:.8}
+.wsum .social{margin-top:22px}
 .wt{flex:1;min-width:0}
 .wn{display:block;font:600 1rem/1.3 ${SERIF}}
 .wd{display:block;margin-top:2px;color:${t.dim};font-size:.8rem;line-height:1.35}
@@ -935,8 +974,11 @@ $('send').addEventListener('click',function(){
  * Tisch) schickt „Bestellen" die Liste an /api/menu-order; Namen und Preise prüft dort der Server.
  */
 const WIZ_SCRIPT = `(function(){var w=document.getElementById('wiz'),o=document.getElementById('wopen');if(!w||!o)return;
-var cfg=JSON.parse(document.getElementById('wc').textContent),L=cfg.l,q={},cur=0,$=function(i){return document.getElementById(i)};
-var st=[].slice.call(w.querySelectorAll('.wstep')),items=[].slice.call(w.querySelectorAll('.wi'));
+var cfg=JSON.parse(document.getElementById('wc').textContent),L=cfg.l,q={},cur=0,hist=[],$=function(i){return document.getElementById(i)};
+var st=[].slice.call(w.querySelectorAll('.wstep')),items=[].slice.call(w.querySelectorAll('.wi')),kinds=st.map(function(s){return s.getAttribute('data-k')}),sumI=st.length-1;
+var pickI=kinds.indexOf('pick'),nums=[],cnt=0;
+kinds.forEach(function(x,j){var dr=x==='soft'||x==='alc',pd=j>0&&(kinds[j-1]==='soft'||kinds[j-1]==='alc');if(dr&&pickI>-1&&pd)nums.push(nums[j-1]);else nums.push(++cnt)});
+function nextOf(j){var x=kinds[j];return pickI>-1&&(x==='soft'||x==='alc')?sumI:j+1}
 var fmt=function(c){return (c/100).toFixed(2).replace('.',',')+' €'};
 try{q=JSON.parse(sessionStorage.getItem(cfg.k)||'{}')||{}}catch(e){q={}}
 function save(){try{sessionStorage.setItem(cfg.k,JSON.stringify(q))}catch(e){}}
@@ -948,26 +990,29 @@ it.querySelector('.wm').addEventListener('click',function(){if(q[n]){q[n]--;if(!
 function chosen(){return items.filter(function(it){return q[it.getAttribute('data-n')]})}
 function summary(){var box=$('wlist'),tot=0,known=true,any=false;box.textContent='';
 st.slice(0,-1).forEach(function(s){var rows=[].slice.call(s.querySelectorAll('.wi')).filter(function(it){return q[it.getAttribute('data-n')]});if(!rows.length)return;any=true;
-var h=document.createElement('h4');h.textContent=s.getAttribute('data-t');box.appendChild(h);
+var h=document.createElement('h4'),ht=s.getAttribute('data-t'),hd=s.getAttribute('data-td');h.textContent=hd&&hd!==ht?ht+' · '+hd:ht;box.appendChild(h);
 rows.forEach(function(it){var k=q[it.getAttribute('data-n')],c=it.getAttribute('data-c'),r=document.createElement('div'),a=document.createElement('span'),b=document.createElement('span');
-r.className='wl';a.textContent=k+' × '+it.querySelector('.wn').textContent;
+r.className='wl';var tn=it.getAttribute('data-tn'),on=it.getAttribute('data-n'),nu=it.getAttribute('data-num');a.textContent=k+' × '+(nu?nu+' ':'')+tn;
+if(tn!==on){var de=document.createElement('small');de.className='wde';de.textContent=on;a.appendChild(document.createElement('br'));a.appendChild(de)}
 if(c===''){known=false;b.textContent=it.getAttribute('data-p')}else{tot+=Number(c)*k;b.textContent=fmt(Number(c)*k)}
 r.appendChild(a);r.appendChild(b);box.appendChild(r)})});
 if(!any){var e=document.createElement('p');e.className='wempty';e.textContent=L.empty;box.appendChild(e)}
-$('wtot').hidden=!(any&&known);$('wtot').textContent=L.total+' '+fmt(tot);$('wshow').hidden=!any;$('wre').hidden=!any;
+$('wtot').hidden=!(any&&known);$('wtot').textContent=L.total+' '+fmt(tot);$('wshow').hidden=!any;var sd=$('wshowde');if(sd)sd.hidden=!any;$('wre').hidden=!any;
 if(cfg.o)$('wsend').disabled=!any}
-function show(i){cur=Math.max(0,Math.min(i,st.length-1));var last=cur===st.length-1;
+function show(i){cur=Math.max(0,Math.min(i,sumI));var last=cur===sumI,pk=kinds[cur]==='pick';
 st.forEach(function(s,j){s.hidden=j!==cur});$('wtt').textContent=st[cur].getAttribute('data-t');
-$('wpr').textContent=last?'':L.step.replace('{n}',cur+1).replace('{m}',st.length-1);
-[].forEach.call($('wdots').children,function(d,j){d.className=j<cur?'done':j===cur?'cur':''});
-$('wback').hidden=cur===0;$('wnext').hidden=last;$('wnext').textContent=cur===st.length-2?L.summary:L.next;
+$('wpr').textContent=last?'':L.step.replace('{n}',nums[cur]).replace('{m}',nums[sumI]-1);
+[].forEach.call($('wdots').children,function(d,j){var n=nums[cur]-1;d.className=j<n?'done':j===n?'cur':''});
+$('wback').hidden=hist.length===0;$('wnext').hidden=last||pk;$('wnext').textContent=nextOf(cur)===sumI?L.summary:L.next;
 if(last)summary();$('wb').scrollTop=0}
-st.forEach(function(){$('wdots').appendChild(document.createElement('i'))});
+function go(i){hist.push(cur);show(i)}
+for(var di=0;di<nums[sumI];di++)$('wdots').appendChild(document.createElement('i'));
+[].forEach.call(w.querySelectorAll('.wchoice'),function(b){b.addEventListener('click',function(){go(kinds.indexOf(b.getAttribute('data-go')))})});
 function close(){w.hidden=true;document.body.classList.remove('wiz-on');o.focus()}
-o.hidden=false;o.addEventListener('click',function(){w.hidden=false;document.body.classList.add('wiz-on');sync();show(cur)});
+o.hidden=false;o.addEventListener('click',function(){w.hidden=false;document.body.classList.add('wiz-on');sync();hist=[];show(0)});
 $('wx').addEventListener('click',close);document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!w.hidden)close()});
-$('wnext').addEventListener('click',function(){show(cur+1)});$('wback').addEventListener('click',function(){show(cur-1)});
-$('wre').addEventListener('click',function(){q={};save();sync();show(0)});
+$('wnext').addEventListener('click',function(){go(nextOf(cur))});$('wback').addEventListener('click',function(){show(hist.length?hist.pop():0)});
+$('wre').addEventListener('click',function(){q={};save();sync();hist=[];show(0)});
 if(cfg.o)$('wsend').addEventListener('click',function(){var list=chosen().map(function(it){var n=it.getAttribute('data-n');return{name:n,qty:q[n]}});if(!list.length)return;
 $('wsend').disabled=true;$('wmsg').textContent='';
 fetch('/api/menu-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:cfg.o.slug,t:cfg.o.t,items:list,note:$('wnote').value})})
@@ -1057,7 +1102,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
       : '';
 
   // Bei Getränken steht unter dem übersetzten Namen der Originalname, damit das Servicepersonal ihn versteht.
-  const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks').flatMap((st) => st.cats));
+  const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks' || st.kind === 'soft' || st.kind === 'alc').flatMap((st) => st.cats));
   const origName = (ci: number, it: MenuItem, o: MenuItem) => (drinkCats.has(ci) && it.name !== o.name ? `<p class="orig" lang="${menu.lang}" dir="ltr">${esc(o.name)}</p>` : '');
   const inHours = (c: MenuCategory) => (c.hours ? ` data-hrs="${esc(c.hours)}"` : '');
   const isClosed = (c: MenuCategory) => !openAt(c.hours);
@@ -1075,42 +1120,57 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
             ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
           const img = httpsUrl(it.img);
-          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(it.price)}</span>` : ''}${add}</div>${origName(i, it, o)}${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
+          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(priceText(it.price))}</span>` : ''}${add}</div>${origName(i, it, o)}${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
         })
         .join('')}</ul>${fold ? '</details>' : ''}</section>`,
     )
     .join('\n');
 
   // Schritt-für-Schritt-Auswahl: dieselben Gerichte wie auf der Karte, je Schritt mit Zähler.
-  const wl = WIZ_LABELS[lang];
+  const wl = { ...WIZ_LABELS[lang], ...WIZ_EXTRA[lang] };
+  const wlDe = { ...WIZ_LABELS.de, ...WIZ_EXTRA.de };
+  const insta = httpsUrl(d.instagramUrl);
+  const handle = insta ? /instagram\.com\/([^/?#]+)/i.exec(insta)?.[1] : undefined;
+  const reviewHref = httpsUrl(d.reviewUrl);
+  const social =
+    insta || reviewHref
+      ? `<div class="social">${insta ? `<a class="btn" href="${esc(insta)}" rel="noopener">Instagram${handle ? `<small dir="ltr">@${esc(handle)}</small>` : ''}</a>` : ''}${reviewHref ? `<a class="btn" href="${esc(reviewHref)}" rel="noopener">${esc(l.review)}</a>` : ''}</div>`
+      : '';
   const localized = localize(d, lang);
   const steps = parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length));
   const wizard = steps.length
     ? `<div id="wiz" hidden role="dialog" aria-modal="true" aria-label="${esc(wl.open)}">
 <div class="wh"><button type="button" class="wx" id="wx" aria-label="${esc(wl.close)}">×</button><p class="wpr" id="wpr"></p><h3 id="wtt"></h3><div class="wdots" id="wdots"></div></div>
 <div class="wb" id="wb">${steps
-        .map(
-          (st) =>
-            `<div class="wstep" data-t="${esc(wl[st.kind])}" hidden>${st.cats
-              .filter((ci) => localized[ci]?.items.length)
-              .map((ci, k, all) => {
-                const c = localized[ci]!;
-                const o = d.categories[ci]!;
-                const many = all.length > 1;
-                return `${many ? `<details class="wcat${isClosed(o) ? ' closed' : ''}"${inHours(o)}${k === 0 ? ' open' : ''}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>` : `<h4>${esc(c.title)}</h4>`}${c.items
-                  .map((it, j) => {
-                    const oi = o.items[j]!;
-                    return `<div class="wi" data-n="${esc(oi.name)}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}"><div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${st.kind === 'drinks' && it.name !== oi.name ? `<span class="wd" lang="${menu.lang}" dir="ltr">${esc(oi.name)}</span>` : ''}${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(oi.price)}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
-                  })
-                  .join('')}${many ? '</details>' : ''}`;
-              })
-              .join('')}<p class="whint">${esc(wl.hint)}</p></div>`,
-        )
-        .join('')}<div class="wstep wsum" data-t="${esc(wl.summary)}" hidden><div id="wlist"></div><p class="wtot" id="wtot" hidden></p><p class="wshow" id="wshow">${esc(wl.show)}</p>${
+        .map((st, si) => {
+          const drinkKind = st.kind === 'soft' || st.kind === 'alc';
+          const firstDrink = steps.findIndex((x) => x.kind === 'soft' || x.kind === 'alc');
+          const pick =
+            si === firstDrink && steps.some((x) => x.kind === 'soft') && steps.some((x) => x.kind === 'alc')
+              ? `<div class="wstep" data-k="pick" data-t="${esc(wl.pick)}" hidden>${(['soft', 'alc'] as const)
+                  .map((k) => `<button type="button" class="wchoice" data-go="${k}">${esc(wl[k])}${lang !== 'de' ? `<small lang="de" dir="ltr">${esc(wlDe[k])}</small>` : ''}</button>`)
+                  .join('')}</div>`
+              : '';
+          return `${pick}<div class="wstep" data-k="${st.kind}" data-t="${esc(wl[st.kind])}" data-td="${esc(wlDe[st.kind])}" hidden>${st.cats
+            .filter((ci) => localized[ci]?.items.length)
+            .map((ci) => {
+              const c = localized[ci]!;
+              const o = d.categories[ci]!;
+              return `<details class="wcat${isClosed(o) ? ' closed' : ''}"${inHours(o)}><summary>${catImg(c, 'wci')}<h4>${esc(c.title)}</h4><span class="wsel" hidden></span></summary>${c.items
+                .map((it, j) => {
+                  const oi = o.items[j]!;
+                  const photo = httpsUrl(it.img);
+                  return `<div class="wi${photo ? ' has-img' : ''}" data-n="${esc(oi.name)}" data-tn="${esc(it.name)}" data-num="${esc(oi.num ?? '')}" data-c="${priceCents(oi.price) ?? ''}" data-p="${esc(oi.price ?? '')}">${photo ? `<div class="wph"><img src="${esc(photo)}" alt="" loading="lazy" decoding="async" /></div>` : ''}<div class="wt"><span class="wn">${oi.num ? `<span class="num">${esc(oi.num)}</span>` : ''}${esc(it.name)}</span>${(drinkKind || st.kind === 'drinks') && it.name !== oi.name ? `<span class="wd" lang="${menu.lang}" dir="ltr">${esc(oi.name)}</span>` : ''}${it.desc ? `<span class="wd">${esc(it.desc)}</span>` : ''}</div>${oi.price ? `<span class="wp">${esc(priceText(oi.price))}</span>` : ''}<div class="wq"><button type="button" class="wm" aria-label="${esc(`${wl.remove}: ${it.name}`)}">−</button><output>0</output><button type="button" class="wa" aria-label="${esc(`${wl.add}: ${it.name}`)}">+</button></div></div>`;
+                })
+                .join('')}</details>`;
+            })
+            .join('')}<p class="whint">${esc(wl.hint)}</p></div>`;
+        })
+        .join('')}<div class="wstep wsum" data-k="sum" data-t="${esc(wl.summary)}" hidden>${lang !== 'de' ? `<p class="wsub" lang="de" dir="ltr">${esc(wlDe.summary)}</p>` : ''}<div id="wlist"></div><p class="wtot" id="wtot" hidden></p><p class="wshow" id="wshow">${esc(wl.show)}</p>${lang !== 'de' ? `<p class="wshow" id="wshowde" lang="de" dir="ltr">${esc(wlDe.show)}</p>` : ''}${
         ordering
           ? `<textarea id="wnote" rows="2" maxlength="300" placeholder="${esc(ol.note)}"></textarea><button type="button" id="wsend">${esc(ol.send)} · ${esc(ol.table)} ${esc(opts.table!.label)}</button><p id="wmsg" role="status"></p>`
           : ''
-      }<button type="button" class="wre" id="wre">${esc(wl.restart)}</button></div></div>
+      }${social}<button type="button" class="wre" id="wre">${esc(wl.restart)}</button></div></div>
 <div class="wf"><button type="button" class="wbk" id="wback">${esc(wl.back)}</button><button type="button" class="wnx" id="wnext">${esc(wl.next)}</button></div>
 </div>
 <script type="application/json" id="wc">${JSON.stringify({
@@ -1122,8 +1182,6 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     : '';
 
   const actions: string[] = [];
-  const review = httpsUrl(d.reviewUrl);
-  if (review) actions.push(`<a class="btn" href="${esc(review)}" rel="noopener">${esc(l.review)}</a>`);
   const tel = d.phone ? telHref(d.phone) : null;
   if (tel) actions.push(`<a class="btn ghost" href="tel:${esc(tel)}">${esc(l.call)} · <bdi dir="ltr">${esc(d.phone)}</bdi></a>`);
   const mail = mailAddress(d.email);
@@ -1172,8 +1230,8 @@ ${offered.length > 1 ? `<nav class="langs" aria-label="Language">${offered.map((
 ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p>` : ''}
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
+${wizard || social ? `<div class="cta">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${social}</div>` : ''}
 ${cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : ''}
-${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}
 ${d.footnote ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
