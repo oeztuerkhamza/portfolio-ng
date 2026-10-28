@@ -474,3 +474,20 @@ describe('Assistent: Salate, Getränkewahl, Konten, Euro', () => {
     assert.ok(de.includes('href="https://www.google.com/search?q=x"'));
   });
 });
+
+describe('Getränkearten im Assistenten', () => {
+  const cat = (title: string) => ({ title, items: [{ name: `${title} 1`, price: '4,00' }] });
+  const data = menuData({
+    name: 'X',
+    steps: 'soft:1; beer:2; wine:3-4; spirits:5',
+    categories: [cat('Softdrinks'), cat('Bier'), cat('Türkische Weine'), cat('Weine aus Baden'), cat('Aperitif')],
+  })!;
+  const m: Menu = { slug: 'x', lang: 'de', theme: 'orient', preview: false, data };
+  test('Frage mit allen Arten, dann je ein Schritt; Bier, Wein und Spirituosen getrennt', () => {
+    const html = renderMenu(m, 'https://breisgaudigital.de');
+    assert.equal(html.split('class="wchoice"').length - 1, 4);
+    for (const k of ['soft', 'beer', 'wine', 'spirits']) assert.ok(html.includes(`data-go="${k}"`) && html.includes(`data-k="${k}" data-dr="1"`), k);
+    assert.ok(html.includes('data-t="Bier"') && html.includes('data-t="Wein"') && html.includes('data-t="Aperitif &amp; Spirituosen"'));
+    assert.equal(html.split('data-k="wine" data-dr="1"')[1]!.split('data-k="spirits"')[0]!.split('<details class="wcat').length - 1, 2);
+  });
+});

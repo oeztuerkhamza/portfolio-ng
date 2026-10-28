@@ -128,8 +128,8 @@ export interface MenuData {
   sections?: 'collapsed';
   /**
    * Schritt-für-Schritt-Auswahl: welche Rubriken (Nummern ab 1, in Kartenreihenfolge) in welchen Schritt
-   * gehören, z. B. „start:2; salad:3; main:1,4-16; dessert:17; soft:18-20; alc:21-26". Fehlt es, gibt es keinen
-   * Assistenten. Gibt es „soft" und „alc", fragt der Assistent vor den Getränken, was man trinken möchte.
+   * gehören, z. B. „start:2; salad:3; main:1,4-16; dessert:17; soft:18-20; beer:21; wine:22-23; spirits:24-25". Fehlt es, gibt es keinen
+   * Assistenten. Gibt es mehrere Getränkearten (soft, alc, beer, wine, spirits), fragt er vor den Getränken, was man trinken möchte.
    */
   steps?: string;
   /** Instagram-Konto des Hauses, https; erscheint unter dem Knopf „Schritt für Schritt" und am Ende der Auswahl. */
@@ -150,8 +150,11 @@ export type MenuLang = (typeof MENU_LANGS)[number];
 export const MENU_THEMES = [...CARD_THEMES, 'orient'] as const;
 export type MenuTheme = (typeof MENU_THEMES)[number];
 
-export const STEP_KINDS = ['start', 'salad', 'main', 'dessert', 'drinks', 'soft', 'alc'] as const;
+export const STEP_KINDS = ['start', 'salad', 'main', 'dessert', 'drinks', 'soft', 'alc', 'beer', 'wine', 'spirits'] as const;
 export type StepKind = (typeof STEP_KINDS)[number];
+
+/** Getränkeschritte: gibt es mehrere Arten, fragt der Assistent zuerst, was man trinken möchte. */
+const DRINK_KINDS: readonly StepKind[] = ['soft', 'alc', 'beer', 'wine', 'spirits'];
 
 /**
  * „start:1-2; main:3-15; dessert:16; drinks:17-24" → Schritte mit Rubrik-Indizes (ab 0). Unbekannte Arten,
@@ -784,23 +787,23 @@ const LANG_NAMES: Record<MenuLang, string> = { de: 'Deutsch', en: 'English', tr:
 interface WizLabels { open: string; start: string; main: string; dessert: string; drinks: string; step: string; next: string; back: string; summary: string; show: string; empty: string; restart: string; close: string; total: string; add: string; remove: string; hint: string }
 
 /** Texte der Schritt-für-Schritt-Auswahl. {n} und {m} in `step` sind Schritt und Anzahl der Schritte. */
-interface WizExtra { start: string; salad: string; soft: string; alc: string; pick: string }
+interface WizExtra { start: string; salad: string; soft: string; alc: string; beer: string; wine: string; spirits: string; pick: string }
 /** Ab Oktober 2026: Salate und Getränke haben eigene Schritte; „start" heißt jetzt nur noch Vorspeisen. */
 const WIZ_EXTRA: Record<MenuLang, WizExtra> = {
-  de: { start: 'Vorspeisen', salad: 'Salate', soft: 'Alkoholfreie Getränke', alc: 'Alkoholische Getränke', pick: 'Was möchten Sie trinken?' },
-  en: { start: 'Starters', salad: 'Salads', soft: 'Non-alcoholic drinks', alc: 'Alcoholic drinks', pick: 'What would you like to drink?' },
-  fr: { start: 'Entrées', salad: 'Salades', soft: 'Boissons sans alcool', alc: 'Boissons alcoolisées', pick: 'Que souhaitez-vous boire ?' },
-  tr: { start: 'Başlangıçlar', salad: 'Salatalar', soft: 'Alkolsüz içecekler', alc: 'Alkollü içecekler', pick: 'Ne içmek istersiniz?' },
-  es: { start: 'Entrantes', salad: 'Ensaladas', soft: 'Bebidas sin alcohol', alc: 'Bebidas con alcohol', pick: '¿Qué le gustaría beber?' },
-  it: { start: 'Antipasti', salad: 'Insalate', soft: 'Bevande analcoliche', alc: 'Bevande alcoliche', pick: 'Cosa desideri bere?' },
-  el: { start: 'Ορεκτικά', salad: 'Σαλάτες', soft: 'Μη αλκοολούχα ποτά', alc: 'Αλκοολούχα ποτά', pick: 'Τι θα θέλατε να πιείτε;' },
-  ar: { start: 'المقبلات', salad: 'السلطات', soft: 'مشروبات بدون كحول', alc: 'مشروبات كحولية', pick: 'ماذا تودّ أن تشرب؟' },
-  fa: { start: 'پیش‌غذاها', salad: 'سالادها', soft: 'نوشیدنی‌های بدون الکل', alc: 'نوشیدنی‌های الکلی', pick: 'چه نوشیدنی می‌خواهید؟' },
-  hi: { start: 'स्टार्टर', salad: 'सलाद', soft: 'बिना अल्कोहल के पेय', alc: 'अल्कोहल वाले पेय', pick: 'आप क्या पीना चाहेंगे?' },
-  ru: { start: 'Закуски', salad: 'Салаты', soft: 'Безалкогольные напитки', alc: 'Алкогольные напитки', pick: 'Что вы хотите выпить?' },
-  zh: { start: '前菜', salad: '沙拉', soft: '无酒精饮料', alc: '含酒精饮料', pick: '您想喝点什么？' },
-  ko: { start: '전채', salad: '샐러드', soft: '무알코올 음료', alc: '알코올 음료', pick: '무엇을 드시겠어요?' },
-  ku: { start: 'Destpêk', salad: 'Selete', soft: 'Vexwarinên bê alkol', alc: 'Vexwarinên bi alkol', pick: 'Hûn dixwazin çi vexwin?' },
+  de: { start: 'Vorspeisen', salad: 'Salate', soft: 'Alkoholfreie Getränke', alc: 'Alkoholische Getränke', beer: 'Bier', wine: 'Wein', spirits: 'Aperitif & Spirituosen', pick: 'Was möchten Sie trinken?' },
+  en: { start: 'Starters', salad: 'Salads', soft: 'Non-alcoholic drinks', alc: 'Alcoholic drinks', beer: 'Beer', wine: 'Wine', spirits: 'Aperitifs & spirits', pick: 'What would you like to drink?' },
+  fr: { start: 'Entrées', salad: 'Salades', soft: 'Boissons sans alcool', alc: 'Boissons alcoolisées', beer: 'Bière', wine: 'Vin', spirits: 'Apéritifs et spiritueux', pick: 'Que souhaitez-vous boire ?' },
+  tr: { start: 'Başlangıçlar', salad: 'Salatalar', soft: 'Alkolsüz içecekler', alc: 'Alkollü içecekler', beer: 'Bira', wine: 'Şarap', spirits: 'Aperitif ve sert içkiler', pick: 'Ne içmek istersiniz?' },
+  es: { start: 'Entrantes', salad: 'Ensaladas', soft: 'Bebidas sin alcohol', alc: 'Bebidas con alcohol', beer: 'Cerveza', wine: 'Vino', spirits: 'Aperitivos y licores', pick: '¿Qué le gustaría beber?' },
+  it: { start: 'Antipasti', salad: 'Insalate', soft: 'Bevande analcoliche', alc: 'Bevande alcoliche', beer: 'Birra', wine: 'Vino', spirits: 'Aperitivi e distillati', pick: 'Cosa desideri bere?' },
+  el: { start: 'Ορεκτικά', salad: 'Σαλάτες', soft: 'Μη αλκοολούχα ποτά', alc: 'Αλκοολούχα ποτά', beer: 'Μπίρα', wine: 'Κρασί', spirits: 'Απεριτίφ και αποστάγματα', pick: 'Τι θα θέλατε να πιείτε;' },
+  ar: { start: 'المقبلات', salad: 'السلطات', soft: 'مشروبات بدون كحول', alc: 'مشروبات كحولية', beer: 'البيرة', wine: 'النبيذ', spirits: 'الأبيريتيف والمشروبات الروحية', pick: 'ماذا تودّ أن تشرب؟' },
+  fa: { start: 'پیش‌غذاها', salad: 'سالادها', soft: 'نوشیدنی‌های بدون الکل', alc: 'نوشیدنی‌های الکلی', beer: 'آبجو', wine: 'شراب', spirits: 'آپریتیف و مشروبات تقطیری', pick: 'چه نوشیدنی می‌خواهید؟' },
+  hi: { start: 'स्टार्टर', salad: 'सलाद', soft: 'बिना अल्कोहल के पेय', alc: 'अल्कोहल वाले पेय', beer: 'बीयर', wine: 'वाइन', spirits: 'एपेरिटिफ़ और स्पिरिट्स', pick: 'आप क्या पीना चाहेंगे?' },
+  ru: { start: 'Закуски', salad: 'Салаты', soft: 'Безалкогольные напитки', alc: 'Алкогольные напитки', beer: 'Пиво', wine: 'Вино', spirits: 'Аперитивы и крепкие напитки', pick: 'Что вы хотите выпить?' },
+  zh: { start: '前菜', salad: '沙拉', soft: '无酒精饮料', alc: '含酒精饮料', beer: '啤酒', wine: '葡萄酒', spirits: '开胃酒与烈酒', pick: '您想喝点什么？' },
+  ko: { start: '전채', salad: '샐러드', soft: '무알코올 음료', alc: '알코올 음료', beer: '맥주', wine: '와인', spirits: '아페리티프 & 증류주', pick: '무엇을 드시겠어요?' },
+  ku: { start: 'Destpêk', salad: 'Selete', soft: 'Vexwarinên bê alkol', alc: 'Vexwarinên bi alkol', beer: 'Bîra', wine: 'Şerab', spirits: 'Aperîtîf û vexwarinên distîlkirî', pick: 'Hûn dixwazin çi vexwin?' },
 };
 
 const WIZ_LABELS: Record<MenuLang, WizLabels> = {
@@ -977,8 +980,9 @@ const WIZ_SCRIPT = `(function(){var w=document.getElementById('wiz'),o=document.
 var cfg=JSON.parse(document.getElementById('wc').textContent),L=cfg.l,q={},cur=0,hist=[],$=function(i){return document.getElementById(i)};
 var st=[].slice.call(w.querySelectorAll('.wstep')),items=[].slice.call(w.querySelectorAll('.wi')),kinds=st.map(function(s){return s.getAttribute('data-k')}),sumI=st.length-1;
 var pickI=kinds.indexOf('pick'),nums=[],cnt=0;
-kinds.forEach(function(x,j){var dr=x==='soft'||x==='alc',pd=j>0&&(kinds[j-1]==='soft'||kinds[j-1]==='alc');if(dr&&pickI>-1&&pd)nums.push(nums[j-1]);else nums.push(++cnt)});
-function nextOf(j){var x=kinds[j];return pickI>-1&&(x==='soft'||x==='alc')?sumI:j+1}
+var dk=st.map(function(s){return s.hasAttribute('data-dr')});
+kinds.forEach(function(x,j){if(dk[j]&&pickI>-1&&j>0&&dk[j-1])nums.push(nums[j-1]);else nums.push(++cnt)});
+function nextOf(j){return pickI>-1&&dk[j]?sumI:j+1}
 var fmt=function(c){return (c/100).toFixed(2).replace('.',',')+' €'};
 try{q=JSON.parse(sessionStorage.getItem(cfg.k)||'{}')||{}}catch(e){q={}}
 function save(){try{sessionStorage.setItem(cfg.k,JSON.stringify(q))}catch(e){}}
@@ -1102,7 +1106,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
       : '';
 
   // Bei Getränken steht unter dem übersetzten Namen der Originalname, damit das Servicepersonal ihn versteht.
-  const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks' || st.kind === 'soft' || st.kind === 'alc').flatMap((st) => st.cats));
+  const drinkCats = new Set(parseSteps(d.steps, d.categories.length).filter((st) => st.kind === 'drinks' || DRINK_KINDS.includes(st.kind)).flatMap((st) => st.cats));
   const origName = (ci: number, it: MenuItem, o: MenuItem) => (drinkCats.has(ci) && it.name !== o.name ? `<p class="orig" lang="${menu.lang}" dir="ltr">${esc(o.name)}</p>` : '');
   const inHours = (c: MenuCategory) => (c.hours ? ` data-hrs="${esc(c.hours)}"` : '');
   const isClosed = (c: MenuCategory) => !openAt(c.hours);
@@ -1143,16 +1147,17 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 <div class="wh"><button type="button" class="wx" id="wx" aria-label="${esc(wl.close)}">×</button><p class="wpr" id="wpr"></p><h3 id="wtt"></h3><div class="wdots" id="wdots"></div></div>
 <div class="wb" id="wb">${steps
         .map((st, si) => {
-          const drinkKind = st.kind === 'soft' || st.kind === 'alc';
-          const firstDrink = steps.findIndex((x) => x.kind === 'soft' || x.kind === 'alc');
+          const drinkKind = DRINK_KINDS.includes(st.kind);
+          const drinkKinds = steps.filter((x) => DRINK_KINDS.includes(x.kind)).map((x) => x.kind);
+          const firstDrink = steps.findIndex((x) => DRINK_KINDS.includes(x.kind));
           const pick =
-            si === firstDrink && steps.some((x) => x.kind === 'soft') && steps.some((x) => x.kind === 'alc')
-              ? `<div class="wstep" data-k="pick" data-t="${esc(wl.pick)}" hidden>${(['soft', 'alc'] as const)
+            si === firstDrink && drinkKinds.length > 1
+              ? `<div class="wstep" data-k="pick" data-t="${esc(wl.pick)}" hidden>${drinkKinds
                   .map((k) => `<button type="button" class="wchoice" data-go="${k}">${esc(wl[k])}${lang !== 'de' ? `<small lang="de" dir="ltr">${esc(wlDe[k])}</small>` : ''}</button>`)
                   .join('')}</div>`
               : '';
           const shown = st.cats.filter((ci) => localized[ci]?.items.length);
-          return `${pick}<div class="wstep" data-k="${st.kind}" data-t="${esc(wl[st.kind])}" data-td="${esc(wlDe[st.kind])}" hidden>${shown
+          return `${pick}<div class="wstep" data-k="${st.kind}"${drinkKind ? ' data-dr="1"' : ''} data-t="${esc(wl[st.kind])}" data-td="${esc(wlDe[st.kind])}" hidden>${shown
             .map((ci) => {
               const c = localized[ci]!;
               const o = d.categories[ci]!;
