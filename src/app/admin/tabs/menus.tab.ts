@@ -157,10 +157,13 @@ interface Menu {
         <label class="adm-field">“Google’da değerlendirin” düğmesi (isteğe bağlı) — buraya <code>{{ origin }}/r/…</code> kısa linkini yazın
           <input type="url" placeholder="{{ origin }}/r/…" [value]="f('reviewUrl')" (input)="setF('reviewUrl', val($event))" />
         </label>
-        <label class="adm-field">Adım adım seçim (isteğe bağlı) — hangi bölümler hangi adımda, bölüm sırası 1’den başlar
-          <input maxlength="200" placeholder="start:1-2; main:3-15; dessert:16; drinks:17-24" [value]="f('steps')" (input)="setF('steps', val($event))" />
+        <label class="adm-field">Instagram hesabı (isteğe bağlı) — “Adım adım seç” düğmesinin altında ve seçimin sonunda görünür
+          <input type="url" placeholder="https://www.instagram.com/…" [value]="f('instagramUrl')" (input)="setF('instagramUrl', val($event))" />
         </label>
-        <p class="adm-muted small">Adımlar: <code>start</code> başlangıçlar, <code>main</code> ana yemekler, <code>dessert</code> tatlı, <code>drinks</code> içecekler. Boş bırakılırsa menüde “Adım adım seç” düğmesi çıkmaz.</p>
+        <label class="adm-field">Adım adım seçim (isteğe bağlı) — hangi bölümler hangi adımda, bölüm sırası 1’den başlar
+          <input maxlength="200" placeholder="start:2; salad:3; main:1,4-16; dessert:17; soft:18-20; alc:21-26" [value]="f('steps')" (input)="setF('steps', val($event))" />
+        </label>
+        <p class="adm-muted small">Adımlar: <code>start</code> başlangıçlar, <code>salad</code> salatalar, <code>main</code> ana yemekler, <code>dessert</code> tatlı, <code>drinks</code> içecekler. İçecekleri <code>soft</code> (alkolsüz) ve <code>alc</code> (alkollü) diye ikiye ayırırsanız menü önce “Ne içmek istersiniz?” diye sorar. Boş bırakılırsa menüde “Adım adım seç” düğmesi çıkmaz.</p>
         <label class="adm-field">Fotoğraf kaynakları sayfası (CC lisanslı fotoğraflar için zorunlu, isteğe bağlı)
           <input type="url" placeholder="{{ origin }}/menu/…/bildnachweis.html" [value]="f('creditsUrl')" (input)="setF('creditsUrl', val($event))" />
         </label>
