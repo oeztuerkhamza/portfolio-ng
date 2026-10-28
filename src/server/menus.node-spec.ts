@@ -495,7 +495,7 @@ describe('Getränkearten im Assistenten', () => {
 describe('Getränkewahl überspringen', () => {
   test('auf der Frage gibt es „Weiter", das ohne Getränk zur Auswahl führt', () => {
     const html = renderMenu(menuFrom('soft:1; beer:2'), 'https://breisgaudigital.de');
-    assert.ok(html.includes("function nextOf(j){return pickI>-1&&(dk[j]||j===pickI)?sumI:j+1}"));
+    assert.ok(html.includes("return pickI>-1&&(dk[j]||j===pickI)?sumI:j+1}"));
     assert.ok(html.includes("$('wnext').hidden=last;"));
   });
 });
@@ -575,5 +575,35 @@ describe('Begrüßung und Mittagsmenü als erster Schritt', () => {
     assert.ok(open.includes('data-k="lunch"') && open.indexOf('data-k="lunch"') < open.indexOf('data-k="start"'));
     const closedData = { ...data, categories: data.categories.map((c, i) => (i === 0 ? { ...c, hours: openAt('00:00-00:01') ? '12:00-12:01' : '00:00-00:01' } : c)) };
     assert.ok(!renderMenu({ ...m, data: closedData }, 'https://breisgaudigital.de').includes('data-k="lunch"'));
+  });
+});
+
+describe('Mittagsknopf und Logos', () => {
+  const cat = (title: string, extra: object = {}) => ({ title, ...extra, items: [{ name: `${title} 1`, price: '4,00' }] });
+  const mk = (hours: string) =>
+    menuData({
+      name: 'X',
+      stepsOnly: true,
+      instagramUrl: 'https://www.instagram.com/divanfreiburg/',
+      reviewUrl: 'https://www.google.com/search?q=x',
+      steps: 'lunch:1; start:2; soft:3',
+      categories: [cat('Mittagsmenü', { hours }), cat('Vorspeisen'), cat('Softdrinks')],
+    })!;
+  const m = (hours: string): Menu => ({ slug: 'x', lang: 'de', theme: 'orient', preview: false, data: mk(hours) });
+  test('Mittagsmenü als eigener Knopf unter „Menü", mit Zeitraum; Menü startet ohne Mittagsschritt', () => {
+    const html = renderMenu(m('00:00-23:59'), 'https://breisgaudigital.de');
+    assert.ok(html.indexOf('id="wopen"') < html.indexOf('id="wlunch"') && html.indexOf('id="wlunch"') < html.indexOf('class="social"'));
+    assert.ok(html.includes('data-hrs="00:00-23:59"><span>Mittagsmenü</span><small dir="ltr">Täglich 00:00–23:59</small>'));
+    assert.ok(html.includes("o.addEventListener('click',function(){openAt(s0)})"));
+    assert.ok(html.includes('if(j===lunchI)return pickI>-1?pickI:sumI'));
+  });
+  test('außerhalb der Zeit kein Mittagsknopf', () => {
+    const closed = openAt('00:00-00:01') ? '12:00-12:01' : '00:00-00:01';
+    assert.ok(!renderMenu(m(closed), 'https://breisgaudigital.de').includes('id="wlunch"'));
+  });
+  test('Instagram- und Google-Logo in den Knöpfen', () => {
+    const html = renderMenu(m('00:00-23:59'), 'https://breisgaudigital.de');
+    assert.ok(html.includes('<svg class="ico" viewBox="0 0 24 24"'));
+    assert.ok(html.includes('<i class="gwrap"><svg class="ico g"'));
   });
 });

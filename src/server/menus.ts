@@ -677,7 +677,8 @@ html.seen .intro,.intro.skip{display:none}
 .dust i:nth-child(12){left:4%;animation-delay:5s;width:3px;height:3px;animation-duration:12.5s}
 @keyframes dust{0%{transform:translate(0,0) scale(.5);opacity:0}12%{opacity:.95}70%{opacity:.7}100%{transform:translate(26px,-460px) scale(1.15);opacity:0}}
 @media (prefers-reduced-motion:reduce){.intro,.dust{display:none}.welcome>*,.hero h1,.hero .tagline,.hero .orn,.hero .where,.hero .langs,.cta>*,.foot,.orn i{animation:none}}
-.btn,#wopen{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#b98322);border:1px solid #f4d98a;color:#4a0b17;font-weight:700;box-shadow:0 8px 22px -10px rgba(120,80,0,.7)}
+.cta .btn.lunch.lunch{background:#fffaf0;border:2px solid #d9a93f;color:#7a1226;box-shadow:0 8px 20px -12px rgba(120,80,0,.6),inset 0 0 0 3px #fffaf0,inset 0 0 0 4px rgba(217,169,63,.55)}
+.btn:not(.lunch),#wopen{background:linear-gradient(180deg,#fdeeb4,#e3b44c 55%,#b98322);border:1px solid #f4d98a;color:#4a0b17;font-weight:700;box-shadow:0 8px 22px -10px rgba(120,80,0,.7)}
 `,
   };
 }
@@ -970,8 +971,16 @@ details.wcat .wi:last-child{border-bottom:0}
 .wel-t{margin:12px auto 0;max-width:30em;color:${t.dim};font:italic 400 1.02rem/1.6 ${SERIF}}
 .cta #wopen{margin:0}
 .social{display:flex;gap:10px;margin:10px 0 0}
-.social .btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;margin:0;padding:11px 10px;font-size:.9rem;text-align:center;text-decoration:none}
+.social .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:11px 12px;font-size:.9rem;line-height:1.25;text-align:start;text-decoration:none}
+.social .btn span{display:flex;flex-direction:column}
 .social .btn small{font-size:.72rem;font-weight:500;opacity:.8}
+.social .ico{flex:0 0 auto;width:24px;height:24px}
+.social .gwrap{flex:0 0 auto;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.social .gwrap .ico{width:19px;height:19px}
+.cta .btn.lunch{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:10px 0 0;padding:14px 16px;border-radius:20px;background:${t.panel};border:1.5px solid ${t.accent};color:${t.accent};font:inherit;font-weight:700;cursor:pointer;box-shadow:none}
+.cta .btn.lunch[hidden],.cta .btn.lunch.closed{display:none}
+.cta .btn.lunch span{font:600 1.15rem/1.2 ${SERIF};letter-spacing:.06em}
+.cta .btn.lunch small{font-size:.78rem;font-weight:500;opacity:.85}
 .wsum .social{margin-top:22px}
 .wt{flex:1;min-width:0}
 .wn{display:block;font:600 1rem/1.3 ${SERIF}}
@@ -1072,8 +1081,9 @@ var cfg=JSON.parse(document.getElementById('wc').textContent),L=cfg.l,q={},cur=0
 var st=[].slice.call(w.querySelectorAll('.wstep')),items=[].slice.call(w.querySelectorAll('.wi')),kinds=st.map(function(s){return s.getAttribute('data-k')}),sumI=st.length-1;
 var pickI=kinds.indexOf('pick'),nums=[],cnt=0;
 var dk=st.map(function(s){return s.hasAttribute('data-dr')});
-kinds.forEach(function(x,j){if(dk[j]&&pickI>-1&&j>0&&dk[j-1])nums.push(nums[j-1]);else nums.push(++cnt)});
-function nextOf(j){return pickI>-1&&(dk[j]||j===pickI)?sumI:j+1}
+kinds.forEach(function(x,j){if(x==='lunch')nums.push(0);else if(dk[j]&&pickI>-1&&j>0&&dk[j-1])nums.push(nums[j-1]);else nums.push(++cnt)});
+var lunchI=kinds.indexOf('lunch'),s0=lunchI===0?1:0;
+function nextOf(j){if(j===lunchI)return pickI>-1?pickI:sumI;return pickI>-1&&(dk[j]||j===pickI)?sumI:j+1}
 var fmt=function(c){return (c/100).toFixed(2).replace('.',',')+' €'};
 try{q=JSON.parse(sessionStorage.getItem(cfg.k)||'{}')||{}}catch(e){q={}}
 function save(){try{sessionStorage.setItem(cfg.k,JSON.stringify(q))}catch(e){}}
@@ -1096,7 +1106,7 @@ $('wtot').hidden=!(any&&known);$('wtot').textContent=L.total+' '+fmt(tot);$('wsh
 if(cfg.o)$('wsend').disabled=!any}
 function show(i){cur=Math.max(0,Math.min(i,sumI));var last=cur===sumI;
 st.forEach(function(s,j){s.hidden=j!==cur});$('wtt').textContent=st[cur].getAttribute('data-t');
-$('wpr').textContent=last?'':L.step.replace('{n}',nums[cur]).replace('{m}',nums[sumI]-1);
+$('wpr').textContent=last||!nums[cur]?'':L.step.replace('{n}',nums[cur]).replace('{m}',nums[sumI]-1);$('wdots').style.visibility=nums[cur]||last?'':'hidden';
 [].forEach.call($('wdots').children,function(d,j){var n=nums[cur]-1;d.className=j<n?'done':j===n?'cur':''});
 $('wback').hidden=hist.length===0;$('wnext').hidden=last;$('wnext').textContent=nextOf(cur)===sumI?L.summary:L.next;
 if(last)summary();$('wb').scrollTop=0}
@@ -1104,10 +1114,12 @@ function go(i){hist.push(cur);show(i)}
 for(var di=0;di<nums[sumI];di++)$('wdots').appendChild(document.createElement('i'));
 [].forEach.call(w.querySelectorAll('.wchoice'),function(b){b.addEventListener('click',function(){go(kinds.indexOf(b.getAttribute('data-go')))})});
 function close(){w.hidden=true;document.body.classList.remove('wiz-on');o.focus()}
-o.hidden=false;o.addEventListener('click',function(){w.hidden=false;document.body.classList.add('wiz-on');sync();hist=[];show(0)});
+function openAt(i){w.hidden=false;document.body.classList.add('wiz-on');sync();hist=[];show(i)}
+o.hidden=false;o.addEventListener('click',function(){openAt(s0)});
+var lb=$('wlunch');if(lb&&lunchI>-1){lb.hidden=false;lb.addEventListener('click',function(){openAt(lunchI)})}
 $('wx').addEventListener('click',close);document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!w.hidden)close()});
 $('wnext').addEventListener('click',function(){go(nextOf(cur))});$('wback').addEventListener('click',function(){show(hist.length?hist.pop():0)});
-$('wre').addEventListener('click',function(){q={};save();sync();hist=[];show(0)});
+$('wre').addEventListener('click',function(){q={};save();sync();hist=[];show(s0)});
 if(cfg.o)$('wsend').addEventListener('click',function(){var list=chosen().map(function(it){var n=it.getAttribute('data-n');return{name:n,qty:q[n]}});if(!list.length)return;
 $('wsend').disabled=true;$('wmsg').textContent='';
 fetch('/api/menu-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({slug:cfg.o.slug,t:cfg.o.t,items:list,note:$('wnote').value})})
@@ -1232,9 +1244,11 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const insta = httpsUrl(d.instagramUrl);
   const handle = insta ? /instagram\.com\/([^/?#]+)/i.exec(insta)?.[1] : undefined;
   const reviewHref = httpsUrl(d.reviewUrl);
+  const igIcon = `<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.3" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.35" fill="currentColor"/></svg>`;
+  const gIcon = `<svg class="ico g" viewBox="0 0 48 48" aria-hidden="true"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>`;
   const social =
     insta || reviewHref
-      ? `<div class="social">${insta ? `<a class="btn" href="${esc(insta)}" rel="noopener">Instagram${handle ? `<small dir="ltr">@${esc(handle)}</small>` : ''}</a>` : ''}${reviewHref ? `<a class="btn" href="${esc(reviewHref)}" rel="noopener">${esc(l.review)}</a>` : ''}</div>`
+      ? `<div class="social">${insta ? `<a class="btn" href="${esc(insta)}" rel="noopener">${igIcon}<span>Instagram${handle ? `<small dir="ltr">@${esc(handle)}</small>` : ''}</span></a>` : ''}${reviewHref ? `<a class="btn" href="${esc(reviewHref)}" rel="noopener"><i class="gwrap">${gIcon}</i><span>${esc(l.review)}</span></a>` : ''}</div>`
       : '';
   const localized = localize(d, lang);
   const full = opts.view === 'full';
@@ -1320,6 +1334,12 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const welcomeHtml = welcomeText
     ? `<div class="welcome"><p class="wel-h">${esc(welcomeHead!.trim())}</p>${welcomeRest.join(' ').trim() ? `<p class="wel-t">${esc(welcomeRest.join(' ').trim())}</p>` : ''}</div>`
     : '';
+  const lunchStep = steps.find((st) => st.kind === 'lunch');
+  const lunchCat = lunchStep ? d.categories[lunchStep.cats[0]!] : undefined;
+  const lunchBtn =
+    wizard && lunchCat
+      ? `<button type="button" class="btn lunch" id="wlunch" hidden${inHours(lunchCat)}><span>${esc(wl.lunch)}</span>${lunchCat.hours ? `<small dir="ltr">${esc(HOURS_LABEL[lang])} ${esc(lunchCat.hours.replace('-', '–'))}</small>` : ''}</button>`
+      : '';
   const navHtml = cats.length > 1 ? `<nav class="nav" aria-label="${esc(d.tagline ?? d.name)}">${cats.map(({ c, orig }, i) => `<a href="#${anchor(i)}"${isClosed(orig) ? ' class="closed"' : ''}${inHours(orig)}>${esc(c.title)}</a>`).join('')}</nav>` : '';
 
   return `<!doctype html>
@@ -1347,7 +1367,7 @@ ${ordering ? `<p class="table-tag">${esc(ol.table)} ${esc(opts.table!.label)}</p
 </header>
 ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
 ${welcomeHtml}
-${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${social}</div>` : ''}
+${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${lunchBtn}${social}</div>` : ''}
 ${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${navHtml}
 ${filtersUi}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}`}
