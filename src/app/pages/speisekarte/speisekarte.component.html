@@ -1,0 +1,134 @@
+<!-- Kopf -->
+<header class="page-hero">
+  <div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a [routerLink]="'/' | localize">{{ i18n.t('nav.home') }}</a>
+      <span class="sep" aria-hidden="true">/</span>
+      <span aria-current="page">{{ i18n.t('nav.speisekarte') }}</span>
+    </nav>
+    <div class="sec-head sec-head-center sk-head">
+      <p class="section-label">{{ i18n.t('sk.label') }}</p>
+      <h1 class="section-title" [innerHTML]="i18n.t('sk.title')"></h1>
+      <p class="section-subtitle">{{ i18n.t('sk.intro') }}</p>
+      <div class="sk-head-actions">
+        <a [href]="live.table" target="_blank" rel="noopener" class="btn btn-primary btn-large">
+          {{ i18n.t('sk.cta.live') }} <app-icon name="arrow" />
+        </a>
+        <a [routerLink]="'/contact' | localize" fragment="anfrage" class="btn btn-secondary btn-large">{{ i18n.t('sk.cta.request') }}</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Referenz: Divan -->
+<section class="section section-white sk-ref" id="divan">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('sk.ref.label') }}</p>
+      <h2 class="section-title">{{ i18n.t('sk.ref.title') }}</h2>
+      <p class="section-subtitle">{{ i18n.t('sk.ref.text') }}</p>
+    </header>
+
+    <ol class="sk-phones" [attr.aria-label]="i18n.t('sk.shots.alt')">
+      @for (s of shots; track s.file) {
+        <li class="sk-phone">
+          <span class="sk-frame">
+            <img
+              [src]="'/assets/images/speisekarte/' + s.file + '.webp'"
+              width="540"
+              height="1168"
+              [attr.loading]="s.n <= 2 ? 'eager' : 'lazy'"
+              decoding="async"
+              [alt]="i18n.t('sk.shots.alt') + ' – ' + i18n.t('sk.shot' + s.n)"
+            />
+          </span>
+          <span class="sk-caption"><b>{{ s.n }}</b> {{ i18n.t('sk.shot' + s.n) }}</span>
+        </li>
+      }
+    </ol>
+
+    <div class="sk-ref-links">
+      <a [href]="live.table" target="_blank" rel="noopener" class="btn btn-primary">{{ i18n.t('sk.ref.table') }} <app-icon name="arrow" /></a>
+      <a [href]="live.full" target="_blank" rel="noopener" class="btn btn-secondary">{{ i18n.t('sk.ref.full') }}</a>
+      <a [href]="live.demo" target="_blank" rel="noopener" class="btn btn-ghost">{{ i18n.t('sk.ref.demo') }}</a>
+    </div>
+  </div>
+</section>
+
+<!-- Funktionen -->
+<section class="section">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('sk.feat.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('sk.feat.title')"></h2>
+    </header>
+    <div class="grid grid-4">
+      @for (f of features; track f.n) {
+        <article class="card feature">
+          <span class="icon-badge"><app-icon [name]="f.icon" /></span>
+          <h3 class="card-title">{{ i18n.t('sk.f' + f.n + '.t') }}</h3>
+          <p class="card-text">{{ i18n.t('sk.f' + f.n + '.d') }}</p>
+        </article>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Ablauf -->
+<section class="section section-white">
+  <div class="container">
+    <header class="sec-head sec-head-center">
+      <p class="section-label">{{ i18n.t('sk.steps.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('sk.steps.title')"></h2>
+    </header>
+    <ol class="steps">
+      @for (n of steps; track n) {
+        <li class="step">
+          <span class="step-num">{{ n }}</span>
+          <h3>{{ i18n.t('sk.step' + n + '.t') }}</h3>
+          <p>{{ i18n.t('sk.step' + n + '.d') }}</p>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section">
+  <div class="container faq-layout">
+    <header class="sec-head">
+      <p class="section-label">{{ i18n.t('sk.faq.label') }}</p>
+      <h2 class="section-title" [innerHTML]="i18n.t('sk.faq.title')"></h2>
+    </header>
+    <div class="faq-list">
+      @for (n of faqs; track n) {
+        <details class="faq-item">
+          <summary>{{ i18n.t('sk.faq' + n + '.q') }}</summary>
+          <p>{{ i18n.t('sk.faq' + n + '.a') }}</p>
+        </details>
+      }
+    </div>
+  </div>
+</section>
+
+<!-- Abschluss -->
+<section class="final-cta">
+  <div class="container">
+    <div class="cta-box">
+      <div>
+        <h2 class="cta-title" [innerHTML]="i18n.t('sk.cta.title')"></h2>
+        <p class="cta-text">{{ i18n.t('sk.cta.text') }}</p>
+      </div>
+      <div class="cta-actions">
+        <a [routerLink]="'/contact' | localize" fragment="anfrage" class="btn btn-light btn-large">
+          {{ i18n.t('cta.consult') }}
+          <app-icon name="arrow" />
+        </a>
+        <div class="cta-direct">
+          <a [href]="company.phoneHref" class="btn btn-outline-light"><app-icon name="phone" /> {{ i18n.t('cta.call') }}</a>
+          <a [href]="whatsapp" target="_blank" rel="noopener" class="btn btn-outline-light"><app-icon name="chat" /> WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

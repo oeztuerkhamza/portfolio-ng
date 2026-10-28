@@ -11,6 +11,7 @@ import type { Entry } from './translations';
  */
 export const COMPANY_TRANSLATIONS: Record<string, Entry> = {
   'nav.invite': { de: 'Einladungen', en: 'Invitations', tr: 'Davetiyeler' },
+  'nav.speisekarte': { de: 'Digitale Speisekarte', en: 'Digital menu', tr: 'Dijital menü' },
   'nav.smarthome': { de: 'Smart Home', en: 'Smart home', tr: 'Akıllı ev' },
   'nav.wartung': {
     de: 'Wartung',

@@ -21,6 +21,7 @@ Ortsseiten: Emmendingen, Waldkirch, Breisach, Bad Krozingen, Staufen, Müllheim,
 
 ## Außerdem
 
+- [Digitale Speisekarte](https://breisgau-digital.de/de/digitale-speisekarte): Speisekarte für Restaurants per QR-Code oder NFC am Tisch, Bestellung Schritt für Schritt, 14 Sprachen, eigene Fotos und Design. Referenz: Divan Ocakbaşı, Freiburg.
 - [Digitale Einladung](https://breisgau-digital.de/de/digitale-einladung): Einladungs-Website für Hochzeit, Henna-Abend und Firmenevents mit Online-Zusage und Gästeliste, in sechs Sprachen.
 
 ## Sprachen der Website

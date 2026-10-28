@@ -49,6 +49,7 @@ export const serverRoutes: ServerRoute[] = [
   ...(SMART_HOME_ENABLED
     ? [{ path: ':locale/smart-home', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams } as ServerRoute]
     : []),
+  { path: ':locale/digitale-speisekarte', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/digitale-einladung', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/wartung', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },
   { path: ':locale/ueber-uns', renderMode: RenderMode.Prerender, getPrerenderParams: localeParams },

@@ -31,7 +31,7 @@ function meta(path) {
   if (path === '/') return { priority: '1.0', freq: 'weekly' };
   const page = path.replace(/^\/(de|en|tr)(?=\/|$)/, '') || '/';
   if (page === '/') return { priority: '0.9', freq: 'weekly' };
-  if (['/leistungen', '/digitale-einladung', '/bewertungskarten', '/smart-home', '/wartung', '/digitale-visitenkarte', '/geschenkkarte'].includes(page)) {
+  if (['/leistungen', '/digitale-speisekarte', '/digitale-einladung', '/bewertungskarten', '/smart-home', '/wartung', '/digitale-visitenkarte', '/geschenkkarte'].includes(page)) {
     return { priority: '0.9', freq: 'monthly' };
   }
   // Produktseiten der Bewertungskarten: echte Kaufseiten, kein Beiwerk.

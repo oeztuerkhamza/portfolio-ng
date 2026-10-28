@@ -1,0 +1,106 @@
+@import "../../../styles/variables";
+
+// Seite „Digitale Speisekarte". Kopf, Karten, Ablauf, FAQ und Abschluss-Box
+// kommen aus dem UI-Kit (src/styles/_ui.scss); hier stehen die Handy-Bilder
+// der Referenz.
+
+:host {
+  display: block;
+}
+
+.container {
+  @include container;
+}
+
+.sk-head {
+  margin-bottom: 0;
+}
+
+.sk-head-actions,
+.sk-ref-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1.75rem;
+}
+
+// Fünf Bildschirme nebeneinander; auf dem Handy wischt man durch.
+.sk-phones {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(200px, 62vw);
+  gap: 1.25rem;
+  margin: 0 -1rem;
+  padding: 0.5rem 1rem 1.5rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  list-style: none;
+
+  @media (min-width: 720px) {
+    grid-auto-columns: minmax(200px, 34vw);
+  }
+
+  @media (min-width: $bp-desktop) {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(5, 1fr);
+    margin: 0;
+    padding: 0.5rem 0 1rem;
+    overflow: visible;
+  }
+}
+
+.sk-phone {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  scroll-snap-align: center;
+
+  // Die mittleren Bildschirme stehen ein wenig höher, wie ein Fächer.
+  @media (min-width: $bp-desktop) {
+    &:nth-child(2),
+    &:nth-child(4) {
+      transform: translateY(-14px);
+    }
+    &:nth-child(3) {
+      transform: translateY(-24px);
+    }
+  }
+}
+
+.sk-frame {
+  display: block;
+  padding: 7px;
+  border-radius: 30px;
+  background: #1b1b1b;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.25),
+    0 18px 40px -18px rgba(0, 0, 0, 0.45);
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 23px;
+  }
+}
+
+.sk-caption {
+  color: $text-dim;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  text-align: center;
+
+  b {
+    display: inline-grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-right: 0.3rem;
+    border-radius: 50%;
+    background: $brand;
+    color: #fff;
+    font-size: 0.75rem;
+  }
+}
