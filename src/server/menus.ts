@@ -610,7 +610,7 @@ li.has-img{border:1.5px solid #d9a93f}
 .num{background:linear-gradient(180deg,#dcab3f,#9a6710);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:800}
 .price{background:linear-gradient(180deg,#d6a031,#8c5a08);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:700}
 .dots{border-bottom:2px dotted rgba(200,150,40,.7)}
-/* Eingang: zwei goldgerahmte Palasttüren öffnen sich über der Karte, einmal je Sitzung (html.seen) */
+/* Eingang: zwei goldgerahmte Palasttüren öffnen sich über der Karte, bei jedem Öffnen; nicht beim Sprachwechsel (html.seen) */
 html{--d:2.15s;--h:1.55s}
 html.seen{--d:0s;--h:0s}
 .intro{position:fixed;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;perspective:1700px;overflow:hidden;
@@ -1374,10 +1374,10 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
 <meta name="referrer" content="no-referrer" />
 <title>${esc(d.name)}${d.tagline ? ` · ${esc(d.tagline)}` : ''}</title>
 <style>:root{--accent:${t.accent};--on:${t.onAccent};--panel:${t.panel};--ink:${t.ink};--dim:${t.dim};--accent2:${t.accent2}}${styles(t)}${ORDER_STYLES}${wizard ? wizStyles(t) : ''}</style>
-${grand ? `<script>try{var k='intro:${esc(menu.slug)}';if(sessionStorage.getItem(k))document.documentElement.classList.add('seen');else sessionStorage.setItem(k,'1')}catch(e){}</script>` : ''}
+${grand ? `<script>try{var k='intro:${esc(menu.slug)}';if(sessionStorage.getItem(k)){document.documentElement.classList.add('seen');sessionStorage.removeItem(k)}}catch(e){}</script>` : ''}
 </head><body${ordering ? ' class="ordering"' : ''}>
 ${grand ? `<div class="intro" aria-hidden="true"><div class="door l"><i></i><b></b></div><div class="door r"><i></i><b></b></div><div class="medal"><span class="mstar"></span><span class="mname">${esc(d.name)}</span><span class="mline"></span>${d.tagline ? `<span class="mtag">${esc(d.tagline)}</span>` : ''}</div></div>
-<script>(function(){var i=document.querySelector('.intro');if(i)i.addEventListener('click',function(){i.classList.add('skip');document.documentElement.classList.add('seen')})})();</script>` : ''}
+<script>(function(){var i=document.querySelector('.intro');if(i)i.addEventListener('click',function(){i.classList.add('skip');document.documentElement.classList.add('seen')});document.querySelectorAll('.langs a').forEach(function(a){a.addEventListener('click',function(){try{sessionStorage.setItem('intro:${esc(menu.slug)}','1')}catch(e){}})})})();</script>` : ''}
 <main class="menu">
 <header class="hero">
 ${grand ? `<div class="dust" aria-hidden="true">${'<i></i>'.repeat(12)}</div>` : ''}

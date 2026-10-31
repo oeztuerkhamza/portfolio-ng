@@ -528,6 +528,8 @@ describe('Eingang (Theme orient)', () => {
     const html = renderMenu({ ...base, data }, 'https://breisgaudigital.de');
     assert.ok(html.includes('<div class="intro" aria-hidden="true">') && html.includes('class="dust"'));
     assert.ok(html.includes("sessionStorage.getItem(k)"));
+    assert.ok(html.includes("querySelectorAll('.langs a')"), 'beim Sprachwechsel keine Türen');
+    assert.ok(renderMenu({ ...base, data }, 'https://breisgaudigital.de', { view: 'full' }).includes('<div class="intro" aria-hidden="true">'), 'auch auf der ganzen Karte');
     const page = html.split('<div id="wiz"')[0]!;
     assert.ok(!page.includes('class="foot-note"'), 'nicht auf der Startseite');
     assert.ok(html.split('<div id="wiz"')[1]!.includes('<p class="foot-note">Es gilt die aktuelle Karte im Haus.</p>'));
