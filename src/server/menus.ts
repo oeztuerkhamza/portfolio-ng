@@ -138,6 +138,8 @@ export interface MenuData {
   welcome?: Partial<Record<MenuLang, string>>;
   /** true: auf der Seite steht nur der Knopf Schritt für Schritt; die ganze Liste gibt es nur ohne JavaScript (noscript). Braucht `steps`. */
   stepsOnly?: boolean;
+  /** true: es gibt nur die ganze Karte; /m/<slug> zeigt dasselbe wie /m/<slug>/karte, ohne Assistent. */
+  fullOnly?: boolean;
   /** false: Allergene stehen beim Gericht, aber ohne Filter „ohne …", weil die Angaben nicht als vollständig geprüft sind. */
   allergenFilter?: false;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
@@ -289,6 +291,7 @@ export function menuData(input: unknown): MenuData | null {
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     instagramUrl: httpsUrl(d['instagramUrl']) ?? undefined,
     stepsOnly: d['stepsOnly'] === true ? true : undefined,
+    fullOnly: d['fullOnly'] === true ? true : undefined,
     allergenFilter: d['allergenFilter'] === false ? false : undefined,
     welcome: (() => {
       const w = (d['welcome'] && typeof d['welcome'] === 'object' ? d['welcome'] : {}) as Record<string, unknown>;
@@ -1207,8 +1210,9 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     .map((c, i) => ({ c, orig: d.categories[i]! }))
     .filter((x) => x.c.items.length);
   const ordering = !!opts.table && !menu.preview;
+  const full = opts.view === 'full' || d.fullOnly === true;
   // Die ganze Karte (/karte) steht immer offen, auch wenn die Rubriken sonst zugeklappt sind.
-  const fold = d.sections === 'collapsed' && cats.length > 1 && opts.view !== 'full';
+  const fold = d.sections === 'collapsed' && cats.length > 1 && !full;
   // Sobald eine Rubrik ein Bild hat, werden zugeklappte Rubriken zu Bildkarten; ohne Bild trägt die Karte das Muster des Themes.
   const cards = fold && cats.some(({ c }) => httpsUrl(c.img));
   const catImg = (c: MenuCategory, cls: string) => {
@@ -1275,7 +1279,6 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
       ? `<div class="social">${insta ? `<a class="btn" href="${esc(insta)}" rel="noopener">${igIcon}<span>Instagram${handle ? `<small dir="ltr">@${esc(handle)}</small>` : ''}</span></a>` : ''}${reviewHref ? `<a class="btn" href="${esc(reviewHref)}" rel="noopener"><i class="gwrap">${gIcon}</i><span>${esc(l.review)}</span></a>` : ''}</div>`
       : '';
   const localized = localize(d, lang);
-  const full = opts.view === 'full';
   const steps = full ? [] : parseSteps(d.steps, d.categories.length).filter((st) => st.cats.some((ci) => localized[ci]?.items.length && openAt(d.categories[ci]!.hours)));
   const wizard = steps.length
     ? `<div id="wiz" hidden role="dialog" aria-modal="true" aria-label="${esc(wl.open)}">

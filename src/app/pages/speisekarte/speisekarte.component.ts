@@ -26,9 +26,8 @@ export class SpeisekarteComponent implements OnInit {
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
 
-  /** Die Karte des Divan: am Tisch, die ganze Karte, und die Beispielkarte zum Ausprobieren. */
+  /** Die Karte des Divan und die Beispielkarte zum Ausprobieren. */
   readonly live = {
-    table: `${SeoService.ORIGIN}/m/divan`,
     full: `${SeoService.ORIGIN}/m/divan/karte`,
     demo: `${SeoService.ORIGIN}/m/demo`,
   };

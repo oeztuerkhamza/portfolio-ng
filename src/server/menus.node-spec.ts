@@ -552,6 +552,14 @@ describe('Zwei Seiten: am Tisch und die ganze Karte', () => {
     assert.ok(!html.includes('<noscript>'));
     assert.ok(html.includes('class="actions"') && html.includes('href="tel:07612927151"'));
   });
+  test('fullOnly: /m/<slug> ist genau dieselbe Seite wie /m/<slug>/karte', () => {
+    const only = menuData({ ...data, sections: 'collapsed', welcome: { de: 'Hallo\nWelt' }, fullOnly: true })!;
+    assert.equal(only.fullOnly, true);
+    const page = renderMenu({ ...base, data: only }, 'https://breisgaudigital.de');
+    assert.equal(page, renderMenu({ ...base, data: only }, 'https://breisgaudigital.de', { view: 'full' }));
+    assert.ok(!page.includes('id="wopen"') && !page.includes('<details class="cat') && !page.includes('class="welcome"'));
+    assert.ok(page.includes('class="actions"'));
+  });
   test('ganze Karte: Rubriken offen, auch wenn sie sonst zugeklappt sind', () => {
     const folded = { ...base, data: { ...data, stepsOnly: false, sections: 'collapsed' as const } };
     assert.ok(renderMenu(folded, 'https://breisgaudigital.de').includes('<details class="cat'));

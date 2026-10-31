@@ -11,7 +11,7 @@
       <h1 class="section-title" [innerHTML]="i18n.t('sk.title')"></h1>
       <p class="section-subtitle">{{ i18n.t('sk.intro') }}</p>
       <div class="sk-head-actions">
-        <a [href]="live.table" target="_blank" rel="noopener" class="btn btn-primary btn-large">
+        <a [href]="live.full" target="_blank" rel="noopener" class="btn btn-primary btn-large">
           {{ i18n.t('sk.cta.live') }} <app-icon name="arrow" />
         </a>
         <a [routerLink]="'/contact' | localize" fragment="anfrage" class="btn btn-secondary btn-large">{{ i18n.t('sk.cta.request') }}</a>
@@ -48,8 +48,7 @@
     </ol>
 
     <div class="sk-ref-links">
-      <a [href]="live.table" target="_blank" rel="noopener" class="btn btn-primary">{{ i18n.t('sk.ref.table') }} <app-icon name="arrow" /></a>
-      <a [href]="live.full" target="_blank" rel="noopener" class="btn btn-secondary">{{ i18n.t('sk.ref.full') }}</a>
+      <a [href]="live.full" target="_blank" rel="noopener" class="btn btn-primary">{{ i18n.t('sk.ref.full') }} <app-icon name="arrow" /></a>
       <a [href]="live.demo" target="_blank" rel="noopener" class="btn btn-ghost">{{ i18n.t('sk.ref.demo') }}</a>
     </div>
   </div>
