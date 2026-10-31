@@ -550,6 +550,26 @@ describe('Zwei Seiten: am Tisch und die ganze Karte', () => {
     assert.ok(!html.includes('<noscript>'));
     assert.ok(html.includes('class="actions"') && html.includes('href="tel:07612927151"'));
   });
+  test('ganze Karte: Rubriken offen, auch wenn sie sonst zugeklappt sind', () => {
+    const folded = { ...base, data: { ...data, stepsOnly: false, sections: 'collapsed' as const } };
+    assert.ok(renderMenu(folded, 'https://breisgaudigital.de').includes('<details class="cat'));
+    assert.ok(!renderMenu(folded, 'https://breisgaudigital.de', { view: 'full' }).includes('<details class="cat'));
+  });
+  test('allergenFilter false: Allergene am Gericht und Hinweis, aber kein Filter; gespeichert bleibt es', () => {
+    const cats = [{ title: 'A', items: [{ name: 'X', allergens: ['gluten', 'milch'] }] }, { title: 'B', items: [{ name: 'Y' }] }];
+    const stored = menuData({ name: 'T', allergenFilter: false, categories: cats })!;
+    assert.equal(stored.allergenFilter, false);
+    const html = renderMenu({ slug: 'x', lang: 'en', theme: 'orient', preview: false, data: stored }, 'https://breisgaudigital.de', { view: 'full' });
+    assert.ok(html.includes('<p class="contains">Contains: Gluten, Milk</p>'));
+    assert.ok(html.includes('A missing entry does not mean'));
+    assert.ok(!html.includes('class="filters"'));
+    const withFilter = renderMenu({ slug: 'x', lang: 'en', theme: 'orient', preview: false, data: menuData({ name: 'T', categories: cats })! }, 'https://breisgaudigital.de', { view: 'full' });
+    assert.ok(withFilter.includes('class="filters"') && !withFilter.includes('A missing entry does not mean'));
+  });
+  test('ganze Karte: Instagram und Google haben auch ohne Assistent ihre feste Größe', () => {
+    const html = renderMenu({ ...base, data: { ...data, instagramUrl: 'https://www.instagram.com/x' } }, 'https://breisgaudigital.de', { view: 'full' });
+    assert.ok(html.includes('class="social"') && html.includes('.social .ico{flex:0 0 auto;width:24px;height:24px}'));
+  });
 });
 
 describe('Begrüßung und Mittagsmenü als erster Schritt', () => {

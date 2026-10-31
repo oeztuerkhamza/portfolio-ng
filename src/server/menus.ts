@@ -138,6 +138,8 @@ export interface MenuData {
   welcome?: Partial<Record<MenuLang, string>>;
   /** true: auf der Seite steht nur der Knopf Schritt für Schritt; die ganze Liste gibt es nur ohne JavaScript (noscript). Braucht `steps`. */
   stepsOnly?: boolean;
+  /** false: Allergene stehen beim Gericht, aber ohne Filter „ohne …", weil die Angaben nicht als vollständig geprüft sind. */
+  allergenFilter?: false;
   /** Übersetzungen im Textformat von `parseMenuText`, je Sprache; gleiche Reihenfolge wie das Original. */
   translations?: Partial<Record<MenuLang, string>>;
   categories: MenuCategory[];
@@ -287,6 +289,7 @@ export function menuData(input: unknown): MenuData | null {
     reviewUrl: httpsUrl(d['reviewUrl']) ?? undefined,
     instagramUrl: httpsUrl(d['instagramUrl']) ?? undefined,
     stepsOnly: d['stepsOnly'] === true ? true : undefined,
+    allergenFilter: d['allergenFilter'] === false ? false : undefined,
     welcome: (() => {
       const w = (d['welcome'] && typeof d['welcome'] === 'object' ? d['welcome'] : {}) as Record<string, unknown>;
       const out: Partial<Record<MenuLang, string>> = {};
@@ -796,6 +799,14 @@ a:focus-visible,button:focus-visible{outline:2px solid ${t.accent};outline-offse
 .alg input{accent-color:${t.accent}}
 .fnote{margin:10px 0 0;color:${t.dim};font-size:.74rem;line-height:1.5}
 .nomatch{margin:22px 0;text-align:center;color:${t.dim}}
+.cta{margin:18px 0 0}
+.social{display:flex;gap:10px;margin:10px 0 0}
+.social .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:11px 12px;font-size:.9rem;line-height:1.25;text-align:start;text-decoration:none}
+.social .btn span{display:flex;flex-direction:column}
+.social .btn small{font-size:.72rem;font-weight:500;opacity:.8}
+.social .ico{flex:0 0 auto;width:24px;height:24px}
+.social .gwrap{flex:0 0 auto;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.social .gwrap .ico{width:19px;height:19px}
 @media (min-width:700px){body{padding:44px 20px 80px}.menu{padding:0 40px 34px}.hero{margin:0 -40px;padding:62px 40px 34px}.nav{margin:0 -40px;padding:12px 40px}}
 ${t.extra ?? ''}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}details.cat>summary::after,.ci img{transition:none}.hero::after{animation:none;opacity:0}.btn::after,.ph::after{display:none}}
@@ -845,6 +856,24 @@ const ALLERGEN_LABELS: Record<'de' | 'en' | 'tr' | 'fr' | 'es' | 'it' | 'el' | '
   el: { gluten: 'Γλουτένη', krebstiere: 'Μαλακόστρακα', eier: 'Αυγά', fisch: 'Ψάρι', erdnuesse: 'Φιστίκια', soja: 'Σόγια', milch: 'Γάλα', schalenfruechte: 'Ξηροί καρποί', sellerie: 'Σέλινο', senf: 'Μουστάρδα', sesam: 'Σουσάμι', sulfite: 'Θειώδη', lupinen: 'Λούπινο', weichtiere: 'Μαλάκια' },
 };
 const allergenLabels = (lang: MenuLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' : lang];
+
+/** Hinweis über der Karte, wenn Allergene ohne Filter stehen (`allergenFilter: false`). */
+const ALLERGEN_NOTE: Record<MenuLang, string> = {
+  de: 'Allergene laut Angaben des Hauses, ohne Gewähr. Fehlt eine Angabe, heißt das nicht, dass das Gericht frei von Allergenen ist. Bei Allergien fragen Sie bitte den Service.',
+  en: 'Allergens as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of allergens. If you have an allergy, please ask the staff.',
+  tr: 'Alerjenler işletmenin bildirdiği şekildedir, garanti edilmez. Bilgi olmaması, yemeğin alerjen içermediği anlamına gelmez. Alerjiniz varsa lütfen servise sorun.',
+  fr: 'Allergènes selon les indications de la maison, sans garantie. L’absence d’indication ne signifie pas qu’un plat est sans allergènes. En cas d’allergie, demandez au personnel.',
+  ku: 'Allergens as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of allergens. If you have an allergy, please ask the staff.',
+  ar: 'مسببات الحساسية وفق ما يذكره المطعم، دون ضمان. عدم ذكرها لا يعني أن الطبق خالٍ منها. إذا كانت لديك حساسية فاسأل فريق الخدمة.',
+  ru: 'Аллергены указаны по данным ресторана, без гарантии. Отсутствие указания не означает, что в блюде нет аллергенов. При аллергии, пожалуйста, спросите персонал.',
+  fa: 'آلرژن‌ها طبق اعلام رستوران و بدون ضمانت است. نبود اطلاعات به معنای نداشتن آلرژن نیست. در صورت آلرژی لطفاً از کارکنان بپرسید.',
+  zh: '过敏原信息由餐厅提供，不作保证。未标注并不代表菜品不含过敏原。如有过敏，请询问服务人员。',
+  ko: '알레르기 정보는 식당에서 제공한 내용이며 보증되지 않습니다. 표시가 없어도 알레르기 유발 성분이 없다는 뜻은 아닙니다. 알레르기가 있으시면 직원에게 문의해 주세요.',
+  hi: 'एलर्जी कारकों की जानकारी रेस्तरां के अनुसार है, बिना गारंटी के। जानकारी न होने का अर्थ यह नहीं कि व्यंजन में एलर्जी कारक नहीं हैं। एलर्जी होने पर कृपया स्टाफ़ से पूछें।',
+  es: 'Alérgenos según los datos del restaurante, sin garantía. La falta de indicación no significa que un plato no contenga alérgenos. Si tiene alguna alergia, pregunte al personal.',
+  it: 'Allergeni secondo le indicazioni del ristorante, senza garanzia. L’assenza di indicazioni non significa che un piatto sia privo di allergeni. In caso di allergie chiedete al personale.',
+  el: 'Τα αλλεργιογόνα αναφέρονται σύμφωνα με το εστιατόριο, χωρίς εγγύηση. Η απουσία ένδειξης δεν σημαίνει ότι το πιάτο δεν περιέχει αλλεργιογόνα. Σε περίπτωση αλλεργίας ρωτήστε το προσωπικό.',
+};
 
 /** Filter auf der Karte: blendet Gerichte aus, die nicht passen. Gerichte ohne Angabe fallen heraus. */
 const FILTER_SCRIPT = `(function(){var f=document.querySelector('.filters');if(!f)return;
@@ -962,7 +991,6 @@ details.wcat .wi:last-child{border-bottom:0}
 .wsub{margin:14px 0 0;color:${t.dim};font:italic 400 .9rem/1.3 ${SERIF};text-align:center}
 .wchoice{display:block;width:100%;margin:16px 0 0;padding:26px 16px;border-radius:20px;border:1px solid ${t.line};background:${t.soft};color:${t.accent};font:600 1.2rem/1.3 ${SERIF};cursor:pointer}
 .wchoice small{display:block;margin-top:3px;color:${t.dim};font:italic 400 .85rem/1.3 ${SERIF}}
-.cta{margin:18px 0 0}
 .cta.only{margin:26px 0 8px}
 .cta.only #wopen{padding:20px 18px;border-radius:22px;font:600 1.55rem/1 ${SERIF};letter-spacing:.32em;text-transform:uppercase;padding-left:calc(18px + .32em)}
 .welcome{margin:30px 6px 4px;text-align:center}
@@ -970,13 +998,6 @@ details.wcat .wi:last-child{border-bottom:0}
 .wel-h::after{content:"";display:block;width:84px;height:1px;margin:14px auto 0;background:linear-gradient(90deg,transparent,${t.accent},transparent);opacity:.6}
 .wel-t{margin:12px auto 0;max-width:30em;color:${t.dim};font:italic 400 1.02rem/1.6 ${SERIF}}
 .cta #wopen{margin:0}
-.social{display:flex;gap:10px;margin:10px 0 0}
-.social .btn{flex:1;display:flex;align-items:center;justify-content:center;gap:10px;margin:0;padding:11px 12px;font-size:.9rem;line-height:1.25;text-align:start;text-decoration:none}
-.social .btn span{display:flex;flex-direction:column}
-.social .btn small{font-size:.72rem;font-weight:500;opacity:.8}
-.social .ico{flex:0 0 auto;width:24px;height:24px}
-.social .gwrap{flex:0 0 auto;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.18)}
-.social .gwrap .ico{width:19px;height:19px}
 .cta .btn.lunch{display:flex;flex-direction:column;align-items:center;gap:2px;width:100%;margin:10px 0 0;padding:14px 16px;border-radius:20px;background:${t.panel};border:1.5px solid ${t.accent};color:${t.accent};font:inherit;font-weight:700;cursor:pointer;box-shadow:none}
 .cta .btn.lunch[hidden],.cta .btn.lunch.closed{display:none}
 .cta .btn.lunch span{font:600 1.15rem/1.2 ${SERIF};letter-spacing:.06em}
@@ -1186,7 +1207,8 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
     .map((c, i) => ({ c, orig: d.categories[i]! }))
     .filter((x) => x.c.items.length);
   const ordering = !!opts.table && !menu.preview;
-  const fold = d.sections === 'collapsed' && cats.length > 1;
+  // Die ganze Karte (/karte) steht immer offen, auch wenn die Rubriken sonst zugeklappt sind.
+  const fold = d.sections === 'collapsed' && cats.length > 1 && opts.view !== 'full';
   // Sobald eine Rubrik ein Bild hat, werden zugeklappte Rubriken zu Bildkarten; ohne Bild trägt die Karte das Muster des Themes.
   const cards = fold && cats.some(({ c }) => httpsUrl(c.img));
   const catImg = (c: MenuCategory, cls: string) => {
@@ -1199,7 +1221,9 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const al = allergenLabels(lang);
   const allItems = d.categories.flatMap((c) => c.items);
   const hasDiet = allItems.some((i) => i.diet);
-  const hasAllergens = allItems.some((i) => i.allergens);
+  const listsAllergens = allItems.some((i) => i.allergens);
+  const hasAllergens = listsAllergens && d.allergenFilter !== false;
+  const allergenNote = listsAllergens && !hasAllergens ? `<p class="fnote">${esc(ALLERGEN_NOTE[lang])}</p>` : '';
   const filtersUi =
     hasDiet || hasAllergens
       ? `<div class="filters" role="group" aria-label="${esc(fl.filter)}">
@@ -1369,7 +1393,7 @@ ${menu.preview ? `<p class="preview" role="status">${esc(l.preview)}</p>` : ''}
 ${welcomeHtml}
 ${wizard || social ? `<div class="cta${stepsOnly ? ' only' : ''}">${wizard ? `<button type="button" class="btn" id="wopen" hidden>${esc(wl.open)}</button>` : ''}${lunchBtn}${social}</div>` : ''}
 ${stepsOnly ? `<noscript>${navHtml}${cats.length ? body : ''}</noscript>` : `${navHtml}
-${filtersUi}
+${filtersUi}${allergenNote}
 ${cats.length ? body : `<p class="empty">${esc(l.empty)}</p>`}`}
 ${d.footnote && !stepsOnly ? `<p class="foot-note">${esc(d.footnote)}</p>` : ''}
 ${actions.length && !stepsOnly ? `<div class="actions">${actions.join('')}</div>` : ''}
