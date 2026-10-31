@@ -1,0 +1,32 @@
+# Veröffentlicht die statische Homepage des Divan Ocakbaşı (Ordner divan-homepage/)
+# auf dem Branch gh-pages, von dem GitHub Pages die Seite ausliefert.
+name: Divan-Homepage auf GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: ['divan-homepage/**', '.github/workflows/divan-pages.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: divan-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Nach gh-pages veröffentlichen
+        run: |
+          cd divan-homepage
+          touch .nojekyll
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Divan-Homepage veröffentlichen (${GITHUB_SHA::7})"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" gh-pages
