@@ -177,6 +177,7 @@ interface Menu {
           <code>Ad | Fiyat | Açıklama | [vegetarisch; milch, eier, gluten]</code> (foto varsa ondan önce).
           <code>vegan</code>/<code>vegetarisch</code> ve içerdiği alerjenler (gluten, krebstiere, eier, fisch, erdnuesse, soja, milch, schalenfruechte, sellerie, senf, sesam, sulfite, lupinen, weichtiere);
           alerjeni olmayan yemeğe <code>[keine]</code> yazın. <strong>Parantezi olmayan yemek filtrede gizlenir</strong>, yani bilinmeyen alerjen "yok" sayılmaz.
+          <br />Katkı maddeleri de aynı parantezde: <code>[milch; konservierungsstoff, phosphat]</code> (farbstoff, konservierungsstoff, suessungsmittel, phosphat, antioxidationsmittel, geschmacksverstaerker, geschwaerzt, geschwefelt, gewachst, phenylalanin, koffein, chinin).
         </p>
         @for (l of otherLangs(); track l.id) {
           <label class="adm-field">Çeviri: {{ l.label }} (isteğe bağlı)

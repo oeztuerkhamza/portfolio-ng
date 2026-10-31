@@ -560,6 +560,18 @@ describe('Zwei Seiten: am Tisch und die ganze Karte', () => {
     assert.ok(!page.includes('id="wopen"') && !page.includes('<details class="cat') && !page.includes('class="welcome"'));
     assert.ok(page.includes('class="actions"'));
   });
+  test('Zusatzstoffe: am Gericht in der Sprache des Gastes, im Textformat des Portals erhalten', () => {
+    const cats = parseMenuText('# A\nX | 1 | | [milch; phosphat, konservierungsstoff]\nY | 2');
+    assert.deepEqual(cats[0]!.items[0]!.additives, ['konservierungsstoff', 'phosphat']);
+    assert.deepEqual(cats[0]!.items[0]!.allergens, ['milch']);
+    assert.ok(!('additives' in cats[0]!.items[1]!));
+    assert.deepEqual(parseMenuText(menuText(cats)), cats);
+    const stored = menuData({ name: 'T', categories: [{ title: 'A', items: [{ name: 'X', additives: ['phosphat', 'unsinn', 'farbstoff'] }] }] })!;
+    assert.deepEqual(stored.categories[0]!.items[0]!.additives, ['farbstoff', 'phosphat']);
+    const tr = renderMenu({ slug: 'x', lang: 'de', theme: 'warm', preview: false, data: { ...stored, translations: { tr: '# A\nX' } } }, 'https://breisgaudigital.de', { lang: 'tr' });
+    assert.ok(tr.includes('<p class="contains">Katkı maddeleri: renklendirici, fosfat</p>'));
+    assert.ok(renderMenu({ slug: 'x', lang: 'de', theme: 'warm', preview: false, data: stored }).includes('Zusatzstoffe: mit Farbstoff, mit Phosphat'));
+  });
   test('ganze Karte: Rubriken offen, auch wenn sie sonst zugeklappt sind', () => {
     const folded = { ...base, data: { ...data, stepsOnly: false, sections: 'collapsed' as const } };
     assert.ok(renderMenu(folded, 'https://breisgaudigital.de').includes('<details class="cat'));

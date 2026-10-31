@@ -52,17 +52,35 @@ const ALLERGEN_ALIASES: Record<string, Allergen> = {
   weichtiere: 'weichtiere', molluscs: 'weichtiere',
 };
 
-const DIET_WORDS: Record<string, Diet> = { vegan: 'vegan', vegetarisch: 'vegetarian', vegetarian: 'vegetarian', veg: 'vegetarian', vejetaryen: 'vegetarian' };
+/** Die kennzeichnungspflichtigen Zusatzstoffe, wie sie auf gedruckten Karten stehen. */
+export const ADDITIVES = [
+  'farbstoff',
+  'konservierungsstoff',
+  'suessungsmittel',
+  'phosphat',
+  'antioxidationsmittel',
+  'geschmacksverstaerker',
+  'geschwaerzt',
+  'geschwefelt',
+  'gewachst',
+  'phenylalanin',
+  'koffein',
+  'chinin',
+] as const;
+export type Additive = (typeof ADDITIVES)[number];
+
+const DIET_WORDS: Record<string, Diet> ={ vegan: 'vegan', vegetarisch: 'vegetarian', vegetarian: 'vegetarian', veg: 'vegetarian', vejetaryen: 'vegetarian' };
 
 /**
  * Angaben zu einem Gericht in eckigen Klammern, z. B. `[vegetarisch; milch, eier]`:
  * vegan/vegetarisch und die Allergene, die das Gericht enthält. `keine` heißt: geprüft, enthält
  * keines der 14. Fehlt die Allergen-Angabe ganz, gilt sie als unbekannt — der Filter zeigt so ein
- * Gericht dann nie als „ohne Allergen" an.
+ * Gericht dann nie als „ohne Allergen" an. Dazu die Zusatzstoffe: `[milch; konservierungsstoff, phosphat]`.
  */
-export function parseTags(raw: string): { diet?: Diet; allergens?: Allergen[] } {
+export function parseTags(raw: string): { diet?: Diet; allergens?: Allergen[]; additives?: Additive[] } {
   let diet: Diet | undefined;
   let allergens: Allergen[] | undefined;
+  const additives: Additive[] = [];
   for (const tok of raw.replace(/^\[|\]$/g, '').split(/[;,]/)) {
     const k = tok.trim().toLowerCase().replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/ß/g, 'ss');
     if (!k) continue;
@@ -73,17 +91,21 @@ export function parseTags(raw: string): { diet?: Diet; allergens?: Allergen[] } 
     } else if (ALLERGEN_ALIASES[k]) {
       allergens ??= [];
       if (!allergens.includes(ALLERGEN_ALIASES[k]!)) allergens.push(ALLERGEN_ALIASES[k]!);
+    } else if ((ADDITIVES as readonly string[]).includes(k) && !additives.includes(k as Additive)) {
+      additives.push(k as Additive);
     }
   }
   if (allergens) allergens.sort((a, b) => ALLERGENS.indexOf(a) - ALLERGENS.indexOf(b));
-  return { ...(diet ? { diet } : {}), ...(allergens ? { allergens } : {}) };
+  additives.sort((a, b) => ADDITIVES.indexOf(a) - ADDITIVES.indexOf(b));
+  return { ...(diet ? { diet } : {}), ...(allergens ? { allergens } : {}), ...(additives.length ? { additives } : {}) };
 }
 
 /** Umkehrung von `parseTags` für das Textformat im Portal; leer, wenn nichts angegeben ist. */
-export function tagsText(i: { diet?: Diet; allergens?: Allergen[] }): string {
+export function tagsText(i: { diet?: Diet; allergens?: Allergen[]; additives?: Additive[] }): string {
   const parts: string[] = [];
   if (i.diet) parts.push(i.diet === 'vegan' ? 'vegan' : 'vegetarisch');
   if (i.allergens) parts.push(i.allergens.length ? i.allergens.join(', ') : 'keine');
+  if (i.additives?.length) parts.push(i.additives.join(', '));
   return parts.length ? `[${parts.join('; ')}]` : '';
 }
 
@@ -99,6 +121,8 @@ export interface MenuItem {
   diet?: Diet;
   /** Enthaltene Allergene; `[]` = geprüft, keines. Fehlt das Feld, ist es unbekannt. */
   allergens?: Allergen[];
+  /** Enthaltene Zusatzstoffe; fehlt das Feld, gibt es dazu keine Angabe. */
+  additives?: Additive[];
 }
 
 export interface MenuCategory {
@@ -255,6 +279,7 @@ export function menuData(input: unknown): MenuData | null {
       const allergens = Array.isArray(it['allergens'])
         ? ALLERGENS.filter((a) => (it['allergens'] as unknown[]).includes(a))
         : undefined;
+      const additives = Array.isArray(it['additives']) ? ADDITIVES.filter((a) => (it['additives'] as unknown[]).includes(a)) : [];
       const num = menuNum(it['num']);
       items.push({
         name: itemName,
@@ -264,6 +289,7 @@ export function menuData(input: unknown): MenuData | null {
         img: httpsUrl(it['img']) ?? undefined,
         ...(diet ? { diet } : {}),
         ...(allergens ? { allergens } : {}),
+        ...(additives.length ? { additives } : {}),
       });
     }
     const img = httpsUrl(cat['img']);
@@ -862,21 +888,39 @@ const allergenLabels = (lang: MenuLang) => ALLERGEN_LABELS[lang === 'ku' ? 'en' 
 
 /** Hinweis über der Karte, wenn Allergene ohne Filter stehen (`allergenFilter: false`). */
 const ALLERGEN_NOTE: Record<MenuLang, string> = {
-  de: 'Allergene laut Angaben des Hauses, ohne Gewähr. Fehlt eine Angabe, heißt das nicht, dass das Gericht frei von Allergenen ist. Bei Allergien fragen Sie bitte den Service.',
-  en: 'Allergens as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of allergens. If you have an allergy, please ask the staff.',
-  tr: 'Alerjenler işletmenin bildirdiği şekildedir, garanti edilmez. Bilgi olmaması, yemeğin alerjen içermediği anlamına gelmez. Alerjiniz varsa lütfen servise sorun.',
-  fr: 'Allergènes selon les indications de la maison, sans garantie. L’absence d’indication ne signifie pas qu’un plat est sans allergènes. En cas d’allergie, demandez au personnel.',
-  ku: 'Allergens as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of allergens. If you have an allergy, please ask the staff.',
-  ar: 'مسببات الحساسية وفق ما يذكره المطعم، دون ضمان. عدم ذكرها لا يعني أن الطبق خالٍ منها. إذا كانت لديك حساسية فاسأل فريق الخدمة.',
-  ru: 'Аллергены указаны по данным ресторана, без гарантии. Отсутствие указания не означает, что в блюде нет аллергенов. При аллергии, пожалуйста, спросите персонал.',
-  fa: 'آلرژن‌ها طبق اعلام رستوران و بدون ضمانت است. نبود اطلاعات به معنای نداشتن آلرژن نیست. در صورت آلرژی لطفاً از کارکنان بپرسید.',
-  zh: '过敏原信息由餐厅提供，不作保证。未标注并不代表菜品不含过敏原。如有过敏，请询问服务人员。',
-  ko: '알레르기 정보는 식당에서 제공한 내용이며 보증되지 않습니다. 표시가 없어도 알레르기 유발 성분이 없다는 뜻은 아닙니다. 알레르기가 있으시면 직원에게 문의해 주세요.',
-  hi: 'एलर्जी कारकों की जानकारी रेस्तरां के अनुसार है, बिना गारंटी के। जानकारी न होने का अर्थ यह नहीं कि व्यंजन में एलर्जी कारक नहीं हैं। एलर्जी होने पर कृपया स्टाफ़ से पूछें।',
-  es: 'Alérgenos según los datos del restaurante, sin garantía. La falta de indicación no significa que un plato no contenga alérgenos. Si tiene alguna alergia, pregunte al personal.',
-  it: 'Allergeni secondo le indicazioni del ristorante, senza garanzia. L’assenza di indicazioni non significa che un piatto sia privo di allergeni. In caso di allergie chiedete al personale.',
-  el: 'Τα αλλεργιογόνα αναφέρονται σύμφωνα με το εστιατόριο, χωρίς εγγύηση. Η απουσία ένδειξης δεν σημαίνει ότι το πιάτο δεν περιέχει αλλεργιογόνα. Σε περίπτωση αλλεργίας ρωτήστε το προσωπικό.',
+  de: 'Allergene und Zusatzstoffe laut Angaben des Hauses, ohne Gewähr. Fehlt eine Angabe, heißt das nicht, dass das Gericht frei davon ist. Bei Allergien fragen Sie bitte den Service.',
+  en: 'Allergens and additives as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of them. If you have an allergy, please ask the staff.',
+  tr: 'Alerjenler ve katkı maddeleri işletmenin bildirdiği şekildedir, garanti edilmez. Bilgi olmaması, yemeğin bunları içermediği anlamına gelmez. Alerjiniz varsa lütfen servise sorun.',
+  fr: 'Allergènes et additifs selon les indications de la maison, sans garantie. L’absence d’indication ne signifie pas qu’un plat en est exempt. En cas d’allergie, demandez au personnel.',
+  ku: 'Allergens and additives as stated by the restaurant, without guarantee. A missing entry does not mean that a dish is free of them. If you have an allergy, please ask the staff.',
+  ar: 'مسببات الحساسية والمواد المضافة وفق ما يذكره المطعم، دون ضمان. عدم ذكرها لا يعني أن الطبق خالٍ منها. إذا كانت لديك حساسية فاسأل فريق الخدمة.',
+  ru: 'Аллергены и добавки указаны по данным ресторана, без гарантии. Отсутствие указания не означает, что их нет в блюде. При аллергии, пожалуйста, спросите персонал.',
+  fa: 'آلرژن‌ها و افزودنی‌ها طبق اعلام رستوران و بدون ضمانت است. نبود اطلاعات به معنای نداشتن آن‌ها نیست. در صورت آلرژی لطفاً از کارکنان بپرسید.',
+  zh: '过敏原和添加剂信息由餐厅提供，不作保证。未标注并不代表菜品不含这些成分。如有过敏，请询问服务人员。',
+  ko: '알레르기 유발 성분과 첨가물 정보는 식당에서 제공한 내용이며 보증되지 않습니다. 표시가 없어도 해당 성분이 없다는 뜻은 아닙니다. 알레르기가 있으시면 직원에게 문의해 주세요.',
+  hi: 'एलर्जी कारकों और योजकों की जानकारी रेस्तरां के अनुसार है, बिना गारंटी के। जानकारी न होने का अर्थ यह नहीं कि व्यंजन में ये नहीं हैं। एलर्जी होने पर कृपया स्टाफ़ से पूछें।',
+  es: 'Alérgenos y aditivos según los datos del restaurante, sin garantía. La falta de indicación no significa que un plato no los contenga. Si tiene alguna alergia, pregunte al personal.',
+  it: 'Allergeni e additivi secondo le indicazioni del ristorante, senza garanzia. L’assenza di indicazioni non significa che un piatto ne sia privo. In caso di allergie chiedete al personale.',
+  el: 'Τα αλλεργιογόνα και τα πρόσθετα αναφέρονται σύμφωνα με το εστιατόριο, χωρίς εγγύηση. Η απουσία ένδειξης δεν σημαίνει ότι το πιάτο δεν τα περιέχει. Σε περίπτωση αλλεργίας ρωτήστε το προσωπικό.',
 };
+
+/** Zusatzstoffe am Gericht: Überschrift und Bezeichnungen je Sprache (Kurdisch wie bei den Allergenen auf Englisch). */
+const ADDITIVE_LABELS: Record<Exclude<MenuLang, 'ku'>, { title: string; names: Record<Additive, string> }> = {
+  de: { title: 'Zusatzstoffe', names: { farbstoff: 'mit Farbstoff', konservierungsstoff: 'mit Konservierungsstoff', suessungsmittel: 'mit Süßungsmittel', phosphat: 'mit Phosphat', antioxidationsmittel: 'mit Antioxidationsmittel', geschmacksverstaerker: 'mit Geschmacksverstärker', geschwaerzt: 'geschwärzt', geschwefelt: 'geschwefelt', gewachst: 'gewachst', phenylalanin: 'enthält eine Phenylalaninquelle', koffein: 'koffeinhaltig', chinin: 'chininhaltig' } },
+  en: { title: 'Additives', names: { farbstoff: 'colouring', konservierungsstoff: 'preservative', suessungsmittel: 'sweetener', phosphat: 'phosphate', antioxidationsmittel: 'antioxidant', geschmacksverstaerker: 'flavour enhancer', geschwaerzt: 'blackened', geschwefelt: 'sulphured', gewachst: 'waxed', phenylalanin: 'contains a source of phenylalanine', koffein: 'contains caffeine', chinin: 'contains quinine' } },
+  tr: { title: 'Katkı maddeleri', names: { farbstoff: 'renklendirici', konservierungsstoff: 'koruyucu', suessungsmittel: 'tatlandırıcı', phosphat: 'fosfat', antioxidationsmittel: 'antioksidan', geschmacksverstaerker: 'lezzet artırıcı', geschwaerzt: 'karartılmış', geschwefelt: 'kükürtlenmiş', gewachst: 'mumlanmış', phenylalanin: 'fenilalanin kaynağı içerir', koffein: 'kafein içerir', chinin: 'kinin içerir' } },
+  fr: { title: 'Additifs', names: { farbstoff: 'colorant', konservierungsstoff: 'conservateur', suessungsmittel: 'édulcorant', phosphat: 'phosphate', antioxidationsmittel: 'antioxydant', geschmacksverstaerker: 'exhausteur de goût', geschwaerzt: 'noirci', geschwefelt: 'soufré', gewachst: 'ciré', phenylalanin: 'contient une source de phénylalanine', koffein: 'contient de la caféine', chinin: 'contient de la quinine' } },
+  es: { title: 'Aditivos', names: { farbstoff: 'colorante', konservierungsstoff: 'conservante', suessungsmittel: 'edulcorante', phosphat: 'fosfato', antioxidationsmittel: 'antioxidante', geschmacksverstaerker: 'potenciador del sabor', geschwaerzt: 'ennegrecido', geschwefelt: 'azufrado', gewachst: 'encerado', phenylalanin: 'contiene una fuente de fenilalanina', koffein: 'contiene cafeína', chinin: 'contiene quinina' } },
+  it: { title: 'Additivi', names: { farbstoff: 'colorante', konservierungsstoff: 'conservante', suessungsmittel: 'edulcorante', phosphat: 'fosfato', antioxidationsmittel: 'antiossidante', geschmacksverstaerker: 'esaltatore di sapidità', geschwaerzt: 'annerito', geschwefelt: 'solforato', gewachst: 'cerato', phenylalanin: 'contiene una fonte di fenilalanina', koffein: 'contiene caffeina', chinin: 'contiene chinino' } },
+  el: { title: 'Πρόσθετα', names: { farbstoff: 'χρωστική', konservierungsstoff: 'συντηρητικό', suessungsmittel: 'γλυκαντικό', phosphat: 'φωσφορικά άλατα', antioxidationsmittel: 'αντιοξειδωτικό', geschmacksverstaerker: 'ενισχυτικό γεύσης', geschwaerzt: 'μαυρισμένο', geschwefelt: 'θειωμένο', gewachst: 'κερωμένο', phenylalanin: 'περιέχει πηγή φαινυλαλανίνης', koffein: 'περιέχει καφεΐνη', chinin: 'περιέχει κινίνη' } },
+  ar: { title: 'المواد المضافة', names: { farbstoff: 'مادة ملونة', konservierungsstoff: 'مادة حافظة', suessungsmittel: 'مُحلٍّ', phosphat: 'فوسفات', antioxidationsmittel: 'مضاد أكسدة', geschmacksverstaerker: 'مُحسِّن نكهة', geschwaerzt: 'مُسوَّد', geschwefelt: 'مُكبرت', gewachst: 'مُشمَّع', phenylalanin: 'يحتوي على مصدر للفينيل ألانين', koffein: 'يحتوي على كافيين', chinin: 'يحتوي على كينين' } },
+  fa: { title: 'افزودنی‌ها', names: { farbstoff: 'رنگ‌دهنده', konservierungsstoff: 'نگهدارنده', suessungsmittel: 'شیرین‌کننده', phosphat: 'فسفات', antioxidationsmittel: 'آنتی‌اکسیدان', geschmacksverstaerker: 'طعم‌دهنده', geschwaerzt: 'سیاه‌شده', geschwefelt: 'گوگردزده', gewachst: 'واکس‌خورده', phenylalanin: 'حاوی منبع فنیل‌آلانین', koffein: 'حاوی کافئین', chinin: 'حاوی کینین' } },
+  hi: { title: 'योजक', names: { farbstoff: 'रंग', konservierungsstoff: 'परिरक्षक', suessungsmittel: 'स्वीटनर', phosphat: 'फॉस्फेट', antioxidationsmittel: 'एंटीऑक्सीडेंट', geschmacksverstaerker: 'स्वाद वर्धक', geschwaerzt: 'काला किया हुआ', geschwefelt: 'गंधकयुक्त', gewachst: 'मोम लगा', phenylalanin: 'फेनिलएलनिन का स्रोत है', koffein: 'कैफ़ीन युक्त', chinin: 'कुनैन युक्त' } },
+  ru: { title: 'Добавки', names: { farbstoff: 'краситель', konservierungsstoff: 'консервант', suessungsmittel: 'подсластитель', phosphat: 'фосфат', antioxidationsmittel: 'антиоксидант', geschmacksverstaerker: 'усилитель вкуса', geschwaerzt: 'чернёный', geschwefelt: 'обработано серой', gewachst: 'вощёный', phenylalanin: 'содержит источник фенилаланина', koffein: 'содержит кофеин', chinin: 'содержит хинин' } },
+  zh: { title: '添加剂', names: { farbstoff: '色素', konservierungsstoff: '防腐剂', suessungsmittel: '甜味剂', phosphat: '磷酸盐', antioxidationsmittel: '抗氧化剂', geschmacksverstaerker: '增味剂', geschwaerzt: '发黑处理', geschwefelt: '硫处理', gewachst: '打蜡', phenylalanin: '含苯丙氨酸来源', koffein: '含咖啡因', chinin: '含奎宁' } },
+  ko: { title: '첨가물', names: { farbstoff: '착색료', konservierungsstoff: '보존료', suessungsmittel: '감미료', phosphat: '인산염', antioxidationsmittel: '산화방지제', geschmacksverstaerker: '향미증진제', geschwaerzt: '흑색 처리', geschwefelt: '황 처리', gewachst: '왁스 처리', phenylalanin: '페닐알라닌 공급원 함유', koffein: '카페인 함유', chinin: '퀴닌 함유' } },
+};
+const additiveLabels = (lang: MenuLang) => ADDITIVE_LABELS[lang === 'ku' ? 'en' : lang];
 
 /** Filter auf der Karte: blendet Gerichte aus, die nicht passen. Gerichte ohne Angabe fallen heraus. */
 const FILTER_SCRIPT = `(function(){var f=document.querySelector('.filters');if(!f)return;
@@ -1223,6 +1267,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
   const ol = ORDER_LABELS[lang];
   const fl = FILTER_LABELS[lang];
   const al = allergenLabels(lang);
+  const adl = additiveLabels(lang);
   const allItems = d.categories.flatMap((c) => c.items);
   const hasDiet = allItems.some((i) => i.diet);
   const listsAllergens = allItems.some((i) => i.allergens);
@@ -1260,7 +1305,7 @@ export function renderMenu(menu: Menu, base = config.siteUrl || '', opts: Render
             ? `<button type="button" class="add" data-n="${esc(o.name)}" data-c="${priceCents(o.price) ?? ''}" aria-label="${esc(`${ol.add}: ${it.name}`)}">+</button>`
             : '';
           const img = httpsUrl(it.img);
-          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(priceText(it.price))}</span>` : ''}${add}</div>${origName(i, it, o)}${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}</div></li>`;
+          return `<li${img ? ' class="has-img"' : ''}${o.diet ? ` data-d="${o.diet}"` : ''}${o.allergens ? ` data-a="${o.allergens.join(' ')}"` : ''}>${img ? `<div class="ph"><img class="dish" src="${esc(img)}" alt="${esc(it.name)}" loading="lazy" decoding="async" /></div>` : ''}<div class="txt"><div class="row"><span class="name">${o.num ? `<span class="num">${esc(o.num)}</span>` : ''}${esc(it.name)}${o.diet ? `<span class="tag">${esc(o.diet === 'vegan' ? fl.vegan : fl.vegetarian)}</span>` : ''}</span>${it.price ? `<span class="dots" aria-hidden="true"></span><span class="price">${esc(priceText(it.price))}</span>` : ''}${add}</div>${origName(i, it, o)}${it.desc ? `<p class="desc">${esc(it.desc)}</p>` : ''}${o.allergens?.length ? `<p class="contains">${esc(fl.contains)}: ${o.allergens.map((a) => esc(al[a])).join(', ')}</p>` : ''}${o.additives?.length ? `<p class="contains">${esc(adl.title)}: ${o.additives.map((a) => esc(adl.names[a])).join(', ')}</p>` : ''}</div></li>`;
         })
         .join('')}</ul>${fold ? '</details>' : ''}</section>`,
     )
