@@ -6,7 +6,7 @@ import type { Customer } from './customers.tab';
 
 /** Muss zu MENU_THEMES in src/server/menus.ts passen. */
 type Theme = 'brand' | 'dark' | 'warm' | 'orient';
-type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku' | 'ar' | 'fa' | 'ru' | 'zh' | 'ko' | 'es' | 'it' | 'el' | 'hi';
+type Lang = 'de' | 'fr' | 'en' | 'tr' | 'ku' | 'ar' | 'fa' | 'ur' | 'ru' | 'zh' | 'ko' | 'es' | 'it' | 'el' | 'hi';
 
 const THEMES: { id: Theme; label: string }[] = [
   { id: 'warm', label: 'Sıcak' },
@@ -24,6 +24,7 @@ const LANGS: { id: Lang; label: string }[] = [
   { id: 'ku', label: 'Kürtçe' },
   { id: 'ar', label: 'Arapça' },
   { id: 'fa', label: 'Farsça' },
+  { id: 'ur', label: 'Urduca' },
   { id: 'ru', label: 'Rusça' },
   { id: 'zh', label: 'Çince' },
   { id: 'ko', label: 'Korece' },
