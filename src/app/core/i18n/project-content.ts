@@ -18,363 +18,491 @@ export interface ProjectTx {
 export const PROJECT_CONTENT: Record<string, Partial<Record<Lang, ProjectTx>>> = {
   'bikehaus-freiburg': {
     en: {
-      subtitle: 'Inventory management, website and online rental for a bicycle shop',
+      subtitle: 'How a bicycle shop got purchasing, sales, rental and its online presence into one system',
       category: 'Full-stack platform',
       description:
-        'Inventory management, public website and online rental for a bicycle shop in Freiburg. .NET API, two Angular front-ends, a Chrome extension and a Windows app — self-hosted.',
+        'A bicycle shop in Freiburg where the same bike is bought in, sold, rented out and offered online. Today it all runs in one system — including a website with online rental in twelve languages.',
       role: 'Full-stack developer & architect',
-      long: `Bikehaus Freiburg isn’t a shop template, it’s the business itself: a bike is bought in, enters stock, then gets sold, rented out or returned — and every one of those steps carries its own document number, a signature and a PDF at the end. The admin interface covers that across roughly 28 modules, from customers and invoices through expenses and refurbishment costs to statistics, exports and backups.
+      long: `Bikehaus Freiburg is a bicycle shop with several lines of business: bikes are bought in, refurbished, sold, rented out and taken back. Every one of those steps needs a document, a signature, often a PDF — and all of it should also be visible online, for locals and visitors in many languages. Anyone who tries to manage that with spreadsheets, slips of paper and a site-builder page spends their time on admin instead of on bikes.
 
-Facing outward is the public site: Angular 17 with server-side rendering, twelve languages on their own URLs and around 100 routes pre-rendered at build time — showroom, e-bikes, new bikes, accessories, service, guides and local landing pages for the surrounding towns. Rentals run entirely online: check availability, pick accessories, pay via Mollie. The booking lands in the admin area for approval and turns into a rental contract there.
+So our answer was not a website but a model of the business itself. In the admin area every bike has its path: purchase, stock, sale or rental, return — each station with its own document number, signature and PDF. Around 28 areas cover what a shop needs every day, from customers and invoices to expenses and refurbishment costs, statistics, export and backup. What used to live in several places now lives in one.
 
-On top of that sits everything a single shop would otherwise do by hand: a background service syncs the Kleinanzeigen listings every four hours, a Chrome extension edits them in bulk, and customer enquiries arrive as a chat from a connected mailbox. It all runs on a dedicated server: Docker Compose with five services, nginx in front, certificates renewed automatically and monitored daily by GitHub Actions. For the counter there is also a Windows build that bundles the API.`,
+Facing outward, the site speaks twelve languages, each on its own addresses: showroom, e-bikes, new bikes, accessories, service, guides and pages for the towns around Freiburg. Rental is fully online — check availability, choose accessories, pay via Mollie. The booking lands in the admin area for approval and turns into a rental contract there. Nobody has to call back to ask whether a bike is still free on Saturday.
+
+On top comes what a shop otherwise does by hand: every four hours a background service syncs the Kleinanzeigen listings, a Chrome extension edits them in bulk, and customer enquiries run as a chat through the connected mailbox. There is a Windows version for the shop counter, and everything runs on a dedicated, monitored server. The result: a business with one system instead of many tools — and a platform that has proven itself so well that it now runs in further shops too.`,
       features: [
-        'Full goods flow: purchase → stock → sale → return, with document numbers and signature',
-        'Public rental booking with availability check and online payment (Mollie)',
-        '12 languages on their own URLs, around 100 pre-rendered routes (Angular SSR)',
-        'Kleinanzeigen sync every four hours plus a Chrome extension for bulk editing',
-        'Admin area with ~28 modules: customers, invoices, expenses, statistics, export, backup',
-        'PDF generation for rental contracts, invoices and receipts',
-        'Windows desktop build (Electron) with a bundled API for in-store use',
-        'Self-hosted: five-service Docker Compose, nginx, automatic TLS, own mail server',
+        'Every bike has its path: purchase, stock, sale or rental, return — with document number, signature and PDF',
+        'Online rental: availability, accessories and payment via Mollie — the booking becomes the rental contract',
+        'Twelve languages on their own addresses, for locals and visitors',
+        'Kleinanzeigen listings sync every four hours, bulk editing via a Chrome extension',
+        'Customer enquiries as a chat in the admin area instead of scattered mailboxes',
+        'Around 28 areas: customers, invoices, expenses, refurbishment, statistics, export, backup',
+        'Windows version for the shop counter',
+        'Dedicated, monitored and backed-up server — no dependence on site-builder vendors',
       ],
     },
     tr: {
-      subtitle: 'Bir bisiklet mağazası için stok yönetimi, web sitesi ve online kiralama',
+      subtitle: 'Bir bisiklet dükkânı alım, satış, kiralama ve çevrimiçi görünürlüğü nasıl tek sisteme kavuşturdu',
       category: 'Full-stack platform',
       description:
-        'Freiburg’daki bir bisiklet mağazası için stok yönetimi, halka açık web sitesi ve online kiralama. .NET API, iki Angular arayüzü, Chrome eklentisi ve Windows uygulaması — kendi sunucusunda.',
+        'Freiburg’da aynı bisikletin alındığı, satıldığı, kiralandığı ve çevrimiçi sunulduğu bir bisiklet dükkânı. Bugün her şey tek sistemde çalışıyor — on iki dilde çevrimiçi kiralamalı web sitesi dahil.',
       role: 'Full-stack geliştirici & mimar',
-      long: `Bikehaus Freiburg hazır bir mağaza şablonu değil, işin kendisi: Bisiklet satın alınır, stoğa girer, satılır, kiralanır ya da iade alınır — ve bu adımların her birinin kendi belge numarası, imzası ve sonunda bir PDF’i vardır. Yönetim arayüzü bunu yaklaşık 28 modülde kapsıyor: müşteriler ve faturalardan giderlere ve yenileme maliyetlerine, oradan istatistik, dışa aktarma ve yedeklemeye kadar.
+      long: `Bikehaus Freiburg, birden fazla ayağı olan bir bisiklet dükkânı: bisikletler alınıyor, bakımdan geçiriliyor, satılıyor, kiralanıyor ve geri alınıyor. Bu adımların her biri bir belge, bir imza, çoğu zaman bir PDF istiyor — üstelik hepsinin çevrimiçi de, yerel halk ve misafirler için birçok dilde görünür olması gerekiyor. Bunu tablolar, kâğıt notlar ve hazır site oluşturucuyla yürütmeye çalışan biri zamanını bisikletlere değil, idareye harcar.
 
-Dışarıya bakan yüz ise halka açık site: sunucu taraflı render’lı Angular 17, kendi URL’leriyle on iki dil ve derleme sırasında önceden üretilmiş yaklaşık 100 sayfa — showroom, e-bike, yeni bisikletler, aksesuar, servis, rehber ve çevredeki şehirler için yerel sayfalar. Kiralama tamamen online: müsaitliği kontrol et, aksesuarı seç, Mollie ile öde. Rezervasyon onay için yönetim paneline düşer ve orada kira sözleşmesine dönüşür.
+Cevabımız bu yüzden bir web sitesi değil, işletmenin kendisinin bir yansıması oldu. Yönetim panelinde her bisikletin bir yolu var: alım, stok, satış veya kiralama, iade — her istasyonun kendi belge numarası, imzası ve PDF’i ile. Yaklaşık 28 bölüm bir dükkânın günlük ihtiyacını karşılıyor; müşteriler ve faturalardan giderlere, yenileme masraflarına, istatistik, dışa aktarma ve yedeğe kadar. Eskiden birkaç yerde duran şey artık tek yerde duruyor.
 
-Üstüne, tek bir mağazanın normalde elle yaptığı her şey geliyor: Bir arka plan servisi Kleinanzeigen ilanlarını dört saatte bir eşitliyor, bir Chrome eklentisi ilanları toplu düzenliyor, müşteri mesajları bağlı bir posta kutusundan sohbet olarak geliyor. Tamamı kendi sunucusunda çalışıyor: beş servisli Docker Compose, önünde nginx, otomatik yenilenen sertifikalar ve GitHub Actions ile her gün yapılan kontrol. Tezgâh için ayrıca API’yi de içinde taşıyan bir Windows sürümü var.`,
+Dışarıya dönük site on iki dil konuşuyor, her birinin kendi adresleri var: showroom, e-bisikletler, yeni bisikletler, aksesuar, servis, rehber ve Freiburg çevresindeki yerler için sayfalar. Kiralama tamamen çevrimiçi — müsaitliği kontrol et, aksesuar seç, Mollie ile öde. Rezervasyon onay için yönetim paneline düşüyor ve orada kira sözleşmesine dönüşüyor. Cumartesi için hâlâ boş bisiklet var mı diye kimsenin geri araması gerekmiyor.
+
+Üstüne bir dükkânın normalde elle yaptığı işler geliyor: bir arka plan servisi dört saatte bir Kleinanzeigen ilanlarını eşitliyor, bir Chrome eklentisi bunları toplu düzenliyor, müşteri talepleri bağlı posta kutusu üzerinden sohbet olarak akıyor. Tezgâh için bir Windows sürümü var ve her şey izlenen, kendi sunucusunda çalışıyor. Sonuç: birçok araç yerine tek sistemli bir işletme — ve kendini o kadar kanıtlamış bir platform ki bugün başka dükkânlarda da çalışıyor.`,
       features: [
-        'Eksiksiz mal akışı: alım → stok → satış → iade, belge numaraları ve imzayla',
-        'Müsaitlik kontrolü ve online ödemeli (Mollie) halka açık kiralama',
-        'Kendi URL’leriyle 12 dil, yaklaşık 100 önceden üretilmiş sayfa (Angular SSR)',
-        'Dört saatte bir Kleinanzeigen eşitlemesi ve toplu düzenleme için Chrome eklentisi',
-        '~28 modüllü yönetim paneli: müşteri, fatura, gider, istatistik, dışa aktarma, yedek',
-        'Kira sözleşmesi, fatura ve belgeler için PDF üretimi',
-        'Mağazada kullanım için API’yi içeren Windows sürümü (Electron)',
-        'Kendi sunucusu: beş servisli Docker Compose, nginx, otomatik TLS, kendi mail sunucusu',
+        'Her bisikletin bir yolu var: alım, stok, satış veya kiralama, iade — belge numarası, imza ve PDF ile',
+        'Çevrimiçi kiralama: müsaitlik, aksesuar ve Mollie ile ödeme — rezervasyon kira sözleşmesine dönüşür',
+        'Kendi adreslerine sahip on iki dil, yerel halk ve misafirler için',
+        'Kleinanzeigen ilanları dört saatte bir eşitlenir, Chrome eklentisiyle toplu düzenleme',
+        'Müşteri talepleri dağınık posta kutuları yerine yönetim panelinde sohbet olarak',
+        'Yaklaşık 28 bölüm: müşteriler, faturalar, giderler, yenileme, istatistik, dışa aktarma, yedek',
+        'Tezgâh için Windows sürümü',
+        'Kendi sunucusu, izlenen ve yedekli — site oluşturucu sağlayıcılara bağımlılık yok',
       ],
     },
   },
   'di-flux': {
     en: {
-      subtitle: 'Intelligent time-tracking system for companies',
+      subtitle: 'Time tracking that keeps an eye on working-time law by itself',
       category: 'Enterprise software',
-      description: 'Intelligent time-tracking with automatic break calculation, working-time-law compliance and employee management. Built at Dicom GmbH.',
+      description:
+        'A time-tracking system that checks breaks, maximum working hours and youth protection automatically — so HR and employees no longer have to calculate and look things up. Built in a team at Dicom GmbH.',
       role: 'Full-stack developer',
-      long: `Di-Flux is an enterprise time-tracking system developed at Dicom GmbH. It digitises the entire working-time recording, from the time clock to overtime reporting, and automatically ensures compliance with the German Working Hours Act (ArbZG).
+      long: `Anyone recording working time soon stands between two sides: employees want to clock in quickly, HR has to comply with the German Working Time Act — statutory breaks, maximum working hours, special rules for young people. With spreadsheets and hand calculation that is error-prone and uncomfortable in an audit. At Dicom GmbH, Di-Flux was created to hand that burden to the system instead of the people.
 
-The system detects statutory breaks, validates maximum working times and supports age-dependent labour protection. The Angular 19 frontend offers an intuitive dashboard; the .NET backend follows a fully unit-tested Clean Architecture.`,
+Our answer: the system knows the rules. It recognises statutory breaks automatically, warns when maximum working hours are exceeded and applies age-dependent protection rules. Employees see their times in a calendar on a clear dashboard, plan leave, report absences and receive notifications in real time. HR manages employees and roles and can correct entries in bulk instead of touching every line one by one.
+
+What makes the difference with software like this lies beneath the surface: a time tracker that calculates wrongly is worse than none. So the back end follows a clear layered architecture with the business logic fully covered by unit tests, and sign-in is secured through tokens. The result is a system you can trust with your working-time data — and one that can be adapted traceably with every change in the law.`,
       features: [
-        'Automatic break calculation per ArbZG',
-        'Age-dependent labour-protection compliance (JArbSchG)',
-        'Leave and absence management with calendar',
-        'Overtime tracking and statistics',
-        'Bulk operations for mass entries',
-        'Employee and role management',
-        'JWT-based authentication with interceptor',
-        'Real-time notification system',
+        'Breaks under the Working Time Act are detected and calculated automatically',
+        'Youth protection rules applied according to age',
+        'Plan and approve leave and absences in a calendar',
+        'Overtime and statistics at a glance',
+        'Bulk entries for HR instead of line by line',
+        'Employees and roles managed centrally',
+        'Real-time notifications, secured sign-in',
+        'Business logic fully covered by unit tests',
       ],
     },
     tr: {
-      subtitle: 'Şirketler için akıllı zaman takip sistemi',
+      subtitle: 'Çalışma süresi yasasını kendisi gözeten zaman takibi',
       category: 'Kurumsal yazılım',
-      description: 'Otomatik mola hesabı, çalışma yasası uyumu ve personel yönetimiyle akıllı zaman takibi. Dicom GmbH’de geliştirildi.',
+      description:
+        'Molaları, azami çalışma sürelerini ve genç çalışan korumasını otomatik denetleyen bir zaman takip sistemi — böylece insan kaynakları ve çalışanlar artık hesap yapmak ve bir şeylere bakmak zorunda kalmıyor. Dicom GmbH’de ekip olarak geliştirildi.',
       role: 'Full-stack geliştirici',
-      long: `Di-Flux, Dicom GmbH’de geliştirilen kurumsal bir zaman takip sistemidir. Çalışma süresi kaydını mesai saatinden fazla mesai raporlamasına kadar tümüyle dijitalleştirir ve Alman Çalışma Saatleri Yasası’na (ArbZG) uyumu otomatik sağlar.
+      long: `Çalışma süresini kaydeden herkes kısa sürede iki taraf arasında kalır: çalışanlar hızlıca giriş yapmak ister, insan kaynakları Alman Çalışma Süresi Yasası’na uymak zorundadır — yasal molalar, azami çalışma süreleri, gençler için özel kurallar. Tablolar ve elle hesapla bu hataya açıktır ve denetimde can sıkıcıdır. Dicom GmbH’de Di-Flux, bu yükü insanlardan alıp sisteme vermek için doğdu.
 
-Sistem yasal molaları algılar, azami çalışma sürelerini doğrular ve yaşa bağlı işçi korumasını destekler. Angular 19 ön yüzü sezgisel bir panel sunar; .NET arka ucu tamamen test edilmiş Clean Architecture izler.`,
+Cevabımız: sistem kuralları biliyor. Yasal olarak zorunlu molaları otomatik tanıyor, azami çalışma süresi aşıldığında uyarıyor ve yaşa bağlı koruma kurallarını dikkate alıyor. Çalışanlar net bir panoda sürelerini takvimde görüyor, izin planlıyor, devamsızlık bildiriyor ve anlık bildirim alıyor. İnsan kaynakları çalışanları ve rolleri yönetiyor, kayıtları satır satır uğraşmak yerine toplu düzeltebiliyor.
+
+Böyle yazılımlarda farkı yaratan şey yüzeyin altında: yanlış hesaplayan bir zaman takibi, hiç olmamasından kötüdür. Bu yüzden arka uç net bir katmanlı mimariyi izliyor, iş mantığı birim testleriyle tamamen kapsanıyor ve oturum açma belirteçlerle güvence altında. Sonuç: çalışma süresi verinize güvenebileceğiniz bir sistem — ve her yasa değişikliğinde izlenebilir biçimde uyarlanabilen.`,
       features: [
-        'ArbZG’ye göre otomatik mola hesabı',
-        'Yaşa bağlı işçi koruması uyumu (JArbSchG)',
-        'Takvimle izin ve devamsızlık yönetimi',
-        'Fazla mesai takibi ve istatistikler',
-        'Toplu girişler için bulk işlemler',
-        'Personel ve rol yönetimi',
-        'Interceptor’lı JWT kimlik doğrulama',
-        'Gerçek zamanlı bildirim sistemi',
+        'Çalışma Süresi Yasası’na göre molalar otomatik tanınır ve hesaplanır',
+        'Genç çalışan koruma kuralları yaşa göre uygulanır',
+        'İzin ve devamsızlık takvimde planlanır ve onaylanır',
+        'Fazla mesai ve istatistikler tek bakışta',
+        'İnsan kaynakları için satır satır yerine toplu kayıt',
+        'Çalışanlar ve roller merkezi olarak yönetilir',
+        'Anlık bildirimler, güvenli oturum açma',
+        'İş mantığı birim testleriyle tamamen güvence altında',
       ],
     },
   },
   'gkn-portraits': {
     en: {
-      subtitle: 'Application-photo studio in Freiburg with online booking',
+      subtitle: 'A photo studio that no longer negotiates its appointments on the phone',
       category: 'Website & booking system',
       description:
-        'Website and booking flow for an application-photo studio in Freiburg. Next.js 16, 15 languages, booking in three steps — with one studio calendar shared by two brands.',
+        'A job-application photo studio in Freiburg now books its clients in three clicks — in 15 languages, with a calendar in which an appointment is never given out twice.',
       role: 'Full-stack developer & designer',
-      long: `GKN Portraits is the website of a Freiburg photo studio specialising in application and business portraits. The core isn’t a brochure page, it’s a booking: pick a package, click a free slot, leave your details — three steps, confirmation by email, cancellation link included. That removes the phone calls about open slots, which take up most of the admin work on short shoots.
+      long: `GKN Portraits is a photo studio in Freiburg specialising in application and business portraits. Such shoots are short — which is exactly why finding appointments by phone and message eats a disproportionate amount of time: when does it suit, who comes when, has anyone cancelled? What was needed was a website that is less an image brochure than a booking counter: choose a package, click a free slot, enter contact details, done.
 
-Technically the site runs on Next.js 16 with React 19 and Tailwind 4. Fifteen languages with translated URLs cover who actually needs an application photo in Freiburg — including a right-to-left layout for Arabic. Prices come in two lists (private and business), because what differs isn’t the work but how the picture is used.
+That is exactly how it works today. Three steps, confirmation by e-mail, a cancellation link for anyone who has to reschedule. Prices come in two lists — private and business — because what differs is not the effort but how the image is used. Anyone who needs an application photo in Freiburg does not only speak German: the site exists in 15 languages with translated addresses, Arabic with right-to-left layout. A guide on clothing, process and picking images takes away the uncertainty before the first appointment, and pages for the towns around Freiburg provide visibility in the region.
 
-The interesting part is behind the scenes: the studio runs two brands — portrait and wedding — but there is one room and one schedule. Both websites therefore book into the same calendar, and every booking records which brand it came through. A database index makes sure the same slot is never confirmed twice. Everything is managed from a shared admin area with passwordless one-time-link login.`,
+The real challenge lay behind the scenes: the studio has one room and one schedule, and with short shoots minutes matter. Booking therefore checks every slot against the calendar, and it is technically ruled out that the same slot is confirmed twice — even if two requests arrive at the same moment. Everything is managed in one place, with a sign-in by one-time link instead of a password that nobody can forget or pass on.
+
+The result: less phone, no double bookings, and a site that is found in the region — with around 285 indexable addresses.`,
       features: [
-        'Three-step online booking with confirmation email and cancellation link',
-        'One studio calendar for two brands — double booking ruled out at database level',
-        '15 languages with translated URLs, including RTL layout for Arabic',
-        'Two price lists (private / business) with three packages',
-        'Local landing pages for the towns around Freiburg',
-        'Guide section on clothing, process and picture selection',
-        'Passwordless login for the admin area (one-time link, JWT cookie)',
-        'Around 285 indexable URLs with hreflang, JSON-LD and its own sitemap',
+        'Booking in three steps with confirmation e-mail and cancellation link',
+        'Studio calendar with free slots — double booking technically ruled out',
+        '15 languages with translated addresses, Arabic with right-to-left layout',
+        'Two price lists (private and business) with three packages',
+        'Guide on clothing, process and picking images',
+        'Pages for the towns around Freiburg',
+        'Passwordless sign-in by one-time link for the back office',
+        'Around 285 findable addresses with clean search-engine markup',
       ],
     },
     tr: {
-      subtitle: 'Freiburg’da online randevulu vesikalık/başvuru fotoğrafı stüdyosu',
+      subtitle: 'Randevularını artık telefonda pazarlık etmeyen bir fotoğraf stüdyosu',
       category: 'Web sitesi & randevu sistemi',
       description:
-        'Freiburg’daki bir başvuru fotoğrafı stüdyosu için web sitesi ve randevu sistemi. Next.js 16, 15 dil, üç adımda randevu — ve iki markanın paylaştığı tek bir stüdyo takvimi.',
+        'Freiburg’daki bir başvuru fotoğrafı stüdyosu artık müşterilerini üç tıkla randevuya alıyor — 15 dilde, hiçbir randevunun iki kez verilmediği bir takvimle.',
       role: 'Full-stack geliştirici & tasarımcı',
-      long: `GKN Portraits, Freiburg’da başvuru ve kurumsal portre fotoğrafına odaklanan bir stüdyonun web sitesidir. Merkezinde bir tanıtım sayfası değil, randevu var: paketi seç, takvimden boş saati tıkla, iletişim bilgilerini bırak — üç adım, e-posta ile onay, iptal bağlantısı dahil. Böylece kısa çekimlerde işin büyük kısmını oluşturan „boş saat var mı" telefonları ortadan kalkıyor.
+      long: `GKN Portraits, Freiburg’da başvuru ve iş portrelerinde uzmanlaşmış bir fotoğraf stüdyosu. Bu çekimler kısa sürüyor — tam da bu yüzden telefon ve mesajla randevu bulmak orantısız çok zaman yiyor: ne zaman uygun, kim ne zaman geliyor, biri iptal etti mi? İhtiyaç, bir imaj broşüründen çok bir rezervasyon gişesi olan bir siteydi: paketi seç, boş saati tıkla, iletişim bilgilerini gir, bitti.
 
-Teknik olarak site Next.js 16, React 19 ve Tailwind 4 üzerinde çalışıyor. URL’leri de çevrilmiş on beş dil, Freiburg’da başvuru fotoğrafına ihtiyaç duyan herkesi kapsıyor — Arapça için sağdan sola yerleşim dahil. Fiyatlar iki listede: özel ve kurumsal. Çünkü fark eden şey emek değil, fotoğrafın kullanım biçimi.
+Bugün tam olarak böyle işliyor. Üç adım, e-postayla onay, ertelemek zorunda kalanlar için bir iptal bağlantısı. Fiyatlar iki listede — özel ve ticari — çünkü fark emek değil, görüntünün kullanımı. Freiburg’da başvuru fotoğrafı isteyen herkes yalnızca Almanca konuşmuyor: site 15 dilde, çevrilmiş adreslerle, Arapça sağdan sola düzenle. Kıyafet, süreç ve fotoğraf seçimi üzerine bir rehber ilk randevudan önceki tereddüdü alıyor, Freiburg çevresindeki şehirler için sayfalar bölgede görünürlük sağlıyor.
 
-Asıl mesele perde arkasında: stüdyonun iki markası var — portre ve düğün — ama tek bir mekân ve tek bir takvim. Bu yüzden iki site de aynı takvime yazıyor ve her randevu hangi marka üzerinden geldiğini saklıyor. Veritabanındaki bir indeks, aynı saatin iki kez onaylanmasını imkânsız kılıyor. Yönetim ise tek bir ortak panelden, tek kullanımlık bağlantıyla şifresiz girişle yapılıyor.`,
+Asıl zorluk perde arkasındaydı: stüdyonun tek bir odası ve tek bir takvimi var, kısa çekimlerde de dakikalar önemli. Rezervasyon bu yüzden her saati takvime karşı kontrol ediyor ve aynı zaman diliminin iki kez onaylanması — iki talep aynı anda gelse bile — teknik olarak imkânsız. Her şey tek yerden yönetiliyor, unutulabilecek ya da başkasına verilebilecek bir parola yerine tek kullanımlık bağlantıyla girişle.
+
+Sonuç: daha az telefon, çift rezervasyon yok ve bölgede bulunan bir site — yaklaşık 285 dizinlenebilir adresle.`,
       features: [
-        'Üç adımda online randevu: onay e-postası ve iptal bağlantısı',
-        'İki marka için tek stüdyo takvimi — çift rezervasyon teknik olarak imkânsız',
-        'URL’leri çevrilmiş 15 dil, Arapça için RTL yerleşim dahil',
-        'İki fiyat listesi (özel / kurumsal) ve üç paket',
-        'Freiburg çevresindeki şehirler için yerel sayfalar',
-        'Kıyafet, akış ve fotoğraf seçimi üzerine rehber bölümü',
-        'Yönetim paneline şifresiz giriş (tek kullanımlık bağlantı, JWT çerezi)',
-        'hreflang, JSON-LD ve kendi site haritasıyla yaklaşık 285 indekslenebilir URL',
+        'Onay e-postası ve iptal bağlantısıyla üç adımda rezervasyon',
+        'Boş saatli stüdyo takvimi — çift rezervasyon teknik olarak imkânsız',
+        'Çevrilmiş adreslerle 15 dil, Arapça sağdan sola düzenle',
+        'Üç paketli iki fiyat listesi (özel ve ticari)',
+        'Kıyafet, süreç ve fotoğraf seçimi üzerine rehber',
+        'Freiburg çevresindeki şehirler için sayfalar',
+        'Yönetim için tek kullanımlık bağlantıyla parolasız giriş',
+        'Temiz arama motoru işaretlemesiyle yaklaşık 285 bulunabilir adres',
       ],
     },
   },
   'dj-veys': {
     en: {
-      subtitle: 'Website and enquiry system for a wedding DJ',
+      subtitle: 'A wedding DJ gets found in a competitive market — and maintains the site himself',
       category: 'Website & CMS',
       description:
-        'Website for a wedding DJ from Stuttgart: Next.js 16 with Payload CMS, eight languages, around 270 pages for local search — self-hosted on his own server.',
+        'A wedding DJ from Stuttgart who hosts the evening in three languages got a website that holds its own in search against paid ads: around 270 pages, eight languages, maintainable by the client.',
       role: 'Full-stack developer & designer',
-      long: `DJ Veys is a wedding DJ from Stuttgart who hosts the evening in German, Turkish and English and plays saz and guitar live. The site replaces the old domain and is built to be found in a market where the competition has been buying ads for years: around 270 pages, eight languages with translated URLs, dedicated pages for the towns of Baden-Württemberg as well as for Turkish and Islamic weddings.
+      long: `DJ Veys is a wedding DJ in Stuttgart. He hosts the evening in German, Turkish and English and plays live on saz and guitar — for couples whose families often bring several languages and traditions together. The market for wedding services is fiercely contested: the competition has been running ads for years and fills the first search results. An old domain with a handful of pages is no match. What was needed was a presence that is found where couples really search — and that the DJ can maintain himself, without calling a developer for every change.
 
-The client maintains all the content himself. Payload CMS runs inside the same Next.js process under /admin and drives the gallery, real weddings, reviews, guide articles and the site’s image slots. Enquiries, WhatsApp contacts and date requests land in the same interface, so nothing gets lost in an inbox. A waveform player makes the mixes audible right on the page.
+Our answer: around 270 pages in eight languages, each with translated addresses. Pages of their own for the towns in Baden-Württemberg and for Turkish and Islamic weddings pick up exactly the couples searching for exactly that combination. Behind it sits an editorial system under /admin: gallery, real weddings, reviews, guide articles and even the image slots of the site are maintained by the DJ in a single interface. Enquiries, WhatsApp contacts and date requests all come together there — no enquiry gets lost in a mailbox.
 
-It all runs on a dedicated server: Docker Compose with nginx and an automatically renewed certificate, SQLite on a persistent volume, deployment through GitHub Actions — plus a strict content security policy and self-hosted mail. Prices deliberately stay on request, and review numbers are only shown once they can be backed up.`,
+Because a DJ lives by sound, you can hear him on the site: a player makes mixes audible right on the page. For press and organisers there is an information page of its own, and he hands over photos privately by link. And because trust is everything in the wedding business, prices are deliberately on request, and review figures are only shown once they are proven.
+
+The site runs on a dedicated server with an automatically renewed certificate, a strict security policy and its own mail delivery. The result: a presence that is visible in Stuttgart and beyond — and that its owner has in his own hands.`,
       features: [
-        'Eight languages (DE, TR, KU, AR, EN, NL, FR, ES) with per-language translated URLs',
-        'Around 270 pages: Baden-Württemberg towns, European pages, topic pages',
-        'Payload CMS under /admin — gallery, references, reviews and blog edited by the client',
-        'Enquiry and availability flow with calendar and WhatsApp shortcut',
-        'Waveform player for mixes (wavesurfer.js)',
-        'EPK page for press and organisers, private photo handover by link',
-        'Self-hosted: Docker Compose, nginx, automatic TLS renewal, GitHub Actions deploy',
-        'Strict content security policy and self-hosted mail delivery',
+        'Eight languages with translated addresses, for couples and families of all backgrounds',
+        'Around 270 pages: towns in Baden-Württemberg, Europe pages, Turkish and Islamic weddings',
+        'Editorial system under /admin: gallery, real weddings, reviews and blog maintained by the client',
+        'Enquiries, availability and WhatsApp contact in one flow — nothing gets lost',
+        'Mixes audible right on the page',
+        'A page of its own for press and organisers, private photo hand-over by link',
+        'Prices on request, review figures only with proof',
+        'Dedicated server with automatic certificates, a strict security policy and its own mail delivery',
       ],
     },
     tr: {
-      subtitle: 'Bir düğün DJ’i için web sitesi ve talep sistemi',
+      subtitle: 'Bir düğün DJ’i rekabetçi bir pazarda bulunuyor — ve sitesini kendisi yönetiyor',
       category: 'Web sitesi & CMS',
       description:
-        'Stuttgart’lı bir düğün DJ’i için web sitesi: Payload CMS ile Next.js 16, sekiz dil, yerel arama için yaklaşık 270 sayfa — kendi sunucusunda barındırılıyor.',
+        'Akşamı üç dilde yöneten Stuttgart’lı bir düğün DJ’i, aramada ücretli reklamlara karşı ayakta kalan bir web sitesi aldı: yaklaşık 270 sayfa, sekiz dil, müşteri tarafından kendisi yönetilebilir.',
       role: 'Full-stack geliştirici & tasarımcı',
-      long: `DJ Veys, Stuttgart’ta yaşayan bir düğün DJ’i: geceyi Almanca, Türkçe ve İngilizce sunuyor, ayrıca canlı saz ve gitar çalıyor. Site eski alan adının yerini alıyor ve rakiplerin yıllardır reklam verdiği bir pazarda bulunabilmek üzere kurgulandı: yaklaşık 270 sayfa, URL’leri çevrilmiş sekiz dil, Baden-Württemberg şehirleri için ayrı sayfalar ve Türk düğünleri ile İslami düğünler için özel bölümler.
+      long: `DJ Veys, Stuttgart’ta düğün DJ’i. Akşamı Almanca, Türkçe ve İngilizce yönetiyor, saz ve gitarla canlı çalıyor — aileleri çoğu zaman birden fazla dili ve geleneği bir araya getiren çiftler için. Düğün hizmetleri pazarı çetin bir rekabet alanı: rakipler yıllardır reklam veriyor ve ilk arama sonuçlarını dolduruyor. Birkaç sayfalık eski bir alan adı buna karşı yetmez. İhtiyaç, çiftlerin gerçekten aradığı yerde bulunan ve DJ’in her değişiklik için bir yazılımcıyı aramadan kendisinin yönetebildiği bir görünümdü.
 
-İçeriği müşteri kendisi yönetiyor. Payload CMS aynı Next.js süreci içinde /admin altında çalışıyor; galeri, gerçek düğünler, yorumlar, rehber yazıları ve sitedeki görsel alanları oradan yönetiliyor. Talepler, WhatsApp mesajları ve tarih sorguları da aynı panele düşüyor — böylece hiçbir talep bir posta kutusunda kaybolmuyor. Dalga formu oynatıcısı sayesinde mixler doğrudan sitede dinlenebiliyor.
+Cevabımız: sekiz dilde, her biri çevrilmiş adreslerle yaklaşık 270 sayfa. Baden-Württemberg’deki şehirler ile Türk ve İslami düğünler için ayrı sayfalar, tam da bu kombinasyonu arayan çiftleri karşılıyor. Arkasında /admin altında bir içerik yönetim sistemi var: galeri, gerçek düğünler, yorumlar, rehber makaleleri ve sitenin görsel alanlarını bile DJ tek bir arayüzden yönetiyor. Talepler, WhatsApp iletişimleri ve tarih istekleri orada birleşiyor — hiçbir talep bir posta kutusunda kaybolmuyor.
 
-Her şey kendi sunucusunda çalışıyor: nginx ve otomatik yenilenen sertifikayla Docker Compose, kalıcı bir birimde SQLite, GitHub Actions ile dağıtım — buna sıkı bir içerik güvenlik politikası ve kendi mail gönderimi eşlik ediyor. Fiyatlar bilinçli olarak „talep üzerine" duruyor, puan ve yorum sayıları ise belgelenene kadar yayımlanmıyor.`,
+Bir DJ sesiyle yaşadığı için sitede onu duyabiliyorsunuz: bir oynatıcı miksleri doğrudan sayfada dinletiyor. Basın ve organizatörler için ayrı bir bilgi sayfası var, fotoğrafları özel bir bağlantıyla teslim ediyor. Ve düğün işinde güven her şey olduğu için fiyatlar bilerek talep üzerine, yorum rakamları ise ancak belgelendiğinde gösteriliyor.
+
+Site kendi sunucusunda, otomatik yenilenen sertifika, sıkı bir güvenlik politikası ve kendi e-posta gönderimiyle çalışıyor. Sonuç: Stuttgart’ta ve ötesinde görünür — ve sahibinin elinde olan bir görünüm.`,
       features: [
-        'Sekiz dil (DE, TR, KU, AR, EN, NL, FR, ES), her dil için çevrilmiş URL’ler',
-        'Yaklaşık 270 sayfa: Baden-Württemberg şehirleri, Avrupa sayfaları, konu sayfaları',
-        '/admin altında Payload CMS — galeri, referanslar, yorumlar ve blog müşteride',
-        'Takvimli talep ve müsaitlik akışı, WhatsApp kısayoluyla',
-        'Mixler için dalga formu oynatıcısı (wavesurfer.js)',
-        'Basın ve organizatörler için EPK sayfası, bağlantıyla özel fotoğraf teslimi',
-        'Kendi sunucusu: Docker Compose, nginx, otomatik TLS, GitHub Actions ile dağıtım',
-        'Sıkı içerik güvenlik politikası ve kendi mail sunucusu',
+        'Her kökenden çiftler ve aileler için çevrilmiş adreslerle sekiz dil',
+        'Yaklaşık 270 sayfa: Baden-Württemberg şehirleri, Avrupa sayfaları, Türk ve İslami düğünler',
+        '/admin altında içerik yönetimi: galeri, gerçek düğünler, yorumlar ve blog müşteri tarafından yönetilir',
+        'Talep, müsaitlik ve WhatsApp iletişimi tek akışta — hiçbir şey kaybolmaz',
+        'Miksler doğrudan sayfada dinlenir',
+        'Basın ve organizatörler için ayrı sayfa, bağlantıyla özel fotoğraf teslimi',
+        'Fiyatlar talep üzerine, yorum rakamları yalnızca belgeyle',
+        'Otomatik sertifika, sıkı güvenlik politikası ve kendi e-posta gönderimiyle kendi sunucusu',
       ],
     },
   },
   'zerin-gold': {
     en: {
-      subtitle: 'Premium website with live metal prices for a jeweller',
+      subtitle: 'A jeweller makes its daily price visible — and wins trust with it',
       category: 'Premium website',
       description:
-        'Website for a gold dealer, jeweller and atelier in Freiburg: live precious-metal prices, calculators and a product catalogue. Next.js 16, seven languages including RTL Arabic.',
+        'Gold dealer, jeweller and atelier in Freiburg: a calm black-and-gold site with live precious-metal prices, four calculators and a margin system the dealer controls himself — in seven languages.',
       role: 'Solo developer & designer',
-      long: `Zerin Gold is a gold dealer, jeweller and jewellery atelier in Freiburg im Breisgau. The site runs on a calm black-and-gold aesthetic with fine serif typography and restrained scroll animations — with gold, it isn’t volume that sells but the impression of solidity. Seven languages cover the customer base, Arabic including a right-to-left layout.
+      long: `Zerin Gold is a gold dealer, jeweller and jewellery atelier in Freiburg im Breisgau. With gold every customer asks the same thing first: what is my piece worth today, and can I believe the dealer? A business-card page does not answer that. What was needed was a presence that radiates solidity, shows the daily price openly and reaches people of different languages — because customers who prefer to ask in Turkish or Arabic also come with scrap gold and wedding rings.
 
-The technically interesting part is the price. A custom provider reads precious-metal quotes from Kitco, converts bid/ask per troy ounce into cents per gram of fine metal using the ECB exchange rate, and caches the result for two minutes — so the site shows dependable numbers without hitting the source on every visit. On top of that sit a margin engine the dealer controls from the admin area and four calculators: scrap-gold value, karat converter, Krugerrand and savings plan. The ticker in the header comes from the same source.
+Our answer: a calm black-and-gold site with fine serif type and gentle movement — with gold it is not loudness that sells but the impression of reliability. The price is the heart of it: the site reads precious-metal rates live, converts them via the current euro rate into cents per gram of fine weight and shows them as a ticker at the top of the page. Four calculators turn that into answers: what is my scrap gold worth? What do 585 or 750 mean in carats? What does a Krugerrand cost? And what does a savings plan yield? Anyone who knows before the visit what to expect comes with trust instead of scepticism.
 
-Underneath: Next.js 16 with React Server Components and Server Actions, Prisma 7 on PostgreSQL, Redis for caching, Auth.js v5 with Argon2 and a TOTP second factor for the admin area, Resend for email and Cloudflare Turnstile against form spam. Around 290 URLs with landing pages for the terms people actually search — from “gram altın” to wedding rings — plus Vitest and Playwright tests, hosted in Germany behind Cloudflare.`,
+The dealer stays in charge of his prices: he controls his margins himself in the protected admin area, secured with strong password protection and a second factor. Forms are protected by invisible spam protection instead of annoying image puzzles. Seven languages, Arabic with right-to-left layout, and around 290 pages for the search terms that are really used in this trade — from “Gramm Altın” to wedding rings.
+
+The outcome is visible: the site is a reference for the business, and both Zerin Gold and Bikehaus have publicly rated their satisfaction on Google. It is hosted in Germany and tested before every change.`,
       features: [
-        'Live metal prices: Kitco quotes + ECB rate → cents per gram fine, two-minute cache',
-        'Four calculators: scrap-gold value, karat converter, Krugerrand, savings plan',
-        'Margin engine — the dealer sets his own margins in the admin area',
-        '7 languages including RTL Arabic, built white-label',
-        'Next.js 16 with Server Components, Prisma 7/PostgreSQL and Redis',
-        'Admin login with Argon2 and a TOTP second factor (Auth.js v5)',
-        'Forms protected by Cloudflare Turnstile instead of captcha puzzles',
-        'Around 290 URLs with keyword landing pages, tested with Vitest and Playwright',
+        'Live precious-metal prices as a ticker, converted into cents per gram of fine weight',
+        'Four calculators: scrap-gold value, carat conversion, Krugerrand, savings plan',
+        'The dealer controls his margins himself in the admin area',
+        'Seven languages, Arabic with right-to-left layout',
+        'Calm black-and-gold design with fine typography and gentle movement',
+        'Protected admin area with strong password protection and a second factor',
+        'Forms with invisible spam protection instead of image puzzles',
+        'Around 290 pages for the trade’s search terms, tested before every change',
       ],
     },
     tr: {
-      subtitle: 'Bir kuyumcu için canlı maden fiyatlı premium web sitesi',
+      subtitle: 'Bir kuyumcu günlük fiyatını görünür kılıyor — ve bununla güven kazanıyor',
       category: 'Premium web sitesi',
       description:
-        'Freiburg’daki altın alım-satımcısı, kuyumcu ve atölye için web sitesi: canlı değerli maden fiyatları, hesaplayıcılar ve ürün kataloğu. Next.js 16, RTL Arapça dahil yedi dil.',
+        'Freiburg’da altın tüccarı, kuyumcu ve atölye: canlı değerli maden fiyatları, dört hesaplayıcı ve tüccarın kendisinin yönettiği bir kâr payı sistemiyle sakin bir siyah-altın site — yedi dilde.',
       role: 'Solo geliştirici & tasarımcı',
-      long: `Zerin Gold, Freiburg im Breisgau’da altın alım-satımcısı, kuyumcu ve mücevher atölyesi. Site sakin bir siyah-altın estetiğine, ince serif tipografiye ve ölçülü kaydırma animasyonlarına dayanıyor — altında satan şey ses yüksekliği değil, sağlamlık izlenimi. Yedi dil müşteri kitlesini kapsıyor; Arapça sağdan sola yerleşimiyle birlikte.
+      long: `Zerin Gold, Freiburg im Breisgau’da altın tüccarı, kuyumcu ve mücevher atölyesi. Altında her müşteri önce aynı şeyi sorar: parçam bugün ne kadar eder ve tüccara inanabilir miyim? Bir kartvizit sayfası buna cevap vermez. İhtiyaç, sağlamlık yayan, günlük fiyatı açıkça gösteren ve farklı dillerdeki insanlara ulaşan bir görünümdü — çünkü Türkçe veya Arapça sormayı tercih eden müşteriler de bozma altın ve alyansla geliyor.
 
-Teknik olarak asıl ilginç kısım fiyat. Kendi yazdığım bir sağlayıcı, değerli maden kotasyonlarını Kitco’dan okuyor, ons başına alış/satışı AMB kuruyla gram saf maden başına kuruşa çeviriyor ve sonucu iki dakika önbellekte tutuyor — yani site her ziyarette kaynağa yüklenmeden güvenilir rakam gösteriyor. Bunun üzerine, satıcının yönetim panelinden kontrol ettiği bir marj motoru ve dört hesaplayıcı geliyor: hurda altın değeri, karat çevirici, Krugerrand ve birikim planı. Başlıktaki şerit de aynı kaynaktan besleniyor.
+Cevabımız: ince serif yazı ve yumuşak hareketlerle sakin bir siyah-altın site — altında satan şey gürültü değil, güvenilirlik izlenimidir. Fiyat işin kalbi: site değerli maden kurlarını canlı okuyor, güncel euro kuruyla saf ağırlık gram başına cent’e çeviriyor ve sayfanın tepesinde bir kayan şerit olarak gösteriyor. Dört hesaplayıcı bunu cevaba çeviriyor: bozma altınım ne eder? 585 veya 750 kaç ayar demek? Bir Krugerrand ne kadar? Ve bir birikim planı ne getirir? Ziyaretten önce neyle karşılaşacağını bilen biri şüpheyle değil güvenle geliyor.
 
-Altında ise: React Server Components ve Server Actions ile Next.js 16, PostgreSQL üzerinde Prisma 7, önbellek için Redis, yönetim paneli için Argon2 ve TOTP ikinci faktörlü Auth.js v5, e-posta için Resend ve form spam’ine karşı Cloudflare Turnstile. Gerçekten aranan terimler için açılış sayfalarıyla yaklaşık 290 URL — „gram altın"dan alyanslara — ayrıca Vitest ve Playwright testleri; Almanya’da, Cloudflare arkasında barındırılıyor.`,
+Tüccar fiyatlarının efendisi olarak kalıyor: kâr paylarını korumalı yönetim bölümünde güçlü parola koruması ve ikinci faktörle kendisi yönetiyor. Formları can sıkıcı resim bulmacaları yerine görünmez bir spam koruması koruyor. Yedi dil, sağdan sola düzenle Arapça ve bu sektörde gerçekten aranan terimler için — “Gramm Altın”dan alyanslara — yaklaşık 290 sayfa.
+
+Sonuç görünür: site işletme için bir referans ve hem Zerin Gold hem Bikehaus memnuniyetlerini Google’da herkese açık olarak değerlendirdi. Almanya’da barındırılıyor ve her değişiklikten önce test ediliyor.`,
       features: [
-        'Canlı maden fiyatı: Kitco kotasyonu + AMB kuru → gram saf başına kuruş, 2 dakika önbellek',
-        'Dört hesaplayıcı: hurda altın değeri, karat çevirici, Krugerrand, birikim planı',
-        'Marj motoru — satıcı kendi kâr marjını yönetim panelinden belirliyor',
-        'RTL Arapça dahil 7 dil, white-label mimari',
-        'Server Components ile Next.js 16, Prisma 7/PostgreSQL ve Redis',
-        'Argon2 ve TOTP ikinci faktörlü yönetici girişi (Auth.js v5)',
-        'Captcha bulmacası yerine Cloudflare Turnstile korumalı formlar',
-        'Anahtar kelime açılış sayfalarıyla ~290 URL, Vitest ve Playwright testleri',
+        'Saf ağırlık gram başına cent’e çevrilmiş canlı değerli maden fiyatları, kayan şerit olarak',
+        'Dört hesaplayıcı: bozma altın değeri, ayar çevirme, Krugerrand, birikim planı',
+        'Kâr paylarını tüccar yönetim bölümünde kendisi yönetir',
+        'Yedi dil, sağdan sola düzenle Arapça',
+        'İnce tipografi ve yumuşak hareketlerle sakin siyah-altın tasarım',
+        'Güçlü parola koruması ve ikinci faktörlü korumalı yönetim bölümü',
+        'Resim bulmacaları yerine görünmez spam korumalı formlar',
+        'Sektörün arama terimleri için yaklaşık 290 sayfa, her değişiklikten önce test edilir',
+      ],
+    },
+  },
+  'benlirad': {
+    en: {
+      subtitle: 'A bicycle shop in Lahr whose stock goes online with no detours',
+      category: 'Website & inventory system',
+      description:
+        'A family business in Lahr: whatever is booked in at the shop appears in the online showroom with no extra step. Plus repair appointments, warranty, four languages and a clearly named catchment area.',
+      role: 'Concept, development & operation',
+      long: `Benlirad is a family business in Lahr in the Black Forest, selling new and checked used bicycles since 2021. The shop had a problem many small retailers know: bikes come and go every day, and a website that has to be updated by hand is always a few days behind. What was needed was an online presence as current as the shop floor — without anyone keeping a second list on the side.
+
+Our answer: the inventory system and the website are connected. When a bike is booked in at the shop, it shows up in the showroom with photos, price and a counter of how many bikes are available right now. When it is sold, it disappears again. Customers filter by condition, category and tyre size and find their bike without having to call first. The groundwork was laid at Bikehaus Freiburg; for Lahr we tailored it to a shop that sells and repairs rather than rents.
+
+Around the showroom sits what builds trust: the repair service with appointment requests, a page of its own for the warranty, the bike buy-back offer, opening hours, WhatsApp contact and a clear statement of who the shop serves — from Lahr to Offenburg. The site comes in German, English, French and Turkish, so customers who prefer to read in their own language find their way around.`,
+      features: [
+        'Online showroom with the real stock: photos, prices and a counter of available bikes',
+        'No double entry: booked in at the shop means visible online, sold means gone',
+        'Finding the right bike: filters for condition, category and tyre size',
+        'Repair service with appointment request right on the home page',
+        'A warranty page of its own — clear on what applies to new and used bikes',
+        'Bike buy-back as an offer of its own, contact via WhatsApp too',
+        'Four languages: German, English, French, Turkish',
+        'Catchment area from Lahr to Offenburg named so the shop is found locally',
+      ],
+    },
+    tr: {
+      subtitle: 'Lahr’daki bir bisiklet dükkânı: stok, dolambaçsız çevrimiçi',
+      category: 'Web sitesi & stok sistemi',
+      description:
+        'Lahr’da bir aile işletmesi: dükkâna girilen her bisiklet ek bir adım olmadan çevrimiçi showroom’da görünür. Ayrıca tamir randevusu, garanti, dört dil ve net tanımlı hizmet bölgesi.',
+      role: 'Konsept, geliştirme & işletme',
+      long: `Benlirad, Kara Orman’daki Lahr’da 2021’den beri yeni ve kontrol edilmiş ikinci el bisiklet satan bir aile işletmesi. Dükkânın birçok küçük esnafın bildiği bir sorunu vardı: bisikletler her gün gelip gidiyor ve elle güncellenmesi gereken bir web sitesi hep birkaç gün geride kalıyor. İhtiyaç, tezgâh kadar güncel bir çevrimiçi görünümdü — kimsenin yanında ikinci bir liste tutmasına gerek kalmadan.
+
+Cevabımız: stok sistemi ile web sitesini birbirine bağladık. Dükkânda bir bisiklet kaydedilince fotoğrafları, fiyatı ve şu an kaç bisiklet müsait olduğunu gösteren bir sayaçla showroom’da görünüyor. Satılınca yeniden kayboluyor. Müşteriler duruma, kategoriye ve lastik ölçüsüne göre filtreleyip önce aramak zorunda kalmadan bisikletini buluyor. Temeli Bikehaus Freiburg’da atılmıştı; Lahr için kiralayan değil satan ve tamir eden bir dükkâna göre uyarladık.
+
+Showroom’un çevresinde güven veren şeyler duruyor: randevu talepli tamir servisi, garanti için ayrı bir sayfa, bisiklet alım teklifi, çalışma saatleri, WhatsApp iletişimi ve dükkânın kime hizmet verdiğinin net bir ifadesi — Lahr’dan Offenburg’a kadar. Site Almanca, İngilizce, Fransızca ve Türkçe; kendi dilinde okumayı tercih eden müşteriler de yolunu bulsun diye.`,
+      features: [
+        'Gerçek stokla çevrimiçi showroom: fotoğraf, fiyat ve müsait bisiklet sayacı',
+        'Çift kayıt yok: dükkânda kaydedilen çevrimiçi görünür, satılan kaybolur',
+        'Doğru bisikleti bulmak: durum, kategori ve lastik ölçüsü filtreleri',
+        'Ana sayfada doğrudan randevu talepli tamir servisi',
+        'Ayrı bir garanti sayfası — yeni ve ikinci el bisikletlerde neyin geçerli olduğu net',
+        'Ayrı bir teklif olarak bisiklet alımı, WhatsApp ile de iletişim',
+        'Dört dil: Almanca, İngilizce, Fransızca, Türkçe',
+        'Dükkânın bölgesel olarak bulunması için Lahr’dan Offenburg’a hizmet bölgesi',
       ],
     },
   },
   'karaarslan-bike': {
     en: {
-      subtitle: 'Inventory system and website for a bicycle shop in Lünen',
+      subtitle: 'A family business in Lünen puts its bike stock in the shop window of the internet',
       category: 'Full-stack web app',
       description:
-        'Second shop, same platform: .NET 9 API, Angular admin and a public SSR website with live stock for a family business in Lünen — four languages, self-hosted.',
+        'A family business in Lünen got what big dealers have long had: an online showroom with the real stock, an admin that shows the cost per bike, and automatic review requests.',
       role: 'Full-stack developer & architect',
-      long: `Karaarslan Bike is a bicycle shop in Lünen in the Ruhr area, a family business since 2021. It gets the same platform as Bikehaus Freiburg — and that was exactly the test of whether it really carries over to a new business: different name, different city, different region, different range, the same core of purchase, stock, sale, return, customers, invoices, expenses and statistics.
+      long: `Karaarslan Bike is a bicycle shop in Lünen in the Ruhr area, a family business since 2021. Like many small dealers it sells used and new bikes — and like many small dealers it depended on customers finding it through classified-ad portals. There the cheapest wins; what was missing was a shop window of its own, where the shop decides how it presents itself. What was needed was an online presence that gives the business a face, gets found locally and never shows a page that is out of date.
 
-The public site runs on Angular 17 with server-side rendering in four languages (DE, EN, FR, TR). It pulls its content straight from the inventory system: the showroom shows the real stock with filters for condition, category and price, plus accessories, new bikes, guides, FAQ, warranty and city landing pages for the towns around Lünen. What is booked in at the shop is online without an intermediate step — currently around 90 bikes.
+Our answer: the showroom shows the real stock — currently around 90 bikes — with filters for condition, category and price. What is booked in at the shop appears online without an extra step; what is sold disappears. Add accessories, new bikes, guides, an FAQ and a warranty page that builds trust before anyone picks up the phone. Pages of their own for the towns around Lünen make sure the shop turns up where people actually search — in four languages, because customers in the Ruhr area do not only read German.
 
-Behind it sits the admin area with modules for purchases, sales, returns, customers, invoices, expenses, renovation costs, parts and statistics, plus an email campaign that asks customers for a Google review after purchase. Everything runs on its own server with Docker and nginx: API, admin interface and SSR frontend as separate services, its own mail server, automatic certificate renewal.`,
+Behind the window the back office works: purchasing, sales, returns, customers, invoices, expenses and statistics — and per bike the refurbishment costs and the parts fitted. So the owner sees for every bike what it really cost and what it earns, instead of just guessing. After a purchase an e-mail campaign asks the customer for a Google review, so satisfied buyers become visible recommendations.
+
+What makes this project special: it is the proof of the pudding. The platform that was created at Bikehaus Freiburg had to carry over to a new business — different name, different city, different range, same core. It did, on a dedicated server with its own mail server and no dependence on site-builder vendors.`,
       features: [
-        'Inventory system: purchase, stock, sale, return, customers, invoices, expenses',
-        'Public showroom with live stock and filters for condition, category and price',
-        'Four languages (DE, EN, FR, TR) with their own URLs and SSR',
-        'Accessories, new bikes, guides, FAQ and warranty page',
-        'City landing pages and structured data for local search around Lünen',
-        'Email campaign asking customers for a Google review after purchase',
-        'Renovation costs and parts per bike in the admin area',
-        'Self-hosting: Docker, nginx, own mail server, certificate automation',
+        'Online showroom with the real stock and filters for condition, category and price',
+        'Booked in at the shop means visible online — sold means gone',
+        'Warranty page, FAQ and guides that answer questions before anyone calls',
+        'Pages of their own for the towns around Lünen, in four languages',
+        'Refurbishment costs and parts per bike: the owner sees what a bike really earns',
+        'Back office for purchasing, sales, returns, customers, invoices, expenses, statistics',
+        'Automatic request for a Google review after the purchase',
+        'Dedicated server and mail server instead of site-builder dependence',
       ],
     },
     tr: {
-      subtitle: 'Lünen’deki bir bisiklet dükkânı için stok sistemi ve web sitesi',
+      subtitle: 'Lünen’deki bir aile işletmesi bisiklet stokunu internetin vitrinine koyuyor',
       category: 'Full-stack web uygulaması',
       description:
-        'İkinci dükkân, aynı platform: Lünen’deki bir aile işletmesi için .NET 9 API, Angular yönetim paneli ve canlı stoklu herkese açık SSR web sitesi — dört dil, kendi sunucusunda.',
+        'Lünen’deki bir aile işletmesi büyük satıcıların çoktan sahip olduğu şeyi aldı: gerçek stoklu bir çevrimiçi showroom, bisiklet başına maliyeti gösteren bir yönetim ve otomatik yorum talepleri.',
       role: 'Full-stack geliştirici & mimar',
-      long: `Karaarslan Bike, Ruhr bölgesindeki Lünen’de 2021’den beri aile işletmesi olarak çalışan bir bisiklet dükkânı. Bikehaus Freiburg ile aynı platformu kullanıyor — ve asıl sınav da buydu: platform gerçekten yeni bir işletmeye taşınabiliyor mu? Farklı isim, farklı şehir, farklı bölge, farklı ürün yelpazesi; ama alım, stok, satış, iade, müşteri, fatura, gider ve istatistikten oluşan aynı çekirdek.
+      long: `Karaarslan Bike, Ruhr bölgesindeki Lünen’de 2021’den beri aile işletmesi olarak çalışan bir bisiklet dükkânı. Birçok küçük satıcı gibi ikinci el ve yeni bisiklet satıyor — ve birçok küçük satıcı gibi müşterilerin onu ilan portalları üzerinden bulmasına bağlıydı. Orada en ucuz olan kazanır; eksik olan, dükkânın kendini nasıl göstereceğine kendisinin karar verdiği, kendine ait bir vitrindi. İhtiyaç, işletmeye yüz veren, yerelde bulunan ve asla güncelliğini yitirmiş bir sayfa göstermeyen bir çevrimiçi görünümdü.
 
-Herkese açık site, dört dilde (DE, EN, FR, TR) sunucu tarafı render’lı Angular 17 ile çalışıyor. İçeriğini doğrudan stok sisteminden çekiyor: showroom gerçek stoğu durum, kategori ve fiyat filtreleriyle gösteriyor; ayrıca aksesuar, yeni bisiklet, rehber, SSS, garanti ve Lünen çevresindeki yerler için şehir sayfaları var. Dükkânda kaydedilen şey ara adım olmadan çevrimiçi görünüyor — şu an yaklaşık 90 bisiklet.
+Cevabımız: showroom gerçek stoku gösteriyor — şu an yaklaşık 90 bisiklet — durum, kategori ve fiyat filtreleriyle. Dükkânda kaydedilen ek bir adım olmadan çevrimiçi görünüyor; satılan kayboluyor. Buna aksesuar, yeni bisikletler, rehber, SSS ve kimse telefonu açmadan önce güven veren bir garanti sayfası ekleniyor. Lünen çevresindeki yerler için ayrı sayfalar, dükkânın insanların gerçekten aradığı yerde çıkmasını sağlıyor — dört dilde, çünkü Ruhr bölgesindeki müşteriler yalnızca Almanca okumuyor.
 
-Arkasında alım, satış, iade, müşteri, fatura, gider, yenileme maliyeti, parça ve istatistik modüllerinden oluşan bir yönetim alanı ile müşterilerden alışveriş sonrası Google yorumu isteyen bir e-posta kampanyası var. Her şey kendi sunucusunda Docker ve nginx ile çalışıyor: API, yönetim arayüzü ve SSR ön yüzü ayrı servisler, kendi posta sunucusu, otomatik sertifika yenileme.`,
+Vitrinin arkasında yönetim çalışıyor: alım, satış, iade, müşteriler, faturalar, giderler ve istatistik — ve bisiklet başına yenileme masrafları ile takılan parçalar. Böylece sahibi her bisikletin gerçekte neye mal olduğunu ve ne kazandırdığını tahmin etmek yerine görüyor. Satın alımdan sonra bir e-posta kampanyası müşteriden Google yorumu istiyor; memnun alıcılar görünür tavsiyelere dönüşüyor.
+
+Bu projeyi özel kılan şey: bir deneme taşı olması. Bikehaus Freiburg’da doğan platformun yeni bir işletmeye taşınabilmesi gerekiyordu — farklı ad, farklı şehir, farklı ürün yelpazesi, aynı çekirdek. Taşındı; kendi sunucusunda, kendi posta sunucusuyla ve site oluşturucu sağlayıcılara bağımlılık olmadan.`,
       features: [
-        'Stok sistemi: alım, stok, satış, iade, müşteri, fatura, gider',
-        'Canlı stoklu, durum, kategori ve fiyat filtreli herkese açık showroom',
-        'Kendi URL’leri ve SSR ile dört dil (DE, EN, FR, TR)',
-        'Aksesuar, yeni bisiklet, rehber, SSS ve garanti sayfası',
-        'Lünen çevresinde yerel arama için şehir sayfaları ve yapılandırılmış veri',
-        'Müşterilerden alışveriş sonrası Google yorumu isteyen e-posta kampanyası',
-        'Yönetimde bisiklet başına yenileme maliyeti ve parçalar',
-        'Self-hosting: Docker, nginx, kendi posta sunucusu, sertifika otomasyonu',
+        'Gerçek stokla çevrimiçi showroom; durum, kategori ve fiyat filtreleri',
+        'Dükkânda kaydedilen çevrimiçi görünür — satılan kaybolur',
+        'Kimse aramadan önce soruları yanıtlayan garanti sayfası, SSS ve rehber',
+        'Lünen çevresindeki yerler için dört dilde ayrı sayfalar',
+        'Bisiklet başına yenileme masrafı ve parçalar: sahibi bir bisikletin gerçekte ne kazandırdığını görür',
+        'Alım, satış, iade, müşteriler, faturalar, giderler ve istatistik için yönetim',
+        'Satın alımdan sonra otomatik Google yorum talebi',
+        'Site oluşturucu bağımlılığı yerine kendi sunucusu ve posta sunucusu',
       ],
     },
   },
   'praxis-gueltekin': {
     en: {
-      subtitle: 'Multilingual practice website for a GP in Hofheim am Taunus',
+      subtitle: 'A family practice that meets its patients in their own language',
       category: 'Practice website',
       description:
-        'Website for a general practice in Hofheim am Taunus: general medicine, internal medicine and infectious diseases in ten languages, with a health guide, FAQ and consent for analytics — built as a fast static site.',
+        'A family practice in Hofheim am Taunus answers the most important questions before the call: who treats, what is offered, when it is open — in ten languages, fast and privacy-friendly.',
       role: 'Full-stack developer & designer',
-      long: `Fazilet Gültekin’s general practice is in Hofheim am Taunus and treats patients with statutory and private insurance — in German and Turkish, but also for patients in the region who prefer to read in their own language. The website is therefore built around language: ten languages (DE, TR, EN, AR, RU, UK, PL, RO, IT, ES) with their own translated URLs, Arabic with a right-to-left layout, 93 indexable pages in total with hreflang references and a sitemap.
+      long: `Fazilet Gültekin’s family practice is in Hofheim am Taunus and treats patients with statutory and private insurance — in German and Turkish, in a region where many people prefer to read up on health questions in their own language. A practice website has a clear job: answer questions before the phone rings. Who treats here? What is offered? When is it open? How do I get an appointment? And: can I trust this practice?
 
-Content-wise it answers what a practice really has to answer: who treats here, what is offered, when is it open, how do I get an appointment? On top of that come a service overview focused on infectious diseases, frequently asked questions and a health guide with articles on topics such as high blood pressure, iron deficiency, adult vaccinations or check-ups. Opening hours, the on-call service notice (116 117) and contact options are in the header or footer of every page.
+Our answer: a site that reflects exactly that — in ten languages, Arabic with right-to-left layout. A service overview puts the focus on infectious diseases and in-house diagnostics. Opening hours, the note on the on-call service and the link to book an appointment appear on every page, not hidden in a menu. A health guide with expert articles and frequent questions answers what patients google anyway — and shows them that someone with expertise is speaking here.
 
-Technically the site is deliberately plain: Astro generates pure HTML with minimal JavaScript at build time, fonts and images are self-hosted, served by nginx with security headers. Analytics via Google Tag Manager only runs after active consent, which can be withdrawn at any time — a must for a medical practice. Legal notice and privacy policy exist in every language.`,
+Because it is about health, the site takes privacy seriously: visitor statistics only run after active consent and can be withdrawn at any time, fonts and images sit on the practice’s own server instead of with third parties. It is deliberately simple — a fast static site without a database and with almost no scripts, with security settings on the server. It loads quickly even on a phone in the waiting room.
+
+The result: 93 findable pages that mark up doctor, practice and opening hours clearly for search engines — and a practice that is found in its region even where people do not search in German.`,
       features: [
-        'Ten languages with translated URLs, including RTL layout for Arabic',
-        '93 indexable pages with hreflang, sitemap and structured data (physician, practice, opening hours)',
-        'Service overview focused on infectious diseases and in-practice diagnostics',
-        'Health guide with articles and FAQ for patients',
-        'Opening hours, on-call service notice and appointment link on every page',
-        'Consent banner: Google Tag Manager only after consent, revocable at any time',
-        'Built statically with Astro — fast, no database, hardly any JavaScript',
-        'Self-hosted fonts and images, security headers on nginx',
+        'Ten languages with translated addresses, Arabic with right-to-left layout',
+        'Service overview with a focus on infectious diseases and in-house diagnostics',
+        'Opening hours, on-call note and appointment link on every page',
+        'Health guide with expert articles and frequent questions',
+        '93 findable pages with clean markup for doctor, practice and opening hours',
+        'Visitor statistics only after consent, withdrawable at any time',
+        'Fast static site without a database, hardly any scripts',
+        'Fonts and images from the practice’s own server, security settings included',
       ],
     },
     tr: {
-      subtitle: 'Hofheim am Taunus’taki bir aile hekimi için çok dilli muayenehane sitesi',
+      subtitle: 'Hastalarını kendi dillerinde karşılayan bir aile hekimliği muayenehanesi',
       category: 'Muayenehane web sitesi',
       description:
-        'Hofheim am Taunus’taki bir aile hekimliği muayenehanesi için web sitesi: on dilde genel tıp, iç hastalıkları ve enfeksiyon hastalıkları; sağlık rehberi, SSS ve istatistik için onay mekanizmasıyla — hızlı bir statik site olarak.',
+        'Hofheim am Taunus’taki bir aile hekimliği muayenehanesi en önemli soruları aramadan önce yanıtlıyor: kim tedavi ediyor, neler sunuluyor, ne zaman açık — on dilde, hızlı ve veri koruma dostu.',
       role: 'Full-stack geliştirici & tasarımcı',
-      long: `Fazilet Gültekin’in aile hekimliği muayenehanesi Hofheim am Taunus’ta; yasal ve özel sigortalı hastalara Almanca ve Türkçe hizmet veriyor, ayrıca bölgede kendi dilinde okumayı tercih eden hastalara da. Bu yüzden site dil üzerine kurulu: kendi çevrilmiş URL’leriyle on dil (DE, TR, EN, AR, RU, UK, PL, RO, IT, ES), sağdan sola yerleşimli Arapça, hreflang bağlantıları ve site haritasıyla toplam 93 indekslenebilir sayfa.
+      long: `Fazilet Gültekin’in aile hekimliği muayenehanesi Hofheim am Taunus’ta ve hem yasal hem özel sigortalı hastalara hizmet veriyor — Almanca ve Türkçe, sağlık sorularını kendi dillerinde okumayı tercih eden çok sayıda insanın yaşadığı bir bölgede. Bir muayenehane sitesinin net bir görevi var: telefon çalmadan önce soruları yanıtlamak. Burada kim tedavi ediyor? Neler sunuluyor? Ne zaman açık? Nasıl randevu alırım? Ve: Bu muayenehaneye güvenebilir miyim?
 
-İçerik olarak bir muayenehanenin gerçekten yanıtlaması gerekenleri karşılıyor: Burada kim tedavi ediyor, neler sunuluyor, ne zaman açık, nasıl randevu alırım? Bunlara enfeksiyon hastalıkları odaklı hizmet özeti, sık sorulan sorular ve yüksek tansiyon, demir eksikliği, yetişkin aşıları ya da check-up gibi konularda makaleler içeren bir sağlık rehberi ekleniyor. Çalışma saatleri, nöbetçi hizmet notu (116 117) ve iletişim yolları her sayfanın üstünde veya altında.
+Cevabımız: tam bunu yansıtan bir site — on dilde, sağdan sola düzenle Arapça. Bir hizmet özeti enfeksiyon hastalıkları odağını ve muayenehanede yapılan tanıyı öne çıkarıyor. Çalışma saatleri, nöbetçi hizmet notu ve randevu bağlantısı her sayfada duruyor, bir menünün içinde gizlenmiyor. Uzman makaleleri ve sık sorulan sorularla bir sağlık rehberi, hastaların zaten Google’da aradığı şeyleri yanıtlıyor — ve onlara burada uzmanlığı olan birinin konuştuğunu gösteriyor.
 
-Teknik olarak site bilinçli olarak sade: Astro, derleme sırasında asgari JavaScript’li saf HTML üretiyor; yazı tipleri ve görseller kendi sunucumuzdan geliyor, nginx üzerinde güvenlik başlıklarıyla. Google Tag Manager ile istatistik yalnızca aktif onaydan sonra çalışıyor ve her an geri alınabiliyor — bir muayenehane için şart. Künye ve gizlilik politikası tüm dillerde mevcut.`,
+Konu sağlık olduğu için site veri korumayı ciddiye alıyor: ziyaretçi istatistiği yalnızca aktif onaydan sonra çalışıyor ve istediği zaman geri alınabiliyor; yazı tipleri ve görseller üçüncü taraflarda değil kendi sunucusunda duruyor. Bilerek sade yapıldı — veritabanı olmadan ve neredeyse hiç betik olmadan hızlı, statik bir site; sunucuda güvenlik ayarlarıyla. Bekleme odasında telefondan bile hızlı açılıyor.
+
+Sonuç: hekimi, muayenehaneyi ve çalışma saatlerini arama motorlarına net işaretleyen 93 bulunabilir sayfa — ve insanların Almanca aramadığı yerlerde bile bölgesinde bulunan bir muayenehane.`,
       features: [
-        'Çevrilmiş URL’lerle on dil, Arapça için RTL yerleşim dahil',
-        'hreflang, site haritası ve yapılandırılmış veriyle (hekim, muayenehane, çalışma saatleri) 93 indekslenebilir sayfa',
-        'Enfeksiyon hastalıkları odaklı hizmet özeti ve muayenehanede tanı',
-        'Hastalar için makaleli sağlık rehberi ve SSS',
-        'Her sayfada çalışma saatleri, nöbetçi hizmet notu ve randevu bağlantısı',
-        'Onay bannerı: Google Tag Manager yalnızca onaydan sonra, her an geri alınabilir',
-        'Astro ile statik derleme — hızlı, veritabanı yok, neredeyse hiç JavaScript yok',
-        'Kendi sunucumuzdan yazı tipleri ve görseller, nginx üzerinde güvenlik başlıkları',
+        'Çevrilmiş adreslerle on dil, sağdan sola düzenle Arapça',
+        'Enfeksiyon hastalıkları ve muayenehanede tanı odaklı hizmet özeti',
+        'Çalışma saatleri, nöbetçi hizmet notu ve randevu bağlantısı her sayfada',
+        'Uzman makaleleri ve sık sorulan sorularla sağlık rehberi',
+        'Hekim, muayenehane ve çalışma saatleri için temiz işaretlemeli 93 bulunabilir sayfa',
+        'Ziyaretçi istatistiği yalnızca onaydan sonra, istendiği zaman geri alınabilir',
+        'Veritabanı olmadan hızlı statik site, neredeyse hiç betik yok',
+        'Muayenehanenin kendi sunucusundan yazı tipleri ve görseller, güvenlik ayarları dahil',
+      ],
+    },
+  },
+  'seelenfreunde-coaching': {
+    en: {
+      subtitle: 'A website that builds trust: animal communication and coaching with Jessica Hug',
+      category: 'Coaching website',
+      description:
+        'Jessica Hug accompanies people and their animals. Her website explains calmly what an animal conversation is, builds trust and leads to an appointment request in a few clicks.',
+      role: 'Concept, design & build',
+      long: `Since 2018 Jessica Hug has accompanied people and their animals — with animal communication, coaching and courses. Her offer needs explaining and is very personal: anyone who opens up to an animal conversation has to feel trust first. So what was needed was not a loud sales page but a presence that makes her calm and warmth tangible and makes it easy for visitors with no prior knowledge to get started.
+
+Our answer: the site is built like a first conversation. It starts with what animal owners are dealing with — sudden restlessness, changes in behaviour, the feeling of not quite understanding their own animal — and then shows three clear paths: coaching, animal conversation and courses. “How an animal conversation works” explains in three steps what happens after the first message, and the difference between written report and LIVE session is put in plain words. Qualifications, client voices and frequent questions answer doubts before anyone has to voice them.
+
+Every offer has its own page with exactly one next step. The appointment page leads to a request in one click, packages included. The animal communication course shows its three modules and puts interested people on a waiting list while it is being revised. The annual “Open Heart” seminar gets a stage of its own. Colours, type and gentle movement follow the brand: warm, earthy, calm. Privacy, cookie notice and the note that the offers do not replace veterinary treatment are part of it from the start.`,
+      features: [
+        'Entry through the questions animal owners ask rather than technical terms',
+        'Three clear paths — coaching, animal conversation, courses — each with one next step',
+        '“How an animal conversation works”: three steps, report or LIVE',
+        'Trust through qualifications, client voices and frequent questions',
+        'Appointment request in one click, packages included',
+        'Course page with three modules and a waiting list with a bonus',
+        'A page of its own for the annual “Open Heart” seminar',
+        'A warm brand world: colours, type and movement like a calm room',
+        'Privacy, cookie notice and disclaimer from the start',
+      ],
+    },
+    tr: {
+      subtitle: 'Güven veren bir web sitesi: Jessica Hug ile hayvan iletişimi ve koçluk',
+      category: 'Koçluk web sitesi',
+      description:
+        'Jessica Hug insanlara ve hayvanlarına eşlik ediyor. Web sitesi hayvan görüşmesinin ne olduğunu sakin bir dille anlatıyor, güven kuruyor ve birkaç tıkla randevu talebine götürüyor.',
+      role: 'Konsept, tasarım & uygulama',
+      long: `Jessica Hug 2018’den beri insanlara ve hayvanlarına eşlik ediyor — hayvan iletişimi, koçluk ve kurslarla. Teklifi açıklama gerektiriyor ve çok kişisel: bir hayvan görüşmesine açılan kişinin önce güven duyması gerekir. Bu yüzden gereken şey gürültülü bir satış sayfası değil, onun sakinliğini ve sıcaklığını hissettiren ve ön bilgisi olmayan ziyaretçilere başlangıcı kolaylaştıran bir görünümdü.
+
+Cevabımız: site, ilk bir sohbet gibi kurgulandı. Hayvan sahiplerini meşgul eden şeyle başlıyor — ani huzursuzluk, davranış değişiklikleri, kendi hayvanını tam anlayamama hissi — sonra üç net yol gösteriyor: koçluk, hayvan görüşmesi ve kurslar. “Hayvan görüşmesi nasıl işler” ilk mesajdan sonra ne olduğunu üç adımda anlatıyor; yazılı rapor ile CANLI görüşme arasındaki fark sade bir dille yazılı. Nitelikler, müşteri yorumları ve sık sorulan sorular, şüpheleri kimse dile getirmek zorunda kalmadan yanıtlıyor.
+
+Her teklifin kendi sayfası ve tam olarak bir sonraki adımı var. Randevu sayfası paketler dahil tek tıkla talebe götürüyor. Hayvan iletişimi kursu üç modülünü gösteriyor ve gözden geçirilirken ilgilenenleri bekleme listesine alıyor. Yıllık “Open Heart” semineri kendi sahnesine sahip. Renkler, yazı tipi ve yumuşak hareket markayı izliyor: sıcak, toprak tonlu, sakin. Gizlilik, çerez bildirimi ve tekliflerin veteriner tedavisinin yerini tutmadığı notu baştan itibaren işin parçası.`,
+      features: [
+        'Teknik terimler yerine hayvan sahiplerinin sorularıyla giriş',
+        'Üç net yol — koçluk, hayvan görüşmesi, kurslar — her biri tek bir sonraki adımla',
+        '“Hayvan görüşmesi nasıl işler”: üç adım, rapor veya CANLI',
+        'Nitelikler, müşteri yorumları ve sık sorulan sorularla güven',
+        'Paketler dahil tek tıkla randevu talebi',
+        'Üç modüllü kurs sayfası ve bonuslu bekleme listesi',
+        'Yıllık “Open Heart” semineri için ayrı bir sayfa',
+        'Sıcak bir marka dünyası: sakin bir oda gibi renkler, yazı ve hareket',
+        'Baştan itibaren gizlilik, çerez bildirimi ve sorumluluk notu',
       ],
     },
   },
   'kulturplattform-freiburg': {
     en: {
-      subtitle: 'Association platform with CMS, courses and newsletter',
+      subtitle: 'A cultural association maintains its platform itself — without needing a developer for every text',
       category: 'Web app / CMS',
       description:
-        'Platform for a cultural association in Freiburg: events, courses, volunteering and a double-opt-in newsletter. .NET 10 backend with CQRS, React front-end, bilingual.',
+        'A cultural association in Freiburg manages events, courses, volunteering and newsletter in one place. The board maintains content and translations itself, and the newsletter is built to be legally sound.',
       role: 'Full-stack developer',
-      long: `Kulturplattform Freiburg e. V. runs events, courses and community formats in Freiburg. The platform maps what the association actually does: activities with categories, search and detail pages, course offerings, partners, the statutes, donations and a form for volunteers. The board maintains all of it themselves — including the translations, which live as resources in the database and are edited in the admin area. A new text in German and Turkish therefore needs no deployment.
+      long: `Kulturplattform Freiburg e. V. organises events, courses and meeting formats in Freiburg — carried by people who do this alongside job and family. For an association like that a website only helps if the board can maintain it itself: a new date, a changed course, a text in German and Turkish — without having to ask someone who can code every time. And the newsletter that holds people together has to run legally flawlessly.
 
-The backend is a .NET 10 service in Clean Architecture with CQRS via MediatR, FluentValidation for input, JWT and BCrypt for sign-in, and Entity Framework Core on SQL Server — around 22 controllers, plus tests at domain, application and integration level. The newsletter isn’t a mailto link but a proper flow: double opt-in with a confirmation link, an unsubscribe token in every message, campaigns per language and batched sending, through Azure Communication Services with SMTP as a fallback.
+Our answer: a platform that reflects what the association actually does. Activities with categories, search and detail pages, courses, partners, statutes, donations and a form for people who want to volunteer. The board maintains everything in the admin area, translations included: they live in the database, not in the program text. A new text in German and Turkish therefore needs no programming and no release by a developer.
 
-It all runs on a dedicated server: Docker Compose with SQL Server, the API and nginx, dedicated mailboxes for sending, and backup and restore scripts alongside. The front-end is a React single-page app talking to the same API.`,
+The newsletter is not a mailto link but a complete process: whoever signs up confirms by link (double opt-in), every mail contains an unsubscribe option, campaigns exist per language and sending runs in batches so mailboxes are not overloaded. If the main sending service fails, a second one steps in. So what the association wants to say gets through.
+
+Because an association plans for years, the technology underneath is built for maintainability: clear layers and tested business logic so later changes do not endanger everything that exists. The platform runs on a dedicated server with its own mailboxes, with backup and restore scripts. The result: an association that has its digital work in its own hands.`,
       features: [
-        'Activities with category filter, search and detail pages',
-        'Course offerings, partners, statutes, donations and a volunteer form',
-        'Bilingual (DE/TR) — translations live in the database, not in the code',
-        'Newsletter with double opt-in, unsubscribe token and per-language campaigns',
-        'Delivery via Azure Communication Services with SMTP fallback',
-        'Clean Architecture with CQRS (MediatR) and FluentValidation',
-        'Tests at domain, application and integration level',
-        'Self-hosted: Docker Compose with SQL Server, API and nginx, dedicated mailboxes',
+        'Activities with categories, search and detail pages',
+        'Courses, partners, statutes, donations and a form for volunteers',
+        'Bilingual (German and Turkish) — the board maintains translations itself in the admin area',
+        'Newsletter with confirmation by link, unsubscribe in every mail and campaigns per language',
+        'Sending in batches with a second sending route as fallback',
+        'Clear structure and tested business logic for later changes',
+        'Dedicated server with its own mailboxes',
+        'Backup and restore scripts included',
       ],
     },
     tr: {
-      subtitle: 'CMS, kurslar ve bülten içeren dernek platformu',
+      subtitle: 'Bir kültür derneği platformunu kendisi yönetiyor — her metin için bir yazılımcıya ihtiyaç duymadan',
       category: 'Web uygulaması / CMS',
       description:
-        'Freiburg’daki bir kültür derneği için platform: etkinlikler, kurslar, gönüllülük ve çift onaylı bülten. CQRS’li .NET 10 arka uç, React ön yüz, iki dilli.',
+        'Freiburg’daki bir kültür derneği etkinlikleri, kursları, gönüllülüğü ve bültenini tek yerden yönetiyor. Yönetim kurulu içerik ve çevirileri kendisi yönetiyor, bülten hukuka uygun kurgulandı.',
       role: 'Full-stack geliştirici',
-      long: `Kulturplattform Freiburg e. V., Freiburg’da etkinlikler, kurslar ve buluşma programları düzenliyor. Platform derneğin gerçekten yaptığı işi yansıtıyor: kategorili, aramalı ve detay sayfalı etkinlikler, kurs programları, partnerler, tüzük, bağış ve gönüllüler için bir form. Hepsini yönetim kurulu kendisi güncelliyor — çeviriler dahil; çeviriler veritabanında kaynak olarak duruyor ve yönetim panelinden düzenleniyor. Almanca ve Türkçe yeni bir metin için dağıtım gerekmiyor.
+      long: `Kulturplattform Freiburg e. V., Freiburg’da etkinlikler, kurslar ve buluşma formatları düzenliyor — bunu iş ve aile yanında yapan insanlar tarafından yürütülüyor. Böyle bir dernek için web sitesi ancak yönetim kurulu onu kendisi yönetebiliyorsa işe yarar: yeni bir tarih, değişen bir kurs, Almanca ve Türkçe bir metin — her seferinde kod yazabilen birine sormak zorunda kalmadan. Ve insanları bir arada tutan bülten hukuken kusursuz çalışmak zorunda.
 
-Arka uç, MediatR üzerinden CQRS kullanan Clean Architecture mimarisinde bir .NET 10 servisi: girdiler için FluentValidation, giriş için JWT ve BCrypt, SQL Server üzerinde Entity Framework Core — yaklaşık 22 controller ve alan, uygulama ve entegrasyon düzeyinde testler. Bülten bir mailto bağlantısı değil, gerçek bir akış: onay bağlantılı çift opt-in, her mesajda abonelikten çıkma token’ı, dile göre kampanyalar ve gruplar hâlinde gönderim; Azure Communication Services ile, yedek olarak SMTP.
+Cevabımız: derneğin gerçekte yaptığı şeyi yansıtan bir platform. Kategorili, aramalı ve ayrıntı sayfalı etkinlikler, kurslar, ortaklar, tüzük, bağışlar ve gönüllü olmak isteyenler için bir form. Yönetim kurulu her şeyi yönetim bölümünden yönetiyor, çeviriler dahil: çeviriler program metninde değil veritabanında duruyor. Almanca ve Türkçe yeni bir metin bu yüzden programlama ya da bir yazılımcının yayına alması gerektirmiyor.
 
-Tamamı kendi sunucusunda çalışıyor: SQL Server, API ve nginx içeren Docker Compose, gönderim için kendi posta kutuları, yanında yedekleme ve geri yükleme betikleri. Ön yüz, aynı API ile konuşan bir React tek sayfa uygulaması.`,
+Bülten bir mailto bağlantısı değil, eksiksiz bir süreç: kaydolan bağlantıyla onaylıyor (çift onay), her e-postada abonelikten çıkma imkânı var, kampanyalar dil başına yapılıyor ve gönderim posta kutularını aşırı yüklememek için gruplar halinde ilerliyor. Ana gönderim servisi çökerse ikincisi devreye giriyor. Böylece derneğin söylemek istediği ulaşıyor.
+
+Dernek yıllar için planladığından altındaki teknoloji bakım kolaylığı için kuruldu: net katmanlar ve test edilmiş iş mantığı, sonraki değişikliklerin mevcut her şeyi tehlikeye atmaması için. Platform kendi sunucusunda, kendi posta kutularıyla, yedekleme ve geri yükleme betikleriyle çalışıyor. Sonuç: dijital işini kendi elinde tutan bir dernek.`,
       features: [
-        'Kategori filtresi, arama ve detay sayfalarıyla etkinlikler',
-        'Kurs programları, partnerler, tüzük, bağış ve gönüllü formu',
-        'İki dilli (DE/TR) — çeviriler kodda değil, veritabanında',
-        'Çift onaylı bülten, abonelikten çıkma token’ı ve dile göre kampanyalar',
-        'Azure Communication Services ile gönderim, SMTP yedeğiyle',
-        'CQRS (MediatR) ve FluentValidation ile Clean Architecture',
-        'Alan, uygulama ve entegrasyon düzeyinde testler',
-        'Kendi sunucusu: SQL Server, API ve nginx’li Docker Compose, kendi posta kutuları',
+        'Kategorili, aramalı ve ayrıntı sayfalı etkinlikler',
+        'Kurslar, ortaklar, tüzük, bağışlar ve gönüllüler için form',
+        'İki dilli (Almanca ve Türkçe) — çevirileri yönetim kurulu yönetim bölümünde kendisi yönetir',
+        'Bağlantıyla onaylı bülten, her e-postada abonelikten çıkma ve dil başına kampanyalar',
+        'İkinci bir gönderim yoluyla yedeklenmiş, gruplar halinde gönderim',
+        'Sonraki değişiklikler için net yapı ve test edilmiş iş mantığı',
+        'Kendi posta kutularıyla kendi sunucusu',
+        'Yedekleme ve geri yükleme betikleri dahil',
       ],
     },
   },
