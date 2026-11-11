@@ -292,9 +292,9 @@ export const TOWNS: Town[] = [
     lat: 48.473,
     lng: 7.944,
     intro:
-      'Webdesign, Webentwicklung und SEO für Mittelstand, Handwerk und Handel in Offenburg und der Ortenau.',
+      'Webdesign, Webentwicklung und SEO für Mittelstand, Handwerk und Handel in Offenburg und Umgebung.',
     local:
-      'Die Ortenau ist stark im Mittelstand: Handwerksbetriebe, Dienstleister und Einzelhandel mit Kundschaft aus dem ganzen Kreis zwischen Kehl und Gengenbach. Viele haben eine Website, die seit Jahren nicht angepasst wurde, langsam lädt und auf dem Handy schwer zu bedienen ist. Ein Relaunch mit klaren Leistungen, Referenzen und Kontaktwegen bringt hier oft schnell mehr Anfragen.',
+      'Offenburg ist stark im Mittelstand: Handwerksbetriebe, Dienstleister und Einzelhandel mit Kundschaft aus dem ganzen Kreis zwischen Kehl und Gengenbach. Viele haben eine Website, die seit Jahren nicht angepasst wurde, langsam lädt und auf dem Handy schwer zu bedienen ist. Ein Relaunch mit klaren Leistungen, Referenzen und Kontaktwegen bringt hier oft schnell mehr Anfragen.',
     focus: ['web', 'cards', 'abo', 'sh'],
     angles: {
       web: 'Relaunch der bestehenden Website: moderner, schneller, mit Ihren Referenzen — ohne Ihre bisherigen Google-Platzierungen zu verlieren.',
@@ -313,7 +313,7 @@ export const TOWNS: Town[] = [
       },
       {
         q: 'Machen Sie auch SEO in Offenburg?',
-        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Das gilt für die ganze Ortenau, von Kehl bis Hausach. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
+        a: 'Ja. Zu jeder Website gehört bei uns Local SEO: saubere Seitenstruktur, Texte mit Ortsbezug, schnelle Ladezeiten und ein gepflegtes Google-Unternehmensprofil. Gesucht wird hier meist „… Offenburg“, dafür bekommt Ihre Seite eigene Texte mit Ortsbezug. Im kostenlosen Erstgespräch schauen wir uns Ihre bestehende Website und Ihr Google-Profil an und sagen Ihnen, was zuerst lohnt.',
       },
       {
         q: 'Übernehmen Sie auch Hosting und Betreuung?',
@@ -321,7 +321,7 @@ export const TOWNS: Town[] = [
       },
     ],
     near: ['lahr', 'ortenau', 'emmendingen'],
-    seoTitle: 'Webdesign & SEO Offenburg und Ortenau – Webagentur | Breisgau Digital',
+    seoTitle: 'Webdesign & SEO Offenburg – Webagentur | Breisgau Digital',
   },
   {
     slug: 'lahr',
@@ -411,7 +411,7 @@ export const TOWNS: Town[] = [
     lat: 48.4,
     lng: 7.92,
     intro: 'Webdesign, Webentwicklung und SEO für Betriebe im ganzen Ortenaukreis — von Kehl bis Hausach, von Offenburg bis Lahr. Individuelle Websites, Online-Shops und Web-Apps zum Festpreis, persönlich vor Ort.',
-    local: 'Die Ortenau ist ein Landkreis mit vielen kleinen und mittleren Betrieben: Handwerk im Kinzigtal, Handel und Dienstleister in Offenburg und Lahr, Gastronomie und Ferienunterkünfte am Schwarzwaldrand. Wer hier nach einer Webagentur sucht, findet oft Anbieter aus Stuttgart oder Freiburg, die den Landkreis nur auf dem Papier bedienen. Wir kommen für das Erstgespräch zu Ihnen, bauen die Website individuell statt aus einem Baukasten und sorgen dafür, dass sie bei Suchen wie „Webdesign Ortenau“ oder „Webagentur Lahr“ überhaupt auftaucht: mit eigener Seitenstruktur, Texten mit Ortsbezug und einem gepflegten Google-Unternehmensprofil.',
+    local: 'Die Ortenau ist ein Landkreis mit vielen kleinen und mittleren Betrieben: Handwerk im Kinzigtal, Handel und Dienstleister in Offenburg und Lahr, Gastronomie und Ferienunterkünfte am Schwarzwaldrand. Wer hier nach einer Webagentur sucht, findet oft Anbieter aus Stuttgart oder Freiburg, die den Landkreis nur auf dem Papier bedienen. Wir kommen für das Erstgespräch zu Ihnen, bauen die Website individuell statt aus einem Baukasten und sorgen dafür, dass sie bei Suchen wie „Webdesign Ortenau“ oder „Webagentur Ortenaukreis“ überhaupt auftaucht: mit eigener Seitenstruktur, Texten mit Ortsbezug und einem gepflegten Google-Unternehmensprofil.',
     focus: ['web', 'abo', 'cards'],
     angles: {
       web: 'Neue Website, Relaunch oder Online-Shop — entwickelt für Ihren Betrieb und für die Suchbegriffe, nach denen in der Ortenau tatsächlich gesucht wird.',
