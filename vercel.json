@@ -63,6 +63,28 @@
       "permanent": true
     },
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.breisgau-digital.de"
+        }
+      ],
+      "destination": "https://breisgau-digital.de/",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(?:www\\.)?hamzaoeztuerk\\.de"
+        }
+      ],
+      "destination": "https://breisgau-digital.de/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
