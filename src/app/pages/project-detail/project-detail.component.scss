@@ -17,10 +17,6 @@
   }
 }
 
-.case-tags {
-  margin-top: 1.25rem;
-}
-
 .case-visual {
   min-width: 0;
   aspect-ratio: 16 / 10;
@@ -31,14 +27,190 @@ div.case-visual {
   aspect-ratio: auto;
 }
 
-.case-grid {
+// Eckdaten — eine ruhige Leiste statt Technik-Chips.
+.facts-strip {
+  border-block: 1px solid $rule;
+  background: #fff;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 2.5rem;
+  padding-block: 1.1rem;
+
+  .btn {
+    margin-left: auto;
+  }
+}
+
+.fact-l {
+  @include small-caps;
+  font-size: 0.72rem;
+}
+
+.fact-k {
+  @include small-caps;
+  font-size: 0.64rem;
+  margin-bottom: 0.15rem;
+}
+
+.fact-v {
+  font-weight: 500;
+  color: $text;
+}
+
+// Geschichte: links bleibt das Bild stehen und wechselt mit dem Kapitel,
+// rechts läuft der Text vorbei. Auf dem Handy steht das Bild über jedem Kapitel.
+.story {
+  padding-block: clamp(2.5rem, 7vw, 5rem);
+}
+
+.story-grid {
   display: grid;
-  gap: 2rem;
+  gap: 2.5rem;
 
   @media (min-width: $bp-desktop) {
-    grid-template-columns: 1fr 340px;
-    gap: 4rem;
+    grid-template-columns: 1.15fr 1fr;
+    gap: 4.5rem;
     align-items: start;
+  }
+}
+
+.cs-stage {
+  display: none;
+
+  @media (min-width: $bp-desktop) {
+    display: block;
+    position: sticky;
+    top: 96px;
+    height: calc(100vh - 140px);
+    max-height: 720px;
+    align-self: start;
+    display: grid;
+    align-items: center;
+  }
+}
+
+.cs-frame {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  border-radius: $radius-lg;
+  overflow: hidden;
+  background: $surface-ink;
+  box-shadow: $shadow-md;
+
+  img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    opacity: 0;
+    transform: scale(1.03);
+    transition: opacity 0.7s $ease-editorial, transform 1.2s $ease-editorial;
+
+    &.on {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+.cs-steps {
+  display: grid;
+  gap: clamp(3rem, 9vw, 4rem);
+
+  @media (min-width: $bp-desktop) {
+    gap: 0;
+  }
+}
+
+.cs-step {
+  @media (min-width: $bp-desktop) {
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: opacity 0.5s $ease-editorial;
+  }
+}
+
+.story.enhanced .cs-step:not(.on) {
+  @media (min-width: $bp-desktop) {
+    opacity: 0.28;
+  }
+}
+
+.cs-img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  object-position: top center;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-md;
+  margin-bottom: 1.5rem;
+
+  @media (min-width: $bp-desktop) {
+    display: none;
+  }
+}
+
+.cs-no {
+  font-family: $font-display;
+  font-size: clamp(3rem, 9vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: $tracking-display;
+  color: $rule-strong;
+  margin-bottom: 0.5rem;
+}
+
+.cs-h {
+  font-family: $font-display;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 400;
+  margin-bottom: 0.9rem;
+}
+
+.cs-p {
+  color: $text-soft;
+  font-size: 1.05rem;
+  line-height: 1.75;
+  max-width: 34rem;
+}
+
+// Ohne mehrere Bilder: Kapitel einspaltig und mittig lesbar.
+.no-stage .story-grid {
+  @media (min-width: $bp-desktop) {
+    grid-template-columns: minmax(0, 40rem);
+    justify-content: center;
+  }
+}
+
+.no-stage .cs-step {
+  @media (min-width: $bp-desktop) {
+    min-height: 0;
+    padding-block: 2.5rem;
+  }
+}
+
+.gains .case-h {
+  margin-bottom: 1.5rem;
+}
+
+.gain-list {
+  display: grid;
+  gap: 0.9rem 3rem;
+
+  @media (min-width: 760px) {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  li {
+    font-size: 1.02rem;
   }
 }
 
@@ -46,38 +218,6 @@ div.case-visual {
   font-family: $font-display;
   font-size: clamp(1.5rem, 3.6vw, 1.9rem);
   font-weight: 400;
-  margin-bottom: 1rem;
-
-  &:not(:first-child) {
-    margin-top: clamp(2.25rem, 6vw, 3rem);
-  }
-}
-
-.case-facts {
-  display: grid;
-  gap: 1.25rem;
-
-  @media (min-width: $bp-desktop) {
-    position: sticky;
-    top: 96px;
-  }
-
-  dl {
-    display: grid;
-    gap: 1.1rem;
-  }
-
-  dt {
-    @include small-caps;
-    font-size: 0.68rem;
-    margin-bottom: 0.3rem;
-  }
-
-  dd {
-    color: $text;
-    font-weight: 500;
-    line-height: 1.5;
-  }
 }
 
 .nf {

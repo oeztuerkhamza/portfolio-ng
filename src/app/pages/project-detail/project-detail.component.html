@@ -14,11 +14,6 @@
           <p class="section-label">{{ i18n.ptx(p.slug, 'category', p.category) }}</p>
           <h1 class="section-title">{{ p.title }}</h1>
           <p class="section-subtitle">{{ i18n.ptx(p.slug, 'subtitle', p.subtitle) }}</p>
-          <ul class="chips case-tags">
-            @for (tag of p.tags.slice(0, 5); track tag) {
-              <li class="chip chip-outline">{{ tag }}</li>
-            }
-          </ul>
           <div class="page-hero-actions">
             @if (p.liveUrl) {
               <a [href]="p.liveUrl" target="_blank" rel="noopener" class="btn btn-primary btn-large">
@@ -45,52 +40,71 @@
     </div>
   </header>
 
-  <!-- Inhalt -->
-  <section class="section section-white">
-    <div class="container case-grid">
-      <div class="case-main">
-        <h2 class="case-h">{{ i18n.t('pd.about') }}</h2>
-        <div class="prose">
-          @for (paragraph of i18n.ptx(p.slug, 'long', p.longDescription).split('\n\n'); track paragraph) {
-            <p>{{ paragraph }}</p>
-          }
-        </div>
-
-        <h2 class="case-h">{{ i18n.t('pd.highlights') }}</h2>
-        <ul class="check-list">
-          @for (feature of i18n.ptx(p.slug, 'features', p.features); track feature) {
-            <li>{{ feature }}</li>
-          }
-        </ul>
+  <!-- Fakten -->
+  <section class="facts-strip" aria-label="Eckdaten">
+    <div class="container facts">
+      <div>
+        <p class="fact-l">{{ i18n.ptx(p.slug, 'category', p.category) }}</p>
       </div>
+      <div>
+        <p class="fact-k">{{ i18n.t('common.role') }}</p>
+        <p class="fact-v">{{ i18n.ptx(p.slug, 'role', p.role) }}</p>
+      </div>
+      <div>
+        <p class="fact-k">{{ i18n.t('common.period') }}</p>
+        <p class="fact-v">{{ p.duration }}</p>
+      </div>
+      @if (p.liveUrl) {
+        <a [href]="p.liveUrl" target="_blank" rel="noopener" class="btn btn-secondary">
+          {{ i18n.t('common.live') }} <app-icon name="arrow" />
+        </a>
+      }
+    </div>
+  </section>
 
-      <aside class="card case-facts">
-        <dl>
-          <div>
-            <dt>{{ i18n.t('common.role') }}</dt>
-            <dd>{{ i18n.ptx(p.slug, 'role', p.role) }}</dd>
+  <!-- Geschichte: beim Scrollen wechselt das Bild mit dem Kapitel -->
+  <section class="story" [class.enhanced]="enhanced()" [class.no-stage]="!hasStage()">
+    <div class="container story-grid">
+      @if (hasStage()) {
+        <div class="cs-stage" aria-hidden="true">
+          <div class="cs-frame">
+            @for (c of chapters(); track $index) {
+              <img
+                [src]="c.image"
+                alt=""
+                width="1440"
+                height="900"
+                loading="lazy"
+                [class.on]="active() === $index"
+              />
+            }
           </div>
-          <div>
-            <dt>{{ i18n.t('common.period') }}</dt>
-            <dd>{{ p.duration }}</dd>
-          </div>
-          <div>
-            <dt>{{ i18n.t('pd.tech') }}</dt>
-            <dd>
-              <ul class="chips">
-                @for (tech of p.techStack; track tech.name) {
-                  <li class="chip">{{ tech.name }}</li>
-                }
-              </ul>
-            </dd>
-          </div>
-        </dl>
-        @if (p.liveUrl) {
-          <a [href]="p.liveUrl" target="_blank" rel="noopener" class="btn btn-secondary btn-block">
-            {{ i18n.t('common.live') }} <app-icon name="arrow" />
-          </a>
+        </div>
+      }
+      <div class="cs-steps">
+        @for (c of chapters(); track $index) {
+          <article class="cs-step" [attr.data-i]="$index" [class.on]="active() === $index">
+            @if (hasStage()) {
+              <img class="cs-img" [src]="c.image" [alt]="p.title" width="1440" height="900" loading="lazy" />
+            }
+            <p class="cs-no">{{ $index + 1 < 10 ? '0' : '' }}{{ $index + 1 }}</p>
+            <h2 class="cs-h">{{ i18n.t(c.key) }}</h2>
+            <p class="cs-p">{{ c.text }}</p>
+          </article>
         }
-      </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nutzen -->
+  <section class="section section-white gains">
+    <div class="container">
+      <h2 class="case-h">{{ i18n.t('pd.highlights') }}</h2>
+      <ul class="gain-list check-list">
+        @for (feature of i18n.ptx(p.slug, 'features', p.features).slice(0, 6); track feature) {
+          <li>{{ feature }}</li>
+        }
+      </ul>
     </div>
   </section>
 

@@ -145,7 +145,13 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
     de: 'Alle Referenzen', en: 'All references', tr: 'Tüm referanslar',
   },
   'pd.about': { de: 'Über das Projekt', en: 'About the project', tr: 'Proje hakkında' },
-  'pd.highlights': { de: 'Highlights', en: 'Highlights', tr: 'Öne çıkanlar' },
+  'pd.highlights': {
+    de: 'Was das im Alltag bringt', en: 'What it brings day to day', tr: 'Günlük işte ne getiriyor',
+  },
+  'pd.ch.problem': { de: 'Die Ausgangslage', en: 'The starting point', tr: 'Çıkış noktası' },
+  'pd.ch.answer': { de: 'Unsere Antwort', en: 'Our answer', tr: 'Cevabımız' },
+  'pd.ch.diff': { de: 'Was den Unterschied macht', en: 'What makes the difference', tr: 'Farkı yaratan şey' },
+  'pd.ch.result': { de: 'Das Ergebnis', en: 'The result', tr: 'Sonuç' },
   'pd.tech': {
     de: 'Eingesetzte Technik', en: 'Technology used', tr: 'Kullanılan teknoloji',
   },
