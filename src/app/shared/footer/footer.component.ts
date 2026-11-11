@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AnalyticsService } from '../../core/analytics/analytics.service';
 import { I18nService } from '../../core/i18n/i18n.service';
 import { LocalizePipe } from '../../core/i18n/localize.pipe';
 import { COMPANY, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
@@ -15,6 +16,7 @@ import { TOWNS } from '../../core/data/towns.data';
 })
 export class FooterComponent {
   readonly i18n = inject(I18nService);
+  readonly analytics = inject(AnalyticsService);
   readonly company = COMPANY;
   readonly whatsapp = whatsappUrl();
   /** Interne Links auf die Ortsseiten (nur Deutsch). */

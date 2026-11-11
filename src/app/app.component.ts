@@ -5,6 +5,8 @@ import { filter, map } from 'rxjs';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { FooterComponent } from './shared/footer/footer.component';
 import { MobileBarComponent } from './shared/mobile-bar/mobile-bar.component';
+import { CookieBannerComponent } from './shared/cookie-banner/cookie-banner.component';
+import { AnalyticsService } from './core/analytics/analytics.service';
 import { fadeAnimation } from './core/animations/route.animations';
 import { SeoService } from './core/seo/seo.service';
 import {
@@ -16,7 +18,7 @@ import {
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, NavbarComponent, FooterComponent, MobileBarComponent],
+  imports: [RouterOutlet, NavbarComponent, FooterComponent, MobileBarComponent, CookieBannerComponent],
   template: `
     @if (bare()) {
       <router-outlet />
@@ -27,6 +29,7 @@ import {
       </main>
       <app-footer />
       <app-mobile-bar />
+      <app-cookie-banner />
     }
   `,
   styles: [],
@@ -35,6 +38,7 @@ import {
 export class AppComponent implements OnInit {
   private readonly seo = inject(SeoService);
   private readonly router = inject(Router);
+  private readonly analytics = inject(AnalyticsService);
 
   /** Admin-Portal und Einladungen ohne Navigation, Footer und Handy-Leiste. */
   readonly bare = toSignal(
@@ -46,6 +50,7 @@ export class AppComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    this.analytics.init();
     // Site-wide identity graph — rendered once into <head> on the server.
     this.seo.setJsonLd('person', personSchema());
     this.seo.setJsonLd('service', professionalServiceSchema());

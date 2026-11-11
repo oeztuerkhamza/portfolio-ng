@@ -72,6 +72,7 @@
         <a [routerLink]="'/agb' | localize">{{ i18n.t('nav.agb') }}</a>
         <a [routerLink]="'/widerruf' | localize">{{ i18n.t('nav.widerruf') }}</a>
         <a [routerLink]="'/versand' | localize">{{ i18n.t('nav.versand') }}</a>
+        <a href="#" (click)="$event.preventDefault(); analytics.reopen()">Cookie-Einstellungen</a>
       </p>
     </div>
 
