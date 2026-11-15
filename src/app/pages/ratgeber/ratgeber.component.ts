@@ -71,7 +71,7 @@ export class RatgeberComponent implements OnInit {
     this.seo.update({
       title: 'Ratgeber: Websites, Kosten & Fallstudien | Breisgau Digital',
       description:
-        'Fallstudien und Preise aus unserer Arbeit für Betriebe in Freiburg und Südbaden: was eine Website kostet und was Warenwirtschaft, Verleih und Ortsseiten im Alltag bringen.',
+        'Fallstudien und Preise aus unserer Arbeit in Freiburg und Südbaden: was eine Website kostet und was Warenwirtschaft und Verleih im Alltag bringen.',
       path: '/ratgeber',
       langs: ['de'],
     });

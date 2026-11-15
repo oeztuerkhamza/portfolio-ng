@@ -75,7 +75,7 @@ export class SpeisekarteComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Digitale Speisekarte', path: '/digitale-speisekarte' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     this.seo.setJsonLd('product', {

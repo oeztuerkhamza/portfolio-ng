@@ -55,7 +55,7 @@ export class UeberUnsComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Über uns', path: '/ueber-uns' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

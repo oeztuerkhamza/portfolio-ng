@@ -21,13 +21,15 @@ export class AgbComponent implements OnInit {
       title: 'Allgemeine Geschäftsbedingungen — Breisgau Digital',
       description: 'Allgemeine Geschäftsbedingungen für Bestellungen von NFC- und QR-Bewertungskarten bei Breisgau Digital, Freiburg im Breisgau.',
       path: '/agb',
+      // Rechtstexte gibt es nur auf Deutsch.
+      langs: ['de'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'AGB', path: '/agb' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

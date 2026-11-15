@@ -92,7 +92,12 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
             <p class="section-label">Betriebe vor Ort</p>
             <h2 class="section-title">Digital sichtbar <em>in {{ t.short }}</em>.</h2>
           </div>
-          <p class="town-text">{{ t.local }}</p>
+          <div>
+            <p class="town-text">{{ t.local }}</p>
+            @if (districts) {
+              <p class="town-text">Termine machen wir im ganzen Stadtgebiet — auch in {{ districts }}.</p>
+            }
+          </div>
         </div>
       </section>
 
@@ -196,6 +201,8 @@ export class TownComponent implements OnInit {
     price: PRODUCT_META[id].price(),
     text: this.town!.angles[id] ?? '',
   }));
+  /** „A, B und C" — die Ortsteile als Satzteil. */
+  readonly districts = new Intl.ListFormat('de', { type: 'conjunction' }).format(this.town?.districts ?? []);
   /** Ratgeber-Artikel aus diesem Ort — echte Arbeit vor Ort statt Vorlagentext. */
   readonly stories = RATGEBER.filter((a) => a.town === this.town?.slug);
   readonly near: Town[] = (this.town?.near ?? []).map((s) => townBySlug(s)!).filter(Boolean);
@@ -209,9 +216,9 @@ export class TownComponent implements OnInit {
     const path = `/webdesign/${t.slug}`;
     this.seo.update({
       title: t.seoTitle ?? `Webdesign & SEO ${t.short} – Webagentur | Breisgau Digital`,
-      description: `Webdesign, Webentwicklung und SEO für Betriebe in ${t.short}${
+      description: `Webdesign & SEO für Betriebe in ${t.short}${
         t.km && !t.isRegion ? ` – persönlich vor Ort, ca. ${t.minutes} Min. ab Freiburg` : ' – persönlich vor Ort'
-      }. Individuelle Websites und Shops zum Festpreis, Erstgespräch kostenlos.`,
+      }. Websites und Shops zum Festpreis, Erstgespräch kostenlos.`,
       path,
       langs: ['de'],
       keywords: [...(t.isRegion ? [`Webdesign ${t.district}`, `Online-Shop erstellen ${t.short}`] : []), `Webdesign ${t.short}`, `Webagentur ${t.short}`, `Website erstellen lassen ${t.short}`, `SEO ${t.short}`, `Homepage erstellen lassen ${t.short}`, `Website Wartung ${t.short}`],

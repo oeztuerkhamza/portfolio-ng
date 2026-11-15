@@ -64,6 +64,13 @@
   }
 }
 
+// Das h1 selbst trägt keine Schrift: die beiden Zeilen darin bringen ihre eigene mit.
+.hero-heading {
+  margin: 0;
+  font: inherit;
+  letter-spacing: normal;
+}
+
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -80,6 +87,9 @@
 }
 
 .hero-title {
+  display: block;
+  font-family: $font-display;
+  font-feature-settings: "ss01", "cv11";
   font-size: clamp(2.75rem, 7.2vw, 5rem);
   font-weight: 600;
   line-height: 1;

@@ -138,7 +138,7 @@ export const SPEISEKARTE_CONTENT: Record<string, Entry> = {
     tr: 'Restoranlar için QR kodlu dijital menü | Freiburg',
   },
   'seo.sk.desc': {
-    de: 'Digitale Speisekarte für Restaurants in Freiburg: QR-Code oder NFC am Tisch, Bestellung Schritt für Schritt, 14 Sprachen, eigene Fotos und Design. Referenz: Divan Ocakbaşı.',
+    de: 'Digitale Speisekarte für Restaurants in Freiburg: QR-Code oder NFC am Tisch, 14 Sprachen, eigene Fotos und Design. Referenz: Divan Ocakbaşı.',
     en: 'Digital menu for restaurants in Freiburg: QR code or NFC on the table, step-by-step ordering, 14 languages, your own photos and design. Case study: Divan Ocakbaşı.',
     tr: 'Freiburg’daki restoranlar için dijital menü: masada QR kod veya NFC, adım adım sipariş, 14 dil, kendi fotoğraf ve tasarımınız. Referans: Divan Ocakbaşı.',
   },

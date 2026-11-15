@@ -259,7 +259,7 @@ export class ProduktComponent implements OnInit {
         { name: 'Start', path: '/' },
         { name: 'Bewertungskarten', path: '/bewertungskarten' },
         { name: name, path: `/bewertungskarten/${p.slug}` },
-      ]),
+      ], this.i18n.lang()),
     );
 
     this.seo.setJsonLd('product', {

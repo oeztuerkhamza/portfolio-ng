@@ -111,7 +111,7 @@ export class LeistungenComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Leistungen', path: '/leistungen' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     // FAQPage — kept in German (the canonical language) for rich results.

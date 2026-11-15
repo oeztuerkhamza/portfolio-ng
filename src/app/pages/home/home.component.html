@@ -5,11 +5,15 @@
   <div class="container">
     <div class="hero-stage">
       <div class="hero-copy" @fadeIn>
-        <p class="hero-eyebrow">
-          <app-icon name="pin" />
-          {{ i18n.t('home.hero.eyebrow') }}
-        </p>
-        <h1 class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></h1>
+        <!-- Eine Überschrift aus zwei Zeilen: die kleine nennt Leistung und Ort
+             („Webdesign … Freiburg"), die große das Versprechen. -->
+        <h1 class="hero-heading">
+          <span class="hero-eyebrow">
+            <app-icon name="pin" />
+            {{ i18n.t('home.hero.eyebrow') }}
+          </span>
+          <span class="hero-title" [innerHTML]="i18n.t('home.hero.title')"></span>
+        </h1>
         <p class="hero-lede">{{ i18n.t('home.hero.lede') }}</p>
 
         <div class="page-hero-actions">

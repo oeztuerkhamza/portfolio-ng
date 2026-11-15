@@ -121,6 +121,10 @@
             {{ i18n.t('cta.consult') }}
             <app-icon name="arrow" />
           </a>
+          <!-- Die ausführliche Fallstudie gibt es nur auf Deutsch. -->
+          @if (story && i18n.lang() === 'de') {
+            <a [routerLink]="'/de/ratgeber/' + story.slug" class="btn btn-outline-light btn-large">Fallstudie im Ratgeber</a>
+          }
           <a [routerLink]="'/projects' | localize" class="btn btn-outline-light btn-large">
             {{ i18n.t('pd.back') }}
           </a>

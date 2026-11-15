@@ -67,7 +67,7 @@ export class WartungComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Wartung & Pflege', path: '/wartung' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     // Pakete als Angebote mit Monatspreis — deutsch, wie alle Schemas.

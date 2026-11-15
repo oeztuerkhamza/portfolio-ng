@@ -25,6 +25,8 @@ export interface Town {
   intro: string;
   /** Absatz „Betriebe vor Ort" — was dort typisch ist und was hilft. */
   local: string;
+  /** Ortsteile der Stadt — dort machen wir ebenso Termine wie in der Kernstadt. */
+  districts?: string[];
   /** Reihenfolge der Produkte auf der Seite. */
   focus: ProductFocus[];
   /** Kurzer Satz je Produkt, auf den Ort bezogen. */
@@ -46,6 +48,7 @@ export interface Town {
 export const TOWNS: Town[] = [
   {
     slug: 'emmendingen',
+    districts: ['Kollmarsreute', 'Maleck', 'Mundingen', 'Wasser', 'Windenreute'],
     name: 'Emmendingen',
     short: 'Emmendingen',
     district: 'Landkreis Emmendingen',
@@ -80,6 +83,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'waldkirch',
+    districts: ['Buchholz', 'Kollnau', 'Siensbach', 'Suggental'],
     name: 'Waldkirch',
     short: 'Waldkirch',
     district: 'Landkreis Emmendingen',
@@ -117,6 +121,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'breisach',
+    districts: ['Gündlingen', 'Hochstetten', 'Niederrimsingen', 'Oberrimsingen'],
     name: 'Breisach am Rhein',
     short: 'Breisach',
     district: 'Landkreis Breisgau-Hochschwarzwald',
@@ -150,6 +155,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'bad-krozingen',
+    districts: ['Biengen', 'Hausen an der Möhlin', 'Schlatt', 'Tunsel'],
     name: 'Bad Krozingen',
     short: 'Bad Krozingen',
     district: 'Landkreis Breisgau-Hochschwarzwald',
@@ -179,6 +185,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'staufen',
+    districts: ['Grunern', 'Wettelbrunn'],
     name: 'Staufen im Breisgau',
     short: 'Staufen',
     district: 'Landkreis Breisgau-Hochschwarzwald',
@@ -212,6 +219,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'muellheim',
+    districts: ['Britzingen', 'Dattingen', 'Feldberg', 'Hügelheim', 'Niederweiler', 'Vögisheim', 'Zunzingen'],
     name: 'Müllheim',
     short: 'Müllheim',
     district: 'Landkreis Breisgau-Hochschwarzwald',
@@ -245,6 +253,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'loerrach',
+    districts: ['Brombach', 'Haagen', 'Hauingen', 'Stetten', 'Tumringen', 'Tüllingen'],
     name: 'Lörrach',
     short: 'Lörrach',
     district: 'Landkreis Lörrach',
@@ -283,6 +292,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'offenburg',
+    districts: ['Bohlsbach', 'Bühl', 'Elgersweier', 'Fessenbach', 'Griesheim', 'Rammersweier', 'Waltersweier', 'Weier', 'Windschläg', 'Zell-Weierbach', 'Zunsweier'],
     name: 'Offenburg',
     short: 'Offenburg',
     district: 'Ortenaukreis',
@@ -325,6 +335,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'lahr',
+    districts: ['Hugsweier', 'Kippenheimweiler', 'Kuhbach', 'Langenwinkel', 'Mietersheim', 'Reichenbach', 'Sulz'],
     name: 'Lahr/Schwarzwald',
     short: 'Lahr',
     district: 'Ortenaukreis',
@@ -367,6 +378,7 @@ export const TOWNS: Town[] = [
   },
   {
     slug: 'titisee-neustadt',
+    districts: ['Langenordnach', 'Rudenberg', 'Schwärzenbach', 'Waldau'],
     name: 'Titisee-Neustadt',
     short: 'Titisee-Neustadt',
     district: 'Landkreis Breisgau-Hochschwarzwald',

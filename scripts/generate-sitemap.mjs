@@ -23,8 +23,6 @@ function collect(dir, acc = []) {
   return acc;
 }
 
-const today = new Date().toISOString().slice(0, 10);
-
 // Priority/frequency hints. Paths carry the locale prefix (/de/…); the part
 // after it decides the weight.
 function meta(path) {
@@ -44,6 +42,8 @@ function meta(path) {
   return { priority: '0.5', freq: 'yearly' };
 }
 
+// Kein <lastmod>: das Baudatum auf jeder Adresse ist kein echtes Änderungsdatum,
+// und Google verwirft die Angabe, sobald sie nicht stimmt.
 const urls = collect(BROWSER_DIR)
   .map((dir) => {
     const rel = relative(BROWSER_DIR, dir).split(sep).join('/');
@@ -55,6 +55,9 @@ const urls = collect(BROWSER_DIR)
   // Visitenkarte (/hamza) gehören nicht in den Suchindex — die Seiten tragen
   // `noindex`, und was noindex ist, darf nicht in der Sitemap stehen.
   .filter((p) => !/^\/admin|^\/hamza(\/|$)|^\/einladung\/|\/bestellen(\/|$)|\/karte-gestalten(\/|$)/.test(p))
+  // Rechtstexte gibt es nur auf Deutsch; /en und /tr zeigen denselben Text
+  // und tragen den Canonical auf die deutsche Seite.
+  .filter((p) => !/^\/(en|tr)\/(agb|datenschutz|impressum|versand|widerruf)$/.test(p))
   .sort();
 
 const body = urls
@@ -62,7 +65,6 @@ const body = urls
     const { priority, freq } = meta(path);
     return `  <url>
     <loc>${ORIGIN}${path === '/' ? '/' : path}</loc>
-    <lastmod>${today}</lastmod>
     <changefreq>${freq}</changefreq>
     <priority>${priority}</priority>
   </url>`;

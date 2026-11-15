@@ -36,7 +36,7 @@ export class ProjectsComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Referenzen', path: '/projects' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

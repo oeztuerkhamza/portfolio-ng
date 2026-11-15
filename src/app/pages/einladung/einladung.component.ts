@@ -126,7 +126,7 @@ export class EinladungComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Digitale Einladung', path: '/digitale-einladung' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     // Schemas deutsch, wie auf allen anderen Seiten.

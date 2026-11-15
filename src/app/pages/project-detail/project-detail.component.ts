@@ -2,6 +2,7 @@ import { AfterViewInit, Component, OnDestroy, OnInit, PLATFORM_ID, computed, inj
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { PROJECTS, Project } from '../../core/data/project.data';
+import { RATGEBER } from '../../core/data/ratgeber.data';
 import { LiveDemoComponent } from '../../shared/live-demo/live-demo.component';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema, projectSchema } from '../../core/seo/structured-data';
@@ -25,6 +26,10 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   private observer?: IntersectionObserver;
 
   project = signal<Project | null>(null);
+  /** Ratgeber-Artikel zu dieser Referenz, falls es einen gibt. */
+  get story() {
+    return RATGEBER.find((a) => a.project === this.project()?.slug);
+  }
 
   /** Kapitel der Geschichte: ein Absatz je Kapitel, Titel nach Position (drei oder vier Kapitel). */
   readonly chapters = computed(() => {
@@ -90,10 +95,10 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       return;
     }
 
-    const subtitle = this.i18n.ptx(p.slug, 'subtitle', p.subtitle);
     const description = this.i18n.ptx(p.slug, 'description', p.description);
     this.seo.update({
-      title: `${p.title} — ${subtitle} | Breisgau Digital`,
+      // Kurz: der lange Untertitel steht in der Beschreibung und auf der Seite.
+      title: `${p.title} — ${this.i18n.ptx(p.slug, 'category', p.category)} | Breisgau Digital`,
       description,
       path: `/projects/${p.slug}`,
       image: this.seo.absolute(p.image),
@@ -101,14 +106,14 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit, OnDestroy 
       keywords: [...p.tags, p.category, 'Breisgau Digital', 'Referenz', 'Freiburg'],
     });
 
-    this.seo.setJsonLd('project', projectSchema(p));
+    this.seo.setJsonLd('project', projectSchema(p, this.i18n.lang()));
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Referenzen', path: '/projects' },
         { name: p.title, path: `/projects/${p.slug}` },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

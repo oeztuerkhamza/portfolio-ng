@@ -1,5 +1,6 @@
 import { TOWNS } from '../data/towns.data';
 import { SeoService } from './seo.service';
+import type { Lang } from '../i18n/i18n.service';
 import { OPENING_HOURS, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED, WEBSITE_PRICE_FROM } from '../data/company.data';
 import { UPDATE_PACKAGES } from '../data/homepage-update.data';
 import { MAINTENANCE_PRICE_FROM } from '../data/maintenance.data';
@@ -181,15 +182,24 @@ export function websiteSchema(): Record<string, unknown> {
     '@type': 'WebSite',
     '@id': `${ORIGIN}/#website`,
     url: ORIGIN,
-    name: SeoService.SITE_NAME,
+    // Kurz, wie der Betrieb heißt: daraus liest Google den Site-Namen im Suchergebnis.
+    name: 'Breisgau Digital',
+    alternateName: SeoService.SITE_NAME,
     inLanguage: ['de', 'en', 'tr'],
     publisher: { '@id': `${ORIGIN}/#person` },
   };
 }
 
+/**
+ * Pfade ohne Sprachkürzel ('/', '/projects') bekommen das der Seite davor —
+ * ohne Kürzel gibt es die Adresse nicht (404).
+ */
 export function breadcrumbSchema(
   items: { name: string; path: string }[],
+  lang: Lang = 'de',
 ): Record<string, unknown> {
+  const localized = (path: string) =>
+    /^\/(de|en|tr)(\/|$)/.test(path) ? path : `/${lang}${path === '/' ? '' : path}`;
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -197,7 +207,7 @@ export function breadcrumbSchema(
       '@type': 'ListItem',
       position: i + 1,
       name: item.name,
-      item: `${ORIGIN}${item.path}`,
+      item: `${ORIGIN}${localized(item.path)}`,
     })),
   };
 }
@@ -209,15 +219,15 @@ export function projectSchema(p: {
   image: string;
   tags: string[];
   liveUrl?: string;
-}): Record<string, unknown> {
+}, lang: Lang = 'de'): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
     '@id': `${ORIGIN}/projects/${p.slug}#project`,
     name: p.title,
     description: p.description,
-    url: `${ORIGIN}/projects/${p.slug}`,
-    image: p.image.startsWith('http') ? p.image : `${ORIGIN}/${p.image}`,
+    url: `${ORIGIN}/${lang}/projects/${p.slug}`,
+    image: p.image.startsWith('http') ? p.image : `${ORIGIN}/${p.image.replace(/^\//, '')}`,
     keywords: p.tags.join(', '),
     creator: { '@id': `${ORIGIN}/#person` },
     ...(p.liveUrl ? { sameAs: p.liveUrl } : {}),

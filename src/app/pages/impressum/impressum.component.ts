@@ -22,13 +22,15 @@ export class ImpressumComponent implements OnInit {
       description:
         'Impressum und Anbieterkennzeichnung gemäß § 5 DDG — Breisgau Digital, Inhaber Hamza Öztürk, Freiburg im Breisgau.',
       path: '/impressum',
+      // Rechtstexte gibt es nur auf Deutsch.
+      langs: ['de'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Impressum', path: '/impressum' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

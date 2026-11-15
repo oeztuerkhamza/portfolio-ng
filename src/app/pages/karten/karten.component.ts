@@ -233,7 +233,7 @@ export class KartenComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: this.i18n.t('shop.card.' + p.id), path: `/${p.slug}` },
-      ]),
+      ], this.i18n.lang()),
     );
 
     this.seo.setJsonLd('product', {

@@ -21,13 +21,15 @@ export class VersandComponent implements OnInit {
       title: 'Versand- und Zahlungsbedingungen — Breisgau Digital',
       description: 'Lieferzeiten, Versandkosten und Zahlungsarten für Bestellungen von Bewertungskarten bei Breisgau Digital.',
       path: '/versand',
+      // Rechtstexte gibt es nur auf Deutsch.
+      langs: ['de'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Versand & Zahlung', path: '/versand' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

@@ -72,7 +72,7 @@ export class SmartHomeComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Smart Home', path: '/smart-home' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     this.seo.setJsonLd('product', {

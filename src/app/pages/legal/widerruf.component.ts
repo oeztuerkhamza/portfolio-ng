@@ -21,13 +21,15 @@ export class WiderrufComponent implements OnInit {
       title: 'Widerrufsbelehrung und Muster-Widerrufsformular — Breisgau Digital',
       description: 'Widerrufsrecht, Fristen und Muster-Widerrufsformular für Bestellungen bei Breisgau Digital, Freiburg im Breisgau.',
       path: '/widerruf',
+      // Rechtstexte gibt es nur auf Deutsch.
+      langs: ['de'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Widerrufsbelehrung', path: '/widerruf' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

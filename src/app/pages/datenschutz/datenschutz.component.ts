@@ -22,13 +22,15 @@ export class DatenschutzComponent implements OnInit {
       description:
         'Datenschutzerklärung gemäß DSGVO — Hosting, lokal ausgelieferte Schriften, Kontakt per E-Mail, Telefon und WhatsApp sowie Ihre Rechte.',
       path: '/datenschutz',
+      // Rechtstexte gibt es nur auf Deutsch.
+      langs: ['de'],
     });
     this.seo.setJsonLd(
       'breadcrumb',
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Datenschutz', path: '/datenschutz' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

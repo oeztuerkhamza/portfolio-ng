@@ -121,7 +121,7 @@ export class BewertungskartenComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Bewertungskarten', path: '/bewertungskarten' },
-      ]),
+      ], this.i18n.lang()),
     );
 
     // Produkt mit Preisspanne — die Angebote spiegeln exakt die Pakete.

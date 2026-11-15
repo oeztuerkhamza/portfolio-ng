@@ -43,7 +43,7 @@ export class ContactComponent implements OnInit {
       breadcrumbSchema([
         { name: 'Start', path: '/' },
         { name: 'Kontakt', path: '/contact' },
-      ]),
+      ], this.i18n.lang()),
     );
   }
 }

@@ -165,7 +165,7 @@ export class HomeComponent implements OnInit, AfterViewInit, OnDestroy {
         'SEO Südbaden',
       ],
     });
-    this.seo.setJsonLd('breadcrumb', breadcrumbSchema([{ name: 'Start', path: '/' }]));
+    this.seo.setJsonLd('breadcrumb', breadcrumbSchema([{ name: 'Start', path: '/' }], this.i18n.lang()));
 
     // FAQ als Rich Result — immer deutsch, wie die übrigen Schemas der Seite.
     const de = (key: string) =>

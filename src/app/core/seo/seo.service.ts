@@ -49,6 +49,9 @@ export class SeoService {
 
     const lang = this.i18n.lang();
     const url = this.localeUrl(lang, path);
+    // Gibt es die Seite in dieser Sprache nicht (z. B. deutsche Rechtstexte
+    // unter /en), zeigt der Canonical auf die Fassung, die es gibt.
+    const canonical = langs && !langs.includes(lang) ? this.localeUrl(langs[0], path) : url;
     const imageUrl = image.startsWith('http') ? image : this.absolute(image);
 
     this.title.setTitle(title);
@@ -72,7 +75,9 @@ export class SeoService {
     this.setName('twitter:description', description);
     this.setName('twitter:image', imageUrl);
 
-    this.setCanonical(url);
+    // Wer nicht in den Index soll, nennt auch keine bevorzugte Adresse.
+    if (noIndex) this.doc.head.querySelector('link[rel="canonical"]')?.remove();
+    else this.setCanonical(canonical);
     this.setHreflang(path, noIndex, langs);
     this.doc.documentElement.setAttribute('lang', lang);
   }
