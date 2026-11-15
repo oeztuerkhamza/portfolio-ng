@@ -51,10 +51,10 @@ const urls = collect(BROWSER_DIR)
   })
   // Drop 404/error helper folders if any slip in.
   .filter((p) => !p.includes('404'))
-  // Admin-Portal, Bestellstrecke und Kartengestalter gehören nicht in den
-  // Suchindex — die drei Seiten tragen `noindex`, und was noindex ist, darf
-  // nicht in der Sitemap stehen.
-  .filter((p) => !/^\/admin|^\/einladung\/|\/bestellen(\/|$)|\/karte-gestalten(\/|$)/.test(p))
+  // Admin-Portal, Bestellstrecke, Kartengestalter und die eigene digitale
+  // Visitenkarte (/hamza) gehören nicht in den Suchindex — die Seiten tragen
+  // `noindex`, und was noindex ist, darf nicht in der Sitemap stehen.
+  .filter((p) => !/^\/admin|^\/hamza(\/|$)|^\/einladung\/|\/bestellen(\/|$)|\/karte-gestalten(\/|$)/.test(p))
   .sort();
 
 const body = urls

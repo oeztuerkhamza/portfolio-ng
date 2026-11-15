@@ -132,7 +132,21 @@
       "permanent": false
     }
   ],
+  "headers": [
+    {
+      "source": "/hamza/hamza-oeztuerk.vcf",
+      "headers": [
+        { "key": "Content-Type", "value": "text/vcard; charset=utf-8" },
+        { "key": "Content-Disposition", "value": "attachment; filename=\"hamza-oeztuerk.vcf\"" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" }
+      ]
+    }
+  ],
   "rewrites": [
+    {
+      "source": "/hamza",
+      "destination": "/hamza/index.html"
+    },
     {
       "source": "/einladung/:slug/planer",
       "destination": "/einladung/live/planer"

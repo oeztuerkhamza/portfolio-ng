@@ -1,0 +1,644 @@
+<!doctype html>
+<!--
+  Digitale Visitenkarte von Hamza Öztürk — die Seite hinter der eigenen NFC-Karte.
+  Adresse: https://breisgau-digital.de/hamza (steht so auf dem Chip und im QR-Code
+  der gedruckten Karte; darf sich deshalb nicht mehr ändern).
+
+  Bewusst eine einzelne, statische Datei und kein Angular: wer die Karte ans Handy
+  hält, soll sofort etwas sehen — auch mit schlechtem Netz. Stil inline, wenig
+  JavaScript, keine Anfragen an fremde Server, keine Cookies (darum auch kein
+  Einwilligungsbanner). Ohne JavaScript bleibt alles auf Deutsch lesbar und
+  bedienbar; das Skript ergänzt nur Sprache, Erreichbarkeit und „Teilen".
+
+  Daten wie in src/app/core/data/company.data.ts. Ändert sich dort Telefon,
+  E-Mail oder Adresse, muss es hier und in hamza-oeztuerk.vcf nachgezogen werden.
+  Druckvorlage der Karte: docs/nfc-visitenkarte/.
+-->
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Hamza Öztürk · Breisgau Digital</title>
+  <meta name="description" content="Digitale Visitenkarte von Hamza Öztürk, Gründer von Breisgau Digital in Freiburg: Websites, Online-Shops und Web-Apps. Kontakt speichern, anrufen, WhatsApp." />
+  <meta name="robots" content="noindex, follow" />
+  <link rel="canonical" href="https://breisgau-digital.de/hamza" />
+  <meta name="theme-color" content="#0b0c10" />
+  <meta name="color-scheme" content="dark" />
+  <meta name="format-detection" content="telephone=no" />
+
+  <meta property="og:type" content="profile" />
+  <meta property="og:site_name" content="Breisgau Digital" />
+  <meta property="og:title" content="Hamza Öztürk · Breisgau Digital" />
+  <meta property="og:description" content="Websites, Online-Shops und Web-Apps aus Freiburg. Kontakt mit einem Tippen speichern." />
+  <meta property="og:url" content="https://breisgau-digital.de/hamza" />
+  <meta property="og:image" content="https://breisgau-digital.de/hamza/og.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Hamza Öztürk — Gründer von Breisgau Digital" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="preload" href="/hamza/foto.webp" as="image" type="image/webp" fetchpriority="high" />
+  <link rel="preload" href="/hamza/fonts/fraunces-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="/hamza/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+  <style>
+    /* ── Schriften (dieselben wie auf der Website, nur die nötigen Schnitte) ── */
+    @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/fraunces-latin-wght-normal.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Fraunces'; font-style: normal; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/fraunces-latin-ext-wght-normal.woff2) format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/fraunces-latin-wght-italic.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Fraunces'; font-style: italic; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/fraunces-latin-ext-wght-italic.woff2) format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/inter-latin-wght-normal.woff2) format('woff2');
+      unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+    @font-face { font-family: 'Inter'; font-style: normal; font-weight: 100 900; font-display: swap;
+      src: url(/hamza/fonts/inter-latin-ext-wght-normal.woff2) format('woff2');
+      unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+    /* ── Farben: Grund wie der Studiohintergrund des Fotos, Akzent aus dem Logo ── */
+    :root {
+      --bg: #0b0c10;
+      --bg-2: #13151b;
+      --ink: #f4f5f7;          /* 18,4:1 auf --bg */
+      --dim: #a9afba;          /*  8,9:1 */
+      --mute: #858c99;         /*  5,6:1 — kleinste Größe für Text */
+      --line: rgba(255, 255, 255, 0.09);
+      --line-2: rgba(255, 255, 255, 0.16);
+      --glass: rgba(255, 255, 255, 0.045);
+      --glass-2: rgba(255, 255, 255, 0.08);
+      --sky: #4fb0f0;
+      --blue: #1f8fd8;
+      --navy: #1a5c9e;
+      --orange: #f08a36;
+      --gold: #ffbf5a;
+      --ok: #3ddc84;
+      --grad: linear-gradient(115deg, var(--sky) 0%, var(--blue) 28%, var(--orange) 72%, var(--gold) 100%);
+      --serif: 'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
+      --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      --r: 22px;
+      color-scheme: dark;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100dvh;
+      background: var(--bg);
+      color: var(--ink);
+      font: 400 16px/1.55 var(--sans);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+    }
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; color: inherit; -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 12px; }
+    .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+    /* ── Hintergrund: zwei ziehende Lichter in den Logofarben, darüber Korn ── */
+    .sky { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .sky i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; will-change: transform; }
+    .sky .a { width: 520px; height: 520px; right: -220px; top: -160px; background: radial-gradient(circle, var(--blue), transparent 68%); animation: drift-a 22s ease-in-out infinite alternate; }
+    .sky .b { width: 560px; height: 560px; left: -280px; bottom: -200px; background: radial-gradient(circle, var(--orange), transparent 66%); opacity: .38; animation: drift-b 26s ease-in-out infinite alternate; }
+    .sky .c { width: 380px; height: 380px; left: 30%; top: 46%; background: radial-gradient(circle, var(--navy), transparent 70%); opacity: .35; animation: drift-a 30s ease-in-out infinite alternate-reverse; }
+    .sky::after {
+      content: ''; position: absolute; inset: -50%;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      opacity: .06; mix-blend-mode: overlay;
+    }
+    @keyframes drift-a { to { transform: translate3d(-60px, 80px, 0) scale(1.12); } }
+    @keyframes drift-b { to { transform: translate3d(70px, -60px, 0) scale(1.08); } }
+
+    /* ── Gerüst ── */
+    .page {
+      width: 100%; max-width: 460px; margin: 0 auto;
+      padding: max(14px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+      position: relative;
+    }
+
+    .top { display: flex; align-items: center; justify-content: space-between; gap: 12px; position: relative; z-index: 3; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 14px; letter-spacing: .01em; }
+    .brand img { width: 26px; height: 32.5px; }
+    .brand small { display: block; font-weight: 500; font-size: 11px; color: var(--mute); letter-spacing: .08em; text-transform: uppercase; line-height: 1.2; }
+    .brand span { line-height: 1.2; }
+
+    .langs { display: flex; padding: 3px; border-radius: 999px; background: var(--glass); border: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .langs button { border: 0; background: none; cursor: pointer; min-width: 38px; height: 30px; padding: 0 9px; border-radius: 999px; font-size: 12px; font-weight: 600; letter-spacing: .06em; color: var(--mute); transition: color .2s, background .2s; }
+    .langs button[aria-pressed='true'] { background: var(--ink); color: var(--bg); }
+    .no-js .langs { display: none; }
+
+    /* ── Bühne: Foto, dahinter das Sechseck aus dem Logo ── */
+    .stage { position: relative; height: 430px; margin: -6px -16px 0; z-index: 1; overflow: hidden; }
+    .halo { position: absolute; left: 50%; top: 18px; width: 380px; height: 380px; margin-left: -190px; opacity: .9; }
+    .halo svg { width: 100%; height: 100%; overflow: visible; animation: spin 80s linear infinite; }
+    .halo .glow { position: absolute; inset: 22%; border-radius: 50%; background: radial-gradient(circle, rgba(31, 143, 216, .55), rgba(240, 138, 54, .18) 55%, transparent 72%); filter: blur(30px); animation: breathe 6s ease-in-out infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @keyframes breathe { 50% { opacity: .6; transform: scale(1.08); } }
+
+    .portrait {
+      position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
+      width: 400px; max-width: none; height: 430px; object-fit: cover; object-position: 50% 8%;
+      -webkit-mask-image: radial-gradient(64% 72% at 50% 38%, #000 52%, rgba(0, 0, 0, .55) 68%, transparent 86%);
+      mask-image: radial-gradient(64% 72% at 50% 38%, #000 52%, rgba(0, 0, 0, .55) 68%, transparent 86%);
+      animation: settle 1.6s cubic-bezier(.2, .7, .2, 1) both;
+    }
+    @keyframes settle { from { opacity: 0; transform: translateX(-50%) scale(1.06); filter: blur(6px); } }
+
+    /* Die „Pixel" aus dem Logo, die vom Sechseck abfallen */
+    .px { position: absolute; inset: 0; pointer-events: none; }
+    .px i { position: absolute; display: block; border-radius: 2px; background: var(--orange); box-shadow: 0 0 18px rgba(240, 138, 54, .55); animation: float 7s ease-in-out infinite; }
+    .px i:nth-child(1) { width: 14px; height: 14px; right: 13%; top: 16%; }
+    .px i:nth-child(2) { width: 9px;  height: 9px;  right: 8%;  top: 26%; animation-delay: -2s; opacity: .8; }
+    .px i:nth-child(3) { width: 6px;  height: 6px;  right: 18%; top: 9%;  animation-delay: -4s; opacity: .6; }
+    .px i:nth-child(4) { width: 12px; height: 12px; left: 10%;  top: 58%; animation-delay: -1s; background: var(--gold); }
+    .px i:nth-child(5) { width: 7px;  height: 7px;  left: 6%;   top: 68%; animation-delay: -3s; opacity: .7; }
+    .px i:nth-child(6) { width: 8px;  height: 8px;  left: 17%;  top: 50%; animation-delay: -5s; background: var(--sky); box-shadow: 0 0 18px rgba(79, 176, 240, .6); opacity: .8; }
+    @keyframes float { 50% { transform: translateY(-12px) rotate(8deg); } }
+
+    /* ── Name ── */
+    .ident { position: relative; z-index: 2; text-align: center; margin-top: -70px; }
+    .status { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 12px; padding: 6px 12px 6px 10px; border-radius: 999px; font-size: 12.5px; font-weight: 500; color: var(--dim); background: rgba(11, 12, 16, .6); border: 1px solid var(--line); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 0 0 rgba(61, 220, 132, .6); animation: ping 2.2s ease-out infinite; }
+    .status.off .dot { background: var(--gold); animation: none; }
+    @keyframes ping { 70% { box-shadow: 0 0 0 9px rgba(61, 220, 132, 0); } 100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); } }
+
+    .name { margin: 0; font: 560 clamp(42px, 12.5vw, 54px)/1 var(--serif); letter-spacing: -.025em; font-variation-settings: 'SOFT' 50, 'WONK' 0; }
+    .name em { font-style: italic; font-weight: 480; background: linear-gradient(100deg, #7cc6f6 0%, var(--blue) 30%, var(--orange) 72%, var(--gold) 100%); background-size: 150% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 8s ease-in-out infinite alternate; padding-right: .06em; }
+    @keyframes sheen { to { background-position: 100% 0; } }
+    .role { margin: 12px 0 0; font-size: 15.5px; font-weight: 500; color: var(--ink); letter-spacing: .005em; }
+    .meta { margin: 6px 0 0; font-size: 13.5px; color: var(--mute); display: flex; justify-content: center; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .meta .sep { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .7; }
+
+    /* ── Hauptknopf: Kontakt speichern ── */
+    @property --turn { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+    .save-wrap { position: relative; margin: 26px 0 0; padding: 1.5px; border-radius: 20px; background: conic-gradient(from var(--turn), var(--sky), var(--blue), var(--orange), var(--gold), var(--sky)); animation: turn 5s linear infinite; }
+    .save-wrap::before { content: ''; position: absolute; inset: 6px; border-radius: 20px; background: inherit; filter: blur(22px); opacity: .55; z-index: -1; }
+    @keyframes turn { to { --turn: 360deg; } }
+    .save { display: flex; align-items: center; gap: 14px; padding: 15px 18px; border-radius: 18.5px; background: var(--ink); color: var(--bg); transition: transform .15s ease; }
+    .save:active { transform: scale(.985); }
+    .save .ic { flex: none; width: 44px; height: 44px; border-radius: 14px; display: grid; place-items: center; background: var(--bg); color: var(--ink); }
+    .save .ic svg { width: 22px; height: 22px; }
+    .save b { display: block; font-size: 17px; font-weight: 650; letter-spacing: -.01em; line-height: 1.25; }
+    .save small { display: block; font-size: 13px; color: #4a505c; line-height: 1.3; }
+    .save .go { margin-left: auto; width: 20px; height: 20px; opacity: .55; }
+
+    /* ── Schnellwahl ── */
+    .quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0 0; }
+    .quick a { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 14px 4px 12px; border-radius: 18px; background: var(--glass); border: 1px solid var(--line); font-size: 12.5px; font-weight: 500; color: var(--dim); transition: background .2s, border-color .2s, transform .15s; }
+    .quick a:hover { background: var(--glass-2); border-color: var(--line-2); color: var(--ink); }
+    .quick a:active { transform: scale(.96); }
+    .quick svg { width: 24px; height: 24px; color: var(--ink); }
+    .quick .wa svg { color: #25d366; }
+
+    /* ── Abschnitte ── */
+    .card { margin: 14px 0 0; padding: 20px; border-radius: var(--r); background: var(--glass); border: 1px solid var(--line); }
+    .label { margin: 0 0 12px; font-size: 11.5px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--mute); display: flex; align-items: center; gap: 10px; }
+    .label::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--line-2), transparent); }
+    .about p { margin: 0; font-size: 15.5px; line-height: 1.62; color: var(--dim); }
+    .about p strong { color: var(--ink); font-weight: 600; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+    .chips a { display: inline-flex; align-items: center; gap: 7px; padding: 8px 12px; border-radius: 999px; font-size: 13px; font-weight: 500; color: var(--ink); background: rgba(255, 255, 255, .05); border: 1px solid var(--line); transition: border-color .2s, background .2s; }
+    .chips a:hover { border-color: var(--line-2); background: rgba(255, 255, 255, .08); }
+    .chips i { width: 6px; height: 6px; border-radius: 2px; background: var(--grad); }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin: 14px 0 0; border-radius: var(--r); border: 1px solid var(--line); background: var(--glass); overflow: hidden; }
+    .stats div { padding: 16px 8px 14px; text-align: center; }
+    .stats div + div { border-left: 1px solid var(--line); }
+    .stats b { display: block; font: 600 30px/1 var(--serif); letter-spacing: -.02em; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .stats span { display: block; margin-top: 6px; font-size: 12px; color: var(--mute); line-height: 1.3; }
+
+    /* Referenzen: waagrecht wischen */
+    .work { margin: 14px -16px 0; padding: 20px 0 6px; }
+    .work .label { padding: 0 16px; }
+    .rail { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 2px 16px 14px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .rail::-webkit-scrollbar { display: none; }
+    .rail a { flex: none; width: 230px; scroll-snap-align: start; scroll-margin-left: 16px; border-radius: 18px; overflow: hidden; background: var(--bg-2); border: 1px solid var(--line); transition: border-color .2s, transform .2s; }
+    .rail a:hover { border-color: var(--line-2); transform: translateY(-2px); }
+    .rail img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; background: #1b1e26; }
+    .rail .cap { padding: 11px 13px 13px; }
+    .rail b { display: block; font-size: 14.5px; font-weight: 600; }
+    .rail span { display: block; font-size: 12.5px; color: var(--mute); margin-top: 2px; }
+    .rail .more { display: grid; place-items: center; text-align: center; width: 140px; padding: 16px; font-size: 14px; font-weight: 600; color: var(--dim); background: var(--glass); }
+    .rail .more svg { width: 26px; height: 26px; margin: 0 auto 8px; color: var(--ink); }
+
+    /* Verweise */
+    .links { margin: 14px 0 0; padding: 6px; border-radius: var(--r); background: var(--glass); border: 1px solid var(--line); list-style: none; }
+    .links a { display: flex; align-items: center; gap: 14px; padding: 12px 12px; border-radius: 16px; transition: background .2s; }
+    .links a:hover { background: var(--glass-2); }
+    .links li + li { border-top: 1px solid var(--line); }
+    .links .ic { flex: none; width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255, 255, 255, .06); border: 1px solid var(--line); }
+    .links .ic svg { width: 20px; height: 20px; }
+    .links b { display: block; font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .links small { display: block; font-size: 13px; color: var(--mute); line-height: 1.35; }
+    .links .go { margin-left: auto; width: 18px; height: 18px; color: var(--mute); flex: none; }
+    .links .hot .ic { background: var(--grad); border: 0; color: #fff; }
+
+    /* Weitergeben: QR-Code */
+    .share { display: grid; grid-template-columns: 132px 1fr; gap: 18px; align-items: center; }
+    .qr { position: relative; padding: 10px; border-radius: 18px; background: #fff; box-shadow: 0 18px 40px -18px rgba(31, 143, 216, .6); }
+    .qr svg { width: 100%; height: auto; }
+    .qr img { position: absolute; left: 50%; top: 50%; width: 22px; height: 27.5px; transform: translate(-50%, -50%); padding: 3px 4px; box-sizing: content-box; background: #fff; border-radius: 6px; }
+    .share h2 { margin: 0; font: 560 21px/1.2 var(--serif); letter-spacing: -.01em; }
+    .share p { margin: 6px 0 12px; font-size: 13.5px; color: var(--mute); line-height: 1.45; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line-2); background: rgba(255, 255, 255, .06); font-size: 14px; font-weight: 600; white-space: nowrap; cursor: pointer; transition: background .2s; }
+    .btn:hover { background: rgba(255, 255, 255, .1); }
+    .btn svg { width: 18px; height: 18px; }
+    .no-js .btn { display: none; }
+
+    .foot { margin: 26px 0 0; text-align: center; font-size: 12.5px; color: var(--mute); }
+    .foot nav { display: flex; justify-content: center; gap: 18px; margin-top: 6px; }
+    .foot a { text-decoration: underline; text-decoration-color: var(--line-2); text-underline-offset: 3px; }
+    .foot a:hover { color: var(--ink); }
+    .foot .nfc { display: inline-flex; align-items: center; gap: 6px; margin-bottom: 10px; padding: 6px 11px; border-radius: 999px; border: 1px dashed var(--line-2); font-size: 11.5px; letter-spacing: .04em; }
+    .foot .nfc svg { width: 15px; height: 15px; }
+
+    .toast { position: fixed; left: 50%; bottom: max(22px, env(safe-area-inset-bottom)); transform: translate(-50%, calc(100% + 40px)); opacity: 0; pointer-events: none; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: var(--bg); font-size: 14px; font-weight: 600; transition: transform .35s cubic-bezier(.2, .8, .2, 1), opacity .2s; z-index: 9; }
+    .toast.on { transform: translate(-50%, 0); opacity: 1; }
+
+    /* Auftritt: von unten herein, nacheinander */
+    .rise { animation: rise .8s cubic-bezier(.2, .7, .2, 1) both; animation-delay: calc(var(--i, 0) * 70ms + 250ms); }
+    @keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+
+    @media (min-width: 520px) {
+      .page { padding-top: 28px; }
+      .stage { margin-left: 0; margin-right: 0; }
+    }
+    @media (max-width: 360px) {
+      .quick { gap: 6px; }
+      .quick a { font-size: 11.5px; }
+      .share { grid-template-columns: 110px 1fr; gap: 14px; }
+      .stage { height: 400px; }
+      .portrait { height: 400px; width: 370px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body class="no-js">
+  <script>document.body.classList.remove('no-js');</script>
+
+  <!-- Symbole: einmal definiert, unten per <use> eingesetzt -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-phone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h3.5l1.7 4.3-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a1.5 1.5 0 0 1-1.6 1.5A16.5 16.5 0 0 1 3.5 5.6 1.5 1.5 0 0 1 5 4z"/></symbol>
+      <symbol id="i-wa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4a8.6 8.6 0 0 0-7.4 13L3.4 20.6l4.3-1.1A8.6 8.6 0 1 0 12 3.4z"/><path d="M9.1 8.3c.2-.3.5-.4.8-.4h.4c.2 0 .4.1.5.4l.8 1.8c.1.2 0 .5-.1.7l-.6.7c-.1.1-.1.3 0 .5a6.4 6.4 0 0 0 2.9 2.9c.2.1.4.1.5 0l.7-.6c.2-.2.5-.2.7-.1l1.8.8c.3.1.4.3.4.5v.4c0 .3-.1.6-.4.8-.7.5-1.6.7-2.5.4a8.5 8.5 0 0 1-5.7-5.7c-.2-.9 0-1.8.5-2.5z" fill="currentColor" stroke="none"/></symbol>
+      <symbol id="i-mail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M4 7l8 6 8-6"/></symbol>
+      <symbol id="i-pin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z"/><circle cx="12" cy="10" r="2.3"/></symbol>
+      <symbol id="i-add" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.8"/><path d="M3 20a7 7 0 0 1 12.2-4.7"/><path d="M18.5 14v6M15.5 17h6"/></symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.3 2.5 14.7 0 17M12 3.5c-2.5 2.3-2.5 14.7 0 17"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/></symbol>
+      <symbol id="i-ig" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".7" fill="currentColor"/></symbol>
+      <symbol id="i-in" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="17" rx="3.5"/><path d="M8 10.5V16M8 7.6v.1M11.5 16v-5.5M11.5 13a2.4 2.4 0 0 1 4.6-1V16"/></symbol>
+      <symbol id="i-gh" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .3a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-5.9 0-1.3.5-2.4 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.5 11.5 0 0 1 6 0C17.3 4.7 18.3 5 18.3 5c.6 1.7.2 2.9.1 3.2.8.8 1.2 1.9 1.2 3.2 0 4.6-2.8 5.6-5.5 5.9.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .3"/></symbol>
+      <symbol id="i-share" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5v11M7.8 7.7L12 3.5l4.2 4.2"/><path d="M5 12v6.5A2.5 2.5 0 0 0 7.5 21h9a2.5 2.5 0 0 0 2.5-2.5V12"/></symbol>
+      <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+      <symbol id="i-nfc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 8.5a5 5 0 0 1 0 7"/><path d="M10.5 6a9 9 0 0 1 0 12"/><path d="M14 3.5a13 13 0 0 1 0 17"/></symbol>
+      <linearGradient id="g-hex" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#4fb0f0" />
+        <stop offset=".5" stop-color="#1a5c9e" />
+        <stop offset="1" stop-color="#f08a36" />
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <div class="sky" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i></div>
+
+  <main class="page">
+    <header class="top">
+      <a class="brand" href="https://breisgau-digital.de/de" data-href="/{l}">
+        <img src="/hamza/logo.webp" width="26" height="33" alt="" />
+        <span>Breisgau Digital<small data-t="tag">Digitale Visitenkarte</small></span>
+      </a>
+      <div class="langs" role="group" aria-label="Sprache / Language / Dil">
+        <button type="button" data-lang="de" aria-pressed="true">DE</button>
+        <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" data-lang="tr" aria-pressed="false">TR</button>
+      </div>
+    </header>
+
+    <div class="stage" aria-hidden="true">
+      <div class="halo">
+        <div class="glow"></div>
+        <svg viewBox="-110 -110 220 220">
+          <polygon points="0,-100 86.6,-50 86.6,50 0,100 -86.6,50 -86.6,-50" fill="none" stroke="url(#g-hex)" stroke-width="1.6" stroke-linejoin="round" />
+          <polygon points="0,-84 72.7,-42 72.7,42 0,84 -72.7,42 -72.7,-42" fill="none" stroke="url(#g-hex)" stroke-width=".6" stroke-dasharray="2 5" opacity=".7" />
+          <g fill="#f08a36"><rect x="80" y="-62" width="7" height="7" rx="1" /><rect x="-92" y="44" width="6" height="6" rx="1" /></g>
+          <g fill="#4fb0f0"><circle cx="86.6" cy="50" r="2.6" /><circle cx="-86.6" cy="-50" r="2.6" /><circle cx="0" cy="-100" r="2.6" /></g>
+        </svg>
+      </div>
+      <img class="portrait" src="/hamza/foto.webp" width="533" height="800" alt="" fetchpriority="high" decoding="async" />
+      <div class="px"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+
+    <section class="ident">
+      <p class="status rise" id="status" style="--i:0" hidden><span class="dot"></span><span data-status></span></p>
+      <h1 class="name rise" style="--i:1">Hamza <em>Öztürk</em></h1>
+      <p class="role rise" style="--i:2" data-t="role">Gründer &amp; Webentwickler</p>
+      <p class="meta rise" style="--i:3"><span data-t="cred">Fachinformatiker (IHK)</span><span class="sep"></span><span>Freiburg im Breisgau</span></p>
+    </section>
+
+    <div class="save-wrap rise" style="--i:4">
+      <a class="save" href="/hamza/hamza-oeztuerk.vcf">
+        <span class="ic"><svg aria-hidden="true"><use href="#i-add" /></svg></span>
+        <span><b data-t="save">Kontakt speichern</b><small data-t="saveSub">Mit Foto, Telefon und Adresse</small></span>
+        <svg class="go" aria-hidden="true"><use href="#i-arrow" /></svg>
+      </a>
+    </div>
+
+    <nav class="quick rise" style="--i:5" aria-label="Kontakt">
+      <a href="tel:+4915566859378"><svg aria-hidden="true"><use href="#i-phone" /></svg><span data-t="call">Anrufen</span></a>
+      <a class="wa" href="https://wa.me/4915566859378?text=Hallo%20Hamza%2C%20ich%20habe%20Ihre%20digitale%20Visitenkarte%20gesehen%20und%20h%C3%A4tte%20eine%20Frage%20zu%20einem%20Projekt." data-wa rel="noopener"><svg aria-hidden="true"><use href="#i-wa" /></svg><span>WhatsApp</span></a>
+      <a href="mailto:info@breisgau-digital.de?subject=Anfrage%20%C3%BCber%20Ihre%20Visitenkarte" data-mail><svg aria-hidden="true"><use href="#i-mail" /></svg><span data-t="mail">E-Mail</span></a>
+      <a href="https://www.google.com/maps/search/?api=1&amp;query=Breisgau%20Digital%2C%20Bissierstr.%2016%2C%2079114%20Freiburg%20im%20Breisgau" rel="noopener"><svg aria-hidden="true"><use href="#i-pin" /></svg><span data-t="route">Route</span></a>
+    </nav>
+
+    <section class="card about rise" style="--i:6">
+      <h2 class="label" data-t="aboutLabel">Über mich</h2>
+      <p data-t="about" data-html>Ich bin <strong>Hamza</strong>, Gründer von Breisgau Digital. Ich baue Websites, Online-Shops und Web-Apps für Betriebe in Südbaden — vom ersten Gespräch bis zum Livegang aus einer Hand. Sie erreichen mich direkt, auf <strong>Deutsch, Englisch oder Türkisch</strong>.</p>
+      <ul class="chips">
+        <li><a href="/de/leistungen" data-href="/{l}/leistungen"><i></i><span data-t="s1">Websites</span></a></li>
+        <li><a href="/de/leistungen" data-href="/{l}/leistungen"><i></i><span data-t="s2">Online-Shops</span></a></li>
+        <li><a href="/de/leistungen" data-href="/{l}/leistungen"><i></i><span data-t="s3">Web-Apps</span></a></li>
+        <li><a href="/de/digitale-speisekarte" data-href="/{l}/digitale-speisekarte"><i></i><span data-t="s4">Digitale Speisekarte</span></a></li>
+        <li><a href="/de/digitale-einladung" data-href="/{l}/digitale-einladung"><i></i><span data-t="s5">Digitale Einladung</span></a></li>
+        <li><a href="/de/wartung" data-href="/{l}/wartung"><i></i><span data-t="s6">Wartung &amp; Pflege</span></a></li>
+      </ul>
+    </section>
+
+    <div class="stats rise" style="--i:7">
+      <div><b>10+</b><span data-t="st1">Projekte live</span></div>
+      <div><b>3</b><span data-t="st2">Sprachen</span></div>
+      <div><b>1</b><span data-t="st3">Ansprechpartner</span></div>
+    </div>
+
+    <section class="work rise" style="--i:8">
+      <h2 class="label" data-t="workLabel">Ausgewählte Projekte</h2>
+      <div class="rail">
+        <a href="/de/projects/bikehaus-freiburg" data-href="/{l}/projects/bikehaus-freiburg">
+          <img src="/assets/images/bikehaus.webp" alt="" loading="lazy" decoding="async" width="230" height="144" />
+          <span class="cap"><b>Bikehaus Freiburg</b><span data-t="p1">Fahrradhandel · Freiburg</span></span>
+        </a>
+        <a href="/de/projects/zerin-gold" data-href="/{l}/projects/zerin-gold">
+          <img src="/assets/images/zerin-gold.webp" alt="" loading="lazy" decoding="async" width="230" height="144" />
+          <span class="cap"><b>Zerin Gold</b><span data-t="p2">Juwelier · Goldpreis live</span></span>
+        </a>
+        <a href="/de/projects/praxis-gueltekin" data-href="/{l}/projects/praxis-gueltekin">
+          <img src="/assets/images/praxis-gueltekin.webp" alt="" loading="lazy" decoding="async" width="230" height="144" />
+          <span class="cap"><b>Praxis Gültekin</b><span data-t="p3">Hausarztpraxis · 10 Sprachen</span></span>
+        </a>
+        <a href="/de/projects/dj-veys" data-href="/{l}/projects/dj-veys">
+          <img src="/assets/images/dj-veys.webp" alt="" loading="lazy" decoding="async" width="230" height="144" />
+          <span class="cap"><b>DJ Veys</b><span data-t="p4">Hochzeits-DJ · Stuttgart</span></span>
+        </a>
+        <a href="/de/projects/gkn-portraits" data-href="/{l}/projects/gkn-portraits">
+          <img src="/assets/images/gkn-portraits.webp" alt="" loading="lazy" decoding="async" width="230" height="144" />
+          <span class="cap"><b>GKN Portraits</b><span data-t="p5">Fotostudio · Online-Buchung</span></span>
+        </a>
+        <a class="more" href="/de/projects" data-href="/{l}/projects">
+          <span><svg aria-hidden="true"><use href="#i-arrow" /></svg><span data-t="workAll">Alle Projekte</span></span>
+        </a>
+      </div>
+    </section>
+
+    <ul class="links rise" style="--i:9">
+      <li>
+        <a class="hot" href="/de/contact" data-href="/{l}/contact">
+          <span class="ic"><svg aria-hidden="true"><use href="#i-spark" /></svg></span>
+          <span><b data-t="ask">Projekt anfragen</b><small data-t="askSub">Kostenloses Erstgespräch</small></span>
+          <svg class="go" aria-hidden="true"><use href="#i-arrow" /></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://breisgau-digital.de/de" data-href="/{l}">
+          <span class="ic"><svg aria-hidden="true"><use href="#i-globe" /></svg></span>
+          <span><b>breisgau-digital.de</b><small data-t="web">Website &amp; Leistungen</small></span>
+          <svg class="go" aria-hidden="true"><use href="#i-arrow" /></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.instagram.com/breisgaudigital" rel="noopener" target="_blank">
+          <span class="ic"><svg aria-hidden="true"><use href="#i-ig" /></svg></span>
+          <span><b>Instagram</b><small>@breisgaudigital</small></span>
+          <svg class="go" aria-hidden="true"><use href="#i-out" /></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://www.linkedin.com/in/hamzaoeztuerk/" rel="noopener" target="_blank">
+          <span class="ic"><svg aria-hidden="true"><use href="#i-in" /></svg></span>
+          <span><b>LinkedIn</b><small>Hamza Öztürk</small></span>
+          <svg class="go" aria-hidden="true"><use href="#i-out" /></svg>
+        </a>
+      </li>
+      <li>
+        <a href="https://github.com/oeztuerkhamza" rel="noopener" target="_blank">
+          <span class="ic"><svg aria-hidden="true"><use href="#i-gh" /></svg></span>
+          <span><b>GitHub</b><small>oeztuerkhamza</small></span>
+          <svg class="go" aria-hidden="true"><use href="#i-out" /></svg>
+        </a>
+      </li>
+    </ul>
+
+    <section class="card share rise" style="--i:10">
+      <div class="qr">
+        <svg viewBox="-1 -1 35 35" role="img" aria-label="QR-Code: breisgau-digital.de/hamza" shape-rendering="crispEdges"><path fill="#0b0c10" d="M0 0h7v1h-7zM10 0h1v1h-1zM12 0h1v1h-1zM15 0h1v1h-1zM17 0h2v1h-2zM20 0h1v1h-1zM23 0h2v1h-2zM26 0h7v1h-7zM0 1h1v1h-1zM6 1h1v1h-1zM8 1h1v1h-1zM11 1h1v1h-1zM14 1h1v1h-1zM16 1h1v1h-1zM18 1h1v1h-1zM20 1h1v1h-1zM24 1h1v1h-1zM26 1h1v1h-1zM32 1h1v1h-1zM0 2h1v1h-1zM2 2h3v1h-3zM6 2h1v1h-1zM9 2h3v1h-3zM13 2h1v1h-1zM16 2h2v1h-2zM20 2h2v1h-2zM26 2h1v1h-1zM28 2h3v1h-3zM32 2h1v1h-1zM0 3h1v1h-1zM2 3h3v1h-3zM6 3h1v1h-1zM10 3h2v1h-2zM18 3h3v1h-3zM26 3h1v1h-1zM28 3h3v1h-3zM32 3h1v1h-1zM0 4h1v1h-1zM2 4h3v1h-3zM6 4h1v1h-1zM10 4h1v1h-1zM12 4h2v1h-2zM16 4h2v1h-2zM21 4h3v1h-3zM26 4h1v1h-1zM28 4h3v1h-3zM32 4h1v1h-1zM0 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM14 5h7v1h-7zM22 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM32 5h1v1h-1zM0 6h7v1h-7zM8 6h1v1h-1zM10 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h7v1h-7zM8 7h3v1h-3zM17 7h2v1h-2zM20 7h3v1h-3zM4 8h4v1h-4zM9 8h1v1h-1zM15 8h1v1h-1zM18 8h2v1h-2zM21 8h1v1h-1zM23 8h2v1h-2zM26 8h2v1h-2zM31 8h1v1h-1zM0 9h1v1h-1zM2 9h1v1h-1zM11 9h2v1h-2zM15 9h3v1h-3zM19 9h2v1h-2zM23 9h1v1h-1zM27 9h1v1h-1zM29 9h2v1h-2zM0 10h4v1h-4zM5 10h2v1h-2zM11 10h1v1h-1zM13 10h7v1h-7zM21 10h4v1h-4zM26 10h4v1h-4zM31 10h1v1h-1zM0 11h1v1h-1zM4 11h2v1h-2zM7 11h1v1h-1zM12 11h2v1h-2zM15 11h1v1h-1zM18 11h1v1h-1zM20 11h2v1h-2zM23 11h1v1h-1zM25 11h1v1h-1zM28 11h1v1h-1zM32 11h1v1h-1zM0 12h1v1h-1zM3 12h2v1h-2zM6 12h2v1h-2zM9 12h3v1h-3zM15 12h1v1h-1zM17 12h1v1h-1zM19 12h2v1h-2zM24 12h1v1h-1zM26 12h1v1h-1zM28 12h1v1h-1zM31 12h2v1h-2zM0 13h1v1h-1zM2 13h4v1h-4zM8 13h1v1h-1zM10 13h1v1h-1zM13 13h4v1h-4zM18 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM27 13h1v1h-1zM29 13h3v1h-3zM3 14h1v1h-1zM5 14h2v1h-2zM9 14h3v1h-3zM13 14h5v1h-5zM19 14h1v1h-1zM23 14h2v1h-2zM26 14h3v1h-3zM31 14h1v1h-1zM0 15h1v1h-1zM3 15h1v1h-1zM7 15h1v1h-1zM9 15h1v1h-1zM14 15h1v1h-1zM20 15h2v1h-2zM24 15h2v1h-2zM27 15h1v1h-1zM29 15h1v1h-1zM31 15h1v1h-1zM2 16h2v1h-2zM5 16h3v1h-3zM9 16h3v1h-3zM16 16h1v1h-1zM18 16h4v1h-4zM26 16h1v1h-1zM28 16h1v1h-1zM31 16h2v1h-2zM2 17h3v1h-3zM15 17h4v1h-4zM20 17h1v1h-1zM23 17h2v1h-2zM27 17h1v1h-1zM31 17h1v1h-1zM0 18h1v1h-1zM2 18h1v1h-1zM6 18h3v1h-3zM10 18h2v1h-2zM13 18h1v1h-1zM15 18h2v1h-2zM20 18h2v1h-2zM23 18h2v1h-2zM29 18h1v1h-1zM31 18h1v1h-1zM1 19h1v1h-1zM5 19h1v1h-1zM9 19h1v1h-1zM11 19h1v1h-1zM13 19h2v1h-2zM16 19h6v1h-6zM25 19h1v1h-1zM28 19h1v1h-1zM0 20h1v1h-1zM4 20h5v1h-5zM11 20h4v1h-4zM18 20h1v1h-1zM20 20h2v1h-2zM26 20h1v1h-1zM28 20h2v1h-2zM32 20h1v1h-1zM0 21h1v1h-1zM3 21h1v1h-1zM5 21h1v1h-1zM7 21h2v1h-2zM10 21h3v1h-3zM16 21h1v1h-1zM18 21h4v1h-4zM23 21h1v1h-1zM25 21h1v1h-1zM27 21h1v1h-1zM30 21h2v1h-2zM2 22h1v1h-1zM4 22h1v1h-1zM6 22h2v1h-2zM10 22h1v1h-1zM13 22h1v1h-1zM16 22h2v1h-2zM20 22h1v1h-1zM23 22h2v1h-2zM28 22h4v1h-4zM3 23h1v1h-1zM5 23h1v1h-1zM7 23h3v1h-3zM12 23h1v1h-1zM16 23h4v1h-4zM21 23h4v1h-4zM28 23h1v1h-1zM31 23h1v1h-1zM0 24h2v1h-2zM6 24h2v1h-2zM12 24h1v1h-1zM15 24h1v1h-1zM21 24h8v1h-8zM8 25h3v1h-3zM12 25h1v1h-1zM14 25h3v1h-3zM18 25h1v1h-1zM21 25h1v1h-1zM24 25h1v1h-1zM28 25h1v1h-1zM31 25h1v1h-1zM0 26h7v1h-7zM8 26h1v1h-1zM11 26h1v1h-1zM14 26h4v1h-4zM19 26h2v1h-2zM24 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM31 26h1v1h-1zM0 27h1v1h-1zM6 27h1v1h-1zM8 27h4v1h-4zM15 27h4v1h-4zM20 27h1v1h-1zM22 27h1v1h-1zM24 27h1v1h-1zM28 27h1v1h-1zM31 27h2v1h-2zM0 28h1v1h-1zM2 28h3v1h-3zM6 28h1v1h-1zM8 28h1v1h-1zM12 28h1v1h-1zM14 28h2v1h-2zM17 28h3v1h-3zM22 28h1v1h-1zM24 28h5v1h-5zM0 29h1v1h-1zM2 29h3v1h-3zM6 29h1v1h-1zM10 29h1v1h-1zM13 29h2v1h-2zM24 29h1v1h-1zM26 29h4v1h-4zM31 29h1v1h-1zM0 30h1v1h-1zM2 30h3v1h-3zM6 30h1v1h-1zM9 30h1v1h-1zM14 30h1v1h-1zM16 30h2v1h-2zM20 30h2v1h-2zM25 30h2v1h-2zM28 30h1v1h-1zM30 30h1v1h-1zM0 31h1v1h-1zM6 31h1v1h-1zM9 31h1v1h-1zM11 31h1v1h-1zM13 31h4v1h-4zM22 31h3v1h-3zM27 31h2v1h-2zM0 32h7v1h-7zM13 32h1v1h-1zM17 32h1v1h-1zM19 32h1v1h-1zM21 32h1v1h-1zM23 32h2v1h-2zM27 32h1v1h-1zM32 32h1v1h-1z" /></svg>
+        <img src="/hamza/logo.webp" width="22" height="28" alt="" />
+      </div>
+      <div>
+        <h2 data-t="shareTitle">Karte weitergeben</h2>
+        <p data-t="shareText">Code scannen lassen — oder den Link direkt teilen.</p>
+        <button class="btn" type="button" id="share"><svg aria-hidden="true"><use href="#i-share" /></svg><span data-t="shareBtn">Link teilen</span></button>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <span class="nfc"><svg aria-hidden="true"><use href="#i-nfc" /></svg><span data-t="nfc">Per NFC geöffnet? Einfach nochmal ans Handy halten.</span></span>
+      <div>Breisgau Digital · Inh. Hamza Öztürk · Bissierstr. 16, 79114 Freiburg</div>
+      <nav><a href="/de/impressum">Impressum</a><a href="/de/datenschutz" data-t="privacy">Datenschutz</a></nav>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      /* Texte. Deutsch steht zusätzlich im HTML, damit die Seite ohne Skript vollständig ist. */
+      var T = {
+        de: {
+          tag: 'Digitale Visitenkarte', role: 'Gründer & Webentwickler', cred: 'Fachinformatiker (IHK)',
+          save: 'Kontakt speichern', saveSub: 'Mit Foto, Telefon und Adresse',
+          call: 'Anrufen', mail: 'E-Mail', route: 'Route',
+          aboutLabel: 'Über mich',
+          about: 'Ich bin <strong>Hamza</strong>, Gründer von Breisgau Digital. Ich baue Websites, Online-Shops und Web-Apps für Betriebe in Südbaden — vom ersten Gespräch bis zum Livegang aus einer Hand. Sie erreichen mich direkt, auf <strong>Deutsch, Englisch oder Türkisch</strong>.',
+          s1: 'Websites', s2: 'Online-Shops', s3: 'Web-Apps', s4: 'Digitale Speisekarte', s5: 'Digitale Einladung', s6: 'Wartung & Pflege',
+          st1: 'Projekte live', st2: 'Sprachen', st3: 'Ansprechpartner',
+          workLabel: 'Ausgewählte Projekte', workAll: 'Alle Projekte',
+          p1: 'Fahrradhandel · Freiburg', p2: 'Juwelier · Goldpreis live', p3: 'Hausarztpraxis · 10 Sprachen', p4: 'Hochzeits-DJ · Stuttgart', p5: 'Fotostudio · Online-Buchung',
+          ask: 'Projekt anfragen', askSub: 'Kostenloses Erstgespräch', web: 'Website & Leistungen',
+          shareTitle: 'Karte weitergeben', shareText: 'Code scannen lassen — oder den Link direkt teilen.', shareBtn: 'Link teilen',
+          copied: 'Link kopiert', nfc: 'Per NFC geöffnet? Einfach nochmal ans Handy halten.', privacy: 'Datenschutz',
+          open: 'Jetzt erreichbar · bis 18:00 Uhr', back: 'Wieder erreichbar {w} ab 9:00 Uhr', today: 'heute', tomorrow: 'morgen',
+          wa: 'Hallo Hamza, ich habe Ihre digitale Visitenkarte gesehen und hätte eine Frage zu einem Projekt.',
+          subject: 'Anfrage über Ihre Visitenkarte',
+          shareMsg: 'Hamza Öztürk · Breisgau Digital — Websites & Web-Apps aus Freiburg'
+        },
+        en: {
+          tag: 'Digital business card', role: 'Founder & Web Developer', cred: 'IT specialist (IHK)',
+          save: 'Save contact', saveSub: 'With photo, phone and address',
+          call: 'Call', mail: 'Email', route: 'Directions',
+          aboutLabel: 'About me',
+          about: 'I’m <strong>Hamza</strong>, founder of Breisgau Digital. I build websites, online shops and web apps for businesses in southern Baden — from the first conversation to launch, all from one hand. You reach me directly, in <strong>German, English or Turkish</strong>.',
+          s1: 'Websites', s2: 'Online shops', s3: 'Web apps', s4: 'Digital menu', s5: 'Digital invitation', s6: 'Maintenance & care',
+          st1: 'Projects live', st2: 'Languages', st3: 'Point of contact',
+          workLabel: 'Selected work', workAll: 'All projects',
+          p1: 'Bike shop · Freiburg', p2: 'Jeweller · live gold price', p3: 'GP practice · 10 languages', p4: 'Wedding DJ · Stuttgart', p5: 'Photo studio · online booking',
+          ask: 'Start a project', askSub: 'Free first consultation', web: 'Website & services',
+          shareTitle: 'Pass it on', shareText: 'Let someone scan the code — or share the link.', shareBtn: 'Share link',
+          copied: 'Link copied', nfc: 'Opened via NFC? Just tap your phone again.', privacy: 'Privacy',
+          open: 'Available now · until 6 pm', back: 'Back {w} from 9 am', today: 'today', tomorrow: 'tomorrow',
+          wa: 'Hi Hamza, I saw your digital business card and have a question about a project.',
+          subject: 'Enquiry via your business card',
+          shareMsg: 'Hamza Öztürk · Breisgau Digital — websites & web apps from Freiburg'
+        },
+        tr: {
+          tag: 'Dijital kartvizit', role: 'Kurucu & Web Geliştirici', cred: 'Bilişim uzmanı (IHK)',
+          save: 'Rehbere kaydet', saveSub: 'Fotoğraf, telefon ve adresle',
+          call: 'Ara', mail: 'E-posta', route: 'Yol tarifi',
+          aboutLabel: 'Hakkımda',
+          about: 'Ben <strong>Hamza</strong>, Breisgau Digital’in kurucusuyum. Güney Baden’deki işletmeler için web siteleri, online mağazalar ve web uygulamaları geliştiriyorum — ilk görüşmeden yayına kadar her şey tek elden. Bana doğrudan <strong>Almanca, İngilizce veya Türkçe</strong> ulaşabilirsiniz.',
+          s1: 'Web siteleri', s2: 'Online mağaza', s3: 'Web uygulamaları', s4: 'Dijital menü', s5: 'Dijital davetiye', s6: 'Bakım & destek',
+          st1: 'Yayında proje', st2: 'Dil', st3: 'Tek muhatap',
+          workLabel: 'Seçili projeler', workAll: 'Tüm projeler',
+          p1: 'Bisiklet mağazası · Freiburg', p2: 'Kuyumcu · canlı altın fiyatı', p3: 'Aile hekimliği · 10 dil', p4: 'Düğün DJ’i · Stuttgart', p5: 'Fotoğraf stüdyosu · online randevu',
+          ask: 'Proje talebi', askSub: 'Ücretsiz ilk görüşme', web: 'Web sitesi & hizmetler',
+          shareTitle: 'Kartı paylaş', shareText: 'Kodu okutun — ya da bağlantıyı doğrudan paylaşın.', shareBtn: 'Paylaş',
+          copied: 'Bağlantı kopyalandı', nfc: 'NFC ile mi açtınız? Telefonu tekrar yaklaştırmanız yeterli.', privacy: 'Gizlilik',
+          open: 'Şu an ulaşılabilir · 18:00’e kadar', back: '{w} 09:00’dan itibaren ulaşılabilir', today: 'Bugün', tomorrow: 'Yarın',
+          wa: 'Merhaba Hamza Bey, dijital kartvizitinizi gördüm, bir proje hakkında sormak istediğim bir şey var.',
+          subject: 'Kartvizitiniz üzerinden talep',
+          shareMsg: 'Hamza Öztürk · Breisgau Digital — Freiburg’dan web siteleri ve web uygulamaları'
+        }
+      };
+
+      var URL_SELF = 'https://breisgau-digital.de/hamza';
+      var lang = 'de';
+
+      function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+
+      function pickLang() {
+        var q = (location.search.match(/[?&]lang=(de|en|tr)\b/) || [])[1];
+        if (q) return q;
+        var saved = store('bd-card-lang');
+        if (saved && T[saved]) return saved;
+        var nav = (navigator.languages || [navigator.language || 'de']);
+        for (var i = 0; i < nav.length; i++) {
+          var c = String(nav[i]).slice(0, 2).toLowerCase();
+          if (c === 'de' || c === 'tr') return c;
+          if (c === 'en') return 'en';
+        }
+        return 'de';
+      }
+
+      /* Erreichbarkeit nach Freiburger Uhr: Mo–Fr 9–18 Uhr, wie im Google-Profil. */
+      function status() {
+        var el = document.getElementById('status');
+        try {
+          var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Berlin', weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' }).formatToParts(new Date());
+          var get = function (t) { for (var i = 0; i < parts.length; i++) if (parts[i].type === t) return parts[i].value; return ''; };
+          var day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].indexOf(get('weekday'));
+          var min = parseInt(get('hour'), 10) * 60 + parseInt(get('minute'), 10);
+          var work = function (d) { return d >= 1 && d <= 5; };
+          var t = T[lang];
+          if (work(day) && min >= 540 && min < 1080) {
+            el.classList.remove('off');
+            el.querySelector('[data-status]').textContent = t.open;
+          } else {
+            var add = (work(day) && min < 540) ? 0 : 1;
+            while (!work((day + add) % 7)) add++;
+            var w;
+            if (add === 0) w = t.today;
+            else if (add === 1) w = t.tomorrow;
+            else {
+              var d = new Date(Date.now() + add * 864e5);
+              w = new Intl.DateTimeFormat(lang, { weekday: 'long', timeZone: 'Europe/Berlin' }).format(d);
+              if (lang === 'en') w = 'on ' + w;
+            }
+            el.classList.add('off');
+            el.querySelector('[data-status]').textContent = t.back.replace('{w}', w);
+          }
+          el.hidden = false;
+        } catch (e) { el.hidden = true; }
+      }
+
+      function apply(l) {
+        lang = T[l] ? l : 'de';
+        var t = T[lang];
+        document.documentElement.lang = lang;
+        var nodes = document.querySelectorAll('[data-t]');
+        for (var i = 0; i < nodes.length; i++) {
+          var k = nodes[i].getAttribute('data-t');
+          if (!(k in t)) continue;
+          if (nodes[i].hasAttribute('data-html')) nodes[i].innerHTML = t[k];
+          else nodes[i].textContent = t[k];
+        }
+        /* Seiten der Website in derselben Sprache öffnen (Impressum und Datenschutz gibt es nur auf Deutsch). */
+        var links = document.querySelectorAll('[data-href]');
+        for (var j = 0; j < links.length; j++) links[j].setAttribute('href', links[j].getAttribute('data-href').replace('{l}', lang));
+        var wa = document.querySelector('[data-wa]');
+        if (wa) wa.href = 'https://wa.me/4915566859378?text=' + encodeURIComponent(t.wa);
+        var mail = document.querySelector('[data-mail]');
+        if (mail) mail.href = 'mailto:info@breisgau-digital.de?subject=' + encodeURIComponent(t.subject);
+        var btns = document.querySelectorAll('.langs button');
+        for (var b = 0; b < btns.length; b++) btns[b].setAttribute('aria-pressed', String(btns[b].getAttribute('data-lang') === lang));
+        status();
+      }
+
+      function toast(msg) {
+        var el = document.getElementById('toast');
+        el.textContent = msg;
+        el.classList.add('on');
+        clearTimeout(toast.t);
+        toast.t = setTimeout(function () { el.classList.remove('on'); }, 2200);
+      }
+
+      document.querySelector('.langs').addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-lang]');
+        if (!b) return;
+        store('bd-card-lang', b.getAttribute('data-lang'));
+        apply(b.getAttribute('data-lang'));
+      });
+
+      document.getElementById('share').addEventListener('click', function () {
+        var t = T[lang];
+        if (navigator.share) {
+          navigator.share({ title: 'Hamza Öztürk · Breisgau Digital', text: t.shareMsg, url: URL_SELF }).catch(function () {});
+          return;
+        }
+        var done = function () { toast(t.copied); };
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(URL_SELF).then(done, function () { prompt('', URL_SELF); });
+        else prompt('', URL_SELF);
+      });
+
+      apply(pickLang());
+      setInterval(status, 60000);
+    })();
+  </script>
+</body>
+</html>

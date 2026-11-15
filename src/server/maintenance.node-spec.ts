@@ -36,6 +36,11 @@ describe('alwaysOpen — was trotz Wartung durchkommt', () => {
       assert.equal(alwaysOpen(p), true, p);
   });
 
+  test('lässt die eigene digitale Visitenkarte durch — die Karte liegt bei Kunden', () => {
+    for (const p of ['/hamza', '/hamza/', '/Hamza', '/hamza/hamza-oeztuerk.vcf'])
+      assert.equal(alwaysOpen(p), true, p);
+  });
+
   test('lässt Dateien durch, damit die Wartungsseite nichts vermisst', () => {
     for (const p of ['/assets/images/logo/breisgau-digital.svg', '/main-ABC123.js', '/styles.css', '/favicon.ico', '/sitemap.xml', '/robots.txt'])
       assert.equal(alwaysOpen(p), true, p);

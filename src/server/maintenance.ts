@@ -100,6 +100,9 @@ export function sameHash(a: string, b: string): boolean {
  *   * `/k/…` und `/r/…` — die Seiten und Kurzlinks der verkauften NFC-Karten.
  *     Die liegen physisch bei Kunden auf dem Tisch; sie wegen unserer
  *     Wartungsarbeiten abzuschalten wäre ein Fehler am Produkt.
+ *   * `/hamza` — die eigene digitale Visitenkarte (public/hamza). Aus demselben
+ *     Grund: die gedruckte Karte liegt bei Kunden, und wer sie ans Handy hält,
+ *     soll den Kontakt speichern können statt auf eine Wartungsseite zu fallen.
  *   * Dateien (alles mit Endung), `/assets/…`, `sitemap.xml`, `robots.txt`
  *     und `/.well-known/…`.
  */
@@ -109,6 +112,7 @@ export function alwaysOpen(pathname: string): boolean {
   if (p === '/api' || p.startsWith('/api/')) return true;
   if (p === '/admin' || p.startsWith('/admin/')) return true;
   if (p.startsWith('/k/') || p.startsWith('/r/') || p.startsWith('/m/')) return true;
+  if (p === '/hamza' || p.startsWith('/hamza/')) return true;
   if (p.startsWith('/assets/') || p.startsWith('/.well-known/')) return true;
 
   // Dateien: eine Endung im letzten Abschnitt der Adresse. Seiten haben keine.
