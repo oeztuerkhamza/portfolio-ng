@@ -127,6 +127,16 @@
       "permanent": true
     },
     {
+      "source": "/:card((?!hamza)[Hh][Aa][Mm][Zz][Aa])",
+      "destination": "/hamza",
+      "permanent": true
+    },
+    {
+      "source": "/:card((?!hamza)[Hh][Aa][Mm][Zz][Aa])/",
+      "destination": "/hamza",
+      "permanent": true
+    },
+    {
       "source": "/:locale(de|en|tr)/smart-home",
       "destination": "/:locale/leistungen",
       "permanent": false
