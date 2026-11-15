@@ -109,6 +109,18 @@
   </section>
 
   <!-- Abschluss -->
+  <!-- Jede Referenz verweist auf die anderen: sonst führt nur die Übersicht dorthin. -->
+  <section class="section">
+    <div class="container">
+      <p class="section-label">{{ i18n.t('nav.references') }}</p>
+      <ul class="chips">
+        @for (o of others(); track o.slug) {
+          <li><a class="chip chip-outline" [routerLink]="'/projects/' + o.slug | localize">{{ o.title }}</a></li>
+        }
+      </ul>
+    </div>
+  </section>
+
   <section class="final-cta">
     <div class="container">
       <div class="cta-box">

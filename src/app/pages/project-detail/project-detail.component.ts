@@ -26,6 +26,8 @@ export class ProjectDetailComponent implements OnInit, AfterViewInit, OnDestroy 
   private observer?: IntersectionObserver;
 
   project = signal<Project | null>(null);
+  /** Alle übrigen Referenzen, für die Verweise am Seitenende. */
+  readonly others = computed(() => PROJECTS.filter((p) => p.slug !== this.project()?.slug));
   /** Ratgeber-Artikel zu dieser Referenz, falls es einen gibt. */
   get story() {
     return RATGEBER.find((a) => a.project === this.project()?.slug);

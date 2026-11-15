@@ -102,6 +102,16 @@
       "permanent": true
     },
     {
+      "source": "/:page(leistungen|projects|wartung|ueber-uns|contact|digitale-speisekarte|digitale-einladung|ratgeber|webdesign|impressum|datenschutz|agb|widerruf|versand)",
+      "destination": "/de/:page",
+      "permanent": true
+    },
+    {
+      "source": "/:page(leistungen|projects|wartung|ueber-uns|contact|digitale-speisekarte|digitale-einladung|ratgeber|webdesign|impressum|datenschutz|agb|widerruf|versand)/:path*",
+      "destination": "/de/:page/:path*",
+      "permanent": true
+    },
+    {
       "source": "/:locale(de|en|tr)/experience",
       "destination": "/:locale/ueber-uns",
       "permanent": true
