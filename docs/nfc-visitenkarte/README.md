@@ -48,7 +48,7 @@ QR kod da aynı adrese gidiyor; NFC'si olmayan telefonlar için.
 
 ## Bilgiler değişirse
 
-Telefon, e-posta veya adres değişirse üç yerde güncellenmeli:
+Telefon veya e-posta değişirse üç yerde güncellenmeli:
 
 - `public/hamza/index.html` (sayfa)
 - `public/hamza/hamza-oeztuerk.vcf` (rehbere kaydedilen kişi kartı)
