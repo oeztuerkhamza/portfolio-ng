@@ -80,8 +80,6 @@ export function professionalServiceSchema(): Record<string, unknown> {
     founder: { '@id': `${ORIGIN}/#person` },
     logo: `${ORIGIN}/assets/images/logo/breisgau-digital.svg`,
     areaServed: [
-      // Freiburg hat keine Ortsseite — die Startseite ist die Freiburg-Seite.
-      { '@type': 'City', name: 'Freiburg im Breisgau', url: `${ORIGIN}/de` },
       ...TOWNS.filter((t) => !t.isRegion).map((t) => ({ '@type': 'City', name: t.name, url: `${ORIGIN}/de/webdesign/${t.slug}` })),
       { '@type': 'AdministrativeArea', name: 'Landkreis Breisgau-Hochschwarzwald' },
       { '@type': 'AdministrativeArea', name: 'Ortenaukreis', url: `${ORIGIN}/de/webdesign/ortenau` },

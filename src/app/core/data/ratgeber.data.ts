@@ -53,6 +53,7 @@ export const RATGEBER: RatgeberArticle[] = [
     published: '2026-10-23',
     minutes: 6,
     image: '/assets/images/stock/designer-laptop.webp',
+    town: 'freiburg',
     lead:
       'Die ehrliche Antwort ist „kommt darauf an" — aber nicht so sehr, wie viele denken. Hier steht, was eine Website bei uns kostet, wovon der Preis abhängt und welche Kosten danach noch kommen. Alle Preise sind Endpreise; als Kleinunternehmer (§ 19 UStG) weisen wir keine Umsatzsteuer aus.',
     sections: [
@@ -114,6 +115,7 @@ export const RATGEBER: RatgeberArticle[] = [
     minutes: 5,
     image: '/assets/images/bikehaus.webp',
     project: 'bikehaus-freiburg',
+    town: 'freiburg',
     lead:
       'Bikehaus Freiburg kauft gebrauchte Räder an, macht sie fertig, verkauft und vermietet sie. Für all das gibt es heute eine eigene Plattform. Seit Projektstart ist die Zahl der Google-Bewertungen von 30 auf 210 gestiegen — und der Verleih wird online gebucht und bezahlt.',
     sections: [
@@ -325,6 +327,7 @@ export const RATGEBER: RatgeberArticle[] = [
     published: '2026-11-15',
     minutes: 4,
     image: '/assets/images/speisekarte/divan-2-start.webp',
+    town: 'freiburg',
     lead:
       'Ein PDF hinter einem QR-Code ist keine digitale Speisekarte. Es ist die Papierkarte, nur kleiner und schwerer zu lesen. Für Divan Ocakbaşı in Freiburg haben wir es anders gebaut. Hier steht, wie — und was davon für andere Restaurants taugt.',
     sections: [

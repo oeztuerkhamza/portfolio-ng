@@ -398,7 +398,7 @@ const BASE_TRANSLATIONS: Record<string, Entry> = {
 
   // ---- SEO meta (per page, per locale) -------------------------------------
   'seo.home.title': {
-    de: 'Webdesign Freiburg & individuelle Webentwicklung | Breisgau Digital',
+    de: 'Webdesign & Webentwicklung Freiburg | IT-Agentur Breisgau Digital',
     en: 'Breisgau Digital — web design & development in Freiburg',
     tr: 'Breisgau Digital — Freiburg’da web tasarım ve geliştirme',
   },
