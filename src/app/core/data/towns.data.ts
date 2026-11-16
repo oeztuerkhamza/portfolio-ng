@@ -25,6 +25,12 @@ export interface Town {
   intro: string;
   /** Absatz „Betriebe vor Ort" — was dort typisch ist und was hilft. */
   local: string;
+  /** Eigene H1 in zwei Zeilen, wo der Suchbegriff vorn stehen soll. */
+  h1?: [string, string];
+  /** Referenzen aus dem Ort (Slugs aus project.data.ts). */
+  references?: string[];
+  /** Preise und Ablauf ausführlich zeigen — nur auf der Seite des eigenen Standorts. */
+  detail?: boolean;
   /** Ortsteile der Stadt — dort machen wir ebenso Termine wie in der Kernstadt. */
   districts?: string[];
   /** Reihenfolge der Produkte auf der Seite. */
@@ -49,6 +55,9 @@ export interface Town {
 export const TOWNS: Town[] = [
   {
     slug: 'freiburg',
+    h1: ['Webdesign Freiburg', 'Websites zum Festpreis, persönlich vor Ort'],
+    references: ['bikehaus-freiburg', 'zerin-gold', 'gkn-portraits', 'kulturplattform-freiburg'],
+    detail: true,
     name: 'Freiburg im Breisgau',
     short: 'Freiburg',
     district: 'Stadtkreis Freiburg',
@@ -76,6 +85,18 @@ export const TOWNS: Town[] = [
       {
         q: 'Wie schnell steht eine Website für einen Freiburger Betrieb?',
         a: 'Eine übersichtliche Website mit bis zu fünf Seiten ist in der Regel in drei bis vier Wochen online, abhängig davon, wie schnell Texte und Fotos vorliegen.',
+      },
+      {
+        q: 'Was kostet eine Website für einen Betrieb in Freiburg?',
+        a: 'Eine Firmen-Website gibt es bei uns zum Festpreis, schriftlich vor Projektstart. Shop, Online-Buchung oder mehrere Sprachen kalkulieren wir nach dem kostenlosen Erstgespräch. Nach dem Start fallen nur Domain und Hosting an; Wartung ist ein Angebot, keine Pflicht.',
+      },
+      {
+        q: 'Arbeiten Sie mit einem Baukasten oder programmieren Sie selbst?',
+        a: 'Wir programmieren jede Website selbst. Sie lädt dadurch nur, was sie braucht, und Sie bleiben unabhängig: Domain, Zugänge und Inhalte laufen auf Ihren Namen.',
+      },
+      {
+        q: 'In welchen Sprachen beraten Sie?',
+        a: 'Auf Deutsch, Türkisch und Englisch. Die Websites selbst liefern wir auf Wunsch mehrsprachig aus, mit eigener Adresse je Sprache.',
       },
       {
         q: 'Machen Sie auch SEO in Freiburg?',

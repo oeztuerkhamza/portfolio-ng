@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { I18nService } from '../../core/i18n/i18n.service';
+import { REVIEW_CARDS_ENABLED } from '../../core/data/company.data';
 import type { Lang } from '../../core/i18n/i18n.service';
 import { expectNoBorrowedRatings } from '../../../testing/no-borrowed-ratings';
 import { REVIEWS_CONTENT } from './reviews.content';
@@ -122,7 +123,9 @@ describe('ReviewsComponent', () => {
 
     it('verweist auf die Bewertungskarten, mit denen wir sie sammeln', () => {
       const a = el<HTMLAnchorElement>('.rv-more');
-      expect(a?.getAttribute('href')).toBe('/de/bewertungskarten');
+      // Der Verweis hängt am Schalter: ohne Karten im Angebot gibt es ihn nicht.
+      if (REVIEW_CARDS_ENABLED) expect(a?.getAttribute('href')).toBe('/de/bewertungskarten');
+      else expect(a).toBeNull();
     });
 
     it('verrät keine Übersetzungsschlüssel', () => {

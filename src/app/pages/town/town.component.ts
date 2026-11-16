@@ -2,8 +2,10 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { SeoService } from '../../core/seo/seo.service';
 import { breadcrumbSchema } from '../../core/seo/structured-data';
-import { COMPANY, PRODUCTS, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
+import { COMPANY, PRODUCTS, WEBSITE_PRICE_FROM, whatsappUrl, REVIEW_CARDS_ENABLED, SMART_HOME_ENABLED } from '../../core/data/company.data';
 import { MAINTENANCE_PRICE_FROM } from '../../core/data/maintenance.data';
+import { UPDATE_PACKAGES } from '../../core/data/homepage-update.data';
+import { PROJECTS } from '../../core/data/project.data';
 import { ProductFocus, TOWNS, Town, townBySlug } from '../../core/data/towns.data';
 import { RATGEBER } from '../../core/data/ratgeber.data';
 import { IconComponent } from '../../shared/icon/icon.component';
@@ -66,7 +68,11 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
           <div class="sec-head town-head">
             <p class="section-label">{{ t.region }} · {{ t.district }}</p>
             <h1 class="section-title">
-              Webdesign &amp; Webentwicklung<br /><em>in {{ t.short }}</em>.
+              @if (t.h1) {
+                {{ t.h1[0] }}<br /><em>{{ t.h1[1] }}</em>.
+              } @else {
+                Webdesign &amp; Webentwicklung<br /><em>in {{ t.short }}</em>.
+              }
             </h1>
             <p class="section-subtitle">{{ t.intro }}</p>
             <ul class="chips town-facts">
@@ -120,6 +126,63 @@ const FOCUS_ORDER: ProductFocus[] = ['web', 'abo', 'cards', 'sh'];
         </div>
       </section>
 
+      @if (refs.length) {
+        <section class="section section-white">
+          <div class="container">
+            <header class="sec-head">
+              <p class="section-label">Referenzen aus {{ t.short }}</p>
+              <h2 class="section-title">Webdesign aus {{ t.short }}: <em>Betriebe, für die wir gebaut haben</em>.</h2>
+            </header>
+            <div class="grid grid-2">
+              @for (p of refs; track p.slug) {
+                <a [routerLink]="'/de/projects/' + p.slug" class="card card-hover town-card">
+                  <img class="town-ref-img" [src]="p.image" [alt]="'Website ' + p.title" width="1440" height="900" loading="lazy" />
+                  <h3 class="card-title">{{ p.title }}</h3>
+                  <p class="card-text">{{ p.description }}</p>
+                  <span class="town-more">Referenz ansehen <app-icon name="arrow" /></span>
+                </a>
+              }
+            </div>
+          </div>
+        </section>
+      }
+
+      @if (t.detail) {
+        <section class="section">
+          <div class="container town-local">
+            <div>
+              <p class="section-label">Preise</p>
+              <h2 class="section-title">Was kostet eine Website <em>in {{ t.short }}</em>?</h2>
+            </div>
+            <div>
+              <p class="town-text">Wir arbeiten zum Festpreis. Sie bekommen vor Projektstart ein schriftliches Angebot, und dabei bleibt es. Alle Preise sind Endpreise.</p>
+              <ul class="town-list">
+                <li>Neue Firmen-Website: ab {{ priceNew }} €</li>
+                @for (u of updates; track u.name) {
+                  <li>Homepage-Update {{ u.name }}: {{ u.price }} €, fertig in {{ u.days }} Werktagen</li>
+                }
+                <li>Wartung und Pflege: ab {{ priceCare }} € im Monat, monatlich kündbar</li>
+              </ul>
+              <p class="town-text">Shop, Online-Buchung oder mehrere Sprachen kalkulieren wir nach dem Erstgespräch einzeln. Wovon der Preis abhängt, steht im Ratgeber: <a routerLink="/de/ratgeber/website-kosten-freiburg">Was kostet eine Website für einen kleinen Betrieb in Freiburg?</a></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="section section-white">
+          <div class="container town-local">
+            <div>
+              <p class="section-label">Ablauf</p>
+              <h2 class="section-title">Website erstellen lassen <em>in {{ t.short }}</em>: so läuft es ab.</h2>
+            </div>
+            <ol class="town-list">
+              <li><strong>Erstgespräch bei Ihnen im Betrieb.</strong> Kostenlos, meist 30 bis 45 Minuten. Wir schauen uns Ihre bestehende Website und Ihr Google-Profil gemeinsam an.</li>
+              <li><strong>Schriftliches Angebot zum Festpreis.</strong> Sie wissen vor dem Start, was gebaut wird und was es kostet.</li>
+              <li><strong>Entwurf und Umsetzung.</strong> Jede Seite wird programmiert, nicht aus einem Baukasten geklickt. Eine Firmen-Website steht meist nach zwei bis vier Wochen.</li>
+              <li><strong>Start und Betreuung.</strong> Domain und Zugänge laufen auf Ihren Namen. Wartung gibt es auf Wunsch als Monatspaket — Pflicht ist sie nicht.</li>
+            </ol>
+          </div>
+        </section>
+      }
       @for (s of stories; track s.slug) {
         <section class="section section-white">
           <div class="container town-local">
@@ -201,7 +264,18 @@ export class TownComponent implements OnInit {
     price: PRODUCT_META[id].price(),
     text: this.town!.angles[id] ?? '',
   }));
-  /** „A, B und C" — die Ortsteile als Satzteil. */
+  /** Referenzen aus dem Ort, in der Reihenfolge aus towns.data.ts. */
+  readonly refs = (this.town?.references ?? [])
+    .map((slug) => PROJECTS.find((p) => p.slug === slug))
+    .filter((p): p is NonNullable<typeof p> => !!p);
+  /** Preise aus dem Katalog, im deutschen Zahlenformat. */
+  readonly priceNew = WEBSITE_PRICE_FROM.toLocaleString('de-DE');
+  readonly priceCare = MAINTENANCE_PRICE_FROM;
+  readonly updates = UPDATE_PACKAGES.map((u) => ({
+    name: u.id[0].toUpperCase() + u.id.slice(1),
+    price: u.price.toLocaleString('de-DE'),
+    days: u.days,
+  }));  /** „A, B und C" — die Ortsteile als Satzteil. */
   readonly districts = new Intl.ListFormat('de', { type: 'conjunction' }).format(this.town?.districts ?? []);
   /** Ratgeber-Artikel aus diesem Ort — echte Arbeit vor Ort statt Vorlagentext. */
   readonly stories = RATGEBER.filter((a) => a.town === this.town?.slug);
